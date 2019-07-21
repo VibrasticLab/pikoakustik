@@ -2,10 +2,10 @@ This work are originally from [here](https://github.com/sam81/pychoacoustics) th
 Multiplatform are supported and detailed build instruction available on each platforms.
 Currently supported platform:
 - Plain C
-- Plain C++
 - STM32F429ZI (Discovery)
 
 And planned platform:
+- Plain C++
 - C on GTK+
 - C++ on Qt
 - STM32F401RE (Nucleo)
