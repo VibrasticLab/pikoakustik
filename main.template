@@ -1,12 +1,13 @@
 #include "PLATFORM/platform.h"
 
-int sampling_rate = 44100;
-double freq = 1760.0, seconds = 2;
-int amp = 10000;
+int samplerate = 44100;
+double frequency = 1760.0;
+int durasi = 2;
+int amplitudo = 10000;
 
 int main(void){
-	driver_init(44100);
-	sample_prep(440,2,10000);
+	driver_init(samplerate);
+	sample_prep(frequency,durasi,amplitudo);
 	play_wave();
 
 	return 0;
