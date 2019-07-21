@@ -3,11 +3,11 @@ Multiplatform are supported and detailed build instruction available on each pla
 Currently supported platform:
 - Plain C
 - Plain C++
-- STM32F429TI (Discovery)
+- STM32F429ZI (Discovery)
 
 And planned platform:
 - C on GTK+
 - C++ on Qt
-- STM32F401 (Nucleo)
-- STM32F103 (BluePill)
+- STM32F401RE (Nucleo)
+- STM32F103C8 (BluePill)
 
