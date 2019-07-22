@@ -1,4 +1,4 @@
-#include "PLATFORM/driver.h"
+#include "driver.h"
 
 int samplerate = 44100;
 double frequency = 1760.0;
@@ -11,6 +11,7 @@ int main(void){
 	sample_prep(frequency,durasi,amplitudo);
 	play_wave();
 
+	while(1){ system_loop(); }
 	return 0;
 }
 

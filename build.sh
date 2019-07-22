@@ -10,7 +10,7 @@ if [ -z $PLATFORM ];then
 fi
 
 if [ $PLATFORM = "plainc" ];then
-	sed "s#PLATFORM#plain_c#g" main.template > main.c
+	sed "s#while(1){ system_loop(); }##g" main.template > main.c
 
 	mkdir -p build/
 	cd build/

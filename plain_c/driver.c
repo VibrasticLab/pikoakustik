@@ -1,4 +1,4 @@
-#include "driver.h"
+#include "../driver.h"
 
 snd_pcm_t * handle; // A reference to the sound card
 snd_pcm_hw_params_t * params; // Information about hardware params
