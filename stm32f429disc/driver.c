@@ -1,7 +1,20 @@
 #include "ch.h"
 #include "hal.h"
 
-#include "driver.h"
+#include "../driver.h"
+
+static THD_WORKING_AREA(waLed1, 128);
+static THD_FUNCTION(thdLed1, arg) {
+
+  (void)arg;
+  chRegSetThreadName("led1");
+  while (true) {
+    palClearPad(GPIOG, 14);
+    chThdSleepMilliseconds(500);
+    palSetPad(GPIOG, 14);
+    chThdSleepMilliseconds(500);
+  }
+}
 
 static void led_start(void){
     palSetPadMode(GPIOG,14,PAL_MODE_OUTPUT_PUSHPULL);
@@ -17,6 +30,8 @@ void system_init(void){
 
 	led_start();
 }
+
+void driver_init(int SMPR){}
 
 void sample_prep(
 	double FR, // Frequency (Hz)

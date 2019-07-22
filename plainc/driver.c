@@ -1,3 +1,5 @@
+#include <alsa/asoundlib.h>
+
 #include "../driver.h"
 
 snd_pcm_t * handle; // A reference to the sound card
@@ -7,7 +9,7 @@ snd_pcm_uframes_t frames = 4; // The size of the period
 int sampling_rate; //global Sampling Rate
 
 void system_init(void){
-   //do nothing on plain C 
+   //do nothing on plain C
 }
 
 void driver_init(int SMPR){

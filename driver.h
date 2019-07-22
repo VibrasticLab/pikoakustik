@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <alsa/asoundlib.h>
-
 void system_init(void);
 
 void driver_init(
