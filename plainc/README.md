@@ -6,5 +6,5 @@ To build, just run on top repos directory:
 
 If no error on compiling, then run:
 ~~~
-./build/plain_c/pikotes
+./build/plainc/pikotes
 ~~~
