@@ -14,9 +14,9 @@ if [ $PLATFORM = "plainc" ];then
 
 	mkdir -p build/
 	cd build/
-	gcc -v -c ../plain_c/platform.c
+	gcc -v -c ../plain_c/driver.c
 	gcc -v -c ../main.c
-	gcc -v -o pikotest main.o platform.o -lasound -lm
+	gcc -v -o pikotest main.o driver.o -lasound -lm
 
 	echo "result is: build/pikotest"
 

@@ -1,4 +1,4 @@
-#include "PLATFORM/platform.h"
+#include "PLATFORM/driver.h"
 
 int samplerate = 44100;
 double frequency = 1760.0;
