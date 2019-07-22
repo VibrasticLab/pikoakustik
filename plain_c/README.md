@@ -4,7 +4,7 @@ To build, just run on top repos directory:
 ./build.sh plainc
 ~~~
 
-If no error then run:
+If no error on compiling, then run:
 ~~~
-./build/pikotes
+./build/plain_c/pikotes
 ~~~
