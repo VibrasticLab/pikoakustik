@@ -12,7 +12,7 @@ void system_init(void){
    //do nothing on plain C
 }
 
-void driver_init(int SMPR){
+void driver_init(void){
   int dir = 0;
   int rc;
 
@@ -43,7 +43,7 @@ void driver_init(int SMPR){
   snd_pcm_hw_params_set_channels(handle, params, 2);
 
   // Here we set our sampling rate.
-  sampling_rate = SMPR;
+  sampling_rate = SAMPLING_RATE;
   snd_pcm_hw_params_set_rate_near(handle, params, &sampling_rate, &dir);
 
   // This sets the period size

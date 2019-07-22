@@ -5,10 +5,11 @@
 #include <stdlib.h>
 #include <math.h>
 
+#define SAMPLING_RATE 44100
+
 void system_init(void);
 
-void driver_init(
-	int SMPR); // Sampling Rate
+void driver_init(void);
 
 void sample_prep(
 	double FR, // Frequency (Hz)

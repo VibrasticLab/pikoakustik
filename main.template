@@ -1,13 +1,12 @@
 #include "driver.h"
 
-int samplerate = 44100;
 double frequency = 1760.0;
 int durasi = 2;
 int amplitudo = 10000;
 
 int main(void){
 	system_init();
-	driver_init(samplerate);
+	driver_init();
 	sample_prep(frequency,durasi,amplitudo);
 	play_wave();
 
