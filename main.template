@@ -6,6 +6,7 @@ int durasi = 2;
 int amplitudo = 10000;
 
 int main(void){
+	system_init();
 	driver_init(samplerate);
 	sample_prep(frequency,durasi,amplitudo);
 	play_wave();

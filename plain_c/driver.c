@@ -6,6 +6,10 @@ snd_pcm_uframes_t frames = 4; // The size of the period
 
 int sampling_rate; //global Sampling Rate
 
+void system_init(void){
+   //do nothing on plain C 
+}
+
 void driver_init(int SMPR){
   int dir = 0;
   int rc;

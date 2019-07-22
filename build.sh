@@ -16,9 +16,7 @@ if [ $PLATFORM = "plainc" ];then
 	cd build/
 	gcc -v -c ../plain_c/driver.c
 	gcc -v -c ../main.c
-	gcc -v -o pikotest main.o driver.o -lasound -lm
-
-	echo "result is: build/pikotest"
+	gcc -v -o pikotes main.o driver.o -lasound -lm
 
 elif [ $PLATFORM = "clean" ];then
 	rm -vf main.c

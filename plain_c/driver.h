@@ -7,6 +7,8 @@
 
 #include <alsa/asoundlib.h>
 
+void system_init(void);
+
 void driver_init(
 	int SMPR); // Sampling Rate
 
