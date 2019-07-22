@@ -34,6 +34,8 @@ elif [ $PLATFORM = "stm32f429disc" ];then
 	mkdir -p build/stm32f429disc/
 	cd stm32f429disc/
 	make all
+
+	rm -rf ../build/stm32f429disc/build/
 	mv build/ ../build/stm32f429disc/
 	rm -rf .dep
 	echo "FINISHED"
