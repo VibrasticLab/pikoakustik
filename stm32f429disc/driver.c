@@ -3,13 +3,17 @@
 
 #include "../driver.h"
 
-#define I2S_BUF_SIZE 256
-static uint16_t i2s_tx_buf[I2S_BUF_SIZE];
+#define NUM_CHANNELS    2
+#define NUM_SAMPLES     256
+#define I2S_BUF_SIZE    NUM_SAMPLES*NUM_CHANNELS
+
+static uint16_t sine_sample[I2S_BUF_SIZE];
+static uint8_t play_duration;
 
 static void i2scallback(I2SDriver *i2sp, size_t offset, size_t n);
 
 I2SConfig i2scfg = {
-  i2s_tx_buf,
+  sine_sample,
   NULL,
   I2S_BUF_SIZE,
   i2scallback,
@@ -22,7 +26,7 @@ static void i2scallback(I2SDriver *i2sp, size_t offset, size_t n) {
   (void)offset;
   (void)n;
 
-  palTogglePad(GPIOG,13);
+  palSetPad(GPIOG,13);
 }
 
 static THD_WORKING_AREA(waLed1, 128);
@@ -53,7 +57,7 @@ void system_init(void){
 	led_start();
 }
 
-void driver_init(int SMPR){
+void driver_init(void){
 	palSetPadMode(GPIOB, 12, PAL_MODE_ALTERNATE(5));
     palSetPadMode(GPIOB, 10, PAL_MODE_ALTERNATE(5));
     palSetPadMode(GPIOC, 3 , PAL_MODE_ALTERNATE(5));
@@ -63,9 +67,30 @@ void sample_prep(
 	double FR, // Frequency (Hz)
 	double DUR, //Duration (s)
 	int AMP) //Amplitudo
-{}
+{
+	double x,y;
 
-void play_wave(void){}
+	play_duration = DUR;
+
+	for (int i = 0; i < NUM_CHANNELS * NUM_SAMPLES; i+=NUM_CHANNELS){
+		x = (double) i / (double) SAMPLING_RATE;
+		y = sin(2.0 * 3.14159 * FR * x);
+		sine_sample[i] = AMP * 0.3 * y; // 3000 as max 4096 and 10000 as scaling =>> 3000/10000
+		sine_sample[i+1] = sine_sample[i];
+	}
+}
+
+void play_wave(void){
+	i2sStart(&I2SD2, &i2scfg);
+	i2sStartExchange(&I2SD2);
+
+	chThdSleepMilliseconds(play_duration * 500);
+
+	i2sStopExchange(&I2SD2);
+	i2sStop(&I2SD2);
+
+	palClearPad(GPIOG,13);
+}
 
 void system_loop(void){
 	chThdSleepMilliseconds(100);
