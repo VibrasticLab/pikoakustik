@@ -22,12 +22,15 @@ fi
 if [ $PLATFORM = "plainc" ];then
 	sed "s#while(1){ system_loop(); }##g" main.template > main.c
 
-	mkdir -p build/plain_c/
-	cd build/plain_c/
-	gcc -v -c ../../plain_c/driver.c
+	mkdir -p build/plainc/
+	cd build/plainc/
+	gcc -v -c ../../plainc/driver.c
 	gcc -v -c ../../main.c
 	gcc -v -o pikotes main.o driver.o -lasound -lm
-
+elif [ $PLATFORM = "stm32f429disc" ];then
+	mkdir -p build/stm32f429disc/
+	cd build/stm32f429disc/
+	make -f ../../
 elif [ $PLATFORM = "clean" ];then
 	cleaning
 else
