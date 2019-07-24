@@ -65,7 +65,7 @@ void sample_prep(
 {
   char *buffer;
   double x, y;
-  int sample;
+  unsigned int sample;
   int i, j;
 
   // This allocates memory to hold our samples
@@ -78,6 +78,7 @@ void sample_prep(
     x = (double) i / (double) sampling_rate;
     y = sin(2.0 * 3.14159 * FR * x);
     sample = AMP * y;
+    printf("%d,",sample);
 
     // Store the sample in our buffer using Little Endian format
     buffer[0 + 4*j] = sample & 0xff;
@@ -93,6 +94,7 @@ void sample_prep(
       j = 0;
     }
   }
+
 }
 
 void play_wave(void){

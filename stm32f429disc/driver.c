@@ -4,7 +4,7 @@
 #include "../driver.h"
 
 #define NUM_CHANNELS    2
-#define NUM_SAMPLES     256
+#define NUM_SAMPLES     SAMPLING_RATE
 #define I2S_BUF_SIZE    NUM_SAMPLES*NUM_CHANNELS
 
 static uint16_t sine_sample[I2S_BUF_SIZE];
@@ -15,7 +15,7 @@ static void i2scallback(I2SDriver *i2sp, size_t offset, size_t n);
 I2SConfig i2scfg = {
   sine_sample,
   NULL,
-  I2S_BUF_SIZE,
+  256, // should be buffer size
   i2scallback,
   0,
   16
