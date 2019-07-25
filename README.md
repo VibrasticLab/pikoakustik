@@ -3,10 +3,16 @@ Instead of Python, we use C in hope to be more cross-platform.
 Detailed build instruction available on each platforms.
 Currently supported platform:
 - Plain C
+- NCurses
 - STM32F429ZI (Discovery)
 
 And planned platform:
 - C on GTK+
 - STM32F401RE (Nucleo)
 - STM32F103C8 (BluePill)
+
+To get all currently supported platform run on terminal:
+~~~
+./build.sh
+~~~
 

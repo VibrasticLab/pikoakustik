@@ -48,7 +48,17 @@ elif [ $PLATFORM = "testarray" ];then
 	cd build/testarray/
 	gcc -v -c ../../testarray/driver.c
 	gcc -v -c ../../main.c
-	gcc -v -o testarr main.o driver.o -lasound -lm
+	gcc -v -static -o testarr main.o driver.o -lm
+	echo "FINISHED"
+
+elif [ $PLATFORM = "ncurses" ];then
+	sed "s#while(1){ system_loop(); }##g" main.template > main.c
+	mkdir -p build/ncurses/
+	cd build/ncurses/
+	cp libncurses.a ./
+	gcc -v -c ../../ncurses/driver.c
+	gcc -v -c ../../main.c
+	gcc -v -static -o tescurses main.o driver.o libncurses.a
 	echo "FINISHED"
 
 elif [ $PLATFORM = "clean" ];then
