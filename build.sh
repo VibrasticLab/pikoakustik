@@ -13,6 +13,7 @@ usage(){
 	echo "supported platform:"
 	echo "- plainc        : Plain C"
 	echo "- stm32f429disc : STM32F429ZI Discovery board"
+	echo "- stm32f401nucl : STM32F401RE Nucleo board"
 	echo "- testarray     : Test Array on Plain C"
 	echo "- clean         : Clean build files"
 }
@@ -29,7 +30,6 @@ if [ $PLATFORM = "plainc" ];then
 	gcc -v -c ../../plainc/driver.c
 	gcc -v -c ../../main.c
 	gcc -v -o pikotes main.o driver.o -lasound -lm
-	echo "FINISHED"
 
 elif [ $PLATFORM = "stm32f429disc" ];then
 	cp -f main.template main.c
@@ -40,7 +40,6 @@ elif [ $PLATFORM = "stm32f429disc" ];then
 	rm -rf ../build/stm32f429disc/build/
 	mv build/ ../build/stm32f429disc/
 	rm -rf .dep
-	echo "FINISHED"
 
 elif [ $PLATFORM = "stm32f401nucl" ];then
 	cp -f main.template main.c
@@ -51,7 +50,6 @@ elif [ $PLATFORM = "stm32f401nucl" ];then
 	rm -rf ../build/stm32f401nucl/build/
 	mv build/ ../build/stm32f401nucl/
 	rm -rf .dep
-	echo "FINISHED"
 
 elif [ $PLATFORM = "testarray" ];then
 	sed "s#while(1){ system_loop(); }##g" main.template > main.c
@@ -60,7 +58,6 @@ elif [ $PLATFORM = "testarray" ];then
 	gcc -v -c ../../testarray/driver.c
 	gcc -v -c ../../main.c
 	gcc -v -static -o testarr main.o driver.o -lm
-	echo "FINISHED"
 
 elif [ $PLATFORM = "ncurses" ];then
 	sed "s#while(1){ system_loop(); }##g" main.template > main.c
@@ -70,10 +67,11 @@ elif [ $PLATFORM = "ncurses" ];then
 	gcc -v -c ../../ncurses/driver.c
 	gcc -v -c ../../main.c
 	gcc -v -static -o tescurses main.o driver.o libncurses.a
-	echo "FINISHED"
 
 elif [ $PLATFORM = "clean" ];then
 	cleaning
+
 else
 	echo "Platform currently not supported"
+	usage
 fi
