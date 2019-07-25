@@ -58,7 +58,7 @@ void system_init(void){
 }
 
 void driver_init(void){
-	palSetPadMode(GPIOB, 12, PAL_MODE_ALTERNATE(5));
+    palSetPadMode(GPIOB, 12, PAL_MODE_ALTERNATE(5));
     palSetPadMode(GPIOB, 10, PAL_MODE_ALTERNATE(5));
     palSetPadMode(GPIOC, 3 , PAL_MODE_ALTERNATE(5));
 }
