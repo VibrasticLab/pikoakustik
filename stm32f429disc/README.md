@@ -26,6 +26,10 @@ PB10	BCLK
 PB12	LRC
 ~~~
 
+For the record, there's range on:
+- Frequency: from 500 to 10000 (not calibrated in Hz)
+- Amplitudo: from 10 to 10000 (not calibrated in dB)
+
 To build, just run on top repos directory:
 ~~~
 ./build.sh stm32f429disc

@@ -5,7 +5,6 @@
 #define NUM_SAMPLES     SAMPLING_RATE
 
 uint16_t sine[NUM_SAMPLES];
-uint16_t sample;
 uint16_t onesample;
 
 void system_init(void){
@@ -27,8 +26,9 @@ void sample_prep(
 	uint8_t neg_a,neg_b;
 	uint8_t phase = 0;
 	uint8_t stop = 0;
-	uint16_t i = 1;
+	uint16_t sample;
 
+	uint16_t i = 1;
 	sine[0] = 2000;
 
 	while(stop==0){
