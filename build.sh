@@ -42,6 +42,17 @@ elif [ $PLATFORM = "stm32f429disc" ];then
 	rm -rf .dep
 	echo "FINISHED"
 
+elif [ $PLATFORM = "stm32f401nucl" ];then
+	cp -f main.template main.c
+	mkdir -p build/stm32f401nucl/
+	cd stm32f401nucl/
+	make all
+
+	rm -rf ../build/stm32f401nucl/build/
+	mv build/ ../build/stm32f401nucl/
+	rm -rf .dep
+	echo "FINISHED"
+
 elif [ $PLATFORM = "testarray" ];then
 	sed "s#while(1){ system_loop(); }##g" main.template > main.c
 	mkdir -p build/testarray/
