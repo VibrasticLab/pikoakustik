@@ -15,7 +15,7 @@ static void i2scallback(I2SDriver *i2sp, size_t offset, size_t n);
 I2SConfig i2scfg = {
   sine_sample,
   NULL,
-  256, // should be buffer size
+  256, // should be buffer size and size_t are big enough on gcc
   i2scallback,
   0,
   16
@@ -76,7 +76,10 @@ void sample_prep(
 		x = (double) i / (double) SAMPLING_RATE;
 		y = sin(2.0 * 3.14159 * FR * x);
 		sine_sample[i] = AMP * 0.3 * y; // 3000 as max 4096 and 10000 as scaling =>> 3000/10000
-		sine_sample[i+1] = sine_sample[i];
+		
+		if(NUM_CHANNELS==2){
+		  sine_sample[i+1] = sine_sample[i];
+		}
 	}
 }
 

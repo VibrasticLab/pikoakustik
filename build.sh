@@ -13,6 +13,7 @@ usage(){
 	echo "supported platform:"
 	echo "- plainc        : Plain C"
 	echo "- stm32f429disc : STM32F429ZI Discovery board"
+	echo "- testarray     : Test Array on Plain C"
 	echo "- clean         : Clean build files"
 }
 
@@ -29,6 +30,7 @@ if [ $PLATFORM = "plainc" ];then
 	gcc -v -c ../../main.c
 	gcc -v -o pikotes main.o driver.o -lasound -lm
 	echo "FINISHED"
+
 elif [ $PLATFORM = "stm32f429disc" ];then
 	cp -f main.template main.c
 	mkdir -p build/stm32f429disc/
@@ -39,6 +41,16 @@ elif [ $PLATFORM = "stm32f429disc" ];then
 	mv build/ ../build/stm32f429disc/
 	rm -rf .dep
 	echo "FINISHED"
+
+elif [ $PLATFORM = "testarray" ];then
+	sed "s#while(1){ system_loop(); }##g" main.template > main.c
+	mkdir -p build/testarray/
+	cd build/testarray/
+	gcc -v -c ../../testarray/driver.c
+	gcc -v -c ../../main.c
+	gcc -v -o testarr main.o driver.o -lasound -lm
+	echo "FINISHED"
+
 elif [ $PLATFORM = "clean" ];then
 	cleaning
 else
