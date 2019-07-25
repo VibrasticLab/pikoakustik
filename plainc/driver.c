@@ -76,8 +76,8 @@ void sample_prep(
 
     // Create a sample and convert it back to an integer
     x = (double) i / (double) sampling_rate;
-    y = sin(2.0 * 3.14159 * FR * x);
-    sample = AMP * y;
+    y = sin(2.0 * 3.14159 * FR * x) + 1;
+    sample = AMP * 0.2 * y;
     printf("%d,",sample);
 
     // Store the sample in our buffer using Little Endian format
