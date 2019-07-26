@@ -1,0 +1,155 @@
+EESchema Schematic File Version 4
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L NUCLEO-64:NUCLEO-64 U1
+U 1 1 5D3A5755
+P 6500 2250
+F 0 "U1" H 6500 3515 50  0000 C CNN
+F 1 "NUCLEO-64" H 6500 3424 50  0000 C CNN
+F 2 "lib:Nucleo-64" H 6500 2250 50  0001 C CNN
+F 3 "DOCUMENTATION" H 6500 2250 50  0001 C CNN
+	1    6500 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L NUCLEO-64:NUCLEO-64 U1
+U 2 1 5D3A580C
+P 9450 2250
+F 0 "U1" H 9450 3515 50  0000 C CNN
+F 1 "NUCLEO-64" H 9450 3424 50  0000 C CNN
+F 2 "lib:Nucleo-64" H 9450 2250 50  0001 C CNN
+F 3 "DOCUMENTATION" H 9450 2250 50  0001 C CNN
+	2    9450 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x07_Female J-DAC1
+U 1 1 5D3A5A40
+P 2900 3000
+F 0 "J-DAC1" H 2927 3026 50  0000 L CNN
+F 1 "Conn_01x07_Female" H 2927 2935 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x07_P2.54mm_Vertical" H 2900 3000 50  0001 C CNN
+F 3 "~" H 2900 3000 50  0001 C CNN
+	1    2900 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VDD #PWR0101
+U 1 1 5D3A5ABC
+P 2400 2650
+F 0 "#PWR0101" H 2400 2500 50  0001 C CNN
+F 1 "VDD" H 2417 2823 50  0000 C CNN
+F 2 "" H 2400 2650 50  0001 C CNN
+F 3 "" H 2400 2650 50  0001 C CNN
+	1    2400 2650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2700 2700 2400 2700
+Wire Wire Line
+	2400 2700 2400 2650
+Wire Wire Line
+	2700 2900 2400 2900
+Wire Wire Line
+	2400 2900 2400 2700
+Connection ~ 2400 2700
+$Comp
+L power:GND #PWR0102
+U 1 1 5D3A5C2C
+P 2150 2800
+F 0 "#PWR0102" H 2150 2550 50  0001 C CNN
+F 1 "GND" H 2155 2627 50  0000 C CNN
+F 2 "" H 2150 2800 50  0001 C CNN
+F 3 "" H 2150 2800 50  0001 C CNN
+	1    2150 2800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2700 2800 2150 2800
+Wire Wire Line
+	2700 3000 2400 3000
+Text Label 2400 3000 0    50   ~ 0
+GAIN
+Wire Wire Line
+	2700 3100 2400 3100
+Wire Wire Line
+	2700 3200 2400 3200
+Wire Wire Line
+	2700 3300 2400 3300
+Text Label 2400 3100 0    50   ~ 0
+DATA
+Text Label 2400 3200 0    50   ~ 0
+BCLK
+Text Label 2400 3300 0    50   ~ 0
+LRC
+Wire Wire Line
+	5750 3150 5350 3150
+Text Label 5350 3150 0    50   ~ 0
+DATA
+Wire Wire Line
+	8700 2550 8400 2550
+Text Label 8400 2550 0    50   ~ 0
+BCLK
+Wire Wire Line
+	10200 2050 10450 2050
+Text Label 10450 2050 0    50   ~ 0
+LRC
+$Comp
+L power:VDD #PWR0103
+U 1 1 5D3A68AE
+P 5350 1550
+F 0 "#PWR0103" H 5350 1400 50  0001 C CNN
+F 1 "VDD" H 5367 1723 50  0000 C CNN
+F 2 "" H 5350 1550 50  0001 C CNN
+F 3 "" H 5350 1550 50  0001 C CNN
+	1    5350 1550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5750 1550 5350 1550
+$Comp
+L power:GND #PWR0104
+U 1 1 5D3A6B7F
+P 7550 1650
+F 0 "#PWR0104" H 7550 1400 50  0001 C CNN
+F 1 "GND" H 7555 1477 50  0000 C CNN
+F 2 "" H 7550 1650 50  0001 C CNN
+F 3 "" H 7550 1650 50  0001 C CNN
+	1    7550 1650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7550 1650 7250 1650
+$Comp
+L Connector:Conn_01x02_Female J-HEADPHONE1
+U 1 1 5D3A6FF5
+P 2900 3450
+F 0 "J-HEADPHONE1" H 2927 3426 50  0000 L CNN
+F 1 "Conn_01x02_Female" H 2927 3335 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 2900 3450 50  0001 C CNN
+F 3 "~" H 2900 3450 50  0001 C CNN
+	1    2900 3450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2700 3450 2400 3450
+Wire Wire Line
+	2700 3550 2400 3550
+Text Label 2400 3450 0    50   ~ 0
+HP_M
+Text Label 2400 3550 0    50   ~ 0
+HP_P
+$EndSCHEMATC
