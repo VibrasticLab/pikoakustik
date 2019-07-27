@@ -978,4 +978,12 @@ Wire Wire Line
 	2350 5250 2300 5250
 Wire Wire Line
 	2300 4850 2300 4950
+Wire Wire Line
+	8250 3050 7950 3050
+Text Label 7950 3050 0    50   ~ 0
+TX
+Wire Wire Line
+	8250 3650 7950 3650
+Text Label 7950 3650 0    50   ~ 0
+RX
 $EndSCHEMATC
