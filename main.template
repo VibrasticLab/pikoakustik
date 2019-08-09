@@ -2,7 +2,7 @@
 
 double frequency = 1000.0;
 int durasi = 1;
-int amplitudo = 10000;
+int amplitudo = 8000;
 
 int main(void){
 	system_init();
