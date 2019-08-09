@@ -70,7 +70,7 @@ void sample_prep(
 {
 	double x,y;
 
-	uint8_t neg_a,neg_b;
+	uint8_t neg_a = 0,neg_b = 0;
 	uint8_t phase = 0;
 	uint8_t stop = 0;
 	uint16_t sample;
