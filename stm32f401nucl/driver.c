@@ -5,7 +5,7 @@
 
 //================================================================================
 
-#define NUM_CHANNELS    2
+#define NUM_CHANNELS    1
 #define NUM_SAMPLES     512
 #define I2S_BUF_SIZE    NUM_SAMPLES*NUM_CHANNELS
 
@@ -216,6 +216,40 @@ static void indicator_start(void){
     chThdCreateStatic(waTestLed, sizeof(waTestLed),	NORMALPRIO, thdTestLed, NULL);
 }
 
+static uint16_t onewavelen(double FR,int AMP){
+    double x,y;
+
+    uint8_t neg_a = 0,neg_b = 0;
+    uint8_t phase = 0;
+    uint8_t stop = 0;
+    uint16_t sample;
+
+    uint16_t i = 1;
+
+    while(stop==0){
+        x = (double) i / (double) SAMPLING_RATE;
+        y = sin(2.0 * 3.14159 * FR * x) + 1;
+        sample = (uint16_t) AMP * 0.2 * y;
+
+        i++;
+
+        if(sample == 2000){ phase++;}
+        else if(sample > 2000){ neg_b = 0;	}
+        else if(sample < 2000){ neg_b = 1;	}
+
+        if(neg_b != neg_a){
+            phase=phase+1;
+            if(phase==2){ ;stop=1;	}
+            neg_a = neg_b;
+        }
+        else if(neg_b == neg_a){ neg_a = neg_b; }
+
+        if(i==NUM_SAMPLES){	stop=1;	}
+    };
+
+    return i;
+}
+
 //================================================================================
 
 // ============================= Platform Calling ===================
@@ -242,49 +276,35 @@ void sample_prep(
 {
 	double x,y;
 
-	uint8_t neg_a = 0,neg_b = 0;
-	uint8_t phase = 0;
-	uint8_t stop = 0;
+    uint16_t waveone,wavenum,wavelen;
 	uint16_t sample;
+
+    waveone = onewavelen(FR,AMP);
+    wavenum = (uint16_t) NUM_SAMPLES/waveone;
+    wavelen = NUM_CHANNELS * wavenum * waveone;
 
 	uint16_t i = 1;
 	sine_sample[0] = AMP * 0.2;
 
 	play_duration = DUR;
 
-	while(stop==0){
+    for(i=1;i<I2S_BUF_SIZE;i++){
 		x = (double) i / (double) SAMPLING_RATE;
 		y = sin(2.0 * 3.14159 * FR * x) + 1;
-		sample = AMP * 0.2 * y;
+        sample = (uint16_t) AMP * 0.2 * y;
 
 		sine_sample[i] = sample;
-		if(NUM_CHANNELS==2){	sine_sample[i+1] = sample; }
-
-		i++;
-
-		if(sample == 2000){ phase++;}
-		else if(sample > 2000){ neg_b = 0;	}
-		else if(sample < 2000){ neg_b = 1;	}
-
-		if(neg_b != neg_a){
-			phase=phase+1;
-			if(phase==2){ ;stop=1;	}
-			neg_a = neg_b;
-		}
-		else if(neg_b == neg_a){ neg_a = neg_b; }
-
-		if(i==NUM_SAMPLES){	stop=1;	}
+        if(NUM_CHANNELS==2){ sine_sample[i+1] = sample; }
 	};
 
-    //buffer size
-    i2scfg.size = 10*i;
+    i2scfg.size = wavelen;
 }
 
 void play_wave(void){
 	i2sStart(&I2SD2, &i2scfg);
 	i2sStartExchange(&I2SD2);
 
-	chThdSleepMilliseconds(play_duration * 100);
+    chThdSleepMilliseconds(play_duration * 200);
 
 	i2sStopExchange(&I2SD2);
 	i2sStop(&I2SD2);

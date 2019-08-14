@@ -18,9 +18,6 @@ def onewavelen(FR,AMP):
 	stop = 0
 	sample = 0
 	
-	sine_sample = np.zeros(NUM_SAMPLES)
-	sine_sample[0] = AMP * 0.2
-	
 	i = 1
 	
 	while stop == 0:
@@ -28,7 +25,6 @@ def onewavelen(FR,AMP):
 		y = mt.sin(2.0 * mt.pi * FR * x ) + 1
 		sample = AMP * 0.2 * y
 
-		sine_sample[i] = sample
 		i = i + 1
 
 		if sample == 2000:
@@ -72,7 +68,6 @@ def sample_prep(FR, DUR, AMP):
 		sample = AMP * 0.2 * y
 
 		sine_sample[i] = sample
-		i = i + 1
 
 	print("wave len = %i * %i = %i" % (wavenum,waveone,wavelen))
 	wave_sample = sine_sample[0:wavelen+1]

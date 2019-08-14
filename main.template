@@ -1,8 +1,8 @@
 #include "driver.h"
 
-double frequency = 1000.0;
+double frequency = 2000.0;
 int durasi = 1;
-int amplitudo = 10000;
+int amplitudo = 4000;
 
 int main(void){
 	system_init();
