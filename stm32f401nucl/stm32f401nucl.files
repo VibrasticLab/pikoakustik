@@ -1,4 +1,7 @@
 Makefile
+board/board.c
+board/board.h
+board/board.mk
 chconf.h
 driver.c
 halconf.h
