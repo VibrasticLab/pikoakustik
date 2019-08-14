@@ -276,8 +276,8 @@ void sample_prep(
 		if(i==NUM_SAMPLES){	stop=1;	}
 	};
 
-	//buffer size
-	i2scfg.size = 10*i;
+    //buffer size
+    i2scfg.size = 10*i;
 }
 
 void play_wave(void){
