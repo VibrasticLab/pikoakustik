@@ -54,10 +54,14 @@ elif [ $PLATFORM = "stm32f401nucl" ];then
 elif [ $PLATFORM = "testarray" ];then
 	sed "s#while(1){ system_loop(); }##g" main.template > main.c
 	mkdir -p build/testarray/
+
 	cd build/testarray/
 	gcc -v -c ../../testarray/driver.c
 	gcc -v -c ../../main.c
 	gcc -v -static -o testarr main.o driver.o -lm
+
+	cp -vf ../../testarray/testarrplot.py ./
+	cp -vf ../../testarray/singraf.py ./
 
 elif [ $PLATFORM = "clean" ];then
 	cleaning

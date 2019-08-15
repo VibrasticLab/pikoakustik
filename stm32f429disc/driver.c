@@ -4,7 +4,7 @@
 #include "../driver.h"
 
 #define NUM_CHANNELS    2
-#define NUM_SAMPLES     512
+#define NUM_SAMPLES     1024
 #define I2S_BUF_SIZE    NUM_SAMPLES*NUM_CHANNELS
 
 static uint16_t sine_sample[I2S_BUF_SIZE];

@@ -73,6 +73,6 @@ def sample_prep(FR, DUR, AMP):
 	wave_sample = sine_sample[0:wavelen+1]
 	return wave_sample
          
-datasin = sample_prep(1000,2,10000)
+datasin = sample_prep(2000,2,4000)
 plt.plot(datasin)
 plt.show()
