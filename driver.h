@@ -1,8 +1,10 @@
 #ifndef _PLATFORM_H_
 #define _PLATFORM_H_
 
-#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <math.h>
 
 #define SAMPLING_RATE 44100

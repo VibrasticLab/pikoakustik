@@ -95,6 +95,7 @@ include $(CHIBIOS)/os/hal/ports/STM32/STM32F4xx/platform.mk
 #include $(CHIBIOS)/os/hal/boards/ST_NUCLEO_F401RE/board.mk
 include board/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
+include $(CHIBIOS)/os/various/fatfs_bindings/fatfs.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/rt/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
@@ -109,16 +110,23 @@ REPODIR = ..
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
-CSRC = $(STARTUPSRC) \
-       $(KERNSRC) \
-       $(PORTSRC) \
-       $(OSALSRC) \
-       $(HALSRC) \
-       $(PLATFORMSRC) \
-       $(BOARDSRC) \
-       $(TESTSRC) \
-       driver.c \
-       $(REPODIR)/main.c
+CSRC =  $(STARTUPSRC) \
+        $(KERNSRC) \
+        $(PORTSRC) \
+        $(OSALSRC) \
+        $(HALSRC) \
+        $(PLATFORMSRC) \
+        $(BOARDSRC) \
+        $(TESTSRC) \
+        $(FATFSSRC) \
+        $(CHIBIOS)/os/various/syscalls.c \
+        $(CHIBIOS)/os/various/evtimer.c \
+        $(CHIBIOS)/os/various/shell.c \
+        $(CHIBIOS)/os/hal/lib/streams/nullstreams.c \
+        $(CHIBIOS)/os/hal/lib/streams/memstreams.c \
+        $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
+        driver.c \
+        $(REPODIR)/main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -149,7 +157,8 @@ ASMSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 
 INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
-         $(REPODIR) $(CHIBIOS)/os/various
+         $(REPODIR) $(FATFSINC) $(CHIBIOS)/os/various \
+         $(CHIBIOS)/os/hal/lib/streams
 
 #
 # Project, sources and paths
