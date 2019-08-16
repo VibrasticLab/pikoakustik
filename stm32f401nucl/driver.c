@@ -71,27 +71,27 @@ static void extTestWave(EXTDriver *extp, expchannel_t channel) {
 
 static const EXTConfig extcfg = {
   {
-    {EXT_CH_MODE_DISABLED, NULL}, //0	  
+    {EXT_CH_MODE_DISABLED, NULL}, //0
     {EXT_CH_MODE_DISABLED, NULL}, //1
     {EXT_CH_MODE_DISABLED, NULL}, //2
     {EXT_CH_MODE_DISABLED, NULL}, //3
     {EXT_CH_MODE_DISABLED, NULL}, //4
-    {EXT_CH_MODE_DISABLED, NULL}, //5 
-    {EXT_CH_MODE_DISABLED, NULL}, //6 
+    {EXT_CH_MODE_DISABLED, NULL}, //5
+    {EXT_CH_MODE_DISABLED, NULL}, //6
     {EXT_CH_MODE_DISABLED, NULL}, //7
     {EXT_CH_MODE_DISABLED, NULL}, //8
     {EXT_CH_MODE_DISABLED, NULL}, //9
     {EXT_CH_MODE_DISABLED, NULL}, //10
-    {EXT_CH_MODE_DISABLED, NULL}, //11 
-    {EXT_CH_MODE_DISABLED, NULL}, //12 
-    {EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOC, extTestWave}, //13 
-    {EXT_CH_MODE_DISABLED, NULL}, //14 
-    {EXT_CH_MODE_DISABLED, NULL}, //15 
-    {EXT_CH_MODE_DISABLED, NULL}, //16 
-    {EXT_CH_MODE_DISABLED, NULL}, //17 
-    {EXT_CH_MODE_DISABLED, NULL}, //18 
-    {EXT_CH_MODE_DISABLED, NULL}, //19 
-    {EXT_CH_MODE_DISABLED, NULL}, //20 
+    {EXT_CH_MODE_DISABLED, NULL}, //11
+    {EXT_CH_MODE_DISABLED, NULL}, //12
+    {EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOC, extTestWave}, //13
+    {EXT_CH_MODE_DISABLED, NULL}, //14
+    {EXT_CH_MODE_DISABLED, NULL}, //15
+    {EXT_CH_MODE_DISABLED, NULL}, //16
+    {EXT_CH_MODE_DISABLED, NULL}, //17
+    {EXT_CH_MODE_DISABLED, NULL}, //18
+    {EXT_CH_MODE_DISABLED, NULL}, //19
+    {EXT_CH_MODE_DISABLED, NULL}, //20
     {EXT_CH_MODE_DISABLED, NULL}, //21
     {EXT_CH_MODE_DISABLED, NULL}  //22
   }
@@ -170,17 +170,7 @@ static THD_FUNCTION(thdTestLed, arg) {
   (void)arg;
   chRegSetThreadName("test led");
 
-  palSetPad(GPIOA,LED_TRUE);
-  palClearPad(GPIOA,LED_FALSE);
-  palClearPad(GPIOA,LED_ANSA);
-  palSetPad(GPIOB,LED_ANSB);
-
   while (true) {
-      palTogglePad(GPIOA,LED_TRUE);
-      palTogglePad(GPIOA,LED_FALSE);
-      palTogglePad(GPIOA,LED_ANSA);
-      palTogglePad(GPIOB,LED_ANSB);
-
       idx_ampl++;
       if(idx_ampl==6){
           idx_ampl = 1;
@@ -201,6 +191,11 @@ static void indicator_start(void){
     palSetPadMode(GPIOA,LED_FALSE,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOA,LED_ANSA,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOB,LED_ANSB,PAL_MODE_OUTPUT_PUSHPULL);
+    
+    palSetPad(GPIOA,LED_TRUE);
+    palSetPad(GPIOA,LED_FALSE);
+    palSetPad(GPIOA,LED_ANSA);
+    palSetPad(GPIOB,LED_ANSB);
 
     palSetPadMode(GPIOA,LED_AMPL,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOA,LED_FREQ,PAL_MODE_OUTPUT_PUSHPULL);
@@ -258,20 +253,17 @@ static uint16_t onewavelen(double FR,int AMP){
 #define MMC_SPI_FAIL 1
 #define MMC_SPI_ERROR 2
 
-#define USE_MMC_CHK 1
+#define TEST_MMCCONNECT 1
 
 MMCDriver MMCD1;
 
-#if USE_MMC_CHK
-static uint8_t filesystem_ready=true;
+static bool filesystem_ready=true;
 static uint8_t mmc_spi_status_flag=MMC_SPI_OK;
-#endif
 
 static SPIConfig hs_spicfg = {NULL, GPIOA, 15, 0};
 static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1};
 static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 
-#if USE_MMC_CHK
 static void mmc_check(void){
     FATFS FatFs;
     FRESULT err;
@@ -281,48 +273,48 @@ static void mmc_check(void){
     mmc_spi_status_flag=MMC_SPI_OK;
     filesystem_ready=false;
 
+    #if TEST_MMCCONNECT
     if(mmcConnect(&MMCD1)) { filesystem_ready = true; }
+    #endif
 
     err = f_mount(&FatFs, "", 0);
-    if(err == FR_OK){ filesystem_ready = true; }
-
+    if(err == FR_OK){ filesystem_ready = true; palClearPad(GPIOA,LED_TRUE); }
+    
     if (!filesystem_ready) { mmc_spi_status_flag=MMC_SPI_FAIL;return; }
 
     err = f_getfree("/", &clusters, &fsp);
     if (err != FR_OK) { mmc_spi_status_flag=MMC_SPI_ERROR;return; }
+    else{palClearPad(GPIOA,LED_ANSA);}
+    
+    f_mount(0, "", 0);
 
     chThdSleepMilliseconds(10);
 }
-#endif
-
 
 static void mmc_test(void){
-#if USE_MMC_CHK
-    mmc_check();
-#endif
-
     char buffer[36];
 
     FATFS FatFs;
     FIL Fil;
     UINT bw;
+    FRESULT err;
 
-#if USE_MMC_CHK
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-#endif
         chsnprintf(buffer,36,"Test \n\r");
 
-        f_mount(&FatFs, "", 0);
-        if (f_open(&Fil, "tes.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_READ) == FR_OK){
-            f_lseek(&Fil, f_size(&Fil));
+        err = f_mount(&FatFs, "", 0);
+        if(err == FR_OK){ palClearPad(GPIOA,LED_TRUE); }
+        
+        if (f_open(&Fil, "/tes.txt", FA_WRITE | FA_CREATE_ALWAYS | FA_READ) == FR_OK){
+            palClearPad(GPIOA,LED_ANSA);
+            
+            //f_lseek(&Fil, f_size(&Fil));
             f_write(&Fil, buffer, strlen(buffer), &bw);
-            f_close(&Fil);
+            f_close(&Fil);                 
         }
+        
         f_mount(0, "", 0);
-
-#if USE_MMC_CHK
     }
-#endif
 }
 
 static void mmc_start(void){
@@ -334,7 +326,9 @@ static void mmc_start(void){
 
     mmcObjectInit(&MMCD1);
     mmcStart(&MMCD1, &mmccfg);
-    chThdSleepMilliseconds(50);
+    chThdSleepMilliseconds(100);
+    
+    mmc_check();
 }
 
 //================================================================================
@@ -345,10 +339,10 @@ void system_init(void){
 	halInit();
 	chSysInit();
 
-    mmc_start();
     exti_start();
     indicator_start();
-
+    
+    mmc_start();
     mmc_test();
 
 	led_start();

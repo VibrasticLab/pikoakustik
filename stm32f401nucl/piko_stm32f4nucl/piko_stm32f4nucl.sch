@@ -986,4 +986,8 @@ Wire Wire Line
 	8250 3650 7950 3650
 Text Label 7950 3650 0    50   ~ 0
 RX
+Text Label 1750 3400 0    50   ~ 0
+DAT2
+Text Label 1850 4100 0    50   ~ 0
+DAT1
 $EndSCHEMATC
