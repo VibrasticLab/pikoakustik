@@ -6,7 +6,6 @@
 #include "../driver.h"
 
 void mmc_test(void);
-void mmc_check(void);
 
 //================================================================================
 
@@ -57,9 +56,8 @@ static THD_FUNCTION(thdTestWave, arg) {
   chRegSetThreadName("test wave");
   while (true) {
       if(testWave==1){
-          play_wave();
-          mmc_test();
           testWave=0;
+          play_wave();
       }
       chThdSleepMilliseconds(100);
   }
@@ -268,7 +266,7 @@ static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1};
 //static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1 | SPI_CR1_BR_0 | SPI_CR1_CPHA | SPI_CR1_CPOL};
 static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 
-void mmc_check(void){
+static void mmc_check(void){
     FATFS FatFs;
     FRESULT err;
     uint32_t clusters;
@@ -277,7 +275,7 @@ void mmc_check(void){
     mmc_spi_status_flag=MMC_SPI_OK;
     filesystem_ready=false;
 
-    //if(mmcConnect(&MMCD1)) { filesystem_ready = true; }
+    if(mmcConnect(&MMCD1)) { filesystem_ready = true; }
 
     err = f_mount(&FatFs, "", 0);
     if(err == FR_OK){ filesystem_ready = true; }
@@ -293,7 +291,7 @@ void mmc_check(void){
 }
 
 void mmc_test(void){
-    // mmc_check();
+    mmc_check();
     
     char buffer[36];
 
@@ -305,16 +303,25 @@ void mmc_test(void){
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         chsnprintf(buffer,36,"Test \n\r");
 
-        err = f_mount(&FatFs, "", 0);
-        if(err == FR_OK){ palClearPad(GPIOA,LED_TRUE); }
-        else{ palSetPad(GPIOA,LED_TRUE); }
+        f_mount(&FatFs, "", 0);
         
-        if (f_open(&Fil, "/tes.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_READ) == FR_OK){
-            palClearPad(GPIOA,LED_ANSA);
-            
+        err = f_open(&Fil, "/tes.txt", FA_WRITE | FA_CREATE_ALWAYS | FA_READ);
+        
+        if ( err == FR_OK){
             f_lseek(&Fil, f_size(&Fil));
             f_write(&Fil, buffer, strlen(buffer), &bw);
-            f_close(&Fil);                 
+            f_close(&Fil);              
+               
+            palClearPad(GPIOA,LED_TRUE);
+        }
+        else if (err == FR_DISK_ERR){
+            palClearPad(GPIOA,LED_FALSE);
+        }
+        else if (err == FR_INT_ERR){
+            palClearPad(GPIOA,LED_ANSA);
+        }
+        else if (err == FR_NOT_READY){
+            palClearPad(GPIOA,LED_ANSB);
         }
         
         f_mount(0, "", 0);
@@ -345,6 +352,8 @@ void system_init(void){
     indicator_start();
     
     mmc_start();
+    chThdSleepMilliseconds(500);    
+    mmc_test();
  
  	led_start();
 }
