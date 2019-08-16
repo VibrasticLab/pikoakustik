@@ -254,6 +254,8 @@ static uint16_t onewavelen(double FR,int AMP){
 #define MMC_SPI_FAIL 1
 #define MMC_SPI_ERROR 2
 
+#define USE_MMC_CHK 0
+
 MMCDriver MMCD1;
 
 static bool filesystem_ready=true;
@@ -263,6 +265,7 @@ static SPIConfig hs_spicfg = {NULL, GPIOA, 15, 0};
 static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1};
 static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 
+#if USE_MMC_CHK
 static void mmc_check(void){
     FATFS FatFs;
     FRESULT err;
@@ -282,16 +285,19 @@ static void mmc_check(void){
     mmc_spi_status_flag=MMC_SPI_ERROR;
     err = f_getfree("/", &clusters, &fsp);
     
-    if(err == FR_OK){ mmc_spi_status_flag=MMC_SPI_OK;palSetPad(GPIOA,5); }
-    else if (err == FR_DISK_ERR){ palClearPad(GPIOA,LED_TRUE); }
-    else if (err == FR_INT_ERR){ palClearPad(GPIOA,LED_FALSE); }
-    else if (err == FR_NOT_READY){ palClearPad(GPIOA,LED_ANSA); }
-    else if (err == FR_INVALID_DRIVE){ palClearPad(GPIOA,LED_ANSB); }
+    if(err == FR_OK){
+        mmc_spi_status_flag=MMC_SPI_OK;
+        palClearPad(GPIOA,LED_TRUE);
+    }
+    else if(err == FR_DISK_ERR){ palClearPad(GPIOA,LED_FALSE); }
+    else if(err == FR_INT_ERR){ palClearPad(GPIOA,LED_ANSA); }
+    else if(err == FR_NOT_READY){ palClearPad(GPIOA,LED_ANSB); }
 
     f_mount(0, "", 0);  
 }
+#endif
 
-void mmc_test(void){
+static void mmc_test(void){
     char buffer[36];
 
     FATFS FatFs;
@@ -299,21 +305,26 @@ void mmc_test(void){
     UINT bw;
 
     FRESULT err;
-    
+
+#if USE_MMC_CHK
     mmc_check();
+#endif
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         chsnprintf(buffer,36,"Test \n\r");
 
         f_mount(&FatFs, "", 0);
-        err = f_open(&Fil, "/tes.txt", FA_WRITE | FA_CREATE_ALWAYS | FA_READ);
-        if ( err == FR_OK){
-            f_lseek(&Fil, f_size(&Fil));
-            f_write(&Fil, buffer, strlen(buffer), &bw);
-            f_close(&Fil);
 
-            palClearPad(GPIOA,LED_TRUE);
-        }
+        f_open(&Fil, "/tes.txt", FA_WRITE | FA_CREATE_ALWAYS);
+//        f_lseek(&Fil, f_size(&Fil));
+        err = f_write(&Fil, buffer, strlen(buffer), &bw);
+        f_close(&Fil);
+
+        if(err == FR_OK ){ palClearPad(GPIOA,LED_TRUE); }
+        else if(err == FR_DENIED){ palClearPad(GPIOA,LED_FALSE); }
+        else if(err == FR_INVALID_OBJECT){ palClearPad(GPIOA,LED_ANSA); }
+        else if(err == FR_TIMEOUT){ palClearPad(GPIOA,LED_ANSB); }
+
         f_mount(0, "", 0);
     }
 }
@@ -322,6 +333,7 @@ static void mmc_start(void){
     palSetPadMode(GPIOC, 12, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST); //MOSI
     palSetPadMode(GPIOC, 11, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST); //MISO
     palSetPadMode(GPIOC, 10, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST); //SCK
+//    palSetPadMode(GPIOB,  3, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST); //SCK
     palSetPadMode(GPIOA, 15, PAL_MODE_OUTPUT_PUSHPULL | PAL_STM32_OSPEED_HIGHEST); //NSS
     palSetPad(GPIOA, 15);
 
