@@ -5,8 +5,6 @@
 
 #include "../driver.h"
 
-void mmc_test(void);
-
 //================================================================================
 
 #define NUM_CHANNELS    1
@@ -42,6 +40,8 @@ static THD_FUNCTION(thdLed1, arg) {
 
 static void led_start(void){
     palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
+    palClearPad(GPIOA,5);
+
     chThdCreateStatic(waLed1, sizeof(waLed1),	NORMALPRIO, thdLed1, NULL);
 }
 
@@ -275,17 +275,23 @@ static void mmc_check(void){
     mmc_spi_status_flag=MMC_SPI_OK;
     filesystem_ready=false;
 
-    //if(mmcConnect(&MMCD1)) { filesystem_ready = true; }
+    if(mmcConnect(&MMCD1)) { filesystem_ready = true; }
 
     err = f_mount(&FatFs, "", 0);
     if(err == FR_OK){ filesystem_ready = true; }
     
     if (!filesystem_ready) { mmc_spi_status_flag=MMC_SPI_FAIL;return; }
 
+    mmc_spi_status_flag=MMC_SPI_ERROR;
     err = f_getfree("/", &clusters, &fsp);
-    if (err != FR_OK) { mmc_spi_status_flag=MMC_SPI_ERROR;return; }
     
-    f_mount(0, "", 0);
+    if(err == FR_OK){ mmc_spi_status_flag=MMC_SPI_OK;palSetPad(GPIOA,5); }
+    else if (err == FR_DISK_ERR){ palClearPad(GPIOA,LED_TRUE); }
+    else if (err == FR_INT_ERR){ palClearPad(GPIOA,LED_FALSE); }
+    else if (err == FR_NOT_READY){ palClearPad(GPIOA,LED_ANSA); }
+    else if (err == FR_INVALID_DRIVE){ palClearPad(GPIOA,LED_ANSB); }
+
+    f_mount(0, "", 0);  
 }
 
 void mmc_test(void){
@@ -294,6 +300,7 @@ void mmc_test(void){
     FATFS FatFs;
     FIL Fil;
     UINT bw;
+
     FRESULT err;
     
     mmc_check();
@@ -302,26 +309,14 @@ void mmc_test(void){
         chsnprintf(buffer,36,"Test \n\r");
 
         f_mount(&FatFs, "", 0);
-        
         err = f_open(&Fil, "/tes.txt", FA_WRITE | FA_CREATE_ALWAYS | FA_READ);
-        
         if ( err == FR_OK){
             f_lseek(&Fil, f_size(&Fil));
             f_write(&Fil, buffer, strlen(buffer), &bw);
-            f_close(&Fil);              
-               
+            f_close(&Fil);
+
             palClearPad(GPIOA,LED_TRUE);
         }
-        else if (err == FR_DISK_ERR){
-            palClearPad(GPIOA,LED_FALSE);
-        }
-        else if (err == FR_INT_ERR){
-            palClearPad(GPIOA,LED_ANSA);
-        }
-        else if (err == FR_NOT_READY){
-            palClearPad(GPIOA,LED_ANSB);
-        }
-        
         f_mount(0, "", 0);
     }
 }
@@ -335,7 +330,10 @@ static void mmc_start(void){
 
     mmcObjectInit(&MMCD1);
     mmcStart(&MMCD1, &mmccfg);
-    chThdSleepMilliseconds(100);    
+    chThdSleepMilliseconds(100);
+
+    palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
+    palClearPad(GPIOA,5);
 }
 
 //================================================================================
@@ -350,10 +348,10 @@ void system_init(void){
     indicator_start();
     
     mmc_start();
-    chThdSleepMilliseconds(500);    
+    chThdSleepMilliseconds(1000);    
     mmc_test();
  
- 	led_start();
+    led_start();
 }
 
 void driver_init(void){
