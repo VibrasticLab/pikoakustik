@@ -261,9 +261,6 @@ static uint8_t mmc_spi_status_flag=MMC_SPI_OK;
 
 static SPIConfig hs_spicfg = {NULL, GPIOA, 15, 0};
 static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1};
-
-//static SPIConfig hs_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_0 | SPI_CR1_CPHA | SPI_CR1_CPOL};
-//static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1 | SPI_CR1_BR_0 | SPI_CR1_CPHA | SPI_CR1_CPOL};
 static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 
 static void mmc_check(void){
