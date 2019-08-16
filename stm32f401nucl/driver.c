@@ -275,7 +275,7 @@ static void mmc_check(void){
     mmc_spi_status_flag=MMC_SPI_OK;
     filesystem_ready=false;
 
-    if(mmcConnect(&MMCD1)) { filesystem_ready = true; }
+    //if(mmcConnect(&MMCD1)) { filesystem_ready = true; }
 
     err = f_mount(&FatFs, "", 0);
     if(err == FR_OK){ filesystem_ready = true; }
@@ -286,19 +286,17 @@ static void mmc_check(void){
     if (err != FR_OK) { mmc_spi_status_flag=MMC_SPI_ERROR;return; }
     
     f_mount(0, "", 0);
-
-    chThdSleepMilliseconds(10);
 }
 
 void mmc_test(void){
-    mmc_check();
-    
     char buffer[36];
 
     FATFS FatFs;
     FIL Fil;
     UINT bw;
     FRESULT err;
+    
+    mmc_check();
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         chsnprintf(buffer,36,"Test \n\r");
