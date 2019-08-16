@@ -5,6 +5,9 @@
 
 #include "../driver.h"
 
+void mmc_test(void);
+void mmc_check(void);
+
 //================================================================================
 
 #define NUM_CHANNELS    1
@@ -47,7 +50,7 @@ static void led_start(void){
 
 static u_int8_t testWave=0;
 
-static THD_WORKING_AREA(waTestWave, 128);
+static THD_WORKING_AREA(waTestWave, 512);
 static THD_FUNCTION(thdTestWave, arg) {
 
   (void)arg;
@@ -55,6 +58,7 @@ static THD_FUNCTION(thdTestWave, arg) {
   while (true) {
       if(testWave==1){
           play_wave();
+          mmc_test();
           testWave=0;
       }
       chThdSleepMilliseconds(100);
@@ -207,7 +211,6 @@ static void indicator_start(void){
     palSetPadMode(GPIOB,LED_M5,PAL_MODE_OUTPUT_PUSHPULL);
 
     idx_freq = 1;
-    idx_ampl = 1;
 
     chThdCreateStatic(waIndicator, sizeof(waIndicator),	NORMALPRIO, thdIndicator, NULL);
     chThdCreateStatic(waTestLed, sizeof(waTestLed),	NORMALPRIO, thdTestLed, NULL);
@@ -253,8 +256,6 @@ static uint16_t onewavelen(double FR,int AMP){
 #define MMC_SPI_FAIL 1
 #define MMC_SPI_ERROR 2
 
-#define TEST_MMCCONNECT 1
-
 MMCDriver MMCD1;
 
 static bool filesystem_ready=true;
@@ -262,9 +263,12 @@ static uint8_t mmc_spi_status_flag=MMC_SPI_OK;
 
 static SPIConfig hs_spicfg = {NULL, GPIOA, 15, 0};
 static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1};
+
+//static SPIConfig hs_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_0 | SPI_CR1_CPHA | SPI_CR1_CPOL};
+//static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1 | SPI_CR1_BR_0 | SPI_CR1_CPHA | SPI_CR1_CPOL};
 static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 
-static void mmc_check(void){
+void mmc_check(void){
     FATFS FatFs;
     FRESULT err;
     uint32_t clusters;
@@ -273,25 +277,24 @@ static void mmc_check(void){
     mmc_spi_status_flag=MMC_SPI_OK;
     filesystem_ready=false;
 
-    #if TEST_MMCCONNECT
-    if(mmcConnect(&MMCD1)) { filesystem_ready = true; }
-    #endif
+    //if(mmcConnect(&MMCD1)) { filesystem_ready = true; }
 
     err = f_mount(&FatFs, "", 0);
-    if(err == FR_OK){ filesystem_ready = true; palClearPad(GPIOA,LED_TRUE); }
+    if(err == FR_OK){ filesystem_ready = true; }
     
     if (!filesystem_ready) { mmc_spi_status_flag=MMC_SPI_FAIL;return; }
 
     err = f_getfree("/", &clusters, &fsp);
     if (err != FR_OK) { mmc_spi_status_flag=MMC_SPI_ERROR;return; }
-    else{palClearPad(GPIOA,LED_ANSA);}
     
     f_mount(0, "", 0);
 
     chThdSleepMilliseconds(10);
 }
 
-static void mmc_test(void){
+void mmc_test(void){
+    // mmc_check();
+    
     char buffer[36];
 
     FATFS FatFs;
@@ -304,11 +307,12 @@ static void mmc_test(void){
 
         err = f_mount(&FatFs, "", 0);
         if(err == FR_OK){ palClearPad(GPIOA,LED_TRUE); }
+        else{ palSetPad(GPIOA,LED_TRUE); }
         
-        if (f_open(&Fil, "/tes.txt", FA_WRITE | FA_CREATE_ALWAYS | FA_READ) == FR_OK){
+        if (f_open(&Fil, "/tes.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_READ) == FR_OK){
             palClearPad(GPIOA,LED_ANSA);
             
-            //f_lseek(&Fil, f_size(&Fil));
+            f_lseek(&Fil, f_size(&Fil));
             f_write(&Fil, buffer, strlen(buffer), &bw);
             f_close(&Fil);                 
         }
@@ -326,9 +330,7 @@ static void mmc_start(void){
 
     mmcObjectInit(&MMCD1);
     mmcStart(&MMCD1, &mmccfg);
-    chThdSleepMilliseconds(100);
-    
-    mmc_check();
+    chThdSleepMilliseconds(100);    
 }
 
 //================================================================================
@@ -343,9 +345,8 @@ void system_init(void){
     indicator_start();
     
     mmc_start();
-    mmc_test();
-
-	led_start();
+ 
+ 	led_start();
 }
 
 void driver_init(void){
