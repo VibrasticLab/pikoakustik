@@ -63,6 +63,17 @@ elif [ $PLATFORM = "testarray" ];then
 	cp -vf ../../testarray/testarrplot.py ./
 	cp -vf ../../testarray/singraf.py ./
 
+elif [ $PLATFORM = "testmmc" ];then
+	echo "test mmc based-on stm32f401nucl"
+	cp -f main.template main.c
+	mkdir -p build/testmmc/
+	cd testmmc/
+	make all
+
+	rm -rf ../build/testmmc/build/
+	mv build/ ../build/testmmc/
+	rm -rf .dep
+
 elif [ $PLATFORM = "clean" ];then
 	cleaning
 
