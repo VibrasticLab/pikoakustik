@@ -254,7 +254,7 @@ static uint16_t onewavelen(double FR,int AMP){
 #define MMC_SPI_FAIL 1
 #define MMC_SPI_ERROR 2
 
-#define USE_MMC_CHK 0
+#define USE_MMC_CHK 1
 
 MMCDriver MMCD1;
 
