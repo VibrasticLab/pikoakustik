@@ -262,7 +262,8 @@ static bool filesystem_ready=true;
 static uint8_t mmc_spi_status_flag=MMC_SPI_OK;
 
 static SPIConfig hs_spicfg = {NULL, GPIOA, 15, 0};
-static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1};
+static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1 | SPI_CR1_BR_0};
+
 static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 
 #if USE_MMC_CHK
@@ -298,7 +299,7 @@ static void mmc_check(void){
 #endif
 
 static void mmc_test(void){
-    char buffer[36];
+    char buffer[8];
 
     FATFS FatFs;
     FIL Fil;
@@ -311,11 +312,11 @@ static void mmc_test(void){
 #endif
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        chsnprintf(buffer,36,"Test \n\r");
+        chsnprintf(buffer,8,"Test");
 
         f_mount(&FatFs, "", 0);
 
-        f_open(&Fil, "/tes.txt", FA_WRITE | FA_CREATE_ALWAYS);
+        f_open(&Fil, "tes.txt", FA_READ | FA_WRITE | FA_CREATE_ALWAYS);
 //        f_lseek(&Fil, f_size(&Fil));
         err = f_write(&Fil, buffer, strlen(buffer), &bw);
         f_close(&Fil);
@@ -331,9 +332,8 @@ static void mmc_test(void){
 
 static void mmc_start(void){
     palSetPadMode(GPIOC, 12, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST); //MOSI
-    palSetPadMode(GPIOC, 11, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST); //MISO
+    palSetPadMode(GPIOC, 11, PAL_MODE_ALTERNATE(5)); //MISO
     palSetPadMode(GPIOC, 10, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST); //SCK
-//    palSetPadMode(GPIOB,  3, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST); //SCK
     palSetPadMode(GPIOA, 15, PAL_MODE_OUTPUT_PUSHPULL | PAL_STM32_OSPEED_HIGHEST); //NSS
     palSetPad(GPIOA, 15);
 
