@@ -185,12 +185,12 @@ static THD_FUNCTION(thdTestLed, arg) {
   while (true) {
       idx_ampl++;
       if(idx_ampl==6){
-          idx_ampl = 1;
+          idx_ampl = 2;
           idx_freq++;
 
           if(idx_freq==6){
-              idx_ampl = 1;
-              idx_freq = 1;
+              idx_ampl = 2;
+              idx_freq = 2;
           }
       }
 
@@ -218,7 +218,7 @@ static void indicator_start(void){
     palSetPadMode(GPIOB,LED_M4,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOB,LED_M5,PAL_MODE_OUTPUT_PUSHPULL);
 
-    idx_freq = 1;
+    idx_freq = 2;
 
     chThdCreateStatic(waIndicator, sizeof(waIndicator),	NORMALPRIO, thdIndicator, NULL);
     chThdCreateStatic(waTestLed, sizeof(waTestLed),	NORMALPRIO, thdTestLed, NULL);
