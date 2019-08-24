@@ -59,7 +59,7 @@ static void led_start(void){
 
 static u_int8_t testWave=0;
 
-static THD_WORKING_AREA(waTestWave, 512);
+static THD_WORKING_AREA(waTestWave, 1024);
 static THD_FUNCTION(thdTestWave, arg) {
 
   (void)arg;
@@ -400,7 +400,7 @@ void sample_prep(
 }
 
 void play_wave(void){
-    chThdSleepMilliseconds(100);
+    wave_test();
 }
 
 void system_loop(void){
