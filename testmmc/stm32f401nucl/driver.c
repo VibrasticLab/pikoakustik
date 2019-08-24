@@ -29,15 +29,15 @@ static void led_start(void){
 
 //================================================================================
 
-#define LED_TRUE    0 //PA.0
-#define LED_FALSE   1 //PA.1
-#define LED_ANSA    4 //PA.4
-#define LED_ANSB    0 //PB.0
+#define LED_TRUE     0 //PA.0
+#define LED_FALSE    1 //PA.1
+#define LED_ANSA    15 //PB.15
+#define LED_ANSB     0 //PB.0
 
 #define LED_AMPL    2 //PA.2
 #define LED_FREQ    3 //PA.3
 
-#define LED_M1      15 //PB.15
+#define LED_M1      3 //PB.3
 #define LED_M2      5 //PB.5
 #define LED_M3      4 //PB.4
 #define LED_M4      13 //PB.13
@@ -46,12 +46,12 @@ static void led_start(void){
 static void indicator_start(void){
     palSetPadMode(GPIOA,LED_TRUE,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOA,LED_FALSE,PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(GPIOA,LED_ANSA,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOB,LED_ANSA,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOB,LED_ANSB,PAL_MODE_OUTPUT_PUSHPULL);
 
     palSetPad(GPIOA,LED_TRUE);
     palSetPad(GPIOA,LED_FALSE);
-    palSetPad(GPIOA,LED_ANSA);
+    palSetPad(GPIOB,LED_ANSA);
     palSetPad(GPIOB,LED_ANSB);
 
     palSetPadMode(GPIOA,LED_AMPL,PAL_MODE_OUTPUT_PUSHPULL);
@@ -91,7 +91,7 @@ static void mmc_check(void){
     mmc_spi_status_flag=MMC_SPI_OK;
     filesystem_ready=false;
 
-    if(mmcConnect(&MMCD1)) { filesystem_ready = true; }
+    if(mmcConnect(&MMCD1)) { filesystem_ready = true; palSetPad(GPIOA,5); }
 
     err = f_mount(&FatFs, "", 0);
     if(err == FR_OK){ filesystem_ready = true; }
@@ -106,8 +106,8 @@ static void mmc_check(void){
         palClearPad(GPIOA,LED_TRUE);
     }
     else if(err == FR_DISK_ERR){ palClearPad(GPIOA,LED_FALSE); }
-    else if(err == FR_INT_ERR){ palClearPad(GPIOA,LED_ANSA); }
-    else if(err == FR_NOT_READY){ palClearPad(GPIOA,LED_ANSB); }
+    else if(err == FR_INT_ERR){ palClearPad(GPIOB,LED_ANSA); }
+    else if(err == FR_NOT_READY){ palClearPad(GPIOB,LED_ANSB); }
 
     f_mount(0, "", 0);
 }
@@ -147,11 +147,14 @@ static void mmc_test(void){
 }
 
 static void mmc_start(void){
-    palSetPadMode(GPIOC, 12, PAL_MODE_ALTERNATE(5)); //MOSI
-    palSetPadMode(GPIOC, 11, PAL_MODE_ALTERNATE(5)); //MISO
-    palSetPadMode(GPIOC, 10, PAL_MODE_ALTERNATE(5)); //SCK
-    palSetPadMode(GPIOA, 15, PAL_MODE_OUTPUT_PUSHPULL); //NSS
-    palSetPad(GPIOA, 15);
+    // SPI1 and SPI2 use alternate function 5
+    // SPI3 use alternate function 6
+    // APB on SPI use 24MHz
+    palSetPadMode(GPIOC, 12, PAL_MODE_ALTERNATE(6) | PAL_STM32_OSPEED_HIGHEST); //MOSI
+    palSetPadMode(GPIOC, 11, PAL_MODE_ALTERNATE(6) | PAL_STM32_OSPEED_HIGHEST); //MISO
+    palSetPadMode(GPIOC, 10, PAL_MODE_ALTERNATE(6) | PAL_STM32_OSPEED_HIGHEST); //SCK
+    palSetPadMode(GPIOA, 4, PAL_MODE_OUTPUT_PUSHPULL); //NSS
+    palSetPad(GPIOA, 4);
 
     mmcObjectInit(&MMCD1);
     mmcStart(&MMCD1, &mmccfg);
@@ -159,18 +162,6 @@ static void mmc_start(void){
 
     palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
     palClearPad(GPIOA,5);
-}
-
-static void mmc_pintest(void){
-    palSetPadMode(GPIOC, 12, PAL_MODE_INPUT_PULLUP); //MISO
-    chThdSleepMilliseconds(100);
-
-    if(palReadPad(GPIOC,12)){
-        palClearPad(GPIOA,LED_TRUE);
-    }
-    else{
-        palClearPad(GPIOA,LED_FALSE);
-    }
 }
 
 //================================================================================
@@ -182,7 +173,6 @@ void system_init(void){
 	chSysInit();
 
     indicator_start();
-//    mmc_pintest();
     mmc_start();
     mmc_test();
 
