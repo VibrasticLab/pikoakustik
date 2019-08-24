@@ -10,7 +10,7 @@ endif
 
 # C specific options here (added to USE_OPT).
 ifeq ($(USE_COPT),)
-  USE_COPT =
+  USE_COPT = 
 endif
 
 # C++ specific options here (added to USE_OPT).
@@ -25,7 +25,7 @@ endif
 
 # Linker extra options here.
 ifeq ($(USE_LDOPT),)
-  USE_LDOPT =
+  USE_LDOPT = 
 endif
 
 # Enable this if you want link time optimizations (LTO)
@@ -88,45 +88,45 @@ PROJECT = pikotes
 # Imported source files and paths
 CHIBIOS = /opt/stm32chlib/chibios30
 # Startup files.
-include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_stm32f4xx.mk
+include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_stm32f1xx.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS)/os/hal/ports/STM32/STM32F4xx/platform.mk
-#include $(CHIBIOS)/os/hal/boards/ST_NUCLEO_F401RE/board.mk
-include board/board.mk
+include $(CHIBIOS)/os/hal/ports/STM32/STM32F1xx/platform.mk
+include $(CHIBIOS)/os/hal/boards/ST_NUCLEO_F103RB/board.mk
 include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 include $(CHIBIOS)/os/various/fatfs_bindings/fatfs.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/rt/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 # Other files (optional).
-#include $(CHIBIOS)/test/rt/test.mk
+# include $(CHIBIOS)/test/rt/test.mk
 
 # Define linker script file here
-LDSCRIPT= $(STARTUPLD)/STM32F401xE.ld
+LDSCRIPT= $(STARTUPLD)/STM32F103xB.ld
 
 # Define Repos directory
 REPODIR = ../..
+DRIVERDIR = ..
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
-CSRC =  $(STARTUPSRC) \
-        $(KERNSRC) \
-        $(PORTSRC) \
-        $(OSALSRC) \
-        $(HALSRC) \
-        $(PLATFORMSRC) \
-        $(BOARDSRC) \
-        $(TESTSRC) \
-        $(FATFSSRC) \
-        $(CHIBIOS)/os/various/syscalls.c \
-        $(CHIBIOS)/os/various/evtimer.c \
-        $(CHIBIOS)/os/various/shell.c \
-        $(CHIBIOS)/os/hal/lib/streams/nullstreams.c \
-        $(CHIBIOS)/os/hal/lib/streams/memstreams.c \
-        $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
-        driver.c \
-        $(REPODIR)/main.c
+CSRC = $(STARTUPSRC) \
+       $(KERNSRC) \
+       $(PORTSRC) \
+       $(OSALSRC) \
+       $(HALSRC) \
+       $(PLATFORMSRC) \
+       $(BOARDSRC) \
+       $(TESTSRC) \
+       $(FATFSSRC) \
+	$(CHIBIOS)/os/various/syscalls.c \
+	$(CHIBIOS)/os/various/evtimer.c \
+	$(CHIBIOS)/os/various/shell.c \
+	$(CHIBIOS)/os/hal/lib/streams/nullstreams.c \
+	$(CHIBIOS)/os/hal/lib/streams/memstreams.c \
+	$(CHIBIOS)/os/hal/lib/streams/chprintf.c \
+	$(DRIVERDIR)/driver.c \
+	$(REPODIR)/main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -168,7 +168,7 @@ INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
 # Compiler settings
 #
 
-MCU  = cortex-m4
+MCU  = cortex-m3
 
 #TRGT = arm-elf-
 TRGT = arm-none-eabi-
@@ -220,7 +220,7 @@ UINCDIR =
 ULIBDIR =
 
 # List all user libraries here
-ULIBS = -lm
+ULIBS =
 
 #
 # End of user defines

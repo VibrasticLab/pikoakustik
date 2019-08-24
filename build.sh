@@ -69,19 +69,21 @@ elif [ $PLATFORM = "testmmc" ];then
 	cp -f main.template main.c
 	mkdir -p build/testmmc/
 	cd testmmc/
-	
+
 	if [ -z $MMCPLATFORM ];then
 		usage
 		exit
 	fi
-	
+
 	if [ $MMCPLATFORM = "stm32f401nucl" ];then
 		cd stm32f401nucl/
+	elif [ $MMCPLATFORM = "stm32f103nucl" ];then
+		cd stm32f103nucl/
 	else
 		echo "Platform currently not supported"
 		usage
 		exit
-	fi	
+	fi
 
 	make all
 
