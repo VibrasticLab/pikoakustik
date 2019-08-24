@@ -219,6 +219,7 @@ static void indicator_start(void){
     palSetPadMode(GPIOB,LED_M5,PAL_MODE_OUTPUT_PUSHPULL);
 
     idx_freq = 2;
+    idx_ampl = 1;
 
     chThdCreateStatic(waIndicator, sizeof(waIndicator),	NORMALPRIO, thdIndicator, NULL);
     chThdCreateStatic(waTestLed, sizeof(waTestLed),	NORMALPRIO, thdTestLed, NULL);
