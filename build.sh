@@ -1,4 +1,5 @@
 PLATFORM=$1
+MMCPLATFORM=$2
 
 cleaning(){
 	echo "remove main.c and build dir"
@@ -11,11 +12,12 @@ usage(){
 	echo "./build.sh [PLATFORM]"
 	echo ""
 	echo "supported platform:"
-	echo "- plainc        : Plain C"
-	echo "- stm32f429disc : STM32F429ZI Discovery board"
-	echo "- stm32f401nucl : STM32F401RE Nucleo board"
-	echo "- testarray     : Test Array on Plain C"
-	echo "- clean         : Clean build files"
+	echo "- plainc        		: Plain C"
+	echo "- stm32f429disc 		: STM32F429ZI Discovery board"
+	echo "- stm32f401nucl 		: STM32F401RE Nucleo board"
+	echo "- testarray     		: Test Array on Plain C"
+	echo "- testmmc <platform>		: Test MMC on a Platform"
+	echo "- clean         		: Clean build files"
 }
 
 if [ -z $PLATFORM ];then
@@ -64,14 +66,27 @@ elif [ $PLATFORM = "testarray" ];then
 	cp -vf ../../testarray/singraf.py ./
 
 elif [ $PLATFORM = "testmmc" ];then
-	echo "test mmc based-on stm32f401nucl"
 	cp -f main.template main.c
 	mkdir -p build/testmmc/
 	cd testmmc/
+	
+	if [ -z $MMCPLATFORM ];then
+		usage
+		exit
+	fi
+	
+	if [ $MMCPLATFORM = "stm32f401nucl" ];then
+		cd stm32f401nucl/
+	else
+		echo "Platform currently not supported"
+		usage
+		exit
+	fi	
+
 	make all
 
-	rm -rf ../build/testmmc/build/
-	mv build/ ../build/testmmc/
+	rm -rf ../../build/testmmc/build/
+	mv build/ ../../build/testmmc/
 	rm -rf .dep
 
 elif [ $PLATFORM = "clean" ];then

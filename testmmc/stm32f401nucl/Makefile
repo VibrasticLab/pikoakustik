@@ -106,7 +106,8 @@ include $(CHIBIOS)/os/rt/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 LDSCRIPT= $(STARTUPLD)/STM32F401xE.ld
 
 # Define Repos directory
-REPODIR = ..
+REPODIR = ../..
+DRIVERDIR = ..
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -125,7 +126,7 @@ CSRC =  $(STARTUPSRC) \
         $(CHIBIOS)/os/hal/lib/streams/nullstreams.c \
         $(CHIBIOS)/os/hal/lib/streams/memstreams.c \
         $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
-        driver.c \
+        $(DRIVERDIR)/driver.c \
         $(REPODIR)/main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global

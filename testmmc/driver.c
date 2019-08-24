@@ -29,6 +29,43 @@ static void led_start(void){
 
 //================================================================================
 
+#define LED_TRUE    0 //PA.0
+#define LED_FALSE   1 //PA.1
+#define LED_ANSA    4 //PA.4
+#define LED_ANSB    0 //PB.0
+
+#define LED_AMPL    2 //PA.2
+#define LED_FREQ    3 //PA.3
+
+#define LED_M1      15 //PB.15
+#define LED_M2      5 //PB.5
+#define LED_M3      4 //PB.4
+#define LED_M4      13 //PB.13
+#define LED_M5      14 //PB.14
+
+static void indicator_start(void){
+    palSetPadMode(GPIOA,LED_TRUE,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOA,LED_FALSE,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOA,LED_ANSA,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOB,LED_ANSB,PAL_MODE_OUTPUT_PUSHPULL);
+    
+    palSetPad(GPIOA,LED_TRUE);
+    palSetPad(GPIOA,LED_FALSE);
+    palSetPad(GPIOA,LED_ANSA);
+    palSetPad(GPIOB,LED_ANSB);
+
+    palSetPadMode(GPIOA,LED_AMPL,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOA,LED_FREQ,PAL_MODE_OUTPUT_PUSHPULL);
+
+    palSetPadMode(GPIOB,LED_M1,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOB,LED_M2,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOB,LED_M3,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOB,LED_M4,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOB,LED_M5,PAL_MODE_OUTPUT_PUSHPULL);
+}
+
+//================================================================================
+
 #define MMC_SPI_OK 0
 #define MMC_SPI_FAIL 1
 #define MMC_SPI_ERROR 2
@@ -144,6 +181,7 @@ void system_init(void){
 	halInit();
 	chSysInit();
 
+    indicator_start();
 //    mmc_pintest();
     mmc_start();
     mmc_test();
