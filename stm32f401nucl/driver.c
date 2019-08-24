@@ -262,7 +262,7 @@ static bool filesystem_ready=true;
 static uint8_t mmc_spi_status_flag=MMC_SPI_OK;
 
 static SPIConfig hs_spicfg = {NULL, GPIOA, 15, 0};
-static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1 | SPI_CR1_BR_0};
+static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1};
 
 static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 
@@ -317,7 +317,7 @@ static void mmc_test(void){
         f_mount(&FatFs, "", 0);
 
         f_open(&Fil, "tes.txt", FA_READ | FA_WRITE | FA_CREATE_ALWAYS);
-//        f_lseek(&Fil, f_size(&Fil));
+        f_lseek(&Fil, f_size(&Fil));
         err = f_write(&Fil, buffer, strlen(buffer), &bw);
         f_close(&Fil);
 
@@ -331,10 +331,10 @@ static void mmc_test(void){
 }
 
 static void mmc_start(void){
-    palSetPadMode(GPIOC, 12, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST); //MOSI
+    palSetPadMode(GPIOC, 12, PAL_MODE_ALTERNATE(5)); //MOSI
     palSetPadMode(GPIOC, 11, PAL_MODE_ALTERNATE(5)); //MISO
-    palSetPadMode(GPIOC, 10, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST); //SCK
-    palSetPadMode(GPIOA, 15, PAL_MODE_OUTPUT_PUSHPULL | PAL_STM32_OSPEED_HIGHEST); //NSS
+    palSetPadMode(GPIOC, 10, PAL_MODE_ALTERNATE(5)); //SCK
+    palSetPadMode(GPIOA, 15, PAL_MODE_OUTPUT_PUSHPULL); //NSS
     palSetPad(GPIOA, 15);
 
     mmcObjectInit(&MMCD1);
@@ -343,6 +343,18 @@ static void mmc_start(void){
 
     palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
     palClearPad(GPIOA,5);
+}
+
+static void mmc_pintest(void){
+    palSetPadMode(GPIOC, 12, PAL_MODE_INPUT_PULLUP); //MISO
+    chThdSleepMilliseconds(100);
+
+    if(palReadPad(GPIOC,12)){
+        palClearPad(GPIOA,LED_TRUE);
+    }
+    else{
+        palClearPad(GPIOA,LED_FALSE);
+    }
 }
 
 //================================================================================
@@ -356,8 +368,8 @@ void system_init(void){
     exti_start();
     indicator_start();
     
+//    mmc_pintest();
     mmc_start();
-    chThdSleepMilliseconds(1000);    
     mmc_test();
  
     led_start();

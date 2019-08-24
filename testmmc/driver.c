@@ -33,7 +33,7 @@ static void led_start(void){
 #define MMC_SPI_FAIL 1
 #define MMC_SPI_ERROR 2
 
-#define USE_MMC_CHK 0
+#define USE_MMC_CHK 1
 
 MMCDriver MMCD1;
 
@@ -58,12 +58,12 @@ static void mmc_check(void){
 
     err = f_mount(&FatFs, "", 0);
     if(err == FR_OK){ filesystem_ready = true; }
-    
+
     if (!filesystem_ready) { mmc_spi_status_flag=MMC_SPI_FAIL;return; }
 
     mmc_spi_status_flag=MMC_SPI_ERROR;
     err = f_getfree("/", &clusters, &fsp);
-    
+
     if(err == FR_OK){
         mmc_spi_status_flag=MMC_SPI_OK;
         palClearPad(GPIOA,LED_TRUE);
@@ -72,7 +72,7 @@ static void mmc_check(void){
     else if(err == FR_INT_ERR){ palClearPad(GPIOA,LED_ANSA); }
     else if(err == FR_NOT_READY){ palClearPad(GPIOA,LED_ANSB); }
 
-    f_mount(0, "", 0);  
+    f_mount(0, "", 0);
 }
 #endif
 
@@ -110,15 +110,30 @@ static void mmc_test(void){
 }
 
 static void mmc_start(void){
-    palSetPadMode(GPIOC, 10, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST);       /* New SCK.     */
-    palSetPadMode(GPIOC, 11, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST);       /* New MISO.    */
-    palSetPadMode(GPIOC, 12, PAL_MODE_ALTERNATE(5) | PAL_STM32_OSPEED_HIGHEST);       /* New MOSI.    */
-    palSetPadMode(GPIOA,  4, PAL_MODE_OUTPUT_PUSHPULL | PAL_STM32_OSPEED_HIGHEST);       /* New CS.      */
-    palSetPad(GPIOA, 4);
+    palSetPadMode(GPIOC, 12, PAL_MODE_ALTERNATE(5)); //MOSI
+    palSetPadMode(GPIOC, 11, PAL_MODE_ALTERNATE(5)); //MISO
+    palSetPadMode(GPIOC, 10, PAL_MODE_ALTERNATE(5)); //SCK
+    palSetPadMode(GPIOA, 15, PAL_MODE_OUTPUT_PUSHPULL); //NSS
+    palSetPad(GPIOA, 15);
 
     mmcObjectInit(&MMCD1);
     mmcStart(&MMCD1, &mmccfg);
     chThdSleepMilliseconds(100);
+
+    palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
+    palClearPad(GPIOA,5);
+}
+
+static void mmc_pintest(void){
+    palSetPadMode(GPIOC, 12, PAL_MODE_INPUT_PULLUP); //MISO
+    chThdSleepMilliseconds(100);
+
+    if(palReadPad(GPIOC,12)){
+        palClearPad(GPIOA,LED_TRUE);
+    }
+    else{
+        palClearPad(GPIOA,LED_FALSE);
+    }
 }
 
 //================================================================================
@@ -128,11 +143,11 @@ static void mmc_start(void){
 void system_init(void){
 	halInit();
 	chSysInit();
-    
+
+//    mmc_pintest();
     mmc_start();
-    chThdSleepMilliseconds(1000);    
     mmc_test();
- 
+
     led_start();
 }
 
