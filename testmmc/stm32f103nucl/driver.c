@@ -7,7 +7,7 @@
 
 //================================================================================
 
-static uint16_t led_delay = 100;
+static uint16_t led_delay=50;
 
 static THD_WORKING_AREA(waLed1, 128);
 static THD_FUNCTION(thdLed1, arg) {
@@ -66,8 +66,7 @@ static void mmc_check(void){
 
     mmc_spi_status_flag=MMC_SPI_ERROR;
     err = f_getfree("/", &clusters, &fsp);
-
-    if(err == FR_OK){ mmc_spi_status_flag=MMC_SPI_OK; }
+    if(err == FR_OK){ mmc_spi_status_flag=MMC_SPI_OK; led_delay=500; }
 
     f_mount(0, "", 0);
 }
@@ -80,8 +79,6 @@ static void mmc_test(void){
     FIL Fil;
     UINT bw;
 
-    FRESULT err;
-
     FatFs = malloc(sizeof (FatFs));
 
 #if USE_MMC_CHK
@@ -89,16 +86,14 @@ static void mmc_test(void){
 #endif
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        chsnprintf(buffer,36,"Test");
+        chsnprintf(buffer,36,"Test\n");
 
         f_mount(FatFs, "", 0);
 
-        f_open(&Fil, "tes.txt", FA_WRITE | FA_CREATE_ALWAYS);
+        f_open(&Fil, "tes.txt", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
         f_lseek(&Fil, f_size(&Fil));
-        err = f_write(&Fil, buffer, strlen(buffer), &bw);
+        f_write(&Fil, buffer, strlen(buffer), &bw);
         f_close(&Fil);
-
-        if(err == FR_INVALID_OBJECT ){ led_delay=500; }
 
         f_mount(0, "", 0);
         free(FatFs);
@@ -106,10 +101,10 @@ static void mmc_test(void){
 }
 
 static void mmc_start(void){
-    palSetPadMode(GPIOB, 15, PAL_MODE_STM32_ALTERNATE_PUSHPULL);
-    palSetPadMode(GPIOB, 14, PAL_MODE_INPUT);
-    palSetPadMode(GPIOB, 13, PAL_MODE_STM32_ALTERNATE_PUSHPULL);
-    palSetPadMode(GPIOB, 12, PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOB, 15, PAL_MODE_STM32_ALTERNATE_PUSHPULL); //MOSI
+    palSetPadMode(GPIOB, 14, PAL_MODE_INPUT); //MISO
+    palSetPadMode(GPIOB, 13, PAL_MODE_STM32_ALTERNATE_PUSHPULL); //SCK
+    palSetPadMode(GPIOB, 12, PAL_MODE_OUTPUT_PUSHPULL); //NSS
     palSetPad(GPIOB, 12);
 
     mmcObjectInit(&MMCD1);
