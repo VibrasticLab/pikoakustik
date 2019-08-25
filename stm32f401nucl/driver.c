@@ -120,13 +120,13 @@ static void exti_start(void){
 
 #define LED_TRUE     0 //PA.0
 #define LED_FALSE    1 //PA.1
-#define LED_ANSA    15 //PB.15
+#define LED_ANSA     4 //PA.4
 #define LED_ANSB     0 //PB.0
 
 #define LED_AMPL    2 //PA.2
 #define LED_FREQ    3 //PA.3
 
-#define LED_M1       3 //PB.3 //Used by JTAG
+#define LED_M1       3 //PB.3
 #define LED_M2       5 //PB.5
 #define LED_M3       4 //PB.4
 #define LED_M4      13 //PB.13
@@ -176,23 +176,31 @@ static THD_FUNCTION(thdIndicator, arg) {
   }
 }
 
-static THD_WORKING_AREA(waTestLed, 128);
+static THD_WORKING_AREA(waTestLed, 256);
 static THD_FUNCTION(thdTestLed, arg) {
 
   (void)arg;
   chRegSetThreadName("test led");
 
+  palClearPad(GPIOA,LED_TRUE);
+  palClearPad(GPIOA,LED_ANSA);
+
   while (true) {
       idx_ampl++;
       if(idx_ampl==6){
-          idx_ampl = 2;
+          idx_ampl = 1;
           idx_freq++;
 
           if(idx_freq==6){
-              idx_ampl = 2;
-              idx_freq = 2;
+              idx_ampl = 1;
+              idx_freq = 1;
           }
       }
+
+      palTogglePad(GPIOA,LED_TRUE);
+      palTogglePad(GPIOA,LED_FALSE);
+      palTogglePad(GPIOA,LED_ANSA);
+      palTogglePad(GPIOB,LED_ANSB);
 
       chThdSleepMilliseconds(1000);
   }
@@ -201,12 +209,12 @@ static THD_FUNCTION(thdTestLed, arg) {
 static void indicator_start(void){
     palSetPadMode(GPIOA,LED_TRUE,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOA,LED_FALSE,PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(GPIOB,LED_ANSA,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOA,LED_ANSA,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOB,LED_ANSB,PAL_MODE_OUTPUT_PUSHPULL);
     
     palSetPad(GPIOA,LED_TRUE);
     palSetPad(GPIOA,LED_FALSE);
-    palSetPad(GPIOB,LED_ANSA);
+    palSetPad(GPIOA,LED_ANSA);
     palSetPad(GPIOB,LED_ANSB);
 
     palSetPadMode(GPIOA,LED_AMPL,PAL_MODE_OUTPUT_PUSHPULL);
@@ -218,8 +226,7 @@ static void indicator_start(void){
     palSetPadMode(GPIOB,LED_M4,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOB,LED_M5,PAL_MODE_OUTPUT_PUSHPULL);
 
-    idx_freq = 2;
-    idx_ampl = 1;
+    idx_freq = 1;
 
     chThdCreateStatic(waIndicator, sizeof(waIndicator),	NORMALPRIO, thdIndicator, NULL);
     chThdCreateStatic(waTestLed, sizeof(waTestLed),	NORMALPRIO, thdTestLed, NULL);
@@ -272,8 +279,8 @@ MMCDriver MMCD1;
 static bool filesystem_ready=true;
 static uint8_t mmc_spi_status_flag=MMC_SPI_OK;
 
-static SPIConfig hs_spicfg = {NULL, GPIOA, 4, 0};
-static SPIConfig ls_spicfg = {NULL, GPIOA, 4, SPI_CR1_BR_2 | SPI_CR1_BR_1};
+static SPIConfig hs_spicfg = {NULL, GPIOA, 15, 0};
+static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1};
 static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 
 #if USE_MMC_CHK
@@ -333,8 +340,8 @@ static void mmc_start(void){
     palSetPadMode(GPIOC, 12, PAL_MODE_ALTERNATE(6) | PAL_STM32_OSPEED_HIGHEST); //MOSI
     palSetPadMode(GPIOC, 11, PAL_MODE_ALTERNATE(6) | PAL_STM32_OSPEED_HIGHEST); //MISO
     palSetPadMode(GPIOC, 10, PAL_MODE_ALTERNATE(6) | PAL_STM32_OSPEED_HIGHEST); //SCK
-    palSetPadMode(GPIOA, 4, PAL_MODE_OUTPUT_PUSHPULL | PAL_STM32_OSPEED_HIGHEST); //NSS
-    palSetPad(GPIOA, 4);
+    palSetPadMode(GPIOA, 15, PAL_MODE_OUTPUT_PUSHPULL | PAL_STM32_OSPEED_HIGHEST); //NSS
+    palSetPad(GPIOA, 15);
 
     mmcObjectInit(&MMCD1);
     mmcStart(&MMCD1, &mmccfg);
@@ -350,14 +357,13 @@ static void mmc_start(void){
 
 void system_init(void){
 	halInit();
-	chSysInit();
+	chSysInit();  
 
+    exti_start();
     indicator_start();
 
     mmc_start();
     mmc_test();
-
-    exti_start();
 
     led_start();
 }
