@@ -100,7 +100,7 @@ include $(CHIBIOS)/os/various/fatfs_bindings/fatfs.mk
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/rt/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 # Other files (optional).
-#include $(CHIBIOS)/test/rt/test.mk
+include $(CHIBIOS)/test/rt/test.mk
 
 # Define linker script file here
 LDSCRIPT= $(STARTUPLD)/STM32F401xE.ld
@@ -121,11 +121,12 @@ CSRC =  $(STARTUPSRC) \
         $(FATFSSRC) \
         $(CHIBIOS)/os/various/syscalls.c \
         $(CHIBIOS)/os/various/evtimer.c \
-        $(CHIBIOS)/os/various/shell.c \
         $(CHIBIOS)/os/hal/lib/streams/nullstreams.c \
         $(CHIBIOS)/os/hal/lib/streams/memstreams.c \
         $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
-        driver.c drv_mmc.c drv_exti.c drv_audio.c drv_led.c \
+        driver.c drv_mmc.c drv_audio.c \
+        drv_exti.c  drv_led.c \
+        drv_serial.c shell.c \
         $(REPODIR)/main.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global

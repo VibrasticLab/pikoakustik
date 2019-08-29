@@ -12,6 +12,10 @@ drv_led.c
 drv_led.h
 drv_mmc.c
 drv_mmc.h
+drv_serial.c
+drv_serial.h
 ffconf.h
 halconf.h
 mcuconf.h
+shell.c
+shell.h

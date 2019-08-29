@@ -1,10 +1,13 @@
 #include "ch.h"
 #include "hal.h"
 
+#include "chprintf.h"
+
 #include "drv_exti.h"
 #include "drv_audio.h"
 #include "drv_led.h"
 #include "drv_mmc.h"
+#include "drv_serial.h"
 
 #include "../driver.h"
 
@@ -57,10 +60,14 @@ void system_init(void){
     exti_start();
     indicator_start();
 
+    shell_start();
+
     mmc_start();
     mmc_test();
 
     led_start();
+
+    chprintf((BaseSequentialStream *)&SD1,"SYSTEM BOOT COMPLETE\n");
 }
 
 void driver_init(void){
@@ -103,5 +110,6 @@ void play_wave(void){
 }
 
 void system_loop(void){
+    shell_term();
 	chThdSleepMilliseconds(100);
 }
