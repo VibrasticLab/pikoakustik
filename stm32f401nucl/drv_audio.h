@@ -7,5 +7,6 @@
 
 void wave_test(void);
 void audio_start(void);
+void audio_test(uint8_t n_ampl, uint8_t n_freq);
 
 #endif // DRV_AUDIO_H

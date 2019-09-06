@@ -15,6 +15,7 @@
 #define LED_M4      13 //PB.13
 #define LED_M5      14 //PB.14
 
+void led_test(void);
 void led_start(void);
 void indicator_start(void);
 

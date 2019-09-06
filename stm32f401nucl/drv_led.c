@@ -59,34 +59,34 @@ static THD_FUNCTION(thdIndicator, arg) {
   }
 }
 
-static THD_WORKING_AREA(waTestLed, 256);
-static THD_FUNCTION(thdTestLed, arg) {
+//static THD_WORKING_AREA(waTestLed, 256);
+//static THD_FUNCTION(thdTestLed, arg) {
 
-  (void)arg;
-  chRegSetThreadName("test led");
+//  (void)arg;
+//  chRegSetThreadName("test led");
 
-  palClearPad(GPIOA,LED_TRUE);
-  palClearPad(GPIOA,LED_ANSA);
+//  while (true) {
+//      led_test();
+//      chThdSleepMilliseconds(1000);
+//  }
+//}
 
-  while (true) {
-      idx_ampl++;
-      if(idx_ampl==6){
-          idx_ampl = 1;
-          idx_freq++;
+void led_test(void){
+    idx_ampl++;
+    if(idx_ampl==6){
+        idx_ampl = 1;
+        idx_freq++;
 
-          if(idx_freq==6){
-              idx_ampl = 1;
-              idx_freq = 1;
-          }
-      }
+        if(idx_freq==6){
+            idx_ampl = 1;
+            idx_freq = 1;
+        }
+    }
 
-      palTogglePad(GPIOA,LED_TRUE);
-      palTogglePad(GPIOA,LED_FALSE);
-      palTogglePad(GPIOA,LED_ANSA);
-      palTogglePad(GPIOB,LED_ANSB);
-
-      chThdSleepMilliseconds(1000);
-  }
+    palTogglePad(GPIOA,LED_TRUE);
+    palTogglePad(GPIOA,LED_FALSE);
+    palTogglePad(GPIOA,LED_ANSA);
+    palTogglePad(GPIOB,LED_ANSB);
 }
 
 void led_start(void){
@@ -119,6 +119,10 @@ void indicator_start(void){
     idx_freq = 1;
 
     chThdCreateStatic(waIndicator, sizeof(waIndicator),	NORMALPRIO, thdIndicator, NULL);
-    chThdCreateStatic(waTestLed, sizeof(waTestLed),	NORMALPRIO, thdTestLed, NULL);
+
+    palClearPad(GPIOA,LED_TRUE);
+    palClearPad(GPIOA,LED_ANSA);
+    led_test();
+//    chThdCreateStatic(waTestLed, sizeof(waTestLed),	NORMALPRIO, thdTestLed, NULL);
 }
 

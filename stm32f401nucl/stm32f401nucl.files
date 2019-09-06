@@ -19,3 +19,4 @@ halconf.h
 mcuconf.h
 shell.c
 shell.h
+main_source.c

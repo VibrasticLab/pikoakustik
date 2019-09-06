@@ -1,6 +1,7 @@
 #include "ch.h"
 #include "hal.h"
 
+#include "drv_led.h"
 #include "drv_audio.h"
 #include "drv_exti.h"
 
@@ -13,6 +14,7 @@ static THD_FUNCTION(thdTestWave, arg) {
   chRegSetThreadName("test wave");
   while (true) {
       if(testWave==1){
+          audio_test(2,3);
           wave_test();
           testWave=0;
       }
@@ -25,6 +27,7 @@ static void extTestWave(EXTDriver *extp, expchannel_t channel) {
   (void)extp;
   (void)channel;
 
+  led_test();
   testWave=1;
 }
 
@@ -60,5 +63,6 @@ void exti_start(void){
     palSetPadMode(GPIOC, 13, PAL_MODE_INPUT_PULLUP);
     extStart(&EXTD1, &extcfg);
     extChannelEnable(&EXTD1, 13);
+
     chThdCreateStatic(waTestWave, sizeof(waTestWave),	NORMALPRIO, thdTestWave, NULL);
 }
