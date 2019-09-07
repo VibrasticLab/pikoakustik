@@ -37,16 +37,8 @@ void audio_start(void){
 }
 
 void audio_test(uint8_t n_ampl, uint8_t n_freq){
-    double v_ampl=0;
+    int v_ampl=0;
     double v_freq=0;
-
-    switch(n_ampl){
-        case 0: v_ampl = 8000;break;
-        case 1: v_ampl = 6000;break;
-        case 2: v_ampl = 4000;break;
-        case 3: v_ampl = 2000;break;
-        case 4: v_ampl = 1000;break;
-    }
 
     switch(n_freq){
         case 0: v_freq = 8000;break;
@@ -56,8 +48,16 @@ void audio_test(uint8_t n_ampl, uint8_t n_freq){
         case 4: v_freq = 1000;break;
     }
 
-    chprintf((BaseSequentialStream *)&SD1,"Audio test (Uncalibrated)\n");
-    chprintf((BaseSequentialStream *)&SD1,"Freq: %4i and Ampli: %4i\n",v_freq,v_ampl);
+    switch(n_ampl){
+        case 0: v_ampl = 8000;break;
+        case 1: v_ampl = 6000;break;
+        case 2: v_ampl = 4000;break;
+        case 3: v_ampl = 2000;break;
+        case 4: v_ampl = 1000;break;
+    }
+
+    chprintf((BaseSequentialStream *)&SD1,"Audio Test (Uncalibrated)\n");
+    chprintf((BaseSequentialStream *)&SD1,"Freq: %4i and Ampli: %4i\n",(int)v_freq,v_ampl);
 
     sample_prep(v_freq,1,v_ampl);
 }
