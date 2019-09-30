@@ -1,79 +1,55 @@
+#include <stdlib.h>
+
 #include "ch.h"
 #include "hal.h"
 
 #include "chprintf.h"
 #include "shell.h"
-#include "test.h"
 
 #include "drv_serial.h"
+#include "drv_audio.h"
+
+extern int ampl_arr[5];
+extern double freq_arr[5];
+
 
 static thread_t *shelltp = NULL;
 
 //===============================================================================
 
-static void cmd_mem(BaseSequentialStream *chp, int argc, char *argv[]) {
-  size_t n, size;
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: mem\r\n");
-    return;
-  }
-  n = chHeapStatus(NULL, &size);
-  chprintf(chp, "core free memory : %u bytes\r\n", chCoreGetStatusX());
-  chprintf(chp, "heap fragments   : %u\r\n", n);
-  chprintf(chp, "heap free total  : %u bytes\r\n", size);
-}
-
-static void cmd_threads(BaseSequentialStream *chp, int argc, char *argv[]) {
-  static const char *states[] = {CH_STATE_NAMES};
-  thread_t *tp;
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: threads\r\n");
-    return;
-  }
-  chprintf(chp, "    addr    stack prio refs     state time\r\n");
-  tp = chRegFirstThread();
-  do {
-    chprintf(chp, "%08lx %08lx %4lu %4lu %9s\r\n",
-            (uint32_t)tp, (uint32_t)tp->p_ctx.r13,
-            (uint32_t)tp->p_prio, (uint32_t)(tp->p_refs - 1),
-            states[tp->p_state]);
-    tp = chRegNextThread(tp);
-  } while (tp != NULL);
-}
-
-#if USE_SHELL_TEST
 static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
-  thread_t *tp;
 
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: test\r\n");
+  if (argc != 2) {
+    chprintf(chp, "Usage: test <frequency> <amplitudo>\r\n");
     return;
   }
-  tp = chThdCreateFromHeap(NULL, TEST_WA_SIZE, chThdGetPriorityX(),
-                           TestThread, chp);
-  if (tp == NULL) {
-    chprintf(chp, "out of memory\r\n");
-    return;
-  }
-  chThdWait(tp);
+
+  audio_test(atoi(argv[0]),atoi(argv[1]));
 }
-#endif
 
-//===============================================================================
+static void cmd_list(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void) argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: list \r\n");
+    return;
+  }
+
+  chprintf(chp, "list available wave level\r\n");
+  chprintf(chp, "Frequency  Amplitudo\r\n");
+  chprintf(chp, "--------------------\r\n");
+  for(uint8_t i=0;i<5;i++){
+      chprintf(chp, "  %4i      %4i\r\n",(int)freq_arr[i],ampl_arr[i]);
+  }
+  chprintf(chp, "--------------------\r\n");
+
+}
 
 //===============================================================================
 
 static const ShellCommand commands[] = {
-    {"mem", cmd_mem},
-#if USE_SHELL_TEST
+    {"list", cmd_list},
     {"test", cmd_test},
-#endif
-    {"threads", cmd_threads},
     {NULL, NULL}
 };
 
