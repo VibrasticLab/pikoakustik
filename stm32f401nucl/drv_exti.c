@@ -5,7 +5,10 @@
 #include "drv_audio.h"
 #include "drv_exti.h"
 
-static uint8_t testWave=0;
+static uint8_t testWave = 0;
+
+extern uint8_t stt_LedAns;
+extern uint8_t stt_BtnAns;
 
 static THD_WORKING_AREA(waTestWave, 1024);
 static THD_FUNCTION(thdTestWave, arg) {
@@ -30,13 +33,29 @@ static void extTestWave(EXTDriver *extp, expchannel_t channel) {
   testWave=1;
 }
 
+static void extLedAnsA(EXTDriver *extp, expchannel_t channel) {
+
+  (void)extp;
+  (void)channel;
+
+  stt_BtnAns = 1;
+}
+
+static void extLedAnsB(EXTDriver *extp, expchannel_t channel) {
+
+  (void)extp;
+  (void)channel;
+
+  stt_BtnAns = 2;
+}
+
 static const EXTConfig extcfg = {
   {
-    {EXT_CH_MODE_DISABLED, NULL}, //0
+    {EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOB, extLedAnsB}, //0
     {EXT_CH_MODE_DISABLED, NULL}, //1
     {EXT_CH_MODE_DISABLED, NULL}, //2
     {EXT_CH_MODE_DISABLED, NULL}, //3
-    {EXT_CH_MODE_DISABLED, NULL}, //4
+    {EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOA, extLedAnsA}, //4
     {EXT_CH_MODE_DISABLED, NULL}, //5
     {EXT_CH_MODE_DISABLED, NULL}, //6
     {EXT_CH_MODE_DISABLED, NULL}, //7
@@ -59,8 +78,13 @@ static const EXTConfig extcfg = {
 };
 
 void exti_start(void){
+    palSetPadMode(GPIOA,  4, PAL_MODE_INPUT_PULLUP);
+    palSetPadMode(GPIOB,  0, PAL_MODE_INPUT_PULLUP);
     palSetPadMode(GPIOC, 13, PAL_MODE_INPUT_PULLUP);
+
     extStart(&EXTD1, &extcfg);
+    extChannelEnable(&EXTD1,  4);
+    extChannelEnable(&EXTD1,  0);
     extChannelEnable(&EXTD1, 13);
 
     chThdCreateStatic(waTestWave, sizeof(waTestWave),	NORMALPRIO, thdTestWave, NULL);

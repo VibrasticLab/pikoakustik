@@ -6,6 +6,9 @@
 uint16_t led_delay=50;
 static uint8_t idx_ampl,idx_freq;
 
+uint8_t stt_LedAns = 1;
+uint8_t stt_BtnAns = 0;
+
 static THD_WORKING_AREA(waLed1, 128);
 static THD_FUNCTION(thdLed1, arg) {
 
@@ -56,20 +59,44 @@ static THD_FUNCTION(thdIndicator, arg) {
       palSetPad(GPIOA,LED_AMPL);
       indicator_m_on(idx_ampl);
       chThdSleepMicroseconds(100);
+
+      if(stt_BtnAns != 0){
+          if(stt_BtnAns == stt_LedAns){ palClearPad(GPIOA,LED_TRUE); }
+          else{ palClearPad(GPIOA,LED_FALSE); }
+      }
   }
 }
 
-//static THD_WORKING_AREA(waTestLed, 256);
-//static THD_FUNCTION(thdTestLed, arg) {
+static THD_WORKING_AREA(waTestLed, 256);
+static THD_FUNCTION(thdTestLed, arg) {
 
-//  (void)arg;
-//  chRegSetThreadName("test led");
+  (void)arg;
+  chRegSetThreadName("test led");
 
-//  while (true) {
-//      led_test();
-//      chThdSleepMilliseconds(1000);
-//  }
-//}
+  while (true) {
+      led_test();
+
+      if(stt_BtnAns == 0){
+          if(stt_LedAns == 1){
+              palClearPad(GPIOA,LED_ANSA);
+              palSetPad(GPIOB,LED_ANSB);
+              stt_LedAns = 2;
+          }
+          else{
+              palSetPad(GPIOA,LED_ANSA);
+              palClearPad(GPIOB,LED_ANSB);
+              stt_LedAns = 1;
+          }
+      }
+      else{
+          stt_BtnAns = 0;
+          palSetPad(GPIOA,LED_TRUE);
+          palSetPad(GPIOA,LED_FALSE);
+      }
+
+      chThdSleepMilliseconds(1000);
+  }
+}
 
 void led_test(void){
     idx_ampl++;
@@ -82,11 +109,6 @@ void led_test(void){
             idx_freq = 1;
         }
     }
-
-    palTogglePad(GPIOA,LED_TRUE);
-    palTogglePad(GPIOA,LED_FALSE);
-    palTogglePad(GPIOA,LED_ANSA);
-    palTogglePad(GPIOB,LED_ANSB);
 }
 
 void led_start(void){
@@ -119,10 +141,6 @@ void indicator_start(void){
     idx_freq = 1;
 
     chThdCreateStatic(waIndicator, sizeof(waIndicator),	NORMALPRIO, thdIndicator, NULL);
-
-    palClearPad(GPIOA,LED_TRUE);
-    palClearPad(GPIOA,LED_ANSA);
-    led_test();
-//    chThdCreateStatic(waTestLed, sizeof(waTestLed),	NORMALPRIO, thdTestLed, NULL);
+    chThdCreateStatic(waTestLed, sizeof(waTestLed),	NORMALPRIO, thdTestLed, NULL);
 }
 
