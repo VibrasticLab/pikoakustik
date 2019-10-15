@@ -47,6 +47,15 @@ To list all currently supported platform run on terminal:
 - [x] Simple Feed Audio (I2S)
 - [x] Play test wave in duration
 
+#### STM32F401RBT6
+
+- [x] Run-LED Indicator
+- [ ] Audio Generator
+	- [x] I2S Protocol
+	- [ ] Sine wave array
+		- [x] Simple one period array
+		- [x] I2S Buffer follow array-size
+
 
 
 
