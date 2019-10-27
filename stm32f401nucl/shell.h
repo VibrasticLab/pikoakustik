@@ -16,9 +16,9 @@
 
 /**
  * @file    shell.h
- * @brief   Simple CLI shell header.
+ * @brief   Shell Routine header.
  *
- * @addtogroup SHELL
+ * @addtogroup Console
  * @{
  */
 

@@ -14,6 +14,14 @@
     limitations under the License.
 */
 
+/**
+ * @file    board.c
+ * @brief   Platform Board code.
+ *
+ * @addtogroup Platform
+ * @{
+ */
+
 #include "hal.h"
 
 #if HAL_USE_PAL || defined(__DOXYGEN__)
@@ -124,3 +132,4 @@ void boardInit(void) {
     //disable SWJ (JTAG) so PB3, PB4, PA13, PA14, PA15 can used as GPIO
     //AFIO->MAPR |= AFIO_MAPR_SWJ_CFG_DISABLE;
 }
+/** @} */

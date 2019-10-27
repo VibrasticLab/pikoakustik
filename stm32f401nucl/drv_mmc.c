@@ -1,3 +1,22 @@
+/*
+              UNKNOWN PUBLIC LICENSE
+
+ Copyright (C) 2019 Achmadi S.T. M.T.
+
+ Currently no license applied because author liv in
+ Indonesia, a country which doesn't really concern
+ about digital content copyright.
+
+ */
+
+/**
+ * @file    drv_mmc.c
+ * @brief   MMC-SPI Storage code.
+ *
+ * @addtogroup Storage
+ * @{
+ */
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -11,16 +30,42 @@
 
 extern uint16_t led_delay;
 
+/**
+ * @brief Global MMC Driver Pointer
+ */
 MMCDriver MMCD1;
 
+/**
+ * @brief FatFS ready status flag
+ */
 static bool filesystem_ready=true;
+
+/**
+ * @brief MMC SPI Peripheral status flag
+ */
 static uint8_t mmc_spi_status_flag=MMC_SPI_OK;
 
+/**
+ * @brief SPI High-Clock NSS config
+ */
 static SPIConfig hs_spicfg = {NULL, GPIOA, 15, 0};
+
+/**
+ * @brief SPI Low-Clock NSS config
+ */
 static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1};
+
+/**
+ * @brief MMC config struct
+ */
 static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 
 #if USE_MMC_CHK
+/**
+ * @brief Checking readiness FatFS
+ * @details Must calling before mounting actual media MMC
+ * @details Checking both Peripheral and Filesystem status
+ */
 static void mmc_check(void){
     FATFS FatFs;
     FRESULT err;
@@ -87,3 +132,4 @@ void mmc_start(void){
     palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
     palClearPad(GPIOA,5);
 }
+/** @} */

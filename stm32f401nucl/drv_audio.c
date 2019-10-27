@@ -1,3 +1,22 @@
+/*
+              UNKNOWN PUBLIC LICENSE
+
+ Copyright (C) 2019 Achmadi S.T. M.T.
+
+ Currently no license applied because author liv in
+ Indonesia, a country which doesn't really concern
+ about digital content copyright.
+
+ */
+
+/**
+ * @file    drv_audio.c
+ * @brief   Audio Driver code.
+ *
+ * @addtogroup Audio
+ * @{
+ */
+
 #include <math.h>
 
 #include "ch.h"
@@ -8,16 +27,34 @@
 #include "../driver.h"
 #include "drv_audio.h"
 
+/**
+ * @brief Global Sine Wave Sample Buffer
+ */
 uint16_t sine_sample[I2S_BUF_SIZE];
+
+/**
+ * @brief Global Wave Play Duration value
+ */
 uint8_t play_duration;
 
+/**
+ * @brief Global Amplitude Available Array
+ */
 int ampl_arr[5] = {8000,6000,4000,2000,1000};
+
+/**
+ * @brief Global Frequency Available Array
+ */
 double freq_arr[5] = {8000,6000,4000,2000,1000};
 
+/**
+ * @brief Global Audio I2S structure
+ * @details NUM_SAMPLES typesize should be buffer size and size_t are big enough on gcc
+ */
 I2SConfig i2scfg = {
   sine_sample,
   NULL,
-  NUM_SAMPLES, // should be buffer size and size_t are big enough on gcc
+  NUM_SAMPLES,
   NULL,
   0,
   16
@@ -49,3 +86,4 @@ void audio_test(uint8_t n_freq, uint8_t n_ampl){
     sample_prep(v_freq,1,v_ampl);
     wave_test();
 }
+/** @} */

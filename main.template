@@ -1,9 +1,43 @@
+/*
+              UNKNOWN PUBLIC LICENSE
+
+ Copyright (C) 2019 Achmadi S.T. M.T.
+
+ Currently no license applied because author liv in
+ Indonesia, a country which doesn't really concern
+ about digital content copyright.
+
+ */
+
+/**
+ * @file    main_source.c
+ * @brief   Main code.
+ *
+ * @addtogroup Main
+ * @{
+ */
+
 #include "driver.h"
 
+/**
+ * @brief default test frequency
+ */
 double frequency = 4000.0;
+
+/**
+ * @brief default test duration
+ */
 int durasi = 1;
+
+/**
+ * @brief default test amplitude bit
+ */
 int amplitudo = 1000;
 
+/**
+ * @brief Main Function
+ * @return Exit status that never reached
+ */
 int main(void){
 	system_init();
 	driver_init();
@@ -13,4 +47,4 @@ int main(void){
 	while(1){ system_loop(); }
 	return 0;
 }
-
+/** @} */

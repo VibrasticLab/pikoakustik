@@ -1,3 +1,11 @@
+/**
+ * @file    ffconf.h
+ * @brief   Platform FatFS header.
+ *
+ * @addtogroup Platform
+ * @{
+ */
+
 /* CHIBIOS FIX */
 #include "ch.h"
 
@@ -228,3 +236,4 @@
 
 
 #endif /* _FFCONF */
+/** @} */

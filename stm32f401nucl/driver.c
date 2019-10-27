@@ -1,3 +1,22 @@
+/*
+              UNKNOWN PUBLIC LICENSE
+
+ Copyright (C) 2019 Achmadi S.T. M.T.
+
+ Currently no license applied because author liv in
+ Indonesia, a country which doesn't really concern
+ about digital content copyright.
+
+ */
+
+/**
+ * @file    driver.c
+ * @brief   Global Driver Call code.
+ *
+ * @addtogroup Global
+ * @{
+ */
+
 #include "ch.h"
 #include "hal.h"
 
@@ -15,9 +34,13 @@ extern uint16_t sine_sample[I2S_BUF_SIZE];
 extern uint8_t play_duration;
 extern I2SConfig i2scfg;
 
-// ================================================================
-
-uint16_t onewavelen(double FR,int AMP){
+/**
+ * @brief Find Length of one cycle wave
+ * @param[in] FR Desired frequency
+ * @param[in] AMP Desired amplitude
+ * @return Array Length
+ */
+static uint16_t onewavelen(double FR,int AMP){
     double x,y;
 
     uint8_t neg_a = 0,neg_b = 0;
@@ -50,8 +73,6 @@ uint16_t onewavelen(double FR,int AMP){
 
     return i;
 }
-
-// ============================= Platform Calling ===================
 
 void system_init(void){
 	halInit();
@@ -113,3 +134,4 @@ void system_loop(void){
     shell_term();
 	chThdSleepMilliseconds(100);
 }
+/** @} */

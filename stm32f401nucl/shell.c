@@ -16,9 +16,9 @@
 
 /**
  * @file    shell.c
- * @brief   Simple CLI shell code.
+ * @brief   Shell Routine code.
  *
- * @addtogroup SHELL
+ * @addtogroup Console
  * @{
  */
 

@@ -1,4 +1,4 @@
-This platform is for STM32F429ZI Discovery board.
+This platform is for STM32F401RE Nucleo board.
 
 Software Requirement:
 - arm-none-eabi GCC toolchain
@@ -12,7 +12,7 @@ sudo pacman -S arm-none-eabi-gcc arm-none-eabi-newlib stlink
 ~~~
 
 Hardware Requirement:
-- STM32F401RE Discovery board.
+- STM32F401RE Nucleo board.
 - Audio DAC using I2S interface (e.g MAX98357A)
 - Micro SDCard
 - Led Indicator

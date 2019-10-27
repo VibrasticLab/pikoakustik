@@ -14,6 +14,14 @@
     limitations under the License.
 */
 
+/**
+ * @file    mcuconf.h
+ * @brief   Platform Spesific Board header.
+ *
+ * @addtogroup Platform
+ * @{
+ */
+
 #ifndef _MCUCONF_H_
 #define _MCUCONF_H_
 
@@ -248,3 +256,4 @@
 #define STM32_USB_OTGFIFO_FILL_BASEPRI      0
 
 #endif /* _MCUCONF_H_ */
+/** @} */

@@ -1,3 +1,22 @@
+/*
+              UNKNOWN PUBLIC LICENSE
+
+ Copyright (C) 2019 Achmadi S.T. M.T.
+
+ Currently no license applied because author liv in
+ Indonesia, a country which doesn't really concern
+ about digital content copyright.
+
+ */
+
+/**
+ * @file    drv_exti.c
+ * @brief   GPIO Interrupt Driver code.
+ *
+ * @addtogroup Interface
+ * @{
+ */
+
 #include "ch.h"
 #include "hal.h"
 
@@ -5,12 +24,25 @@
 #include "drv_audio.h"
 #include "drv_exti.h"
 
+/**
+ * @brief Sine Wave test play flag
+ * @details Used by Wave play thread
+ */
 static uint8_t testWave = 0;
+
+/**
+ * @brief Button status flag
+ * @details Used by Interface to determine last Answer Button
+ */
 uint8_t stt_BtnAns = 1;
 
 static THD_WORKING_AREA(waTestWave, 1024);
-static THD_FUNCTION(thdTestWave, arg) {
-
+#define ThdFunc_TestWave THD_FUNCTION
+/**
+ * @brief Thread for Test Wave
+ * @details Thread for respoding audio test flag
+ */
+static ThdFunc_TestWave(thdTestWave, arg) {
   (void)arg;
   chRegSetThreadName("test wave");
   while (true) {
@@ -22,6 +54,10 @@ static THD_FUNCTION(thdTestWave, arg) {
   }
 }
 
+/**
+ * @brief Play Test EXTI Callback
+ * @details Enumerated and not called directly by any normal thread
+ */
 static void extTestWave(EXTDriver *extp, expchannel_t channel) {
 
   (void)extp;
@@ -30,7 +66,11 @@ static void extTestWave(EXTDriver *extp, expchannel_t channel) {
   testWave=1;
 }
 
-static void extLedAnsA(EXTDriver *extp, expchannel_t channel) {
+/**
+ * @brief Button Answer A EXTI Callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void extBtnAnsA(EXTDriver *extp, expchannel_t channel) {
 
   (void)extp;
   (void)channel;
@@ -38,7 +78,11 @@ static void extLedAnsA(EXTDriver *extp, expchannel_t channel) {
   stt_BtnAns = 1;
 }
 
-static void extLedAnsB(EXTDriver *extp, expchannel_t channel) {
+/**
+ * @brief Button Answer B EXTI Callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void extBtnAnsB(EXTDriver *extp, expchannel_t channel) {
 
   (void)extp;
   (void)channel;
@@ -46,10 +90,13 @@ static void extLedAnsB(EXTDriver *extp, expchannel_t channel) {
   stt_BtnAns = 2;
 }
 
+/**
+ * @brief External Interrupt Channel Config
+ */
 static const EXTConfig extcfg = {
   {
-    {EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOC, extLedAnsB}, //PC0
-    {EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOC, extLedAnsA}, //PC1
+    {EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOC, extBtnAnsB}, //PC0
+    {EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOC, extBtnAnsA}, //PC1
     {EXT_CH_MODE_DISABLED, NULL}, //2
     {EXT_CH_MODE_DISABLED, NULL}, //3
     {EXT_CH_MODE_DISABLED, NULL},//4
@@ -86,3 +133,4 @@ void exti_start(void){
 
     chThdCreateStatic(waTestWave, sizeof(waTestWave),	NORMALPRIO, thdTestWave, NULL);
 }
+/** @} */
