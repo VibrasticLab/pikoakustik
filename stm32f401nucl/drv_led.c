@@ -6,8 +6,7 @@
 uint16_t led_delay=50;
 static uint8_t idx_ampl,idx_freq;
 
-uint8_t stt_LedAns = 1;
-uint8_t stt_BtnAns = 0;
+extern uint8_t stt_BtnAns;
 
 static THD_WORKING_AREA(waLed1, 128);
 static THD_FUNCTION(thdLed1, arg) {
@@ -59,11 +58,6 @@ static THD_FUNCTION(thdIndicator, arg) {
       palSetPad(GPIOA,LED_AMPL);
       indicator_m_on(idx_ampl);
       chThdSleepMicroseconds(100);
-
-      if(stt_BtnAns != 0){
-          if(stt_BtnAns == stt_LedAns){ palClearPad(GPIOA,LED_TRUE); }
-          else{ palClearPad(GPIOA,LED_FALSE); }
-      }
   }
 }
 
@@ -74,31 +68,22 @@ static THD_FUNCTION(thdTestLed, arg) {
   chRegSetThreadName("test led");
 
   while (true) {
-      led_test();
+      led_shift();
 
-      if(stt_BtnAns == 0){
-          if(stt_LedAns == 1){
-              palClearPad(GPIOA,LED_ANSA);
-              palSetPad(GPIOB,LED_ANSB);
-              stt_LedAns = 2;
-          }
-          else{
-              palSetPad(GPIOA,LED_ANSA);
-              palClearPad(GPIOB,LED_ANSB);
-              stt_LedAns = 1;
-          }
+      if(stt_BtnAns == 1){
+          palClearPad(GPIOA,LED_ANSA);
+          palSetPad(GPIOB,LED_ANSB);
       }
-      else{
-          stt_BtnAns = 0;
-          palSetPad(GPIOA,LED_TRUE);
-          palSetPad(GPIOA,LED_FALSE);
+      else if(stt_BtnAns == 2){
+          palSetPad(GPIOA,LED_ANSA);
+          palClearPad(GPIOB,LED_ANSB);
       }
 
       chThdSleepMilliseconds(1000);
   }
 }
 
-void led_test(void){
+void led_shift(void){
     idx_ampl++;
     if(idx_ampl==6){
         idx_ampl = 1;
@@ -123,7 +108,6 @@ void indicator_start(void){
     palSetPadMode(GPIOA,LED_FALSE,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOA,LED_ANSA,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOB,LED_ANSB,PAL_MODE_OUTPUT_PUSHPULL);
-
     palSetPad(GPIOA,LED_TRUE);
     palSetPad(GPIOA,LED_FALSE);
     palSetPad(GPIOA,LED_ANSA);
@@ -131,15 +115,14 @@ void indicator_start(void){
 
     palSetPadMode(GPIOA,LED_AMPL,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOA,LED_FREQ,PAL_MODE_OUTPUT_PUSHPULL);
-
     palSetPadMode(GPIOB,LED_M1,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOB,LED_M2,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOB,LED_M3,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOB,LED_M4,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOB,LED_M5,PAL_MODE_OUTPUT_PUSHPULL);
+    indicator_m_off();
 
     idx_freq = 1;
-
     chThdCreateStatic(waIndicator, sizeof(waIndicator),	NORMALPRIO, thdIndicator, NULL);
     chThdCreateStatic(waTestLed, sizeof(waTestLed),	NORMALPRIO, thdTestLed, NULL);
 }
