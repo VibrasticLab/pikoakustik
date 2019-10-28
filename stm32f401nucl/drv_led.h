@@ -35,7 +35,12 @@
 #define LED_M5      14 //PB.14
 
 /**
- * @brief Shift Ampli/Freq status index
+ * @brief Enabled if need LED testing routine
+ */
+#define LED_TEST    0
+
+/**
+ * @brief Shift Ampli/Freq status index by 1 level
  */
 void led_shift(void);
 

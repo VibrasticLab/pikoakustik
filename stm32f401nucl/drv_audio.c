@@ -27,6 +27,9 @@
 #include "../driver.h"
 #include "drv_audio.h"
 
+extern uint8_t idx_ampl;
+extern uint8_t idx_freq;
+
 /**
  * @brief Global Sine Wave Sample Buffer
  */
@@ -79,6 +82,9 @@ void audio_start(void){
 void audio_test(uint8_t n_freq, uint8_t n_ampl){
     int v_ampl = ampl_arr[n_ampl];
     double v_freq = freq_arr[n_freq];
+
+    idx_ampl = n_ampl + 1;
+    idx_freq = n_freq + 1;
 
     chprintf((BaseSequentialStream *)&SD1,"Audio Test (Uncalibrated)\r\n");
     chprintf((BaseSequentialStream *)&SD1,"Freq: %4i and Ampli: %4i\r\n",(int)v_freq,v_ampl);

@@ -32,12 +32,12 @@ uint16_t led_delay=50;
 /**
  * @brief Amplification level status index
  */
-static uint8_t idx_ampl;
+uint8_t idx_ampl;
 
 /**
  * @brief Frequency level status index
  */
-static uint8_t idx_freq;
+uint8_t idx_freq;
 
 static THD_WORKING_AREA(waLed, 128);
 #define ThdFunc_LED THD_FUNCTION
@@ -118,6 +118,7 @@ static ThdFunc_Indicator(thdIndicator, arg) {
   }
 }
 
+#if LED_TEST
 static THD_WORKING_AREA(waTestLed, 256);
 #define ThdFunc_TestLED THD_FUNCTION
 /**
@@ -154,6 +155,7 @@ void led_shift(void){
         }
     }
 }
+#endif
 
 void led_start(void){
     palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
@@ -181,8 +183,10 @@ void indicator_start(void){
     palSetPadMode(GPIOB,LED_M5,PAL_MODE_OUTPUT_PUSHPULL);
     indicator_m_off();
 
-    idx_freq = 1;
     chThdCreateStatic(waIndicator, sizeof(waIndicator),	NORMALPRIO, thdIndicator, NULL);
+
+#if LED_TEST
     chThdCreateStatic(waTestLed, sizeof(waTestLed),	NORMALPRIO, thdTestLed, NULL);
+#endif
 }
 /** @} */
