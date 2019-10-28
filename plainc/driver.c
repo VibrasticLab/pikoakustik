@@ -19,7 +19,7 @@ void driver_init(void){
   // Here we open a reference to the sound card
   rc = snd_pcm_open(&handle, "default", SND_PCM_STREAM_PLAYBACK, 0);
   if(rc < 0){
-    fprintf(stderr,"unable to open defualt device: %s\n", snd_strerror(rc));
+    fprintf(stderr,"unable to open default device: %s\n", snd_strerror(rc));
     exit(1);
   }
 

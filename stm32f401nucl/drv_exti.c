@@ -47,7 +47,7 @@ static ThdFunc_TestWave(thdTestWave, arg) {
   chRegSetThreadName("test wave");
   while (true) {
       if(testWave==1){
-          audio_test(2,4);
+          audio_test(0,4);
           testWave=0;
       }
       chThdSleepMilliseconds(100);

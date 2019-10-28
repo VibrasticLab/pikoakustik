@@ -35,6 +35,12 @@ extern uint8_t play_duration;
 extern I2SConfig i2scfg;
 
 /**
+ * @brief Constant to Add for signal compensation
+ */
+
+static const double waveConst = 0;
+
+/**
  * @brief Find Length of one cycle wave
  * @param[in] FR Desired frequency
  * @param[in] AMP Desired amplitude
@@ -52,7 +58,7 @@ static uint16_t onewavelen(double FR,int AMP){
 
     while(stop==0){
         x = (double) i / (double) SAMPLING_RATE;
-        y = sin(2.0 * 3.14159 * FR * x) + 1;
+        y = sin(2.0 * 3.14159 * FR * x) + waveConst;
         sample = (uint16_t) AMP * 0.2 * y;
 
         i++;
@@ -116,7 +122,7 @@ void sample_prep(
 
     for(i=1;i<I2S_BUF_SIZE;i++){
 		x = (double) i / (double) SAMPLING_RATE;
-		y = sin(2.0 * 3.14159 * FR * x) + 1;
+        y = sin(2.0 * 3.14159 * FR * x) + waveConst;
         sample = (uint16_t) AMP * 0.2 * y;
 
 		sine_sample[i] = sample;

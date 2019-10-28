@@ -106,6 +106,15 @@ static ThdFunc_Indicator(thdIndicator, arg) {
       palSetPad(GPIOA,LED_AMPL);
       indicator_m_on(idx_ampl);
       chThdSleepMicroseconds(100);
+
+      if(stt_BtnAns == 1){
+          palClearPad(GPIOA,LED_ANSA);
+          palSetPad(GPIOB,LED_ANSB);
+      }
+      else if(stt_BtnAns == 2){
+          palSetPad(GPIOA,LED_ANSA);
+          palClearPad(GPIOB,LED_ANSB);
+      }
   }
 }
 
@@ -123,13 +132,10 @@ static ThdFunc_TestLED(thdTestLed, arg) {
   while (true) {
       led_shift();
 
-      if(stt_BtnAns == 1){
-          palClearPad(GPIOA,LED_ANSA);
-          palSetPad(GPIOB,LED_ANSB);
-      }
-      else if(stt_BtnAns == 2){
+      if(stt_BtnAns!=0){
+          stt_BtnAns=0;
           palSetPad(GPIOA,LED_ANSA);
-          palClearPad(GPIOB,LED_ANSB);
+          palSetPad(GPIOB,LED_ANSB);
       }
 
       chThdSleepMilliseconds(1000);

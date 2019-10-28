@@ -80,10 +80,12 @@ void audio_test(uint8_t n_freq, uint8_t n_ampl){
     int v_ampl = ampl_arr[n_ampl];
     double v_freq = freq_arr[n_freq];
 
-    chprintf((BaseSequentialStream *)&SD1,"Audio Test (Uncalibrated)\n");
-    chprintf((BaseSequentialStream *)&SD1,"Freq: %4i and Ampli: %4i\n",(int)v_freq,v_ampl);
+    chprintf((BaseSequentialStream *)&SD1,"Audio Test (Uncalibrated)\r\n");
+    chprintf((BaseSequentialStream *)&SD1,"Freq: %4i and Ampli: %4i\r\n",(int)v_freq,v_ampl);
 
-    sample_prep(v_freq,1,v_ampl);
+    sample_prep(v_freq,
+                5,
+                v_ampl);
     wave_test();
 }
 /** @} */

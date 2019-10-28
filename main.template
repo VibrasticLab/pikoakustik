@@ -22,12 +22,12 @@
 /**
  * @brief default test frequency
  */
-double frequency = 4000.0;
+double frequency = 100.0;
 
 /**
  * @brief default test duration
  */
-int durasi = 1;
+int durasi = 5;
 
 /**
  * @brief default test amplitude bit
