@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,7 +14,7 @@ for i in range(half_buff_size):
     y = np.append(y,
                   30*(0+math.sin(3.141592653589793*i/half_buff_size))
                   )
-    
+
 for i in range(half_buff_size):
     y = np.append(y,
                   30*(2-math.sin(3.141592653589793*i/half_buff_size))
