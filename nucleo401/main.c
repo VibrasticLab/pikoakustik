@@ -26,6 +26,7 @@
 #include "hal.h"
 
 #include "ht_audio.h"
+#include "ht_exti.h"
 
 static THD_WORKING_AREA(waRunLed, 128);
 #define ThdFunc_RunLED THD_FUNCTION
@@ -52,7 +53,9 @@ int main(void){
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
 
     ht_audio_Init();
-    ht_audio_Test();
+    ht_audio_Test(1);
+
+    ht_exti_Init();
 
     while(1){
         chThdSleepMicroseconds(100);

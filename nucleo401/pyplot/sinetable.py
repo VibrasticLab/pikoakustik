@@ -1,37 +1,9 @@
-/*
-              UNKNOWN PUBLIC LICENSE
+#!/usr/bin/python3
 
- Copyright (C) 2019 Achmadi S.T. M.T.
+import matplotlib.pyplot as plt
+import numpy as np
 
- Currently no license applied because author liv in
- Indonesia, a country which doesn't really concern
- about digital content copyright.
-
- */
-
-/**
- * @file    ht_audio.c
- * @brief   Audio Generator code.
- *
- * @addtogroup Audio
- * @{
- */
-
-#include <string.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <math.h>
-
-#include "ch.h"
-#include "hal.h"
-
-#include "ht_audio.h"
-
-/**
- * @brief Sine Table for Test
- */
-static uint16_t sine_table[I2S_BUFF_SIZE] = {
+sine_table = np.array([
    0x0000, 0x0324, 0x0647, 0x096a, 0x0c8b, 0x0fab, 0x12c8, 0x15e2,
    0x18f8, 0x1c0b, 0x1f19, 0x2223, 0x2528, 0x2826, 0x2b1f, 0x2e11,
    0x30fb, 0x33de, 0x36ba, 0x398c, 0x3c56, 0x3f17, 0x41ce, 0x447a,
@@ -64,66 +36,8 @@ static uint16_t sine_table[I2S_BUFF_SIZE] = {
    0xb8e4, 0xbb86, 0xbe32, 0xc0e9, 0xc3aa, 0xc674, 0xc946, 0xcc22,
    0xcf05, 0xd1ef, 0xd4e1, 0xd7da, 0xdad8, 0xdddd, 0xe0e7, 0xe3f5,
    0xe708, 0xea1e, 0xed38, 0xf055, 0xf375, 0xf696, 0xf9b9, 0xfcdc,
-};
+])
 
-/**
- * @brief I2S Transmit buffer
- */
-static uint16_t i2s_tx_buf[I2S_BUFF_SIZE];
-
-/**
- * @brief I2S Protocol config struct
- */
-static const I2SConfig i2scfg = {
-  i2s_tx_buf,
-  NULL,
-  I2S_BUFF_SIZE,
-  NULL,
-  0,
-  16
-};
-
-void ht_audio_Init(void){
-    palSetPadMode(GPIOB, 12, PAL_MODE_ALTERNATE(5));
-    palSetPadMode(GPIOB, 10, PAL_MODE_ALTERNATE(5));
-    palSetPadMode(GPIOC, 3 , PAL_MODE_ALTERNATE(5));
-    i2sStart(&I2SD2, &i2scfg);
-}
-
-void ht_audio_Zero(void){
-    uint16_t i;
-    for(i=0;i<I2S_BUFF_SIZE;i++){
-        i2s_tx_buf[i] = 0x0000;
-    }
-}
-
-void ht_audio_Table(void){
-    uint16_t i;
-    for(i=0;i<I2S_BUFF_SIZE;i++){
-        i2s_tx_buf[i] = sine_table[i];
-    }
-}
-
-void ht_audio_Sine(double freq,uint16_t ampl){
-    uint16_t i;
-    for(i=0;i<I2S_BUFF_SIZE;i++){
-        i2s_tx_buf[i] = ampl*(sin(2.0*3.14159*freq*((double)i/(double)SAMPLING_RATE)));
-    }
-}
-
-void ht_audio_Test(uint8_t mode){
-    switch(mode){
-        case 0: ht_audio_Zero(); break;
-        case 1: ht_audio_Table(); break;
-        case 2: ht_audio_Sine(1000,1000); break;
-    }
-
-    ht_audio_Play(1);
-}
-
-void ht_audio_Play(uint8_t duration){
-    i2sStartExchange(&I2SD2);
-    chThdSleepMilliseconds(duration*1000);
-    i2sStopExchange(&I2SD2);
-}
-/** @} */
+print(sine_table.astype(int))
+plt.plot(sine_table.astype(int),'ro')
+plt.show(block=True)

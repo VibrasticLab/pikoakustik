@@ -6,5 +6,7 @@ chconf.h
 halconf.h
 ht_audio.c
 ht_audio.h
+ht_exti.c
+ht_exti.h
 main.c
 mcuconf.h

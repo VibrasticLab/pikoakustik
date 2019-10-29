@@ -120,7 +120,7 @@ CSRC =  $(STARTUPSRC) \
         $(CHIBIOS)/os/hal/lib/streams/nullstreams.c \
         $(CHIBIOS)/os/hal/lib/streams/memstreams.c \
         $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
-        main.c ht_audio.c
+        main.c ht_audio.c ht_exti.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
