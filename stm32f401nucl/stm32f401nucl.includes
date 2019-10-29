@@ -1,9 +1,0 @@
-.
-..
-/opt/stm32chlib/chibios30/os/hal/lib/streams
-/opt/stm32chlib/chibios30/os/hal/include
-/opt/stm32chlib/chibios30/ext/fatfs/src
-/opt/stm32chlib/chibios30/os/rt/include
-/opt/stm32chlib/chibios30/os/various
-/opt/stm32chlib/chibios30/test/rt
-board
