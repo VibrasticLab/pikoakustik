@@ -67,7 +67,7 @@
 #define STM32_MCO2PRE                       STM32_MCO2PRE_DIV5
 #define STM32_I2SSRC                        STM32_I2SSRC_PLLI2S
 #define STM32_PLLI2SN_VALUE                 295
-#define STM32_PLLI2SR_VALUE                 3
+#define STM32_PLLI2SR_VALUE                 7
 #define STM32_PVD_ENABLE                    FALSE
 #define STM32_PLS                           STM32_PLS_LEV0
 #define STM32_BKPRAM_ENABLE                 FALSE
@@ -140,7 +140,7 @@
 /*
  * I2S driver system settings.
  */
-#define STM32_I2S_USE_SPI2                  FALSE
+#define STM32_I2S_USE_SPI2                  TRUE
 #define STM32_I2S_USE_SPI3                  FALSE
 #define STM32_I2S_SPI2_IRQ_PRIORITY         10
 #define STM32_I2S_SPI3_IRQ_PRIORITY         10

@@ -25,6 +25,8 @@
 #include "ch.h"
 #include "hal.h"
 
+#include "ht_audio.h"
+
 static THD_WORKING_AREA(waRunLed, 128);
 #define ThdFunc_RunLED THD_FUNCTION
 /**
@@ -48,6 +50,9 @@ int main(void){
     palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
     palClearPad(GPIOA,5);
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
+
+    ht_audio_Init();
+    ht_audio_Test();
 
     while(1){
         chThdSleepMicroseconds(100);
