@@ -21,6 +21,11 @@
 #define DRV_AUDIO_H
 
 /**
+ * @brief  Zero base Testing
+ */
+#define ZERO_TEST 1
+
+/**
  * @brief  Channel Number
  * @details 1: Mono
  *          2: Left-Right

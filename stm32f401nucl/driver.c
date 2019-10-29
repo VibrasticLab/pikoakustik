@@ -125,7 +125,12 @@ void sample_prep(
         y = sin(2.0 * 3.14159 * FR * x) + waveConst;
         sample = (uint16_t) AMP * 0.2 * y;
 
-		sine_sample[i] = sample;
+#if ZERO_TEST
+        sine_sample[i] = 0;
+#else
+        sine_sample[i] = sample;
+#endif
+
         if(NUM_CHANNELS==2){ sine_sample[i+1] = sample; }
 	};
 
