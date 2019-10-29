@@ -2,6 +2,23 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+import math
+
+ampl = 1000
+
+buff_size = 256
+half_buff_size = buff_size//2
+
+y = np.array([])
+for i in range(half_buff_size):
+    y = np.append(y,
+                  30*(0+math.sin(3.141592653589793*i/half_buff_size))
+                  )
+    
+for i in range(half_buff_size):
+    y = np.append(y,
+                  30*(2-math.sin(3.141592653589793*i/half_buff_size))
+                  )
 
 sine_table = np.array([
    0x0000, 0x0324, 0x0647, 0x096a, 0x0c8b, 0x0fab, 0x12c8, 0x15e2,
@@ -38,6 +55,8 @@ sine_table = np.array([
    0xe708, 0xea1e, 0xed38, 0xf055, 0xf375, 0xf696, 0xf9b9, 0xfcdc,
 ])
 
-print(sine_table.astype(int))
+plt.figure()
+plt.plot(100*y,'ro')
+
+plt.figure()
 plt.plot(sine_table.astype(int),'ro')
-plt.show(block=True)

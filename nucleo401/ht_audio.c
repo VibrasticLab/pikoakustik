@@ -105,9 +105,14 @@ void ht_audio_Table(void){
 }
 
 void ht_audio_Sine(double freq,uint16_t ampl){
+    (void) freq;
+
+    uint16_t half_size = I2S_BUFF_SIZE/2;
     uint16_t i;
-    for(i=0;i<I2S_BUFF_SIZE;i++){
-        i2s_tx_buf[i] = ampl*(sin(2.0*3.14159*freq*((double)i/(double)SAMPLING_RATE)));
+
+    for(i=0;i<half_size;i++){
+        i2s_tx_buf[i]           = ampl*30*(0+sin(3.141592653589793*((double)i/(double)half_size)));
+        i2s_tx_buf[half_size+i] = ampl*30*(2-sin(3.141592653589793*((double)i/(double)half_size)));
     }
 }
 
