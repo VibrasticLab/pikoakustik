@@ -23,25 +23,17 @@
 /**
  * @brief  Zero base Testing
  */
-#define ZERO_TEST 1
-
-/**
- * @brief  Channel Number
- * @details 1: Mono
- *          2: Left-Right
- */
-#define NUM_CHANNELS    1
-
-/**
- * @brief  Initial Sample Array size
- */
-#define NUM_SAMPLES     512
+#define ZERO_TEST       1
 
 /**
  * @brief  Total Initial Buffer Array size
- * @details Multiply of Channel and Sample size
  */
-#define I2S_BUF_SIZE    NUM_SAMPLES*NUM_CHANNELS
+#define I2S_BUFF_SIZE    256
+
+/**
+ * @brief  Adjust Buffer Array size
+ */
+#define I2S_ADJ_SIZE    0
 
 /**
  * @brief Actual Wave Play Call

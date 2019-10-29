@@ -33,7 +33,7 @@ extern uint8_t idx_freq;
 /**
  * @brief Global Sine Wave Sample Buffer
  */
-uint16_t sine_sample[I2S_BUF_SIZE];
+uint16_t sine_sample[I2S_BUFF_SIZE];
 
 /**
  * @brief Global Wave Play Duration value
@@ -57,7 +57,7 @@ double freq_arr[5] = {8000,6000,4000,2000,1000};
 I2SConfig i2scfg = {
   sine_sample,
   NULL,
-  NUM_SAMPLES,
+  I2S_BUFF_SIZE,
   NULL,
   0,
   16

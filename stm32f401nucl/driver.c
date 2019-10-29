@@ -30,7 +30,7 @@
 
 #include "../driver.h"
 
-extern uint16_t sine_sample[I2S_BUF_SIZE];
+extern uint16_t sine_sample[I2S_BUFF_SIZE];
 extern uint8_t play_duration;
 extern I2SConfig i2scfg;
 
@@ -40,6 +40,7 @@ extern I2SConfig i2scfg;
 
 static const double waveConst = 0;
 
+#if I2S_ADJ_SIZE
 /**
  * @brief Find Length of one cycle wave
  * @param[in] FR Desired frequency
@@ -74,25 +75,25 @@ static uint16_t onewavelen(double FR,int AMP){
         }
         else if(neg_b == neg_a){ neg_a = neg_b; }
 
-        if(i==NUM_SAMPLES){	stop=1;	}
+        if(i==I2S_BUFF_SIZE){ stop=1; }
     };
 
     return i;
 }
+#endif
 
 void system_init(void){
 	halInit();
 	chSysInit();  
 
-    exti_start();
-    indicator_start();
-
-    shell_start();
-
     mmc_start();
     mmc_test();
 
+    shell_start();
+
+    indicator_start();
     led_start();
+    exti_start();
 
     chprintf((BaseSequentialStream *)&SD1,"SYSTEM BOOT COMPLETE\n");
 }
@@ -106,35 +107,38 @@ void sample_prep(
 	double DUR, //Duration (s)
 	int AMP) //Amplitudo
 {
-	double x,y;
-
-    uint16_t waveone,wavenum,wavelen;
+    double x, y;
 	uint16_t sample;
 
+#if I2S_ADJ_SIZE
+    uint16_t waveone,wavenum,wavelen;
+
     waveone = onewavelen(FR,AMP);
-    wavenum = (uint16_t) NUM_SAMPLES/waveone;
-    wavelen = NUM_CHANNELS * wavenum * waveone;
+    wavenum = (uint16_t) I2S_BUFF_SIZE/waveone;
+    wavelen = wavenum * waveone;
+#endif
 
 	uint16_t i = 1;
 	sine_sample[0] = AMP * 0.2;
 
 	play_duration = DUR;
 
-    for(i=1;i<I2S_BUF_SIZE;i++){
-		x = (double) i / (double) SAMPLING_RATE;
+    for(i=1;i<I2S_BUFF_SIZE;i++){
+        x = (double) i / (double) SAMPLING_RATE;
         y = sin(2.0 * 3.14159 * FR * x) + waveConst;
-        sample = (uint16_t) AMP * 0.2 * y;
 
 #if ZERO_TEST
-        sine_sample[i] = 0;
+        sample = (uint16_t) 0;
 #else
-        sine_sample[i] = sample;
+        sample = (uint16_t) AMP * 0.2 * ;
 #endif
 
-        if(NUM_CHANNELS==2){ sine_sample[i+1] = sample; }
+        sine_sample[i] = sample;
 	};
 
+#if I2S_ADJ_SIZE
     i2scfg.size = wavelen;
+#endif
 }
 
 void play_wave(void){
