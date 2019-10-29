@@ -41,16 +41,21 @@ void ht_audio_Init(void);
 void ht_audio_Zero(void);
 
 /**
- * @brief Generate sine wave from array table
+ * @brief Generate squared wave from array table
  */
 void ht_audio_Table(void);
+
+/**
+ * @brief Generate squared wave from a looping formula
+ */
+void ht_audio_Squared(void);
 
 /**
  * @brief Generate sine wave sample array
  * @param[in] Sine wave sample frequency
  * @param[in] Sine wave sample amplitude
  */
-void ht_audio_Sine(double freq,uint16_t ampl);
+void ht_audio_Sine(double freq, uint16_t ampl);
 
 /**
  * @brief Play Audio via I2S
@@ -63,7 +68,8 @@ void ht_audio_Play(uint8_t duration);
  * @brief Test Audio driver as configured
  * @details 0: Zero Mode
  *          1: Table Mode
- *          2: Sine Mode
+ *          2: Squared Mode
+ *          3: Sine Mode
  */
 void ht_audio_Test(uint8_t mode);
 

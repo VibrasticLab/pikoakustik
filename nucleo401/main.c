@@ -53,7 +53,7 @@ int main(void){
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
 
     ht_audio_Init();
-    ht_audio_Test(1);
+    ht_audio_Test(3);
 
     ht_exti_Init();
 

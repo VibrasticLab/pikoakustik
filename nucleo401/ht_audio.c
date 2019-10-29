@@ -31,7 +31,7 @@
 /**
  * @brief Sine Table for Test
  */
-static uint16_t sine_table[I2S_BUFF_SIZE] = {
+static uint16_t squared_table[I2S_BUFF_SIZE] = {
    0x0000, 0x0324, 0x0647, 0x096a, 0x0c8b, 0x0fab, 0x12c8, 0x15e2,
    0x18f8, 0x1c0b, 0x1f19, 0x2223, 0x2528, 0x2826, 0x2b1f, 0x2e11,
    0x30fb, 0x33de, 0x36ba, 0x398c, 0x3c56, 0x3f17, 0x41ce, 0x447a,
@@ -100,19 +100,24 @@ void ht_audio_Zero(void){
 void ht_audio_Table(void){
     uint16_t i;
     for(i=0;i<I2S_BUFF_SIZE;i++){
-        i2s_tx_buf[i] = sine_table[i];
+        i2s_tx_buf[i] = squared_table[i];
     }
 }
 
-void ht_audio_Sine(double freq,uint16_t ampl){
-    (void) freq;
-
-    uint16_t half_size = I2S_BUFF_SIZE/2;
+void ht_audio_Squared(void){
+    uint16_t half_size = (I2S_BUFF_SIZE/2)-1;
     uint16_t i;
 
-    for(i=0;i<half_size;i++){
-        i2s_tx_buf[i]           = ampl*30*(0+sin(3.141592653589793*((double)i/(double)half_size)));
-        i2s_tx_buf[half_size+i] = ampl*30*(2-sin(3.141592653589793*((double)i/(double)half_size)));
+    for(i=0;i<half_size+1;i++){
+        i2s_tx_buf[i]           = (uint16_t)   32767*sin(M_PI*((double)i/(double)half_size));
+        i2s_tx_buf[half_size+i] = (uint16_t)32767*(2-sin(M_PI*((double)i/(double)half_size)));
+    }
+}
+
+void ht_audio_Sine(double freq, uint16_t ampl){
+    uint16_t i;
+    for(i=0;i<I2S_BUFF_SIZE;i++){
+        i2s_tx_buf[i] = ampl*(64*sin((double) freq*i*2*M_PI/I2S_BUFF_SIZE));
     }
 }
 
@@ -120,7 +125,8 @@ void ht_audio_Test(uint8_t mode){
     switch(mode){
         case 0: ht_audio_Zero(); break;
         case 1: ht_audio_Table(); break;
-        case 2: ht_audio_Sine(1000,1000); break;
+        case 2: ht_audio_Squared(); break;
+        case 3: ht_audio_Sine(1,500); break;
     }
 
     ht_audio_Play(1);
