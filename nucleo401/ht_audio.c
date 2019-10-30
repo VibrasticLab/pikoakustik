@@ -104,7 +104,7 @@ void ht_audio_Table(void){
     }
 }
 
-void ht_audio_Squared(void){
+void ht_audio_Half(void){
     uint16_t half_size = (I2S_BUFF_SIZE/2)-1;
     uint16_t i;
 
@@ -123,10 +123,10 @@ void ht_audio_Sine(double freq, uint16_t ampl){
 
 void ht_audio_Test(uint8_t mode){
     switch(mode){
-        case 0: ht_audio_Zero(); break;
-        case 1: ht_audio_Table(); break;
-        case 2: ht_audio_Squared(); break;
-        case 3: ht_audio_Sine(1,10); break;
+        case ZERO_MODE: ht_audio_Zero(); break;
+        case TABLE_MODE: ht_audio_Table(); break;
+        case HALF_MODE: ht_audio_Half(); break;
+        case SINE_MODE: ht_audio_Sine(1,1000); break;
     }
 
     ht_audio_Play(1);

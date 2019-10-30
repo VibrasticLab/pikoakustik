@@ -27,6 +27,8 @@
 
 #include "ht_audio.h"
 #include "ht_exti.h"
+#include "ht_led.h"
+#include "ht_console.h"
 
 static THD_WORKING_AREA(waRunLed, 128);
 #define ThdFunc_RunLED THD_FUNCTION
@@ -35,9 +37,8 @@ static THD_WORKING_AREA(waRunLed, 128);
  * @details Smallest Thread to check either system in Run or Freeze
  */
 static ThdFunc_RunLED(thdRunLed, arg) {
-
   (void)arg;
-  chRegSetThreadName("led1");
+  chRegSetThreadName("run led");
   while (true) {
     palTogglePad(GPIOA, 5);
     chThdSleepMilliseconds(100);
@@ -48,16 +49,21 @@ int main(void){
     halInit();
     chSysInit();
 
+    ht_audio_Init();
+    ht_audio_Test(HALF_MODE);
+
+    ht_exti_Init();
+
+    ht_led_Init();
+
+    ht_comm_Init();
+
     palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
     palClearPad(GPIOA,5);
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
 
-    ht_audio_Init();
-    ht_audio_Test(3);
-
-    ht_exti_Init();
-
     while(1){
+        ht_comm_ReInit();
         chThdSleepMicroseconds(100);
     }
 }

@@ -20,6 +20,11 @@
 #ifndef HT_AUDIO_H
 #define HT_AUDIO_H
 
+#define ZERO_MODE   0
+#define TABLE_MODE  1
+#define HALF_MODE   2
+#define SINE_MODE   3
+
 /**
  * @brief Default Amplitude divided by 1000
  * @details Possible value (16bit) are 32.767 or 65.536
@@ -48,14 +53,14 @@ void ht_audio_Init(void);
 void ht_audio_Zero(void);
 
 /**
- * @brief Generate squared wave from array table
+ * @brief Generate sine wave from array table
  */
 void ht_audio_Table(void);
 
 /**
- * @brief Generate squared wave from a looping formula
+ * @brief Generate sine wave from halving formula
  */
-void ht_audio_Squared(void);
+void ht_audio_Half(void);
 
 /**
  * @brief Generate sine wave sample array
@@ -76,10 +81,6 @@ void ht_audio_Play(uint8_t duration);
 
 /**
  * @brief Test Audio driver as configured
- * @details 0: Zero Mode
- *          1: Table Mode
- *          2: Squared Mode
- *          3: Sine Mode
  */
 void ht_audio_Test(uint8_t mode);
 

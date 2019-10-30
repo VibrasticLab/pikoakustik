@@ -6,7 +6,12 @@ chconf.h
 halconf.h
 ht_audio.c
 ht_audio.h
+ht_comm.c
+ht_console.c
+ht_console.h
 ht_exti.c
 ht_exti.h
+ht_led.c
+ht_led.h
 main.c
 mcuconf.h
