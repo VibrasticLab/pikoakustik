@@ -38,7 +38,7 @@ static ThdFunc_ExtiCb(thdExtiCb, arg) {
   (void)arg;
   chRegSetThreadName("exti callback");
   while (true) {
-      if(ext13==1){ ht_audio_Sine(0.5,500); ht_audio_Play(1); ext13=0; }
+      if(ext13==1){ ht_audio_Sine(1,1); ht_audio_Play(1); ext13=0; }
       chThdSleepMilliseconds(10);
   }
 }

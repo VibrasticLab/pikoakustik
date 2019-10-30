@@ -117,7 +117,7 @@ void ht_audio_Squared(void){
 void ht_audio_Sine(double freq, uint16_t ampl){
     uint16_t i;
     for(i=0;i<I2S_BUFF_SIZE;i++){
-        i2s_tx_buf[i] = ampl*(64*sin((double) freq*i*2*M_PI/I2S_BUFF_SIZE));
+        i2s_tx_buf[i] = ampl*(DEFAULT_AMPLI*sin((double) freq*i*2*M_PI/I2S_BUFF_SIZE));
     }
 }
 
@@ -126,7 +126,7 @@ void ht_audio_Test(uint8_t mode){
         case 0: ht_audio_Zero(); break;
         case 1: ht_audio_Table(); break;
         case 2: ht_audio_Squared(); break;
-        case 3: ht_audio_Sine(1,500); break;
+        case 3: ht_audio_Sine(1,10); break;
     }
 
     ht_audio_Play(1);
