@@ -24,6 +24,7 @@
 #include "chprintf.h"
 
 #include "ht_console.h"
+#include "ht_audio.h"
 
 /**
  * @brief Shell Console pointer
@@ -36,12 +37,57 @@ static thread_t *shelltp = NULL;
  */
 static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
-    if(argc != 0){
-        chprintf(chp,"usage: test\r\n");
-        return;
-    }
+    if(argc != 0){chprintf(chp,"usage: test\r\n");return;}
 
     chprintf(chp,"Serial Console at %d & buffer size %d bit\r\n",SERIAL_DEFAULT_BITRATE,SERIAL_BUFFERS_SIZE);
+}
+
+/**
+ * @brief Audio Zero command callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_zero(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+    if(argc != 0){chprintf(chp,"usage: zero\r\n");return;}
+
+    chprintf(chp,"Test Audio: Sine Zero\r\n");
+    ht_audio_Sine(1,0);
+    ht_audio_Play(1);
+}
+
+/**
+ * @brief Audio Maximum command callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+    if(argc != 0){chprintf(chp,"usage: max\r\n");return;}
+
+    chprintf(chp,"Test Audio: Sine Max\r\n");
+
+    chprintf(chp,"--------------------------\r\n");
+    chprintf(chp,"DONT PLAY MAX ON HEADPHONE !!!\r\n");
+    chprintf(chp,"OR YOUR EAR WILL DAMAGED !!!\r\n");
+    chprintf(chp,"--------------------------\r\n");
+
+    chprintf(chp,"Play Max in 3s !!!\r\n");
+    chThdSleepMilliseconds(3000);
+
+    ht_audio_Sine(1,1000);
+    ht_audio_Play(1);
+}
+
+/**
+ * @brief Audio Minimum command callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+    if(argc != 0){chprintf(chp,"usage: max\r\n");return;}
+
+    chprintf(chp,"Test Audio: Sine Min\r\n");
+    ht_audio_Sine(1,0.1);
+    ht_audio_Play(1);
 }
 
 /**
@@ -49,7 +95,10 @@ static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
  * @details Extending from internal shell's callback
  */
 static const ShellCommand commands[] = {
-    {"test", cmd_test},
+    {"test",cmd_test},
+    {"zero",cmd_zero},
+    {"max",cmd_max},
+    {"min",cmd_min},
     {NULL, NULL}
 };
 

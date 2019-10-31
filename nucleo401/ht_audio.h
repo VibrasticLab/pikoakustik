@@ -27,7 +27,7 @@
 
 /**
  * @brief Default Amplitude divided by 1000
- * @details Possible value (16bit) are 32.767 or 65.536
+ * @details Possible value (signed 16bit) are 32.767
  * @details Recommended value 32.767
  */
 #define DEFAULT_AMPLI 32.767
@@ -65,12 +65,12 @@ void ht_audio_Half(void);
 /**
  * @brief Generate sine wave sample array
  * @param[in] Sine wave sample frequency
- * @param[in] Sine wave sample amplitude (0.01-50)
+ * @param[in] Sine wave sample amplitude (0.1-50)
  * @details WARNING: Dont set Amplitude to maximum (1000)!!!
- *          Your ear would damaged gradually.
+ *          Your ear would damaged eventually.
  *          Except using speaker (not earphone).
  */
-void ht_audio_Sine(double freq, uint16_t ampl);
+void ht_audio_Sine(double freq, double ampl);
 
 /**
  * @brief Play Audio via I2S

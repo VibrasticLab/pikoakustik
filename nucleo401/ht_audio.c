@@ -107,14 +107,15 @@ void ht_audio_Table(void){
 void ht_audio_Half(void){
     uint16_t half_size = (I2S_BUFF_SIZE/2)-1;
     uint16_t i;
+    uint16_t test_ampl = 1000;
 
     for(i=0;i<half_size+1;i++){
-        i2s_tx_buf[i]           = (uint16_t)   32767*sin(M_PI*((double)i/(double)half_size));
-        i2s_tx_buf[half_size+i] = (uint16_t)32767*(2-sin(M_PI*((double)i/(double)half_size)));
+        i2s_tx_buf[i]           =    test_ampl*DEFAULT_AMPLI*sin(M_PI*((double)i/(double)half_size));
+        i2s_tx_buf[half_size+i] = test_ampl*DEFAULT_AMPLI*(2-sin(M_PI*((double)i/(double)half_size)));
     }
 }
 
-void ht_audio_Sine(double freq, uint16_t ampl){
+void ht_audio_Sine(double freq, double ampl){
     uint16_t i;
     for(i=0;i<I2S_BUFF_SIZE;i++){
         i2s_tx_buf[i] = ampl*(DEFAULT_AMPLI*sin((double) freq*i*2*M_PI/I2S_BUFF_SIZE));
@@ -123,10 +124,10 @@ void ht_audio_Sine(double freq, uint16_t ampl){
 
 void ht_audio_Test(uint8_t mode){
     switch(mode){
-        case ZERO_MODE: ht_audio_Zero(); break;
+        case ZERO_MODE : ht_audio_Zero(); break;
         case TABLE_MODE: ht_audio_Table(); break;
-        case HALF_MODE: ht_audio_Half(); break;
-        case SINE_MODE: ht_audio_Sine(1,1000); break;
+        case HALF_MODE : ht_audio_Half(); break;
+        case SINE_MODE : ht_audio_Sine(1,10); break;
     }
 
     ht_audio_Play(1);

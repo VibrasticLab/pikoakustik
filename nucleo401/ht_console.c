@@ -126,7 +126,8 @@ static THD_FUNCTION(shell_thread, p) {
   char *args[SHELL_MAX_ARGUMENTS + 1];
 
   chRegSetThreadName("shell");
-  chprintf(chp, "\r\n\r\nChibiOS/RT Shell\r\n");
+  chprintf(chp, "\r\nChibiOS/RT Shell\r\n");
+  chprintf(chp, "Welcome !!!\r\n");
   while (true) {
 #if SHELL_PROMPT
     chprintf(chp, "ch> ");
