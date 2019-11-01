@@ -29,6 +29,9 @@
 #include "ht_exti.h"
 #include "ht_led.h"
 #include "ht_console.h"
+#include "ht_mmc.h"
+
+uint16_t led_delay=100;
 
 static THD_WORKING_AREA(waRunLed, 128);
 #define ThdFunc_RunLED THD_FUNCTION
@@ -41,7 +44,7 @@ static ThdFunc_RunLED(thdRunLed, arg) {
   chRegSetThreadName("run led");
   while (true) {
     palTogglePad(GPIOA, 5);
-    chThdSleepMilliseconds(100);
+    chThdSleepMilliseconds(led_delay);
   }
 }
 
@@ -57,6 +60,9 @@ int main(void){
     ht_led_Init();
 
     ht_comm_Init();
+
+    ht_mmc_Init();
+    ht_mmc_Test();
 
     palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
     palClearPad(GPIOA,5);

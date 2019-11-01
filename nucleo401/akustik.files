@@ -3,6 +3,7 @@ board/board.c
 board/board.h
 board/board.mk
 chconf.h
+ffconf.h
 halconf.h
 ht_audio.c
 ht_audio.h
@@ -13,5 +14,7 @@ ht_exti.c
 ht_exti.h
 ht_led.c
 ht_led.h
+ht_mmc.c
+ht_mmc.h
 main.c
 mcuconf.h
