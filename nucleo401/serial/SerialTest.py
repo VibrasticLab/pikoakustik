@@ -48,7 +48,6 @@ class SerialTest:
 		cmbDev.set_active(0)
 		cmbDev.connect('changed', self.on_dev_changed)
 
-		self.Freq = 0
 		cmbFreq = gui.get_object('cmbFreq')
 		cmbFreqCell = gtk.CellRendererText()
 		cmbFreqList = gtk.ListStore(str)
@@ -57,18 +56,16 @@ class SerialTest:
 		cmbFreqList.append(['4'])
 		cmbFreqList.append(['8'])
 		cmbFreqList.append(['16'])
-		cmbFreqList.append(['32'])
 		cmbFreq.set_model(cmbFreqList)
 		cmbFreq.pack_start(cmbFreqCell)
 		cmbFreq.set_attributes(cmbFreqCell,text=0)
 		cmbFreq.set_active(0)
 		cmbFreq.connect('changed', self.on_freq_changed)
+		self.Freq = cmbFreq.get_active_text()
 
-		self.Ampl = 0
 		cmbAmpl = gui.get_object('cmbAmpl')
 		cmbAmplCell = gtk.CellRendererText()
 		cmbAmplList = gtk.ListStore(str)
-		cmbAmplList.append(['0'])
 		cmbAmplList.append(['1'])
 		cmbAmplList.append(['5'])
 		cmbAmplList.append(['10'])
@@ -79,6 +76,22 @@ class SerialTest:
 		cmbAmpl.set_attributes(cmbAmplCell,text=0)
 		cmbAmpl.set_active(0)
 		cmbAmpl.connect('changed', self.on_ampl_changed)
+		self.Ampl = cmbAmpl.get_active_text()
+
+		cmbDurr = gui.get_object('cmbDurr')
+		cmbDurrCell = gtk.CellRendererText()
+		cmbDurrList = gtk.ListStore(str)
+		cmbDurrList.append(['1'])
+		cmbDurrList.append(['2'])
+		cmbDurrList.append(['3'])
+		cmbDurrList.append(['4'])
+		cmbDurrList.append(['5'])
+		cmbDurr.set_model(cmbDurrList)
+		cmbDurr.pack_start(cmbDurrCell)
+		cmbDurr.set_attributes(cmbDurrCell,text=0)
+		cmbDurr.set_active(0)
+		cmbDurr.connect('changed', self.on_durr_changed)
+		self.Durr = cmbDurr.get_active_text()
 
 		self.sttConnect = False
 		self.ser = serial.Serial()
@@ -87,7 +100,6 @@ class SerialTest:
 		self.btnConnect.set_sensitive(False)
 		self.btnConnect.connect('clicked', self.on_connect_clicked)
 
-		self.testDelay = 5
 		self.btnTest = gui.get_object('btnTest')
 		self.btnTest.set_sensitive(False)
 		self.btnTest.connect('clicked', self.on_test_clicked)
@@ -109,10 +121,13 @@ class SerialTest:
 		return
 
 	def on_freq_changed(self, widget):
-		self.Freq = widget.get_active()
+		self.Freq = widget.get_active_text()
 
 	def on_ampl_changed(self, widget):
-		self.Ampl = widget.get_active()
+		self.Ampl = widget.get_active_text()
+
+	def on_durr_changed(self, widget):
+		self.Durr = widget.get_active_text()
 
 	def on_connect_clicked(self,widget):
 		if self.sttConnect == False:
@@ -142,9 +157,12 @@ class SerialTest:
 			self.sttConnect = False
 
 	def on_test_clicked(self,widget):
+		strReq = 'play %s %s %s\r\n' % (self.Freq,self.Ampl,self.Durr)
+
 		self.btnTest.set_sensitive(False)
-		self.ser.write('play %d %d\r\n' % (self.Freq,self.Ampl))
-		time.sleep(self.testDelay/2) # somehow STM32 timer twice faster
+		self.ser.write(strReq)
+		print(strReq)
+		time.sleep(int(self.Durr))
 		self.btnTest.set_sensitive(True)
 
 if __name__ == '__main__':

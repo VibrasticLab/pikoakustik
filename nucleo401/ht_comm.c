@@ -17,7 +17,9 @@
  * @{
  */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ch.h"
 #include "hal.h"
@@ -83,11 +85,30 @@ static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
  */
 static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
-    if(argc != 0){chprintf(chp,"usage: max\r\n");return;}
+    if(argc != 0){chprintf(chp,"usage: min\r\n");return;}
 
     chprintf(chp,"Test Audio: Sine Min\r\n");
     ht_audio_Sine(1,0.1);
     ht_audio_Play(1);
+}
+
+/**
+ * @brief Audio Play Test command callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_play(BaseSequentialStream *chp, int argc, char *argv[]) {
+    double vfreq,vampl;
+    u_int8_t vdurr;
+
+    if(argc != 3){chprintf(chp,"usage: play <freq> <ampl> <durr>\r\n");return;}
+
+    vfreq = atof(argv[0]);
+    vampl = atof(argv[1]);
+    vdurr = atoi(argv[2]);
+
+    chprintf(chp,"Test Audio: Freq:%3.1f Ampl:%3.1f Durr:%1i\r\n",vfreq,vampl,vdurr);
+    ht_audio_Sine(vfreq,vampl);
+    ht_audio_Play(vdurr);
 }
 
 /**
@@ -97,6 +118,7 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
 static const ShellCommand commands[] = {
     {"test",cmd_test},
     {"zero",cmd_zero},
+    {"play",cmd_play},
     {"max",cmd_max},
     {"min",cmd_min},
     {NULL, NULL}
