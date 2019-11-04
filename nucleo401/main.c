@@ -61,8 +61,8 @@ int main(void){
 
     ht_comm_Init();
 
-    ht_mmc_Init();
-    ht_mmc_Test();
+//    ht_mmc_Init();
+//    ht_mmc_Test();
 
     palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
     palClearPad(GPIOA,5);

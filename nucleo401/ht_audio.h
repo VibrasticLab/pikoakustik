@@ -42,7 +42,12 @@
  * @details If I2S-SPI and MMC-SPI use same DMA stream, set to 512.
  *          Please check DMA stream ID on both SPI peripherals.
  */
-#define I2S_BUFF_SIZE   512
+#define I2S_BUFF_SIZE   256
+
+/**
+ * @brief Global Duration for Testing
+ */
+#define TEST_DURATION   10
 
 /**
  * @brief Initiate Audio driver via I2S
