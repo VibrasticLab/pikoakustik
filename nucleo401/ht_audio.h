@@ -80,6 +80,14 @@ void ht_audio_Half(void);
 void ht_audio_Sine(double freq, double ampl);
 
 /**
+ * @brief Generate sine wave tone from halving formula with Frequency and Amplitude
+ * @details This function intended to be actual implementaion of sample preparation
+ * @param[in] Sine wave sample frequency
+ * @param[in] Sine wave sample amplitude
+ */
+void ht_audio_Tone(double freq, double ampl);
+
+/**
  * @brief Play Audio via I2S
  * @details Play I2S Transmit buffer in loop
  * @param[in] Duration to play in seconds

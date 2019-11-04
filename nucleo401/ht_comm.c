@@ -163,6 +163,31 @@ static void cmd_half(BaseSequentialStream *chp, int argc, char *argv[]) {
 }
 
 /**
+ * @brief Audio Play Halving-Formula with Frequency and Amplitude command callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
+    if(argc == 0){
+        (void) argv;
+
+        chprintf(chp,"Coba Audio: Tone\r\n");
+        ht_audio_Tone(0,0);
+        ht_audio_Play(TEST_DURATION);
+        chprintf(chp,"Finished\r\n");
+    }
+    else if (argc == 2) {
+        double vfreq = atof(argv[0]);
+        double vampl = atof(argv[1]);
+
+        chprintf(chp,"Coba Tone: Freq:%3.1f Ampl:%3.1f\r\n",vfreq,vampl);
+        ht_audio_Tone(vfreq,vampl);
+        ht_audio_Play(TEST_DURATION);
+        chprintf(chp,"Finished\r\n");
+    }
+    else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
+}
+
+/**
  * @brief Shell command and it's callback enumeration
  * @details Extending from internal shell's callback
  */
@@ -173,6 +198,7 @@ static const ShellCommand commands[] = {
     {"play",cmd_play},
     {"coba",cmd_coba},
     {"half",cmd_half},
+    {"tone",cmd_tone},
     {"max",cmd_max},
     {"min",cmd_min},
     {NULL, NULL}

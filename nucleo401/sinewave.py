@@ -4,17 +4,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
-ampl_max = 65536
-
 buff_size = 256
 half_buff_size = int(buff_size/2)-1
 
 y = np.array([])
 for i in range(half_buff_size+1):
-    y = np.append(y,(ampl_max/2)*math.sin(3.141592653589793*i/half_buff_size))
+    y = np.append(y,(32767)*math.sin(3.141592653589793*i/half_buff_size))
 
-for i in range(half_buff_size+1):
-    y = np.append(y,(ampl_max/2)*(2-math.sin(3.141592653589793*i/half_buff_size)))
+for i in range(1,half_buff_size+1):
+    y = np.append(y,(32767)*(2-math.sin(3.141592653589793*i/half_buff_size)))
 
 sine_table = np.array([
    0x0000, 0x0324, 0x0647, 0x096a, 0x0c8b, 0x0fab, 0x12c8, 0x15e2,
