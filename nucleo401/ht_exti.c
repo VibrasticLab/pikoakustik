@@ -42,7 +42,7 @@ static ThdFunc_ExtiCb(thdExtiCb, arg) {
       if(ext13==1){
           ht_led_Shift();
 
-          ht_audio_Sine(1,1000);
+          ht_audio_Half();
           ht_audio_Play(TEST_DURATION);
 
           ext13=0;
