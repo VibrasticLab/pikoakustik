@@ -53,7 +53,11 @@ int main(void){
     chSysInit();
 
     ht_audio_Init();
+#if USE_SINE_TABLE
+    ht_audio_Table();
+#else
     ht_audio_Half();
+#endif
     ht_audio_Play(TEST_DURATION);
 
     ht_exti_Init();

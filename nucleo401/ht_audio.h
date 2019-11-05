@@ -45,7 +45,7 @@
 #if USE_SINE_TABLE
 #define I2S_BUFF_SIZE   256
 #else
-#define I2S_BUFF_SIZE   256
+#define I2S_BUFF_SIZE   512
 #endif
 
 /**
