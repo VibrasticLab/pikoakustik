@@ -119,10 +119,10 @@ static void cmd_play(BaseSequentialStream *chp, int argc, char *argv[]) {
  * @brief Audio Play Coba command callback
  * @details Enumerated and not called directly by any normal thread
  */
-static void cmd_coba(BaseSequentialStream *chp, int argc, char *argv[]) {
+static void cmd_sine(BaseSequentialStream *chp, int argc, char *argv[]) {
     double vfreq,vampl;
 
-    if(argc != 2){chprintf(chp,"usage: coba <freq> <ampl>\r\n");return;}
+    if(argc != 2){chprintf(chp,"usage: sine <freq> <ampl>\r\n");return;}
 
     vfreq = atof(argv[0]);
     vampl = atof(argv[1]);
@@ -133,6 +133,7 @@ static void cmd_coba(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp,"Finished\r\n");
 }
 
+#if USE_SINE_TABLE
 /**
  * @brief Audio Play Table command callback
  * @details Enumerated and not called directly by any normal thread
@@ -146,6 +147,18 @@ static void cmd_table(BaseSequentialStream *chp, int argc, char *argv[]) {
     ht_audio_Play(TEST_DURATION);
     chprintf(chp,"Finished\r\n");
 }
+static void cmd_wave(BaseSequentialStream *chp, int argc, char *argv[]) {
+    if(argc == 0){
+        (void) argv;
+
+        chprintf(chp,"Coba Audio: Wave\r\n");
+        ht_audio_Wave();
+        ht_audio_Play(TEST_DURATION);
+        chprintf(chp,"Finished\r\n");
+    }
+    else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
+}
+#endif
 
 /**
  * @brief Audio Play Halving-Formula command callback
@@ -192,13 +205,16 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
  * @details Extending from internal shell's callback
  */
 static const ShellCommand commands[] = {
-    {"table",cmd_table},
     {"test",cmd_test},
     {"zero",cmd_zero},
     {"play",cmd_play},
-    {"coba",cmd_coba},
+    {"sine",cmd_sine},
     {"half",cmd_half},
     {"tone",cmd_tone},
+#if USE_SINE_TABLE
+    {"wave",cmd_wave},
+    {"table",cmd_table},
+#endif
     {"max",cmd_max},
     {"min",cmd_min},
     {NULL, NULL}

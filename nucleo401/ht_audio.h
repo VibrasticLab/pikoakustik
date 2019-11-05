@@ -20,10 +20,10 @@
 #ifndef HT_AUDIO_H
 #define HT_AUDIO_H
 
-#define ZERO_MODE   0
-#define TABLE_MODE  1
-#define HALF_MODE   2
-#define SINE_MODE   3
+/**
+ * @brief Use SineWave table or not
+ */
+#define USE_SINE_TABLE  1
 
 /**
  * @brief Default Amplitude divided by 1000
@@ -42,12 +42,16 @@
  * @details If I2S-SPI and MMC-SPI use same DMA stream, set to 512.
  *          Please check DMA stream ID on both SPI peripherals.
  */
+#if USE_SINE_TABLE
 #define I2S_BUFF_SIZE   256
+#else
+#define I2S_BUFF_SIZE   256
+#endif
 
 /**
  * @brief Global Duration for Testing
  */
-#define TEST_DURATION   10
+#define TEST_DURATION   2
 
 /**
  * @brief Initiate Audio driver via I2S
@@ -59,15 +63,30 @@ void ht_audio_Init(void);
  */
 void ht_audio_Zero(void);
 
+#if USE_SINE_TABLE
 /**
  * @brief Generate sine wave from array table
  */
 void ht_audio_Table(void);
 
 /**
+ * @brief Generate sine waveform from array table
+ */
+void ht_audio_Wave(void);
+#endif
+
+/**
  * @brief Generate sine wave from halving formula
  */
 void ht_audio_Half(void);
+
+/**
+ * @brief Generate sine wave tone from halving formula with Frequency and Amplitude
+ * @details This function intended to be actual implementaion of sample preparation
+ * @param[in] Sine wave sample frequency
+ * @param[in] Sine wave sample amplitude
+ */
+void ht_audio_Tone(double freq, double ampl);
 
 /**
  * @brief Generate sine wave sample array
@@ -80,24 +99,11 @@ void ht_audio_Half(void);
 void ht_audio_Sine(double freq, double ampl);
 
 /**
- * @brief Generate sine wave tone from halving formula with Frequency and Amplitude
- * @details This function intended to be actual implementaion of sample preparation
- * @param[in] Sine wave sample frequency
- * @param[in] Sine wave sample amplitude
- */
-void ht_audio_Tone(double freq, double ampl);
-
-/**
  * @brief Play Audio via I2S
  * @details Play I2S Transmit buffer in loop
  * @param[in] Duration to play in seconds
  */
 void ht_audio_Play(uint8_t duration);
-
-/**
- * @brief Test Audio driver as configured
- */
-void ht_audio_Test(uint8_t mode);
 
 #endif // HT_AUDIO_H
 /** @} */
