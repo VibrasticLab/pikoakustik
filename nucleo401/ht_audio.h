@@ -23,7 +23,7 @@
 /**
  * @brief Use SineWave table or not
  */
-#define USE_SINE_TABLE  1
+#define USE_SINE_TABLE  0
 
 /**
  * @brief Default Amplitude divided by 1000
@@ -45,7 +45,7 @@
 #if USE_SINE_TABLE
 #define I2S_BUFF_SIZE   256
 #else
-#define I2S_BUFF_SIZE   512
+#define I2S_BUFF_SIZE   256
 #endif
 
 /**
@@ -78,12 +78,12 @@ void ht_audio_Table(void);
  * @brief Generate sine waveform from array table
  */
 void ht_audio_Wave(void);
-#endif
 
 /**
  * @brief Generate sine wave from halving formula
  */
 void ht_audio_Half(void);
+#endif
 
 /**
  * @brief Generate sine wave tone from halving formula with Frequency and Amplitude

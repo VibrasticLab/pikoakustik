@@ -158,7 +158,6 @@ static void cmd_wave(BaseSequentialStream *chp, int argc, char *argv[]) {
     }
     else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
 }
-#endif
 
 /**
  * @brief Audio Play Halving-Formula command callback
@@ -174,6 +173,7 @@ static void cmd_half(BaseSequentialStream *chp, int argc, char *argv[]) {
     ht_audio_Play(TEST_DURATION);
     chprintf(chp,"Finished\r\n");
 }
+#endif
 
 /**
  * @brief Audio Play Halving-Formula with Frequency and Amplitude command callback
@@ -209,9 +209,9 @@ static const ShellCommand commands[] = {
     {"zero",cmd_zero},
     {"play",cmd_play},
     {"sine",cmd_sine},
-    {"half",cmd_half},
     {"tone",cmd_tone},
 #if USE_SINE_TABLE
+    {"half",cmd_half},
     {"wave",cmd_wave},
     {"table",cmd_table},
 #endif
