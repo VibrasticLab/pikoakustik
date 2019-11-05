@@ -5,14 +5,18 @@ import numpy as np
 import math
 
 buff_size = 256
-half_buff_size = int(buff_size/2)-1
+half_size = int(buff_size/2)-1
+
+ampl = 0.5
 
 y = np.array([])
-for i in range(half_buff_size+1):
-    y = np.append(y,(32767)*math.sin(3.141592653589793*i/half_buff_size))
-
-for i in range(1,half_buff_size+1):
-    y = np.append(y,(32767)*(2-math.sin(3.141592653589793*i/half_buff_size)))
+for i in range(half_size+1):
+   dy = ampl*32767*math.sin(3.141592653589793*(i/half_size)); 
+   y = np.append(y,dy+(32767*(1-ampl)))
+   
+for i in range(1,half_size+1):
+   dy = 32767*(2-(ampl*math.sin(3.141592653589793*(i/half_size)))); 
+   y = np.append(y,dy-(32767*(1-ampl)))
 
 sine_table = np.array([
    0x0000, 0x0324, 0x0647, 0x096a, 0x0c8b, 0x0fab, 0x12c8, 0x15e2,
@@ -51,5 +55,5 @@ sine_table = np.array([
 
 plt.figure()
 plt.plot(y,'ro')
-plt.plot(sine_table,'bo')
+#plt.plot(sine_table,'bo')
 plt.show(block=True)

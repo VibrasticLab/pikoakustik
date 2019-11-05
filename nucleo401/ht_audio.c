@@ -130,13 +130,16 @@ void ht_audio_Tone(double freq, double ampl){
 
     uint16_t half_size = (I2S_BUFF_SIZE/2)-1;
     uint16_t i;
+    double dy;
 
     for(i=0;i<half_size+1;i++){
-        i2s_tx_buf[i]           =    32767*sin(3.141592653589793*((double)i/(double)half_size));
+        dy = (32767*sin(3.141592653589793*((double)i/(double)half_size)));
+        i2s_tx_buf[i] = dy + (32767*(1-ampl));
     }
 
     for(i=1;i<half_size+1;i++){
-        i2s_tx_buf[half_size+i] = 32767*(2-sin(3.141592653589793*((double)i/(double)half_size)));
+        dy = 32767*(2-sin(3.141592653589793*((double)i/(double)half_size)));
+        i2s_tx_buf[half_size+i] = dy-(32767*(1-ampl)) ;
     }
 }
 
