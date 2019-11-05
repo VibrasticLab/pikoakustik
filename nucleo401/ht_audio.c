@@ -116,7 +116,7 @@ static uint16_t i2s_tx_buf[I2S_BUFF_SIZE];
 /**
  * @brief I2S Protocol config struct
  */
-static const I2SConfig i2scfg = {
+static I2SConfig i2scfg = {
   i2s_tx_buf,
   NULL,
   I2S_BUFF_SIZE,
@@ -157,32 +157,17 @@ void ht_audio_Wave(void){
 #endif
 
 void ht_audio_Half(void){
-    uint16_t half_size = (I2S_BUFF_SIZE/2)-1;
     uint16_t i;
 
-    for(i=0;i<half_size+1;i++){
-        i2s_tx_buf[i]           =    32767*sin(3.141592653589793*((double)i/(double)half_size));
-    }
-
-    for(i=1;i<half_size+1;i++){
-        i2s_tx_buf[half_size+i] = 32767*(2-sin(3.141592653589793*((double)i/(double)half_size)));
-    }
+    for(i=0;i<I2S_HALF_SIZE;i++){
+        i2s_tx_buf[i] = 32767*sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE));
+        i2s_tx_buf[I2S_HALF_SIZE+i] = 32767*(2-sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE)));
+   }
 }
 
 void ht_audio_Tone(double freq, double ampl){
     (void) freq;
     (void) ampl;
-
-    uint16_t half_size = (I2S_BUFF_SIZE/2)-1;
-    uint16_t i;
-
-    for(i=0;i<half_size+1;i++){
-        i2s_tx_buf[i]           =    32767*sin(3.141592653589793*((double)i/(double)half_size));
-    }
-
-    for(i=1;i<half_size+1;i++){
-        i2s_tx_buf[half_size+i] = 32767*(2-sin(3.141592653589793*((double)i/(double)half_size)));
-    }
 }
 
 void ht_audio_Sine(double freq, double ampl){

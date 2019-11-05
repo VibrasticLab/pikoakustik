@@ -49,9 +49,14 @@
 #endif
 
 /**
+ * @brief Size of Half Buffer
+ */
+#define I2S_HALF_SIZE   ((I2S_BUFF_SIZE/2)-1)
+
+/**
  * @brief Global Duration for Testing
  */
-#define TEST_DURATION   2
+#define TEST_DURATION   1
 
 /**
  * @brief Initiate Audio driver via I2S
