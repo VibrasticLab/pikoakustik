@@ -35,7 +35,7 @@
 /**
  * @brief I2S protocol buffer size
  */
-#define SAMPLING_RATE 44100
+#define SAMPLING_RATE 16000
 
 /**
  * @brief I2S protocol buffer size
