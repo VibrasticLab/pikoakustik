@@ -11,11 +11,11 @@ ampl = 0.5
 
 y = np.array([])
 for i in range(half_size+1):
-   dy = ampl*32767*math.sin(3.141592653589793*(i/half_size)); 
+   dy = ampl*32767*math.sin(3.141592653589793*(i/half_size));
    y = np.append(y,dy+(32767*(1-ampl)))
-   
+
 for i in range(1,half_size+1):
-   dy = 32767*(2-(ampl*math.sin(3.141592653589793*(i/half_size)))); 
+   dy = 32767*(2-(ampl*math.sin(3.141592653589793*(i/half_size))));
    y = np.append(y,dy-(32767*(1-ampl)))
 
 sine_table = np.array([
@@ -70,7 +70,7 @@ sine_table2 = np.array([
    0xb8e4, 0xbb86, 0xbe32, 0xc0e9, 0xc3aa, 0xc674, 0xc946, 0xcc22,
    0xcf05, 0xd1ef, 0xd4e1, 0xd7da, 0xdad8, 0xdddd, 0xe0e7, 0xe3f5,
    0xe708, 0xea1e, 0xed38, 0xf055, 0xf375, 0xf696, 0xf9b9, 0xfcdc,
-   
+
    0x0000, 0x0324, 0x0647, 0x096a, 0x0c8b, 0x0fab, 0x12c8, 0x15e2,
    0x18f8, 0x1c0b, 0x1f19, 0x2223, 0x2528, 0x2826, 0x2b1f, 0x2e11,
    0x30fb, 0x33de, 0x36ba, 0x398c, 0x3c56, 0x3f17, 0x41ce, 0x447a,
@@ -99,6 +99,6 @@ for i in range(256):
 
 plt.figure()
 #plt.plot(y,'ro')
-#plt.plot(sine_table,'bo')
-plt.plot(ysin,'bo')
+plt.plot(sine_table,'bo')
+#plt.plot(ysin,'bo')
 plt.show(block=True)
