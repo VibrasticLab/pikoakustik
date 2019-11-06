@@ -33,6 +33,12 @@
 #define DEFAULT_AMPLI 32.767
 
 /**
+ * @brief Default Attenuation
+ * @details Hopes can reduce high freq noises
+ */
+#define DEFAULT_ATTEN 0.1
+
+/**
  * @brief I2S protocol buffer size
  */
 #define SAMPLING_RATE 16000
