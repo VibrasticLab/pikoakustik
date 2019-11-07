@@ -23,7 +23,7 @@
 /**
  * @brief Use SineWave table or not
  */
-#define USE_SINE_TABLE  0
+#define USE_SINE_TABLE  1
 
 /**
  * @brief Default Amplitude divided by 1000

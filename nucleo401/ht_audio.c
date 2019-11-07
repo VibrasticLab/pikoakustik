@@ -134,7 +134,7 @@ void ht_audio_Init(void){
 
 void ht_audio_Zero(void){
     uint16_t i;
-    for(i=0;i<I2S_BUFF_SIZE;i++){
+    for(i=0;i<SAMPLING_RATE;i++){
         i2s_tx_buf[i] = 0x0000;
     }
 }
@@ -142,6 +142,9 @@ void ht_audio_Zero(void){
 #if USE_SINE_TABLE
 void ht_audio_Table(void){
     uint16_t i;
+
+    ht_audio_Zero();
+
     for(i=0;i<I2S_BUFF_SIZE;i++){
         i2s_tx_buf[i] = sine_table[i];
     }
@@ -149,6 +152,9 @@ void ht_audio_Table(void){
 
 void ht_audio_Wave(void){
     uint16_t i;
+
+    ht_audio_Zero();
+
     for(i=0;i<I2S_BUFF_SIZE;i++){
         if(i<((I2S_BUFF_SIZE/2)-1))       i2s_tx_buf[i] = wave_table[i]-32767;
         else if(i>=((I2S_BUFF_SIZE/2)-1)) i2s_tx_buf[i] = wave_table[i]+32767;
@@ -157,6 +163,8 @@ void ht_audio_Wave(void){
 
 void ht_audio_Half(void){
     uint16_t i;
+
+    ht_audio_Zero();
 
     for(i=0;i<I2S_HALF_SIZE;i++){
         i2s_tx_buf[i] = 32767*sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE));
@@ -170,6 +178,8 @@ void ht_audio_Tone(double freq, double ampl){
 
     uint16_t arraysize;
     uint16_t halfsize;
+
+    ht_audio_Zero();
 
     if(freq>=1){
         arraysize = I2S_BUFF_SIZE/freq;
@@ -186,6 +196,8 @@ void ht_audio_Tone(double freq, double ampl){
 
 void ht_audio_Sine(double freq, double ampl){
     uint16_t i;
+
+    ht_audio_Zero();
 
     for(i=0;i<I2S_BUFF_SIZE;i++){
         i2s_tx_buf[i] = ampl*DEFAULT_AMPLI*sin((double) freq*i*2*(M_PI/I2S_BUFF_SIZE));
