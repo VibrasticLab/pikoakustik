@@ -23,7 +23,7 @@
 /**
  * @brief Use SineWave table or not
  */
-#define USE_SINE_TABLE  1
+#define USE_SINE_TABLE  0
 
 /**
  * @brief Default Amplitude divided by 1000
@@ -41,7 +41,7 @@
 /**
  * @brief I2S protocol buffer size
  */
-#define SAMPLING_RATE 16000
+#define SAMPLING_RATE 44100
 
 /**
  * @brief I2S protocol buffer size
@@ -60,9 +60,14 @@
 #define I2S_HALF_SIZE   ((I2S_BUFF_SIZE/2)-1)
 
 /**
+ * @brief Total buffer size
+ */
+#define TOTAL_BUFF_SIZE I2S_BUFF_SIZE*32
+
+/**
  * @brief Global Duration for Testing
  */
-#define TEST_DURATION   1
+#define TEST_DURATION   2
 
 /**
  * @brief Initiate Audio driver via I2S

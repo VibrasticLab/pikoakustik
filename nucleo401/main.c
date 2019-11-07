@@ -54,7 +54,7 @@ int main(void){
 
     ht_audio_Init();
     ht_audio_Tone(1,1);
-    ht_audio_Play(1);
+    ht_audio_Play(TEST_DURATION);
 
     ht_exti_Init();
 

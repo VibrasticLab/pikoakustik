@@ -106,12 +106,18 @@ static uint16_t wave_table[I2S_BUFF_SIZE] = {
     0x18f8, 0x15e2, 0x12c8, 0x0fab, 0x0c8b, 0x096a, 0x0647, 0x0324,
     0x0000,
 };
-#endif
 
 /**
  * @brief I2S Transmit buffer
  */
-static uint16_t i2s_tx_buf[SAMPLING_RATE];
+static uint16_t i2s_tx_buf[I2S_BUFF_SIZE];
+
+#else
+/**
+ * @brief I2S Transmit buffer
+ */
+static uint16_t i2s_tx_buf[TOTAL_BUFF_SIZE];
+#endif
 
 /**
  * @brief I2S Protocol config struct
@@ -134,7 +140,7 @@ void ht_audio_Init(void){
 
 void ht_audio_Zero(void){
     uint16_t i;
-    for(i=0;i<SAMPLING_RATE;i++){
+    for(i=0;i<TOTAL_BUFF_SIZE;i++){
         i2s_tx_buf[i] = 0x0000;
     }
 }
@@ -183,7 +189,7 @@ void ht_audio_Tone(double freq, double ampl){
 
     if(freq>=1){
         arraysize = I2S_BUFF_SIZE/freq;
-        halfsize = I2S_BUFF_SIZE/2;
+        halfsize = (I2S_BUFF_SIZE/2)-1;
 
         for(i=0;i<halfsize;i++){
             i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
