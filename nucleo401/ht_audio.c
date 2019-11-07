@@ -183,17 +183,11 @@ void ht_audio_Tone(double freq, double ampl){
     (void) freq;
     uint16_t i;
 
-    uint16_t buffsize;
-    uint16_t halfsize;
-
     ht_audio_Zero();
 
-    buffsize =       I2S_BUFF_SIZE;
-    halfsize = (I2S_BUFF_SIZE/2)-1;
-
-    for(i=0;i<halfsize;i++){
-        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
-        i2s_tx_buf[I2S_HALF_SIZE+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
+    for(i=0;i<I2S_HALF_SIZE;i++){
+        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE));
+        i2s_tx_buf[I2S_HALF_SIZE+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE)));
     }
 }
 

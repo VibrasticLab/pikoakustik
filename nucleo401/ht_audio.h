@@ -52,6 +52,8 @@
 #define I2S_BUFF_SIZE   256
 #else
 #define I2S_BUFF_SIZE   512
+//#define I2S_BUFF_SIZE   32 //64 //128 //256
+//#define I2S_BUFF_SIZE   2048 //1024
 #endif
 
 /**
