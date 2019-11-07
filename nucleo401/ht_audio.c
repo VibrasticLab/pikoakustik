@@ -122,7 +122,7 @@ static uint16_t i2s_tx_buf[TOTAL_BUFF_SIZE];
 /**
  * @brief I2S Protocol config struct
  */
-static I2SConfig i2scfg = {
+static const I2SConfig i2scfg = {
   i2s_tx_buf,
   NULL,
   I2S_BUFF_SIZE,
@@ -180,23 +180,20 @@ void ht_audio_Half(void){
 #endif
 
 void ht_audio_Tone(double freq, double ampl){
+    (void) freq;
     uint16_t i;
 
-    uint16_t arraysize;
+    uint16_t buffsize;
     uint16_t halfsize;
 
     ht_audio_Zero();
 
-    if(freq>=1){
-        arraysize = I2S_BUFF_SIZE/freq;
-        halfsize = (I2S_BUFF_SIZE/2)-1;
+    buffsize =       I2S_BUFF_SIZE;
+    halfsize = (I2S_BUFF_SIZE/2)-1;
 
-        for(i=0;i<halfsize;i++){
-            i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
-            i2s_tx_buf[I2S_HALF_SIZE+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
-        }
-
-        i2scfg.size = arraysize;
+    for(i=0;i<halfsize;i++){
+        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
+        i2s_tx_buf[I2S_HALF_SIZE+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
     }
 }
 

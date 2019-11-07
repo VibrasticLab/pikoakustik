@@ -61,8 +61,9 @@
 
 /**
  * @brief Total buffer size
+ * @details Just fill it with bug number below 44100
  */
-#define TOTAL_BUFF_SIZE I2S_BUFF_SIZE*32
+#define TOTAL_BUFF_SIZE I2S_BUFF_SIZE*16
 
 /**
  * @brief Global Duration for Testing
