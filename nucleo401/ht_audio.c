@@ -122,7 +122,7 @@ static uint16_t i2s_tx_buf[TOTAL_BUFF_SIZE];
 /**
  * @brief I2S Protocol config struct
  */
-static const I2SConfig i2scfg = {
+static I2SConfig i2scfg = {
   i2s_tx_buf,
   NULL,
   I2S_BUFF_SIZE,
@@ -132,7 +132,6 @@ static const I2SConfig i2scfg = {
 };
 
 void ht_audio_Init(void){
-    i2sStart(&I2SD2, &i2scfg);
     palSetPadMode(GPIOB, 12, PAL_MODE_ALTERNATE(5));
     palSetPadMode(GPIOB, 10, PAL_MODE_ALTERNATE(5));
     palSetPadMode(GPIOC, 3 , PAL_MODE_ALTERNATE(5));
@@ -180,15 +179,21 @@ void ht_audio_Half(void){
 #endif
 
 void ht_audio_Tone(double freq, double ampl){
-    (void) freq;
     uint16_t i;
+    uint16_t buffsize;
+    uint16_t halfsize;
+
+    buffsize = (uint16_t) I2S_BUFF_SIZE/freq;
+    halfsize = (uint16_t) (buffsize/2)-1;
 
     ht_audio_Zero();
 
-    for(i=0;i<I2S_HALF_SIZE;i++){
-        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE));
-        i2s_tx_buf[I2S_HALF_SIZE+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE)));
+    for(i=0;i<halfsize;i++){
+        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
+        i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
     }
+
+    i2scfg.size = buffsize;
 }
 
 void ht_audio_Sine(double freq, double ampl){
@@ -202,8 +207,10 @@ void ht_audio_Sine(double freq, double ampl){
 }
 
 void ht_audio_Play(uint8_t duration){
+    i2sStart(&I2SD2, &i2scfg);
     i2sStartExchange(&I2SD2);
     chThdSleepMilliseconds(duration*1000);
     i2sStopExchange(&I2SD2);
+    i2sStop(&I2SD2);
 }
 /** @} */

@@ -105,8 +105,8 @@ void ht_audio_Half(void);
 /**
  * @brief Generate sine wave tone from halving formula with Frequency and Amplitude
  * @details This function intended to be actual implementaion of sample preparation
- * @param[in] Sine wave sample frequency
- * @param[in] Sine wave sample amplitude
+ * @param[in] Sine wave sample frequency (0.125,0.25,0.5,1,2,4,8,16,32)
+ * @param[in] Sine wave sample amplitude (1 ~ 0.0001 or use ht_audio_Zero())
  */
 void ht_audio_Tone(double freq, double ampl);
 
