@@ -79,6 +79,9 @@ void ht_audio_Init(void);
 
 /**
  * @brief Generate sine wave with only zero
+ * @details Value from 0 to 32767 are positive side of PCM signal.
+ *          Value from 0 to 32767 are negative side of PCM signal.
+ *          Each side of PCM signal can be overflowed.
  */
 void ht_audio_Zero(void);
 

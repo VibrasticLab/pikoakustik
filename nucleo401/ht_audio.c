@@ -141,7 +141,7 @@ void ht_audio_Init(void){
 void ht_audio_Zero(void){
     uint16_t i;
     for(i=0;i<TOTAL_BUFF_SIZE;i++){
-        i2s_tx_buf[i] = 0x0000;
+        i2s_tx_buf[i] = 0;
     }
 }
 
