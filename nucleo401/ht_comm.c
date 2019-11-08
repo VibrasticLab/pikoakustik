@@ -184,7 +184,7 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
         (void) argv;
 
         chprintf(chp,"Coba Audio: Tone\r\n");
-        ht_audio_Tone(0,0);
+        ht_audio_Tone(1.25,0.01);
         ht_audio_Play(TEST_DURATION);
         chprintf(chp,"Finished\r\n");
     }
