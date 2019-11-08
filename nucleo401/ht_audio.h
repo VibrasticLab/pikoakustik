@@ -79,9 +79,6 @@ void ht_audio_Init(void);
 
 /**
  * @brief Generate sine wave with only zero
- * @details Value from 0 to 32767 are positive side of PCM signal.
- *          Value from 0 to 32767 are negative side of PCM signal.
- *          Each side of PCM signal can be overflowed.
  */
 void ht_audio_Zero(void);
 
@@ -105,8 +102,8 @@ void ht_audio_Half(void);
 /**
  * @brief Generate sine wave tone from halving formula with Frequency and Amplitude
  * @details This function intended to be actual implementaion of sample preparation
- * @param[in] Sine wave sample frequency in scaling from 400Hz (0.125,0.25,0.5,1,2,4,8,16,32)
- * @param[in] Sine wave sample amplitude in scaling from 100dB (1 ~ 0.0001 or use ht_audio_Zero())
+ * @param[in] Sine wave sample frequency in linear scaling from 400Hz (0.125,0.25,0.5,1,2,4,8,16,32) -> 500Hz=1.25
+ * @param[in] Sine wave sample amplitude in linear scaling from 100dB (1 ~ 0.0001 or use ht_audio_Zero())
  */
 void ht_audio_Tone(double freq, double ampl);
 

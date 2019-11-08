@@ -181,25 +181,35 @@ void ht_audio_Half(void){
 void ht_audio_Tone(double freq, double ampl){
     uint16_t i;
     uint16_t buffsize;
-    uint16_t halfsize;
+//    uint16_t halfsize;
+    double ysin;
 
     buffsize = (uint16_t) I2S_BUFF_SIZE/freq;
-    halfsize = (uint16_t) (buffsize/2)-1;
+//    halfsize = (uint16_t) (buffsize/2)-1;
 
     ht_audio_Zero();
 
-    for(i=0;i<halfsize;i++){
-        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
-        i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
+    for(i=0;i<buffsize;i++){
+        ysin = DEFAULT_ATTEN*ampl*32767*sin(2*3.141592653589793*((double)i/(double)buffsize));
+        if(ysin >= 0){
+            i2s_tx_buf[i]=ysin;
+        }
+        if(ysin <0  ){
+            i2s_tx_buf[i]=ysin+65535;
+        }
 
+        //half upper/lower
+//        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
+//        i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
 
-        // Half Down
+        // half lower
 //        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
 //        i2s_tx_buf[halfsize+i] = 65535;
 
         // Half Up
 //        i2s_tx_buf[i] = 0;
 //        i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
+
     }
 
     i2scfg.size = buffsize;
