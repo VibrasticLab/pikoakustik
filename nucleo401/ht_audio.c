@@ -191,6 +191,15 @@ void ht_audio_Tone(double freq, double ampl){
     for(i=0;i<halfsize;i++){
         i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
         i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
+
+
+        // Half Down
+//        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
+//        i2s_tx_buf[halfsize+i] = 65535;
+
+        // Half Up
+//        i2s_tx_buf[i] = 0;
+//        i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
     }
 
     i2scfg.size = buffsize;
