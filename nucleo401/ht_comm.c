@@ -53,7 +53,7 @@ static void cmd_zero(BaseSequentialStream *chp, int argc, char *argv[]) {
     if(argc != 0){chprintf(chp,"usage: zero\r\n");return;}
 
     chprintf(chp,"Test Audio: Sine Zero\r\n");
-    ht_audio_Sine(1,0);
+    ht_audio_Tone(1,0);
     ht_audio_Play(TEST_DURATION);
     chprintf(chp,"Finished\r\n");
 }
@@ -73,10 +73,10 @@ static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp,"OR YOUR EAR WILL DAMAGED !!!\r\n");
     chprintf(chp,"--------------------------\r\n");
 
-//    chprintf(chp,"Play Max in 3s !!!\r\n");
-//    chThdSleepMilliseconds(3000);
+    chprintf(chp,"Play Max in 3s !!!\r\n");
+    chThdSleepMilliseconds(3000);
 
-    ht_audio_Sine(1,1000);
+    ht_audio_Tone(1.25,1);
     ht_audio_Play(TEST_DURATION);
     chprintf(chp,"Finished\r\n");
 }
@@ -90,31 +90,47 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
     if(argc != 0){chprintf(chp,"usage: min\r\n");return;}
 
     chprintf(chp,"Test Audio: Sine Min\r\n");
-    ht_audio_Sine(1,0.1);
+    ht_audio_Tone(1.25,0.0001);
     ht_audio_Play(TEST_DURATION);
     chprintf(chp,"Finished\r\n");
 }
 
 /**
- * @brief Audio Play Test command callback
+ * @brief Audio Play Halving-Formula with Frequency and Amplitude command callback
  * @details Enumerated and not called directly by any normal thread
  */
-static void cmd_play(BaseSequentialStream *chp, int argc, char *argv[]) {
-    double vfreq,vampl;
-    u_int8_t vdurr;
+static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
+    if(argc == 0){
+        (void) argv;
 
-    if(argc != 3){chprintf(chp,"usage: play <freq> <ampl> <durr>\r\n");return;}
+        chprintf(chp,"Coba Audio: Tone\r\n");
+        ht_audio_Tone(1.25,0.01);
+        ht_audio_Play(TEST_DURATION);
+        chprintf(chp,"Finished\r\n");
+    }
+    else if (argc == 2) {
+        double vfreq = atof(argv[0]);
+        double vampl = atof(argv[1]);
 
-    vfreq = atof(argv[0]);
-    vampl = atof(argv[1]);
-    vdurr = atoi(argv[2]);
+        chprintf(chp,"Coba Tone: Freq:%3.1f Ampl:%3.1f\r\n",vfreq,vampl);
+        ht_audio_Tone(vfreq,vampl);
+        ht_audio_Play(TEST_DURATION);
+        chprintf(chp,"Finished\r\n");
+    }
+    else if (argc == 3) {
+        double vfreq = atof(argv[0]);
+        double vampl = atof(argv[1]);
+        u_int8_t vdurr = atoi(argv[2]);
 
-    chprintf(chp,"Test Audio: Freq:%3.1f Ampl:%3.1f Durr:%1i\r\n",vfreq,vampl,vdurr);
-    ht_audio_Sine(vfreq,vampl);
-    ht_audio_Play(vdurr);
-    chprintf(chp,"Finished\r\n");
+        chprintf(chp,"Test Audio: Freq:%3.1f Ampl:%3.1f Durr:%1i\r\n",vfreq,vampl,vdurr);
+        ht_audio_Tone(vfreq,vampl);
+        ht_audio_Play(vdurr);
+        chprintf(chp,"Finished\r\n");
+    }
+    else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
 }
 
+#if AUDIO_TEST_DEV
 /**
  * @brief Audio Play Coba command callback
  * @details Enumerated and not called directly by any normal thread
@@ -174,31 +190,7 @@ static void cmd_half(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp,"Finished\r\n");
 }
 #endif
-
-/**
- * @brief Audio Play Halving-Formula with Frequency and Amplitude command callback
- * @details Enumerated and not called directly by any normal thread
- */
-static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
-    if(argc == 0){
-        (void) argv;
-
-        chprintf(chp,"Coba Audio: Tone\r\n");
-        ht_audio_Tone(1.25,0.01);
-        ht_audio_Play(TEST_DURATION);
-        chprintf(chp,"Finished\r\n");
-    }
-    else if (argc == 2) {
-        double vfreq = atof(argv[0]);
-        double vampl = atof(argv[1]);
-
-        chprintf(chp,"Coba Tone: Freq:%3.1f Ampl:%3.1f\r\n",vfreq,vampl);
-        ht_audio_Tone(vfreq,vampl);
-        ht_audio_Play(TEST_DURATION);
-        chprintf(chp,"Finished\r\n");
-    }
-    else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
-}
+#endif
 
 /**
  * @brief Shell command and it's callback enumeration
@@ -207,16 +199,17 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
 static const ShellCommand commands[] = {
     {"test",cmd_test},
     {"zero",cmd_zero},
-    {"play",cmd_play},
-    {"sine",cmd_sine},
     {"tone",cmd_tone},
+    {"max",cmd_max},
+    {"min",cmd_min},
+#if AUDIO_TEST_DEV
+    {"sine",cmd_sine},
 #if USE_SINE_TABLE
     {"half",cmd_half},
     {"wave",cmd_wave},
     {"table",cmd_table},
 #endif
-    {"max",cmd_max},
-    {"min",cmd_min},
+#endif
     {NULL, NULL}
 };
 

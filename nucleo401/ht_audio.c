@@ -28,11 +28,12 @@
 
 #include "ht_audio.h"
 
+#if AUDIO_TEST_DEV
 #if USE_SINE_TABLE
 /**
  * @brief Sine Table for Test
  */
-static uint16_t sine_table[I2S_BUFF_SIZE] = {
+static uint16_t sine_table[I2S_TABLE_SIZE] = {
    0x0000, 0x0324, 0x0647, 0x096a, 0x0c8b, 0x0fab, 0x12c8, 0x15e2,
    0x18f8, 0x1c0b, 0x1f19, 0x2223, 0x2528, 0x2826, 0x2b1f, 0x2e11,
    0x30fb, 0x33de, 0x36ba, 0x398c, 0x3c56, 0x3f17, 0x41ce, 0x447a,
@@ -70,7 +71,7 @@ static uint16_t sine_table[I2S_BUFF_SIZE] = {
 /**
  * @brief Sine Wave Table for Test
  */
-static uint16_t wave_table[I2S_BUFF_SIZE] = {
+static uint16_t wave_table[I2S_TABLE_SIZE] = {
     0xfcdc, 0xf9b9, 0xf696, 0xf375, 0xf055, 0xed38, 0xea1e,
     0xe708, 0xe3f5, 0xe0e7, 0xdddd, 0xdad8, 0xd7da, 0xd4e1, 0xd1ef,
     0xcf05, 0xcc22, 0xc946, 0xc674, 0xc3aa, 0xc0e9, 0xbe32, 0xbb86,
@@ -110,8 +111,13 @@ static uint16_t wave_table[I2S_BUFF_SIZE] = {
 /**
  * @brief I2S Transmit buffer
  */
+static uint16_t i2s_tx_buf[I2S_TABLE_SIZE];
+#else
+/**
+ * @brief I2S Transmit buffer
+ */
 static uint16_t i2s_tx_buf[I2S_BUFF_SIZE];
-
+#endif
 #else
 /**
  * @brief I2S Transmit buffer
@@ -144,6 +150,37 @@ void ht_audio_Zero(void){
     }
 }
 
+void ht_audio_Tone(double freq, double ampl){
+    uint16_t i;
+    uint16_t buffsize;
+    double ysin;
+
+    buffsize = (uint16_t) I2S_BUFF_SIZE/freq;
+
+    ht_audio_Zero();
+
+    for(i=0;i<buffsize;i++){
+        ysin = DEFAULT_ATTEN*ampl*32767*sin(2*3.141592653589793*((double)i/(double)buffsize));
+        if(ysin >= 0){
+            i2s_tx_buf[i]=ysin;
+        }
+        if(ysin <0  ){
+            i2s_tx_buf[i]=ysin+65535;
+        }
+    }
+
+    i2scfg.size = buffsize;
+}
+
+void ht_audio_Play(uint8_t duration){
+    i2sStart(&I2SD2, &i2scfg);
+    i2sStartExchange(&I2SD2);
+    chThdSleepMilliseconds(duration*1000);
+    i2sStopExchange(&I2SD2);
+    i2sStop(&I2SD2);
+}
+
+#if AUDIO_TEST_DEV
 #if USE_SINE_TABLE
 void ht_audio_Table(void){
     uint16_t i;
@@ -178,58 +215,35 @@ void ht_audio_Half(void){
 }
 #endif
 
-void ht_audio_Tone(double freq, double ampl){
+void ht_audio_Sine(double freq, double ampl, uint8_t model){
     uint16_t i;
-    uint16_t buffsize;
-//    uint16_t halfsize;
-    double ysin;
+    uint16_t halfsize;
 
-    buffsize = (uint16_t) I2S_BUFF_SIZE/freq;
-//    halfsize = (uint16_t) (buffsize/2)-1;
+    halfsize = (uint16_t) (buffsize/2)-1;
 
     ht_audio_Zero();
 
-    for(i=0;i<buffsize;i++){
-        ysin = DEFAULT_ATTEN*ampl*32767*sin(2*3.141592653589793*((double)i/(double)buffsize));
-        if(ysin >= 0){
-            i2s_tx_buf[i]=ysin;
+    if(model==0){
+        for(i=0;i<I2S_BUFF_SIZE;i++){
+            i2s_tx_buf[i] = ampl*DEFAULT_AMPLI*sin((double) freq*i*2*(M_PI/I2S_BUFF_SIZE));
         }
-        if(ysin <0  ){
-            i2s_tx_buf[i]=ysin+65535;
-        }
-
+    }
+    else if(model==1){
         //half upper/lower
-//        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
-//        i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
-
+        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
+        i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
+    }
+    else if(model==2){
         // half lower
-//        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
-//        i2s_tx_buf[halfsize+i] = 65535;
-
+        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
+        i2s_tx_buf[halfsize+i] = 65535;
+    }
+    else if(model==3){
         // Half Up
-//        i2s_tx_buf[i] = 0;
-//        i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
-
-    }
-
-    i2scfg.size = buffsize;
-}
-
-void ht_audio_Sine(double freq, double ampl){
-    uint16_t i;
-
-    ht_audio_Zero();
-
-    for(i=0;i<I2S_BUFF_SIZE;i++){
-        i2s_tx_buf[i] = ampl*DEFAULT_AMPLI*sin((double) freq*i*2*(M_PI/I2S_BUFF_SIZE));
+        i2s_tx_buf[i] = 0;
+        i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
     }
 }
+#endif
 
-void ht_audio_Play(uint8_t duration){
-    i2sStart(&I2SD2, &i2scfg);
-    i2sStartExchange(&I2SD2);
-    chThdSleepMilliseconds(duration*1000);
-    i2sStopExchange(&I2SD2);
-    i2sStop(&I2SD2);
-}
 /** @} */
