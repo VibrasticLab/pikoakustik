@@ -1,0 +1,4 @@
+<map id="ht_comm_Init" name="ht_comm_Init">
+<area shape="rect" id="node1" title="Start Shell and UART peripheral." alt="" coords="5,5,107,32"/>
+<area shape="rect" id="node2" href="$group__Console.html#ga0b1dba28bb03cb29749f32a595d5ec57" title="Shell manager initialization." alt="" coords="155,5,221,32"/>
+</map>

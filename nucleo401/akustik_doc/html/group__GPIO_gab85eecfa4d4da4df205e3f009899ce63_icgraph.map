@@ -1,0 +1,4 @@
+<map id="indicator_m_off" name="indicator_m_off">
+<area shape="rect" id="node1" title="Set all Amplification/Frequency indicator LEDs to off." alt="" coords="184,5,295,32"/>
+<area shape="rect" id="node2" href="$group__GPIO.html#gac22a11bc56108533f1766f3ef85b5b84" title="Thread for Amplification/Frequency Level indicator." alt="" coords="5,5,136,32"/>
+</map>

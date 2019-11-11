@@ -276,7 +276,7 @@
 			Impedansi Audio DAC di set maximum (sesuai datasheet).
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/BaseZero}
+				\includegraphics[width=0.5\linewidth]{result/day_1/BaseZero}
 			\end{figure}
 		
 			\newpage
@@ -288,8 +288,8 @@
 			\end{minted}
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.45\linewidth]{result/rev_sine_table}
-				\includegraphics[width=0.45\linewidth]{result/tableMax256}
+				\includegraphics[width=0.45\linewidth]{result/day_1/rev_sine_table}
+				\includegraphics[width=0.45\linewidth]{result/day_1/tableMax256}
 			\end{figure}
 		
 			\item Reversed-Sine loop formula.
@@ -305,7 +305,7 @@ for(i=0;i<I2S_HALF_SIZE;i++){
 			\end{minted}
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/halfMax256}
+				\includegraphics[width=0.5\linewidth]{result/day_1/halfMax256}
 			\end{figure}
 		
 			\newpage
@@ -321,7 +321,7 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
 			\end{minted}
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/max256}
+				\includegraphics[width=0.5\linewidth]{result/day_1/max256}
 			\end{figure}
 		
 			\item Sine loop formula with buffer size 512.
@@ -336,7 +336,7 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
 			\end{minted}
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/max512}
+				\includegraphics[width=0.5\linewidth]{result/day_1/max512}
 			\end{figure}
 		
 			\newpage
@@ -352,7 +352,7 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
 			\end{minted}
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/max1024}
+				\includegraphics[width=0.5\linewidth]{result/day_1/max1024}
 			\end{figure}
 			
 		\end{itemize}
@@ -407,7 +407,7 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
 		(1) Linking Time Optimization (LTO) dari GCC diaktifkan dan
 		(2) Floating-Point Unit (FPU) menggunakan internal Cortex-M4.
 		
-		Berikut hasil sementara:
+		Berikut hasilnya:
 		\begin{itemize}
 			\item Reversed-Sine loop formula skala satu.
 			\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
@@ -422,7 +422,7 @@ for(i=0;i<I2S_HALF_SIZE;i++){
 			\end{minted}
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/tone1}
+				\includegraphics[width=0.5\linewidth]{result/day_2/tone1}
 			\end{figure}
 		
 			\item Reversed-Sine loop formula skala setengah.
@@ -438,7 +438,7 @@ for(i=0;i<I2S_HALF_SIZE;i++){
 			\end{minted}
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/tone05}
+				\includegraphics[width=0.5\linewidth]{result/day_2/tone05}
 			\end{figure}
 		
 			\newpage
@@ -456,7 +456,7 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
 			\end{minted}
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/sine_clk48}
+				\includegraphics[width=0.5\linewidth]{result/day_2/sine_clk48}
 			\end{figure}
 		
 			\item Sine loop formula pada Clock I2S 72MHz.
@@ -473,7 +473,7 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
 			\end{minted}
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/sine_clk72}
+				\includegraphics[width=0.5\linewidth]{result/day_2/sine_clk72}
 			\end{figure}
 			
 			\newpage
@@ -491,7 +491,7 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
 			\end{minted}
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/sine_clk96}
+				\includegraphics[width=0.5\linewidth]{result/day_2/sine_clk96}
 			\end{figure}
 		
 			\item Sine loop formula pada ukuran array size 44100.
@@ -509,18 +509,18 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
 			\end{minted}
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/arr_spr_sine}
+				\includegraphics[width=0.5\linewidth]{result/day_2/arr_spr_sine}
 			\end{figure}
 		
 			\newpage
 			\item Reversed-Sine loop formula pada ukuran array size 44100.\\
-			Hingga laporan ini dibuat, Model sine ini adalah yang paling baik 
+			Model sine ini adalah yang paling baik untuk tahapan ini
 			dan mudah dimodifikasi amplitudo tanpa menggeser frekuensi
 			serta paling sedikit noise di frekuensi di atas frekuensi yang diinginkan. 
 			\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
 /*
-* Clk: 96MHz | SPR: 16kHz | Buff: 256 | Array: 44100
-*/
+ * Clk: 96MHz | SPR: 16kHz | Buff: 256 | Array: 44100
+ */
 #define STM32_PLLI2SN_VALUE 288
 #define STM32_PLLI2SR_VALUE 3
 #define I2S_HALF_SIZE 127	
@@ -533,14 +533,14 @@ for(i=0;i<I2S_HALF_SIZE;i++){
 			\end{minted}
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/arr_spr_revsine}
+				\includegraphics[width=0.5\linewidth]{result/day_2/arr_spr_revsine}
 			\end{figure}
 		
 			Untuk konfirmasi dari mana asal derau di frekuensi lebih tinggi dari frekuensi yang diinginkan,
 			maka digunakan osiloskop digital dengan analog frekuensi sampling di 200kHz.
 			\begin{figure}[H]
 				\centering
-				\includegraphics[width=0.5\linewidth]{result/osiloskop}
+				\includegraphics[width=0.5\linewidth]{result/day_2/osiloskop}
 			\end{figure}
 			
 			Dugaan awal, model array yang dikirim ke PCM/I2S ditumpangkan ke sinyal dasar sinus frekuensi tinggi,
@@ -552,7 +552,7 @@ for(i=0;i<I2S_HALF_SIZE;i++){
 	\subsection{14:00 - 18:00}
 	\subsubsection{Kegiatan:}
 	\begin{itemize}
-		\item Pulang
+		\item Pulang (Ganti Jadwal)
 		\item Istirahat/Tidur
 		\item Refreshing
 	\end{itemize}
@@ -578,10 +578,193 @@ for(i=0;i<I2S_HALF_SIZE;i++){
 		Hasil keduanya tidak berbeda signifikan.
 		\begin{figure}[H]
 			\centering
-			\includegraphics[width=0.5\linewidth]{result/nighttest}
+			\includegraphics[width=0.5\linewidth]{result/day_2/nighttest}
 		\end{figure}
-		\item Menambahkan fitur shutdown DAC untuk set ke impedance maximal saat tidak ada output.
+		\item Menambahkan fitur shutdown DAC untuk set ke impedance maximal saat tidak ada output (belum selesai).
 		\item Istirahat/Tidur.
 	\end{itemize}
+
+	\newpage
+	\section{Day:4}
+	\subsection{07:00 - 11:00}
+	\subsubsection{Kegiatan:}
+	\begin{itemize}
+		\item Sarapan Nasi Ikan
+		\item Berangkat ke lab dan melanjutkan uji model Sine Wave array.
+		Pengaturan (programmatical) masih menggunakan yang sama seperti kemarin.
+		Seluruh pengujian hari ini menggunakan fitur Oscilloscope yang tersedia di DSSF3 
+		sebagai pembanding dengan FFT.
+		Sampling Rate Oscilloscope di set pada 16kHz sesuai pengaturan BCLK/SPR I2S.
+		Berikut hasilnya:
+		\begin{itemize}
+			\item Pengujian melihat respon frekuensi tertinggi.
+			Pergeseran frekuensi dengan mengubah panjang array yg di kirim ke PCM/I2S.
+			Amplitudo dibiarkan maksimal 32767.
+			Diatas (Array lebih pendek) maka tidak ada respon sama sekali.
+			\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+/*
+* Clk: 96MHz | SPR: 16kHz | Buff: 32 | Array: 44100
+*/
+#define STM32_PLLI2SN_VALUE 288
+#define STM32_PLLI2SR_VALUE 3
+#define I2S_BUFF_SIZE (512/16)
+#define I2S_HALF_SIZE ((I2S_BUFF_SIZE/2)-1)
+uint16_t i2s_tx_buf[44100];
+for(i=0;i<I2S_HALF_SIZE;i++){
+	i2s_tx_buf[i] = 32767*sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE));
+	i2s_tx_buf[I2S_HALF_SIZE+i] = 32767*(2-sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE)));
+}
+		\end{minted}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_3/osi_highest_fr}
+			\includegraphics[width=0.45\linewidth]{result/day_3/fft_highest_fr}
+		\end{figure}
+		
+		\item Pengujian melihat respon frekuensi terendah.
+		Pergeseran frekuensi dengan mengubah panjang array yg di kirim ke PCM/I2S.
+		Amplitudo dibiarkan maksimal 32767.
+		Diatas (Array lebih panjang) maka tidak ada respon sama sekali.
+		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+/*
+* Clk: 96MHz | SPR: 16kHz | Buff: 2048 | Array: 44100
+*/
+#define STM32_PLLI2SN_VALUE 288
+#define STM32_PLLI2SR_VALUE 3
+#define I2S_BUFF_SIZE (512*4)
+#define I2S_HALF_SIZE ((I2S_BUFF_SIZE/2)-1)
+uint16_t i2s_tx_buf[44100];
+for(i=0;i<I2S_HALF_SIZE;i++){
+	i2s_tx_buf[i] = 32767*sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE));
+	i2s_tx_buf[I2S_HALF_SIZE+i] = 32767*(2-sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE)));
+}
+		\end{minted}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_3/osi_lowest_fr}
+			\includegraphics[width=0.45\linewidth]{result/day_3/fft_lowest_fr}
+		\end{figure}
 	
+		\item Pengujian melihat respon untuk model sinus biasa.
+		Sekedar untuk melihat bagaimana respon osiloskop terhadap model ini. 
+		Amplitudo dibiarkan maksimal 32767 dan panjang array pada 512.
+		Diatas (Array lebih panjang) maka tidak ada respon sama sekali.
+		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+/*
+* Clk: 96MHz | SPR: 16kHz | Buff: 512 | Array: 44100
+*/
+#define STM32_PLLI2SN_VALUE 288
+#define STM32_PLLI2SR_VALUE 3
+#define I2S_BUFF_SIZE (512)
+#define I2S_HALF_SIZE ((I2S_BUFF_SIZE/2)-1)
+uint16_t i2s_tx_buf[44100];
+for(i=0;i<I2S_HALF_SIZE;i++){
+	i2s_tx_buf[i] = 32767*sin((double) freq*i*2*(M_PI/I2S_BUFF_SIZE));
+}
+		\end{minted}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/osi_sine10}
+			\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/fft_sine10}
+		\end{figure}
+		
+		\newpage
+		\item Karena dianggap paling bersih sedikit derau, maka dilakukan untuk uji amplitudo untuk satu frekuensi.
+		Pengujian amplitudo (variabel \textit{ampl}) dengan skala turun hingga respon SPL paling kecil.
+		Didefinikasi macro pelemahan (atenuasi) untuk semua pengukuan dengan harapan mengurangi derau.
+		Frekuensi yang digunakan adalah 400Hz (default panjang array 512).
+\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+/*
+* Clk: 96MHz | SPR: 16kHz | Buff: 512 | Array: 44100
+*/
+#define STM32_PLLI2SN_VALUE 288
+#define STM32_PLLI2SR_VALUE 3
+#define I2S_BUFF_SIZE (512)
+#define I2S_HALF_SIZE ((I2S_BUFF_SIZE/2)-1)
+#define DEFAULT_ATTEN 0.1
+double ampl;
+uint16_t i2s_tx_buf[44100];
+for(i=0;i<I2S_HALF_SIZE;i++){
+	i2s_tx_buf[i] = DEFAULT_ATTEN*32767*ampl*sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE));
+	i2s_tx_buf[I2S_HALF_SIZE+i] = 32767*(2-DEFAULT_ATTEN*ample*sin(3.141592653589793*((double)i/(double)I2S_HALF_SIZE)));
+}
+\end{minted}
+		Berikut hasilnya:
+		\begin{itemize}
+			\item Amplitudo skala 1.
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/osi_tone10}
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/fft_tone10}
+			\end{figure}
+		
+			\item Amplitudo skala 0.5.
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/osi_tone05}
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/fft_tone05}
+			\end{figure}
+		
+			\item Amplitudo skala 0.1.
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/osi_tone01}
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/fft_tone01}
+			\end{figure}
+		
+			\item Amplitudo skala 0.05.
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/osi_tone005}
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/fft_tone005}
+			\end{figure}
+		
+			\item Amplitudo skala 0.01.
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/osi_tone001}
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/fft_tone001}
+			\end{figure}
+		
+			\item Amplitudo skala 0.005.
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/osi_tone0005}
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/fft_tone0005}
+			\end{figure}
+		
+			\item Amplitudo skala 0.001.
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/osi_tone0001}
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/fft_tone0001}
+			\end{figure}
+		
+			\item Amplitudo skala 0.0005.
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/osi_tone00005}
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/fft_tone00005}
+			\end{figure}
+		
+			\newpage
+			\item Amplitudo skala 0.0001.
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/osi_tone00001}
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/fft_tone00001}
+			\end{figure}
+		
+			\item Amplitudo 0.
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/osi_tone0}
+				\includegraphics[width=0.45\linewidth]{result/day_3/400_Hz/fft_tone0}
+			\end{figure}
+		\end{itemize}
+		
+		Untuk alasan yang belum diketahui, nilai amplitudo 0 ternyata tetap memiliki respon yang tidak sepenuhnya senyap.
+		\end{itemize}
+	\end{itemize}
+		
 \end{document}

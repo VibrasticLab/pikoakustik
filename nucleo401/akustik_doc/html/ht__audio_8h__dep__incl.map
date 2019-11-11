@@ -1,0 +1,7 @@
+<map id="ht_audio.h" name="ht_audio.h">
+<area shape="rect" id="node1" title="Audio Generator header." alt="" coords="167,5,249,32"/>
+<area shape="rect" id="node2" href="$ht__audio_8c.html" title="Audio Generator code." alt="" coords="5,80,88,107"/>
+<area shape="rect" id="node3" href="$ht__comm_8c.html" title="Shell Commands code." alt="" coords="113,80,199,107"/>
+<area shape="rect" id="node4" href="$ht__exti_8c.html" title="External Interrupt code." alt="" coords="224,80,296,107"/>
+<area shape="rect" id="node5" href="$main_8c.html" title="Main code." alt="" coords="320,80,381,107"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="shellGetLine" name="shellGetLine">
+<area shape="rect" id="node1" title="Reads a whole line from the input channel." alt="" coords="175,5,269,32"/>
+<area shape="rect" id="node2" href="$group__Console.html#ga472381256b3383811839c3b94608f35a" title="Shell thread function." alt="" coords="5,5,127,32"/>
+</map>

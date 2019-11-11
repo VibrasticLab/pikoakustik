@@ -10,7 +10,7 @@
  */
 
 /**
- * @file    ht_shell.c
+ * @file    ht_comm.c
  * @brief   Shell Commands code.
  *
  * @addtogroup Console

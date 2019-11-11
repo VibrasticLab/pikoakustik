@@ -1,0 +1,4 @@
+<map id="ThdFunc_Indicator" name="ThdFunc_Indicator">
+<area shape="rect" id="node1" title="Thread for Amplification/Frequency Level indicator." alt="" coords="5,5,136,32"/>
+<area shape="rect" id="node2" href="$group__GPIO.html#gab85eecfa4d4da4df205e3f009899ce63" title="Set all Amplification/Frequency indicator LEDs to off." alt="" coords="184,5,295,32"/>
+</map>

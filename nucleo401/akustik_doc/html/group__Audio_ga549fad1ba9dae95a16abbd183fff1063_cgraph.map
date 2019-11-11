@@ -1,0 +1,4 @@
+<map id="ht_audio_Tone" name="ht_audio_Tone">
+<area shape="rect" id="node1" title="Generate sine wave tone from halving formula with Frequency and Amplitude." alt="" coords="5,5,111,32"/>
+<area shape="rect" id="node2" href="$group__Audio.html#ga7f28475e80e96e8aad9002aae97051cd" title="Generate sine wave with only zero." alt="" coords="159,5,263,32"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="mcuconf.h" name="mcuconf.h">
+<area shape="rect" id="node1" title="Platform Spesific Board header." alt="" coords="5,5,88,32"/>
+<area shape="rect" id="node2" href="$halconf_8h.html" title="HAL configuration header." alt="" coords="9,80,84,107"/>
+</map>
