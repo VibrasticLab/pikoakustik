@@ -586,7 +586,7 @@ for(i=0;i<I2S_HALF_SIZE;i++){
 
 	\newpage
 	\section{Day:4}
-	\subsection{07:00 - 11:00}
+	\subsection{07:00 - 13:00}
 	\subsubsection{Kegiatan:}
 	\begin{itemize}
 		\item Sarapan Nasi Ikan
@@ -764,7 +764,294 @@ for(i=0;i<I2S_HALF_SIZE;i++){
 		\end{itemize}
 		
 		Untuk alasan yang belum diketahui, nilai amplitudo 0 ternyata tetap memiliki respon yang tidak sepenuhnya senyap.
+		Agar benar-benar senyap maka lebih baik dengan memberi nilai 0 untuk semua nilai array dan bukan dengan model sine.  
 		\end{itemize}
+	
+		\item Pulang
 	\end{itemize}
+	
+	\subsubsection{Pengeluaran:}	
+	\begin{itemize}
+		\item Gorengan
+		\item Air botolan dingin
+	\end{itemize}
+
+	\subsection{13:00 - 23:00}
+	\subsubsection{Kegiatan:}
+	\begin{itemize}
+		\item Istirahat/Refreshing
+		\item Menguji, mempelajari, dan mempelajari kemungkinan sumber derau yang masih muncul.
+	\end{itemize}
+	\subsubsection{Pengeluaran:}
+	\begin{itemize}
+		\item Pop Mie
+		\item Air botolan dingin 
+	\end{itemize}
+
+	\newpage
+	\section{Day:5}
+	\subsection{07:00 - 12:00}
+	\subsubsection{Kegiatan:}
+	\begin{itemize}
+		\item Berangkat ke lab dan melanjutkan uji model Sine Wave array.
+		\item Menambah jarak antara setup KEMAR dengan laptop untuk mengurangi kemungkinan asal derau.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.5\linewidth]{day_4/distance}
+		\end{figure}
+		\item Menguji setengah amplitudo untuk melihat bagaimana hasil untuk array
+		diatas nilai setengah 16-bit atau 32767.  
+		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+/*
+* Clk: 96MHz | SPR: 16kHz | Buff: 512 | Array: 8192
+*/
+#define STM32_PLLI2SN_VALUE 288
+#define STM32_PLLI2SR_VALUE 3
+#define I2S_BUFF_SIZE (512)
+#define I2S_HALF_SIZE ((I2S_BUFF_SIZE/2)-1)
+#define DEFAULT_ATTEN 0.1
+
+uint16_t i2s_tx_buf[I2S_BUFF_SIZE*16];
+for(i=0;i<I2S_HALF_SIZE;i++){
+	i2s_tx_buf[i] = 0;
+	i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*sin(3.141592653589793*((double)i/(double)halfsize)));
+}
+		\end{minted}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_4/halfdowntone}
+			\includegraphics[width=0.45\linewidth]{result/day_4/halfdowntonefft}
+		\end{figure}
+		\newpage
+		Dan respon yang tampak pada osiloskop:
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.5\linewidth]{result/day_4/halfsine}
+		\end{figure}
+		Berdasarkan hasil ini, dapat dilihat bahwa nilai diatas setengah 16-bit overflow
+		menjadi nilai negatif pada sinyal PCM akhir.
 		
+		Untuk lebih meyakinkan maka diuji untuk setengah sebaliknya:
+		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+for(i=0;i<I2S_BUFF_SIZE;i++){
+	i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
+	i2s_tx_buf[halfsize+i] = 65535;
+}		
+		\end{minted}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_4/halfuptone}
+			\includegraphics[width=0.45\linewidth]{result/day_4/halfuptonefft}
+		\end{figure}
+		Maka dari sini dapat disimpulkan bahwa pada dasarnya menggunakan model sine biasa,
+		Namun untuk nilai negatif dikirim dalam bentuk nilai overflow dari setengah 16-bit.
+		Atau dengan kata lain bahwa array sine adalah \textit{signed} 16-bit dengan nilai negatif
+		dikirim pada rentang 65535 ke 32767.
+		
+		\newpage
+		\item Berdasarkan hasil sebelumnya didapat, maka digunakan model array sine baru.
+		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+/*
+* Clk: 96MHz | SPR: 16kHz | Buff: 512 | Array: 8192
+*/
+#define STM32_PLLI2SN_VALUE 288
+#define STM32_PLLI2SR_VALUE 3
+#define I2S_BUFF_SIZE 512
+#define DEFAULT_ATTEN 0.1
+
+buffsize = (uint16_t) I2S_BUFF_SIZE/freq;
+uint16_t i2s_tx_buf[I2S_BUFF_SIZE*16];
+for(i=0;i<buffsize;i++){
+	ysin = DEFAULT_ATTEN*ampl*32767*sin(2*3.141592653589793*((double)i/(double)buffsize));
+	if(ysin >= 0){ i2s_tx_buf[i]=ysin; }
+	if(ysin <0  ){ i2s_tx_buf[i]=ysin+65535; }
+}
+i2scfg.size = buffsize;
+		\end{minted}
+		Dan hasilnya ini adalah model yang paling bersih dari derau.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_4/newsine400}
+			\includegraphics[width=0.45\linewidth]{result/day_4/newsine400fft}
+		\end{figure}
+		Tampilan hasil lebih lengkap.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.9\linewidth]{result/day_4/BestResult}
+		\end{figure}
+	
+		\newpage
+		\item Setelah mendapatkan hasil terbaik, maka dilakukan pengujian untuk manipulasi frekuensi.
+		Manipulasi frekuensi dilakukan dengan manipulasi panjang array buffer.
+		Manipulasi panjang array dilakukan dibagi/dikali dengan skala yang diinginkan.
+		Skala 1 memiliki panjang default 512.
+		
+		Berikut hasilnya pengujian:
+		\begin{itemize}
+			\item Frekuensi skala 1 (400Hz) atau panjang array 512
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine1}
+				\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine1}
+			\end{figure}
+		
+			\item Frekuensi skala 2 (800Hz) atau panjang array $512/2=256$
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine2}
+				\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine2}
+			\end{figure}
+		
+			\item Frekuensi skala 4 (1600Hz) atau panjang array $512/4=128$
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine4}
+				\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine4}
+			\end{figure}
+		
+			\newpage
+			\item Frekuensi skala 8 (3200Hz) atau panjang array $512/8=64$
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine8}
+				\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine8}
+			\end{figure}
+		
+			\item Frekuensi skala 16 (6400Hz) atau panjang array $512/16=32$
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine16}
+				\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine16}
+			\end{figure}
+		
+			\item Frekuensi skala 32 (12800Hz) atau panjang array $512/32=16$
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/newsinehighest}
+				\includegraphics[width=0.45\linewidth]{result/day_4/newsinehighestfft}
+			\end{figure}
+			Unit diatur pada nilai sampling clock 16kHz sehingga tidak mungkin untuk
+			frekuensi diatas 16kHz
+			
+			\newpage
+			\item Frekuensi skala 0.5 (200Hz) atau panjang array $512/0.5=1024$
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine0p5}
+				\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine0p5}
+			\end{figure}
+		
+			\item Frekuensi skala 0.25 (100Hz) atau panjang array $512/0.25=2048$
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine0p25}
+				\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine0p25}
+			\end{figure}
+		
+			\item Untuk mendapatkan nilai selain skala yang sebelumnya digunakan, dapat digunakan rasio.
+			Sebagai contoh untuk mendapatkan 500Hz, digunakan skala $\frac{500}{400}=1.25$
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/newsine500}
+				\includegraphics[width=0.45\linewidth]{result/day_4/newsine500fft}
+			\end{figure}
+						
+		\end{itemize}
+		
+		\newpage	
+		\item Setelah mendapatkan hasil untuk semua skala frekuensi,
+		dilakukan uji skala amplitudo untuk frekuensi 500Hz.
+		Skala amplitudo sama dengan sebelumnya pada 400Hz namun menggunakan model array sine terakhir.
+		
+		Berikut hasilnya:
+		\begin{itemize}
+			\item Amplitudo skala 1
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone1}
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone1}
+			\end{figure}
+		
+			\item Amplitudo skala 0.5
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone05}
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone05}
+			\end{figure}
+		
+			\item Amplitudo skala 0.1
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone01}
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone01}
+			\end{figure}
+			
+			\newpage
+			\item Amplitudo skala 0.05
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone005}
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone005}
+			\end{figure}
+		
+			\item Amplitudo skala 0.01
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone001}
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone001}
+			\end{figure}
+		
+			\item Amplitudo skala 0.005
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone0005}
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone0005}
+			\end{figure}
+		
+			\newpage
+			\item Amplitudo skala 0.001
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone0001}
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone0001}
+			\end{figure}
+		
+			\item Amplitudo skala 0.0005
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone00005}
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone00005}
+			\end{figure}
+		
+			\item Amplitudo skala 0.0001
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone00001}
+				\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone00001}
+			\end{figure}
+		\end{itemize}
+		
+		\item Sholat Jumat
+	  	\item Pulang (Ganti Jadwal)
+	  	
+	\end{itemize}
+	
+	\subsubsection{Pengeluaran:}
+	\begin{itemize}
+		\item Gorengan
+		\item Air dingin botolan
+	\end{itemize}
+
+	\subsection{12:00 - 21:00}
+	\subsubsection{Kegiatan:}
+	\begin{itemize}
+		\item Istirahat/Refreshing
+		\item Packing/Persiapan pulang
+	\end{itemize}
+
+	\subsubsection{Pengeluaran:}
+	\begin{itemize}
+		\item Pop mie
+		\item Air dingin botolan 
+	\end{itemize}
 \end{document}

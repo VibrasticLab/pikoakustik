@@ -1,4 +1,0 @@
-<map id="mmc_check" name="mmc_check">
-<area shape="rect" id="node1" title="Checking readiness FatFS." alt="" coords="153,5,247,32"/>
-<area shape="rect" id="node2" href="$group__Storage.html#gaedc6df0c9534b7a50b9933bb8a201e01" title="Test Write and Read Simple text in Append mode." alt="" coords="5,5,105,32"/>
-</map>

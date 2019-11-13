@@ -1,6 +1,0 @@
-<map id="ht_console.h" name="ht_console.h">
-<area shape="rect" id="node1" title="Console Shell header." alt="" coords="117,5,213,32"/>
-<area shape="rect" id="node2" href="$ht__comm_8c.html" title="Shell Commands code." alt="" coords="5,80,92,107"/>
-<area shape="rect" id="node3" href="$ht__console_8c.html" title="Console Shell code." alt="" coords="117,80,213,107"/>
-<area shape="rect" id="node4" href="$main_8c.html" title="Main code." alt="" coords="237,80,298,107"/>
-</map>

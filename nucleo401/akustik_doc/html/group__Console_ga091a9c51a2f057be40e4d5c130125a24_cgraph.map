@@ -1,6 +1,0 @@
-<map id="cmd_zero" name="cmd_zero">
-<area shape="rect" id="node1" title="Audio Zero command callback." alt="" coords="5,31,84,57"/>
-<area shape="rect" id="node2" href="$group__Audio.html#ga59eda46b5729c9e4c9bc0067f49d239c" title="Play Audio via I2S." alt="" coords="133,5,237,32"/>
-<area shape="rect" id="node3" href="$group__Audio.html#ga549fad1ba9dae95a16abbd183fff1063" title="Generate sine wave tone from halving formula with Frequency and Amplitude." alt="" coords="132,56,237,83"/>
-<area shape="rect" id="node4" href="$group__Audio.html#ga7f28475e80e96e8aad9002aae97051cd" title="Generate sine wave with only zero." alt="" coords="285,56,389,83"/>
-</map>

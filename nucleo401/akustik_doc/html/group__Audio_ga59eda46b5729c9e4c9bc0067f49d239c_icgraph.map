@@ -1,8 +1,0 @@
-<map id="ht_audio_Play" name="ht_audio_Play">
-<area shape="rect" id="node1" title="Play Audio via I2S." alt="" coords="172,107,276,133"/>
-<area shape="rect" id="node2" href="$group__Console.html#ga69b93b3b9c390793b90f445e9641da7d" title="Audio Maximum command callback." alt="" coords="25,5,104,32"/>
-<area shape="rect" id="node3" href="$group__Console.html#gacabd0efbedd9b02cc43d3fbfb7d69bb6" title="Audio Minimum command callback." alt="" coords="27,56,102,83"/>
-<area shape="rect" id="node4" href="$group__Console.html#gad2feb92e11118665777b712048dd7192" title="Audio Play Halving&#45;Formula with Frequency and Amplitude command callback." alt="" coords="25,107,104,133"/>
-<area shape="rect" id="node5" href="$group__Console.html#ga091a9c51a2f057be40e4d5c130125a24" title="Audio Zero command callback." alt="" coords="25,157,104,184"/>
-<area shape="rect" id="node6" href="$group__GPIO.html#gaf4219d2e19900cb6087080b009482b43" title="Thread for Interrupt Callback." alt="" coords="5,208,124,235"/>
-</map>

@@ -1,7 +1,0 @@
-<map id="ht_audio_Tone" name="ht_audio_Tone">
-<area shape="rect" id="node1" title="Generate sine wave tone from halving formula with Frequency and Amplitude." alt="" coords="132,81,237,108"/>
-<area shape="rect" id="node2" href="$group__Console.html#ga69b93b3b9c390793b90f445e9641da7d" title="Audio Maximum command callback." alt="" coords="5,5,84,32"/>
-<area shape="rect" id="node3" href="$group__Console.html#gacabd0efbedd9b02cc43d3fbfb7d69bb6" title="Audio Minimum command callback." alt="" coords="7,56,82,83"/>
-<area shape="rect" id="node4" href="$group__Console.html#gad2feb92e11118665777b712048dd7192" title="Audio Play Halving&#45;Formula with Frequency and Amplitude command callback." alt="" coords="5,107,84,133"/>
-<area shape="rect" id="node5" href="$group__Console.html#ga091a9c51a2f057be40e4d5c130125a24" title="Audio Zero command callback." alt="" coords="5,157,84,184"/>
-</map>

@@ -230,18 +230,24 @@ void ht_audio_Sine(double freq, double ampl, uint8_t model){
     }
     else if(model==1){
         //half upper/lower
-        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
-        i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
+        for(i=0;i<I2S_BUFF_SIZE;i++){
+            i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
+            i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
+        }
     }
     else if(model==2){
         // half lower
-        i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
-        i2s_tx_buf[halfsize+i] = 65535;
+        for(i=0;i<I2S_BUFF_SIZE;i++){
+            i2s_tx_buf[i] = DEFAULT_ATTEN*ampl*32767*sin(3.141592653589793*((double)i/(double)halfsize));
+            i2s_tx_buf[halfsize+i] = 65535;
+        }
     }
     else if(model==3){
         // Half Up
-        i2s_tx_buf[i] = 0;
-        i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
+        for(i=0;i<I2S_BUFF_SIZE;i++){
+            i2s_tx_buf[i] = 0;
+            i2s_tx_buf[halfsize+i] = 32767*(2-DEFAULT_ATTEN*ampl*sin(3.141592653589793*((double)i/(double)halfsize)));
+        }
     }
 }
 #endif
