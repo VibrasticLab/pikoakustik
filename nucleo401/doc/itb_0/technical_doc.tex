@@ -268,7 +268,7 @@ I2SConfig i2scfg = {
 		\newpage
 		\item Mengatur semua nilai array ke 0.
 		Model matematis:
-		\[ Y_i = 0, \text{ for } 0 \leq i < 512 \]
+		\[ Y(i) = 0, \text{ for } 0 \leq i < 512 \]
 		Dan model \textit{array-loop}:
 		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
 for(i=0;i<512;i++){
@@ -281,7 +281,7 @@ for(i=0;i<512;i++){
 		tone yang paling bersih pada frekuensi yang lebih tinggi
 		dari frekuensi yang diinginkan.
 		Model matematis:
-		\[ Y_i = sin(2\pi f \frac{i}{512}), \text{ for } 0 \leq i < 512 \]
+		\[ Y(i) = sin(2\pi f \frac{i}{512}), \text{ for } 0 \leq i < 512 \]
 		Dan model array-loop:
 		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
 for(i=0;i<512;i++){
@@ -301,7 +301,256 @@ chThdSleepMilliseconds(duration*1000);
 i2sStopExchange(&I2SD2);
 i2sStop(&I2SD2);
 		\end{minted}
-		
 	\end{itemize}
 
+	Seluruh \textit{source-code} tersedia di repository github milik Lab Vibrastik.
+	Beberapa file penting untuk dievaluasi terkait tone generator:
+	
+	\begin{itemize}
+		\item \textbf{mcuconf.h}. Berisi pengaturan clock untuk STM32 dan fitur I2S.\\
+		\url{https://github.com/VibrasticLab/pikoakustik/blob/master/nucleo401/mcuconf.h}
+		
+		\item \textbf{ht\_audio.h}. Berisi makro/definisi untuk fitur tone generator.\\
+		\url{https://github.com/VibrasticLab/pikoakustik/blob/master/nucleo401/ht_audio.h}
+		
+		\item \textbf{ht\_audio.c}. Berisi referensi dan implementasi proses tone generator.\\
+		\url{https://github.com/VibrasticLab/pikoakustik/blob/master/nucleo401/ht_audio.c}
+	\end{itemize}
+
+	\newpage
+	\section{Pengujian dan Hasil}
+	
+	\subsection{Requirement}
+	\textit{Prototype} unit tone generator pada tahapan pengembangan ini sudah dapat
+	menghasilkan tone melalui headphone via jack 3.5mm tipe TRS (\textit{Tip-Round-Sleeve}). 
+	
+	Namun untuk memastikan kualitas tone yang dihasilkan,
+	diperlukan pengujian lebih jauh terkait poin-poin seperti berikut:
+	\begin{enumerate}
+		\item Apakah tone yang dihasilkan hanya satu frekuensi dan bersih dari frekuensi derau?
+		\item Bagaimana pergeseran frekuensi terhadap perubahan clock maupun panjang array buffer?
+		\item Bagaimana pergeseran amplitudo terhadap maximum SPL di frekuensi yang diinginkan?
+		\item Bagaimana hubungan pergeseran frekuensi terhadap amplitudo frekuensi yang diinginkan?
+		\item Apakah array buffer yang dihasilkan sudah sesuai dengan array untuk channel mono?
+		\item Apakah masih menghasilkan \textit{audio-pop} saat menghasilkan tone?
+	\end{enumerate}
+
+	Untuk menguji dan memperbaiki (modifikasi), digunakan alat bantu \textit{Audio Analyzer} dalam
+	produk manekin KEMAR buatan GRAS.
+	
+	Secara umum, skema pengujian \textit{tone generator}.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\linewidth]{images/kemar}
+	\end{figure}
+
+	\subsection{Persiapan}  
+	
+	Sebagai dokumentasi berikut dijabarkan langkah-langkah setup manekin KEMAR dan Audio Analyzer.
+
+	\begin{itemize}
+		\item Posisikan manekin KEMAR di atas alas datar (disini digunakan kardus).
+		\item Atur Posisi hadap kepala di 0 derajat.
+		\item Siapkan daun telinga karet
+		
+		\newpage
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.3\linewidth]{day_1/manekin0}
+			\includegraphics[width=0.3\linewidth]{day_1/manekin1}
+			\includegraphics[width=0.3\linewidth]{day_1/earleaf0}
+		\end{figure} 
+	
+		\item Sambungkan Output Mic ke Audio DSP melalui kabel BNC
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.3\linewidth]{day_1/wiring0}
+			\includegraphics[width=0.3\linewidth]{day_1/wiring1}
+		\end{figure}
+	
+		\item Sambungkan Audio DSP ke laptop dan jalankan program DSSF3.
+		Buka tab \textbf{FFT Analyzer} dan klik tombol \textbf{Calibration}. 
+
+		\item Kalibrasi menggunakan standar tone kalibrator yang satu paket dengan KEMAR
+		Acuan standar kalibrasi pada SPL 114 dB dan frekuensi 250 Hz. 
+		Kalibrasi dilakukan pada kedua telinga.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.3\linewidth]{day_1/kalib0}
+			\includegraphics[width=0.3\linewidth]{day_1/kalib1}
+			\includegraphics[width=0.3\linewidth]{day_1/kalib2}
+		\end{figure} 
+		
+		\newpage
+		\item Pasang daun telinga karet
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.3\linewidth]{day_1/earleaf1}
+			\includegraphics[width=0.3\linewidth]{day_1/earleaf2}
+		\end{figure}
+	
+		\item Pasang headphone
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.3\linewidth]{day_1/phone0}
+			\includegraphics[width=0.3\linewidth]{day_1/phone1}
+			\includegraphics[width=0.3\linewidth]{day_1/phone2}
+		\end{figure}
+	
+		\item Sambungkan headphone ke tone generator.
+		Sebagai uji awal, dilakukan uji respon FFT untuk melihat apakah setup sudah bekerja.
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.3\linewidth]{day_1/test0}
+			\includegraphics[width=0.6\linewidth]{day_1/test1}
+		\end{figure}  
+	\end{itemize}
+
+	\subsection{Uji Model/Persamaan Array}
+	
+	Berikut adalah hasil uji model atau persamaan yang menghasilkan array untuk dikirim sebagai PCM.
+	
+	\subsubsection{Model konstanta array}
+	Array ini menggunakan konstanta array dengan ukuran 256.
+	Nilai konstanta array ini dapat dilihat di file \textbf{ht\_audio.c} pada variabel \textbf{sine\_table}:\\
+	\url{https://github.com/VibrasticLab/pikoakustik/blob/master/nucleo401/ht_audio.c}\\
+	Ini adalah model yang pertama diuji karena tersedia di dokumentasi pustaka ChibiOS/RT.
+	Berikut bentuk plot nilai array dan respon FFT nya.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.45\linewidth]{result/day_1/rev_sine_table}
+		\includegraphics[width=0.45\linewidth]{result/day_1/tableMax256}
+	\end{figure}
+
+	Masih terlihat jelas ada frekuensi tambahan (derau) di atas frekuensi yang diinginkan.     
+	
+	\subsubsection{Model persamaan reversed-sine}
+	Berdasarkan hasil sebelumnya, maka dibuat persamaan array untuk menghasilkan pola sinus terbalik 
+	seperti pada konstanta array (ukuran 256) pada uji sebelumnya.
+	Model matematis.
+	\[
+	Y(i) = 
+	\begin{cases}
+	A sin(\pi \frac{i}{127}), \text{ if } 0 \leq i < 127\\
+	A(2-sin(\pi \frac{i}{127})), \text{ if } 127 \leq i < 256\\
+	\end{cases}
+	 \]
+	 dengan A adalah nilai maksimal variabel \textbf{signed 16-bit} yaitu 32767.
+	 Dalam bentuk array loop:
+	 \begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+for(i=0;i<127;i++){
+	i2s_tx_buf[i] = 32767*sin(3.141592653589793*((double)i/(double)127));
+	i2s_tx_buf[127+i] = 32767*(2-sin(3.141592653589793*((double)i/(double)127)));
+}
+	 \end{minted}
+	 Hasilnya tidak lebih bersih dari sebelumnya. Masih muncul derau cukup banyak.
+	 \begin{figure}[H]
+	 	\centering
+	 	\includegraphics[width=0.45\linewidth]{result/day_1/halfMax256}
+	 \end{figure}
+ 
+ 	 \newpage
+ 	 \subsubsection{Model persamaan sine}
+ 	 Dengan melihat hasil sebelumnya yang kurang memuaskan, dilakukan uji untuk model sinus.
+ 	 Model matematis:
+ 	 \[ Y(i) = A sin(2\pi f \frac{i}{B}), \text{ for } 0 \leq i < B \] 
+ 	 dengan A adalah nilai maksimal variabel \textbf{signed 16-bit} yaitu 32767
+ 	 dan B adalah ukuran buffer array.
+ 	 Model array loop:
+ 	 \begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+for(i=0;i<I2S_BUFF_SIZE;i++){
+	i2s_tx_buf[i] = 32767*sin((double) i*2*(M_PI/I2S_BUFF_SIZE));
+}
+ 	 \end{minted}
+ 	 Berikut hasil dengan variasi panjang array:
+ 	 \begin{itemize}
+ 	 	\item 256
+ 	 	\begin{figure}[H]
+ 	 		\centering
+ 	 		\includegraphics[width=0.45\linewidth]{result/day_1/max256}
+ 	 	\end{figure}
+  	
+  		\item 512
+  		\begin{figure}[H]
+  			\centering
+  			\includegraphics[width=0.45\linewidth]{result/day_1/max512}
+  		\end{figure}
+  	
+  		\item 1024
+  		\begin{figure}[H]
+  			\centering
+  			\includegraphics[width=0.45\linewidth]{result/day_1/max1024}
+  		\end{figure}
+ 	 \end{itemize} 
+  
+  	\newpage
+  	\subsubsection{Variasi Clock I2S}
+  	Melihat hasil sebelumnya yang jauh dari harapan, maka dilakukan modifikasi
+  	pengaturan nilai clock untuk peripheral I2S.
+  	Pengaturan ini dapat dilihat di file \textbf{mcuconf.c} pada makro I2SN dan I2SR:\\
+  	\url{https://github.com/VibrasticLab/pikoakustik/blob/master/nucleo401/mcuconf.c}\\
+  	Model yang digunakan tetap pada model array sebelumnya dengan panjang array 256.
+  	Berikut hasilnya:
+  	\begin{itemize}
+  		\item Variasi 48MHz
+  		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+#define STM32_PLLI2SN_VALUE 288
+#define STM32_PLLI2SR_VALUE 6
+  		\end{minted}
+  		\begin{figure}[H]
+  			\centering
+  			\includegraphics[width=0.45\linewidth]{result/day_2/sine_clk48}
+  		\end{figure}
+  	
+  		\item Variasi 72MHz
+  		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+#define STM32_PLLI2SN_VALUE 288
+#define STM32_PLLI2SR_VALUE 4
+  		\end{minted}
+  		\begin{figure}[H]
+  			\centering
+  			\includegraphics[width=0.45\linewidth]{result/day_2/sine_clk72}
+  		\end{figure}
+  	
+  		\item Variasi 96MHz
+  		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+#define STM32_PLLI2SN_VALUE 288
+#define STM32_PLLI2SR_VALUE 3
+  		\end{minted}
+  		\begin{figure}[H]
+  			\centering
+  			\includegraphics[width=0.45\linewidth]{result/day_2/sine_clk96}
+  		\end{figure}
+  	\end{itemize}
+  
+  	\newpage
+  	\subsubsection{Model Sinus Signed 16-bit}
+  	Model sinus berikut adalah sinus dimana nilai negatif ditempatkan
+  	pada posisi overflow variable signed 16-bit (65535 hingga 32767).
+  	Bentuk model matematis:
+  	\[
+  	Y(i) = 
+  	\begin{cases}
+  	A sin(2 \pi \frac{i}{512}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < 512\\ 
+  	A sin(2 \pi \frac{i}{512})+65535, \text{ if } Y < 0, \text{ for } 0 \leq i < 512
+  	\end{cases}
+  	\]
+  	dengan A adalah nilai maksimal variabel \textbf{signed 16-bit} yaitu 32767.
+  	Model array-loop: 
+  	\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+for(i=0;i<512;i++){
+  	ysin = 32767*sin(2*3.141592653589793*((double)i/(double)512));
+  	if(ysin >= 0){ i2s_tx_buf[i]=ysin; }
+  	if(ysin <0  ){ i2s_tx_buf[i]=ysin+65535; }
+}
+  	\end{minted}
+  	\begin{figure}[H]
+  		\centering
+  		\includegraphics[width=0.45\linewidth]{result/day_4/newsine400}
+  		\includegraphics[width=0.45\linewidth]{result/day_4/newsine400fft}
+  	\end{figure}
+		
 \end{document}
