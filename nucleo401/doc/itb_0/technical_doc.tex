@@ -52,30 +52,30 @@
 	\maketitle
 	\thispagestyle{empty}
 	\pagestyle{empty}
-	
+
 	\vspace*{100px}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.9\linewidth]{result/BestResult}
 	\end{figure}
-	
+
 	\vspace*{200px}
 	\noindent This report written using:\\
 	OS : \ShowOsVersion \\
 	TeX : \ShowTexVersion \\
 	Update: {\today} at \currenttime\\
-	
+
 	\section{Pendahuluan}
-	
-	Dokumen ini adalah laporan teknis yang menjabarkan detil pencapaian dari 
+
+	Dokumen ini adalah laporan teknis yang menjabarkan detil pencapaian dari
 	pengembangan unit produk Audiometri yang akan dipasarkan baik kebutuhan medis
-	maupun kebutuhan umum. 
-	
+	maupun kebutuhan umum.
+
 	\subsection{Requirement}
-	
-	Berikut akan dijabarkan acuan kebutuhan (\textit{requirement}) yang terbagi dalam 2 kategori, 
+
+	Berikut akan dijabarkan acuan kebutuhan (\textit{requirement}) yang terbagi dalam 2 kategori,
 	yaitu dari sisi (1) pengguna dan (2) teknis.
-	
+
 	\subsubsection{User}
 	Requirement dari sisi pengguna adalah rincian kebutuhan dari sudut pandang pengguna.
 	Berikut adalah rangkumannya:
@@ -86,25 +86,25 @@
 		\begin{itemize}
 			\item \textbf{Power source}. Unit harus memiliki sumber tenaga sendiri yang tidak terikat posisi/tempat.
 			Dapat berupa battery sekali pakai maupun \textit{rechargeable}.
-			
+
 			\item \textbf{Ukuran}. Unit harus memiliki ukuran volume kecil dan massa yang ringan.
 			Ukuran \textit{hand-held} adalah pilihan tepat.
-			
+
 			\item \textbf{Interface}. Unit harus menggunakan \textit{interface} antar muka yang tidak membutuhkan unit
 			interface tambahan lain seperti keyboard atau mouse/pointer.
 			Dan antar-muka harus terintegrasi dengan unit produk.
-			
+
 		\end{itemize}
-	
+
 		\item \textbf{Storage}. Unit harus memiliki metode atau part untuk menyimpan hasil pengukuran,
 		atau mengirimkan hasil itu ke unit lain yang lebih lazim tersedia
-		
-		\item \textbf{Intuitif}. Unit harus mengikuti standar produk intuitif sehingga pengguna 
+
+		\item \textbf{Intuitif}. Unit harus mengikuti standar produk intuitif sehingga pengguna
 		dapat mengoperasikan unit dengan sedikit atau tanpa sama sekali membutuhkan panduan.
 	\end{itemize}
-	
+
 	\subsubsection{Teknis}
-	
+
 	Berdasarkan kebutuhan pengguna, maka dapat dirangkum kebutuhan dalam \textit{term} lebih teknis.
 	Berikut rangkumannya:
 	\begin{itemize}
@@ -122,15 +122,15 @@
 		\end{itemize}
 		\item Unit harus memiliki emulasi \textit{filesystem} untuk media peyimpanan seperti
 		SDCard, MMC, atau USB-Flashdisk.
-		
+
 		\item Unit harus menyembunyikan semua kompleksitas teknis sehingga mudah digunakan pengguna.
 		Jika membutuhkan perangkat lain maka wajib perangkat tersebut sudah lazim tersedia.
-		 
+
 	\end{itemize}
-	
+
 	\newpage
 	\section{Rancangan}
-	
+
 	\subsection{Overview}
 	Dengan memperhatikan \textit{requirement} yang telah dijabarkan, maka dapat dibuat rancangan dari pilihan
 	komponen-komponen yang telah ada dan tersedia.
@@ -139,7 +139,7 @@
 		\item CPU menggunakan STM32 Cortex-M4.
 		Detil pertimbangan:
 		\begin{itemize}
-			\item ARM 32-bit Cortex-M4. 
+			\item ARM 32-bit Cortex-M4.
 			\item Tegangan daya 3.3V.
 			\item Ukuran kecil standar paket TQFP.
 			\item Tersedia protokol FSMC untuk layar-sentuh LCD-TFT.
@@ -148,14 +148,14 @@
 			\item Tersedia total 144 pin GPIO untuk LED dan tombol.
 			\item Harga sangat terjangkau untuk fitur yang tersedia.
 		\end{itemize}
-		
+
 		\item Audio DAC (Digital to Analog Converter) MAX98357A.
 		Detil pertimbangan:
 		\begin{itemize}
 			\item Class-D Amplifier.
 			\item Tegangan daya 3.3V atau 5V tanpa butuh tegangan negatif.
 			\item Protokol PCM 16-bit standar I2S (Inter-Integrated Sound).
-			\item Output langsung ke coil/speaker tanpa tambahan amplifier lain. 
+			\item Output langsung ke coil/speaker tanpa tambahan amplifier lain.
 			\item Tersedia pilihan gain 3dB, 6dB, 9dB (default), 12dB, dan 15dB.
 			\item Tersedia fitur Shut-Down untuk \textit{High-Impedance}
 			saat tidak menghasilkan output apapun.
@@ -170,7 +170,7 @@
 	\subsection{Tone Generator}
 	Berikut adalah kelanjutan penjelasan lebih detil tentang bagian tone generator.
 	Komponen utama adalah chip STM32 dan Audio DAC MAX98375A.
-	
+
 	\subsubsection{PCM 16-bit}
 	PCM (\textit{Pulse-Coded Modulation}) adalah protokol standar untuk bertukar data audio digital.
 	Setiap satu frame data PCM terdiri dari 32 bit data untuk channel kanan dan kiri masing-masing 16-bit.
@@ -186,25 +186,25 @@
 		\item \textbf{LRCLK (Left/Right Clock)}. Sinyal untuk kontrol bagian kanan dan kiri.
 		Mengingat chip MAX98357A adalah \textit{mono-amplifier},
 		maka posisi sinyal kanan (atau LRCLK berlogika \textit{high}) akan diabaikan.
-		
+
 		\item \textbf{BCLK (Bit Clock)}. Sinyal clock untuk kirim data.
 		Chip MAX98357A akan membaca nilai bit data di setiap tepi-naik (\textit{Rising-Edge})
 		dari sinyal BCLK.
-		
-		\item \textbf{DIN (Data IN)}. Sinyal bit data. 
-		Satu frame 32-bit Left/Right berasal dari satu variabel elemen dari array buffer. 
+
+		\item \textbf{DIN (Data IN)}. Sinyal bit data.
+		Satu frame 32-bit Left/Right berasal dari satu variabel elemen dari array buffer.
 	\end{itemize}
-	
+
 	Di chip STM32, modulasi PCM dikirim melalui protokol I2S (\textit{Inter-Integrated Sound})
 	menggunakan jalur komunikasi SPI (\textit{Serial Peripheral Interface}).
 	Secara berurutan, koneksi untuk SPI (MOSI-SCK-NSS) dan untuk I2S (DIN-BCLK-LRCLK).
 	Untuk chip MAX98357A tidak dibutuhkan sinyal MCLK (Master Clock).
-	
+
 	\subsubsection{Class-D Amplifier}
-	
+
 	Secara umum, amplifier tipe Class-D adalah jenis amplifier yang tidak mengambil sinyal analog sebagai input.
 	Sebaliknya menggunakan sinyal digital PWM (Pulse-Width Modulation) atau PCM (Pulse-Coded Modulation) sebagai input.
-	
+
 	Sinyal input ini kemudian ditumpangkan (dimodulasi) ke PWM frekuensi tinggi dan diamplifikasi sesuai nilai gain.
 	Kemudian dengan \textit{low-pass filter}, sinyal dikonversi menjadi lebih analog
 	dengan membuang PWM frekuensi tinggi yang "tersisa" di output.
@@ -225,7 +225,7 @@
 	Berikut adalah penjabaran programming yang digunakan untuk tone generator.
 	Penjelasan hanya spesifik untuk protokol I2S tanpa dikaitkan dengan fitur lain.
 	Seluruh pustaka/modul programming menggunakan abstraksi dari ChibiOS/RT untuk platform chip STM32F4.
-	
+
 	Untuk mempermudah, maka dibagi dalam bagian-bagian utama.
 	Berikut rincian:
 	\begin{itemize}
@@ -238,15 +238,15 @@
 #define STM32_PLLI2SN_VALUE 288
 #define STM32_PLLI2SR_VALUE 3
 		\end{minted}
-		
+
 		\item Variabel array buffer.
 		Ukuran variabel adalah 16-bit (sesuai ukuran bit PCM).
 		Panjang array total harus cukup panjang untuk menghindari
-		noise akibat zero-padding yang tidak tercapai. 
+		noise akibat zero-padding yang tidak tercapai.
 		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
 uint16_t i2s_tx_buf[512*16];
 		\end{minted}
-		
+
 		\item Variabel Driver I2S.
 		Disini dimasukkan variabel array buffer.
 		Juga didefinisikan ukuran buffer yang akan di \textit{play-loop}.
@@ -264,7 +264,7 @@ I2SConfig i2scfg = {
 	16,
 };
 		\end{minted}
-		
+
 		\newpage
 		\item Mengatur semua nilai array ke 0.
 		Model matematis:
@@ -275,7 +275,7 @@ for(i=0;i<512;i++){
 	i2s_tx_buf[i] = 0;
 }
 		\end{minted}
-		
+
 		\item Mengatur sine tone.
 		Fungsi ini akan dimodifikasi dan disesuaikan hingga mendapatkan
 		tone yang paling bersih pada frekuensi yang lebih tinggi
@@ -288,7 +288,7 @@ for(i=0;i<512;i++){
 	i2s_tx_buf[i] = sin((double) freq*i*2*(M_PI/512));
 }
 		\end{minted}
-		
+
 		\item \textit{Playing} sine array dalam \textit{looping}
 		terus-menerus dalam rentang durasi (dalam detik).
 		I2S menggunakan SPI channel 2 sehingga menggunakan driver I2SD2.
@@ -305,25 +305,25 @@ i2sStop(&I2SD2);
 
 	Seluruh \textit{source-code} tersedia di repository github milik Lab Vibrastik.
 	Beberapa file penting untuk dievaluasi terkait tone generator:
-	
+
 	\begin{itemize}
 		\item \textbf{mcuconf.h}. Berisi pengaturan clock untuk STM32 dan fitur I2S.\\
 		\url{https://github.com/VibrasticLab/pikoakustik/blob/master/nucleo401/mcuconf.h}
-		
+
 		\item \textbf{ht\_audio.h}. Berisi makro/definisi untuk fitur tone generator.\\
 		\url{https://github.com/VibrasticLab/pikoakustik/blob/master/nucleo401/ht_audio.h}
-		
+
 		\item \textbf{ht\_audio.c}. Berisi referensi dan implementasi proses tone generator.\\
 		\url{https://github.com/VibrasticLab/pikoakustik/blob/master/nucleo401/ht_audio.c}
 	\end{itemize}
 
 	\newpage
 	\section{Pengujian dan Hasil}
-	
+
 	\subsection{Requirement}
 	\textit{Prototype} unit tone generator pada tahapan pengembangan ini sudah dapat
-	menghasilkan tone melalui headphone via jack 3.5mm tipe TRS (\textit{Tip-Round-Sleeve}). 
-	
+	menghasilkan tone melalui headphone via jack 3.5mm tipe TRS (\textit{Tip-Round-Sleeve}).
+
 	Namun untuk memastikan kualitas tone yang dihasilkan,
 	diperlukan pengujian lebih jauh terkait poin-poin seperti berikut:
 	\begin{enumerate}
@@ -337,51 +337,51 @@ i2sStop(&I2SD2);
 
 	Untuk menguji dan memperbaiki (modifikasi), digunakan alat bantu \textit{Audio Analyzer} dalam
 	produk manekin KEMAR buatan GRAS.
-	
+
 	Secara umum, skema pengujian \textit{tone generator}.
-	
+
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.5\linewidth]{images/kemar}
 	\end{figure}
 
-	\subsection{Persiapan}  
-	
+	\subsection{Persiapan}
+
 	Sebagai dokumentasi berikut dijabarkan langkah-langkah setup manekin KEMAR dan Audio Analyzer.
 
 	\begin{itemize}
 		\item Posisikan manekin KEMAR di atas alas datar (disini digunakan kardus).
 		\item Atur Posisi hadap kepala di 0 derajat.
 		\item Siapkan daun telinga karet
-		
+
 		\newpage
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=0.3\linewidth]{day_1/manekin0}
 			\includegraphics[width=0.3\linewidth]{day_1/manekin1}
 			\includegraphics[width=0.3\linewidth]{day_1/earleaf0}
-		\end{figure} 
-	
+		\end{figure}
+
 		\item Sambungkan Output Mic ke Audio DSP melalui kabel BNC
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=0.3\linewidth]{day_1/wiring0}
 			\includegraphics[width=0.3\linewidth]{day_1/wiring1}
 		\end{figure}
-	
+
 		\item Sambungkan Audio DSP ke laptop dan jalankan program DSSF3.
-		Buka tab \textbf{FFT Analyzer} dan klik tombol \textbf{Calibration}. 
+		Buka tab \textbf{FFT Analyzer} dan klik tombol \textbf{Calibration}.
 
 		\item Kalibrasi menggunakan standar tone kalibrator yang satu paket dengan KEMAR
-		Acuan standar kalibrasi pada SPL 114 dB dan frekuensi 250 Hz. 
+		Acuan standar kalibrasi pada SPL 114 dB dan frekuensi 250 Hz.
 		Kalibrasi dilakukan pada kedua telinga.
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=0.3\linewidth]{day_1/kalib0}
 			\includegraphics[width=0.3\linewidth]{day_1/kalib1}
 			\includegraphics[width=0.3\linewidth]{day_1/kalib2}
-		\end{figure} 
-		
+		\end{figure}
+
 		\newpage
 		\item Pasang daun telinga karet
 		\begin{figure}[H]
@@ -389,7 +389,7 @@ i2sStop(&I2SD2);
 			\includegraphics[width=0.3\linewidth]{day_1/earleaf1}
 			\includegraphics[width=0.3\linewidth]{day_1/earleaf2}
 		\end{figure}
-	
+
 		\item Pasang headphone
 		\begin{figure}[H]
 			\centering
@@ -397,42 +397,42 @@ i2sStop(&I2SD2);
 			\includegraphics[width=0.3\linewidth]{day_1/phone1}
 			\includegraphics[width=0.3\linewidth]{day_1/phone2}
 		\end{figure}
-	
+
 		\item Sambungkan headphone ke tone generator.
 		Sebagai uji awal, dilakukan uji respon FFT untuk melihat apakah setup sudah bekerja.
-		
+
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=0.3\linewidth]{day_1/test0}
 			\includegraphics[width=0.6\linewidth]{day_1/test1}
-		\end{figure}  
+		\end{figure}
 	\end{itemize}
 
 	\subsection{Uji Model/Persamaan Array}
-	
+
 	Berikut adalah hasil uji model atau persamaan yang menghasilkan array untuk dikirim sebagai PCM.
-	
+
 	\subsubsection{Model konstanta array}
 	Array ini menggunakan konstanta array dengan ukuran 256.
 	Nilai konstanta array ini dapat dilihat di file \textbf{ht\_audio.c} pada variabel \textbf{sine\_table}:\\
 	\url{https://github.com/VibrasticLab/pikoakustik/blob/master/nucleo401/ht_audio.c}\\
 	Ini adalah model yang pertama diuji karena tersedia di dokumentasi pustaka ChibiOS/RT.
 	Berikut bentuk plot nilai array dan respon FFT nya.
-	
+
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=0.45\linewidth]{result/day_1/rev_sine_table}
 		\includegraphics[width=0.45\linewidth]{result/day_1/tableMax256}
 	\end{figure}
 
-	Masih terlihat jelas ada frekuensi tambahan (derau) di atas frekuensi yang diinginkan.     
-	
+	Masih terlihat jelas ada frekuensi tambahan (derau) di atas frekuensi yang diinginkan.
+
 	\subsubsection{Model persamaan reversed-sine}
-	Berdasarkan hasil sebelumnya, maka dibuat persamaan array untuk menghasilkan pola sinus terbalik 
+	Berdasarkan hasil sebelumnya, maka dibuat persamaan array untuk menghasilkan pola sinus terbalik
 	seperti pada konstanta array (ukuran 256) pada uji sebelumnya.
 	Model matematis.
 	\[
-	Y(i) = 
+	Y(i) =
 	\begin{cases}
 	A sin(\pi \frac{i}{127}), \text{ if } 0 \leq i < 127\\
 	A(2-sin(\pi \frac{i}{127})), \text{ if } 127 \leq i < 256\\
@@ -451,12 +451,12 @@ for(i=0;i<127;i++){
 	 	\centering
 	 	\includegraphics[width=0.45\linewidth]{result/day_1/halfMax256}
 	 \end{figure}
- 
+
  	 \newpage
  	 \subsubsection{Model persamaan sine}
  	 Dengan melihat hasil sebelumnya yang kurang memuaskan, dilakukan uji untuk model sinus.
  	 Model matematis:
- 	 \[ Y(i) = A sin(2\pi f \frac{i}{B}), \text{ for } 0 \leq i < B \] 
+ 	 \[ Y(i) = A sin(2\pi f \frac{i}{B}), \text{ for } 0 \leq i < B \]
  	 dengan A adalah nilai maksimal variabel \textit{signed 16-bit} yaitu 32767
  	 dan B adalah ukuran buffer array.
  	 Model array loop:
@@ -472,20 +472,20 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
  	 		\centering
  	 		\includegraphics[width=0.45\linewidth]{result/day_1/max256}
  	 	\end{figure}
-  	
+
   		\item 512
   		\begin{figure}[H]
   			\centering
   			\includegraphics[width=0.45\linewidth]{result/day_1/max512}
   		\end{figure}
-  	
+
   		\item 1024
   		\begin{figure}[H]
   			\centering
   			\includegraphics[width=0.45\linewidth]{result/day_1/max1024}
   		\end{figure}
- 	 \end{itemize} 
-  
+ 	 \end{itemize}
+
   	\newpage
   	\subsubsection{Variasi Clock I2S}
   	Melihat hasil sebelumnya yang jauh dari harapan, maka dilakukan modifikasi
@@ -504,7 +504,7 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
   			\centering
   			\includegraphics[width=0.45\linewidth]{result/day_2/sine_clk48}
   		\end{figure}
-  	
+
   		\item Variasi 72MHz
   		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
 #define STM32_PLLI2SN_VALUE 288
@@ -514,7 +514,7 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
   			\centering
   			\includegraphics[width=0.45\linewidth]{result/day_2/sine_clk72}
   		\end{figure}
-  	
+
   		\item Variasi 96MHz
   		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
 #define STM32_PLLI2SN_VALUE 288
@@ -525,21 +525,21 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
   			\includegraphics[width=0.45\linewidth]{result/day_2/sine_clk96}
   		\end{figure}
   	\end{itemize}
-  
+
   	\newpage
   	\subsubsection{Model Sinus Signed 16-bit}
   	Model sinus berikut adalah sinus dimana nilai negatif ditempatkan
   	pada posisi overflow variable signed 16-bit (65535 hingga 32767).
   	Bentuk model matematis:
   	\[
-  	Y(i) = 
+  	Y(i) =
   	\begin{cases}
-  	A sin(2 \pi \frac{i}{512}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < 512\\ 
+  	A sin(2 \pi \frac{i}{512}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < 512\\
   	A sin(2 \pi \frac{i}{512})+65535, \text{ if } Y < 0, \text{ for } 0 \leq i < 512
   	\end{cases}
   	\]
   	dengan A adalah nilai maksimal variabel \textit{signed 16-bit} yaitu 32767.
-  	Model array-loop: 
+  	Model array-loop:
   	\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
 for(i=0;i<512;i++){
   	ysin = 32767*sin(2*3.141592653589793*((double)i/(double)512));
@@ -552,34 +552,34 @@ for(i=0;i<512;i++){
   		\includegraphics[width=0.45\linewidth]{result/day_4/newsine400}
   		\includegraphics[width=0.45\linewidth]{result/day_4/newsine400fft}
   	\end{figure}
-  
+
   	Ini adalah model sinus yang paling bersih hingga saat ini
   	dan model ini yang menjadi standar model array sinus untuk pengembangan selanjutnya.
   	Sebagai tambahan konfirmasi, maka hasil ini juga di uji menggunakan osiloskop 200kHz.
   	\begin{figure}[H]
   		\centering
   		\includegraphics[width=0.45\linewidth]{result/day_4/goodsine}
-  	\end{figure} 
+  	\end{figure}
   	Dapat terlihat masih belum sepenuhnya \textit{smooth},
   	masih ada sisa sinyal squared pada frekuensi tinggi,
   	namun karena osiloskop ini bekerja pada 200kHz,
   	maka kemungkinan tidak tertangkap pada Audio Analyzer yang diatur pada rentang 44100Hz.
-  	
+
   	\newpage
   	Sebagai tambahan informasi, berikut tambahan \textit{screen-shot} hasil tersebut:
   	\begin{figure}[H]
   		\centering
   		\includegraphics[width=0.9\linewidth]{result/day_4/BestResult}
   	\end{figure}
-  
+
   	\subsubsection{Pergeseran Frekuensi}
   	Pengujian selanjutnya adalah bagaimana respon frekuensi terhadap perubahan panjang array.
   	Model matematis:
   	\[ B = 512/F \]
   	\[
-  	Y(i) = 
+  	Y(i) =
   	\begin{cases}
-  	A sin(2 \pi \frac{i}{B}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < B\\ 
+  	A sin(2 \pi \frac{i}{B}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < B\\
   	A sin(2 \pi \frac{i}{B})+65535, \text{ if } Y < 0, \text{ for } 0 \leq i < B
   	\end{cases}
   	\]
@@ -599,8 +599,8 @@ i2scfg.size = buffsize;
   	\[ f = \frac{f_{left} + f_{right}}{2}  \]
   	\[ P = \frac{P_{left} + P_{right}}{2}  \]
   	Ekstraksi data CSV dan nilai frekuensi/SPL menggunakan skrip python semisal berikut:\\
-  	\url{https://github.com/VibrasticLab/pikoakustik/blob/master/nucleo401/doc/itb_0/result/freqSPL.py} 
-  	
+  	\url{https://github.com/VibrasticLab/pikoakustik/blob/master/nucleo401/doc/itb_0/result/freqSPL.py}
+
   	\newpage
   	Berikut adalah hasil modifikasi panjang buffer untuk menguji pergeseran frekuensi:
   	\begin{itemize}
@@ -611,7 +611,7 @@ i2scfg.size = buffsize;
   			\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine2}
   			\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine2}
   		\end{figure}
-  	
+
   		\item Skala 4 atau panjang buffer $512/4 = 128$.
   		Nilai frekuensi 1464 Hz dan nilai SPL 110 dB
   		\begin{figure}[H]
@@ -619,7 +619,7 @@ i2scfg.size = buffsize;
   			\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine4}
   			\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine4}
   		\end{figure}
-  	
+
   		\item Skala 8 atau panjang buffer $512/8 = 64$.
   		Nilai frekuensi 2971 Hz dan nilai SPL 91 dB
   		\begin{figure}[H]
@@ -627,7 +627,7 @@ i2scfg.size = buffsize;
   			\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine8}
   			\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine8}
   		\end{figure}
-  	
+
   		\newpage
   		\item Skala 16 atau panjang buffer $512/16 = 32$.
   		Nilai frekuensi 5900 Hz dan nilai SPL 90 dB
@@ -636,7 +636,7 @@ i2scfg.size = buffsize;
   			\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine16}
   			\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine16}
   		\end{figure}
-  	
+
   		\item Skala 32 atau panjang buffer $512/32 = 16$.
   		Nilai frekuensi 11800 Hz dan nilai SPL 85 dB
   		\begin{figure}[H]
@@ -644,7 +644,7 @@ i2scfg.size = buffsize;
   			\includegraphics[width=0.45\linewidth]{result/day_4/newsinehighest}
   			\includegraphics[width=0.45\linewidth]{result/day_4/newsinehighestfft}
   		\end{figure}
-  	
+
   		\item Skala 0.5 atau panjang buffer $512/0.5 = 1024$.
   		Nilai frekuensi 172 Hz dan nilai SPL 96 dB
   		\begin{figure}[H]
@@ -652,7 +652,7 @@ i2scfg.size = buffsize;
   			\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine0p5}
   			\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine0p5}
   		\end{figure}
-  	
+
   		\newpage
   		\item Skala 0.25 atau panjang buffer $512/0.25 = 2048$.
   		Nilai frekuensi 86 Hz dan nilai SPL 92 dB
@@ -662,7 +662,7 @@ i2scfg.size = buffsize;
   			\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine0p25}
   		\end{figure}
   	\end{itemize}
-	
+
 	Berikut plot hubungan antara skala frekuensi dengan frekuensi tone yang dihasilkan.
 	Dengan diketahui hubungan skala dan frekuensi linear, maka model sine array dapat dimodifikasi dengan linear.
 	\begin{figure}[H]
@@ -678,9 +678,9 @@ i2scfg.size = buffsize;
 		\includegraphics[width=0.45\linewidth]{result/day_1/FreqResp_JBL}
 		\includegraphics[width=0.45\linewidth]{result/analisa/freq_spl}
 	\end{figure}
-	Dapat terlihat bahwa SPL tidak sepenuhnya konstan baik hasil \textit{frequency-response} 
+	Dapat terlihat bahwa SPL tidak sepenuhnya konstan baik hasil \textit{frequency-response}
 	maupun hasil modifikasi frekuensi pada amplitudo maksimal di setiap sinus array yang dihasilkan.
-	
+
 	\newpage
 	\subsubsection{Pergeseran Amplitudo}
 	Berikut adalah pengujian untuk modifikasi amplitudo dengan menggunakan model sinus yang sebelumnya.
@@ -690,17 +690,17 @@ i2scfg.size = buffsize;
 	akan menghasilkan 500 Hz (aktualnya 473 Hz).
 	Rangkuman model matematis:
 	\[
-	Y(i) = 
+	Y(i) =
 	\begin{cases}
-	S_A C_A sin(2 \pi \frac{i}{410}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < 410\\ 
+	S_A C_A sin(2 \pi \frac{i}{410}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < 410\\
 	S_A C_A sin(2 \pi \frac{i}{410})+65535, \text{ if } Y < 0, \text{ for } 0 \leq i < 410
 	\end{cases}
 	\]
-	dengan $S_A$ adalah skala $1 \textasciitilde 0.0001$, dan $C_A=3277$ adalah konstanta amplitudo maksimal 
-	untuk signed 16-bit yang telah di atenuasi $0.1$. 
+	dengan $S_A$ adalah skala $1 \textasciitilde 0.0001$, dan $C_A=3277$ adalah konstanta amplitudo maksimal
+	untuk signed 16-bit yang telah di atenuasi $0.1$.
 	Model array-loop:
 	\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
-double ampl;	
+double ampl;
 buffsize = (uint16_t) 512/1.25;
 for(i=0;i<buffsize;i++){
 	ysin = ampl*0.1*32767*sin(2*3.141592653589793*((double)i/(double)buffsize));
@@ -709,7 +709,7 @@ for(i=0;i<buffsize;i++){
 }
 i2scfg.size = buffsize;
 	\end{minted}
-	
+
 	Berikut hasil uji amplitudo untuk semua skala:
 	\begin{itemize}
 		\item Skala 1 dengan hasil amplitudo 98 dB.
@@ -718,14 +718,14 @@ i2scfg.size = buffsize;
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone1}
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone1}
 		\end{figure}
-	
+
 		\item Skala 0.5 dengan hasil amplitudo 92 dB.
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone05}
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone05}
 		\end{figure}
-	
+
 		\newpage
 		\item Skala 0.1 dengan hasil amplitudo 72 dB.
 		\begin{figure}[H]
@@ -733,21 +733,21 @@ i2scfg.size = buffsize;
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone01}
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone01}
 		\end{figure}
-	
+
 		\item Skala 0.05 dengan hasil amplitudo 72 dB.
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone005}
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone005}
 		\end{figure}
-	
+
 		\item Skala 0.01 dengan hasil amplitudo 58 dB.
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone001}
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone001}
 		\end{figure}
-	
+
 		\newpage
 		\item Skala 0.005 dengan hasil amplitudo 51 dB.
 		\begin{figure}[H]
@@ -755,21 +755,21 @@ i2scfg.size = buffsize;
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone0005}
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone0005}
 		\end{figure}
-	
+
 		\item Skala 0.001 dengan hasil amplitudo 42 dB.
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone0001}
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone0001}
 		\end{figure}
-	
+
 		\item Skala 0.0005 dengan hasil amplitudo 47 dB.
 		\begin{figure}[H]
 			\centering
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone00005}
 			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone00005}
 		\end{figure}
-	
+
 		\newpage
 		\item Skala 0.0001 dengan hasil amplitudo 42 dB.
 		\begin{figure}[H]
@@ -785,10 +785,10 @@ i2scfg.size = buffsize;
 		\includegraphics[width=0.75\linewidth]{result/analisa/ampl_scaling}
 	\end{figure}
 	Maka terlihat untuk skala logaritma bersesuian dengan skala logaritma amplitudo.
-	
+
 	\newpage
 	\section{Rangkuman}
-	
+
 	\subsection{Pencapaian}
 	Beberapa poin pencapaian yang dapat dirangkum:
 	\begin{enumerate}
@@ -797,15 +797,15 @@ i2scfg.size = buffsize;
 			\item Matematis:
 			\[ B = 512/F \]
 			\[
-			Y(i) = 
+			Y(i) =
 			\begin{cases}
-			A sin(2 \pi \frac{i}{B}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < B\\ 
+			A sin(2 \pi \frac{i}{B}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < B\\
 			A sin(2 \pi \frac{i}{B})+65535, \text{ if } Y < 0, \text{ for } 0 \leq i < B
 			\end{cases}
 			\]
 			dengan A adalah nilai maksimal variabel \textit{signed 16-bit} yaitu 32767
 			dan F adalah skala untuk memodifikasi panjang array buffer.
-			
+
 			\item Array-Loop pada clock I2S dan Sampling BCLK adalah 16kHz:
 			\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
 
@@ -819,24 +819,24 @@ for(i=0;i<buffsize;i++){
 i2scfg.size = buffsize;
 			\end{minted}
 		\end{itemize}
-		
+
 		\item Frekuensi dan panjang array buffer adalah \textbf{Linear}.
-		
-		\item Respon logaritmik amplitudo dan SPL adalah \textbf{Linear}. 
+
+		\item Respon logaritmik amplitudo dan SPL adalah \textbf{Linear}.
 	\end{enumerate}
 
 	\subsection{Belum Terselesaikan}
 	Berikut beberapa poin yang belum terselesaikan dapat dirangkum:
 	\begin{itemize}
 		\item Kompensasi headphone yang memiliki respon amplitudo yang
-		tidak flat (data/konstan) terhadap frekuensi.
-		
+		tidak flat (datar/konstan) terhadap frekuensi.
+
 		\item Perbedaan signifikan antara array untuk PCM mono dan array PCM stereo.
-		
-		\item Masalah \text{Audio POP} yang masih muncul di akhir \textit{tone play}. 
+
+		\item Masalah \text{Audio POP} yang masih muncul di akhir \textit{tone play}.
 	\end{itemize}
 
 	Pengembangan selanjutnya membutuhkan instrumen \textit{Audio Capture/Analyzer}
 	walaupun tidak mengharuskan menggunakan manekin KEMAR.
-	
+
 \end{document}
