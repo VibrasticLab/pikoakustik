@@ -438,7 +438,7 @@ i2sStop(&I2SD2);
 	A(2-sin(\pi \frac{i}{127})), \text{ if } 127 \leq i < 256\\
 	\end{cases}
 	 \]
-	 dengan A adalah nilai maksimal variabel \textbf{signed 16-bit} yaitu 32767.
+	 dengan A adalah nilai maksimal variabel \textit{signed 16-bit} yaitu 32767.
 	 Dalam bentuk array loop:
 	 \begin{minted}[frame=lines,fontsize=\footnotesize]{c}
 for(i=0;i<127;i++){
@@ -457,7 +457,7 @@ for(i=0;i<127;i++){
  	 Dengan melihat hasil sebelumnya yang kurang memuaskan, dilakukan uji untuk model sinus.
  	 Model matematis:
  	 \[ Y(i) = A sin(2\pi f \frac{i}{B}), \text{ for } 0 \leq i < B \] 
- 	 dengan A adalah nilai maksimal variabel \textbf{signed 16-bit} yaitu 32767
+ 	 dengan A adalah nilai maksimal variabel \textit{signed 16-bit} yaitu 32767
  	 dan B adalah ukuran buffer array.
  	 Model array loop:
  	 \begin{minted}[frame=lines,fontsize=\footnotesize]{c}
@@ -538,7 +538,7 @@ for(i=0;i<I2S_BUFF_SIZE;i++){
   	A sin(2 \pi \frac{i}{512})+65535, \text{ if } Y < 0, \text{ for } 0 \leq i < 512
   	\end{cases}
   	\]
-  	dengan A adalah nilai maksimal variabel \textbf{signed 16-bit} yaitu 32767.
+  	dengan A adalah nilai maksimal variabel \textit{signed 16-bit} yaitu 32767.
   	Model array-loop: 
   	\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
 for(i=0;i<512;i++){
@@ -579,11 +579,11 @@ for(i=0;i<512;i++){
   	\[
   	Y(i) = 
   	\begin{cases}
-  	A sin(2 \pi \frac{i}{B}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < 512\\ 
-  	A sin(2 \pi \frac{i}{B})+65535, \text{ if } Y < 0, \text{ for } 0 \leq i < 512
+  	A sin(2 \pi \frac{i}{B}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < B\\ 
+  	A sin(2 \pi \frac{i}{B})+65535, \text{ if } Y < 0, \text{ for } 0 \leq i < B
   	\end{cases}
   	\]
-  	dengan A adalah nilai maksimal variabel \textbf{signed 16-bit} yaitu 32767
+  	dengan A adalah nilai maksimal variabel \textit{signed 16-bit} yaitu 32767
   	dan F adalah skala untuk memodifikasi panjang array buffer.
   	Model array-loop:
   	\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
@@ -598,7 +598,245 @@ i2scfg.size = buffsize;
   	Untuk mendapatkan nilai frekuensi dan spl, digunakan perhitungan Left/2+Right/2 (sesuai dokumentasi MAX98357A).
   	\[ f = \frac{f_{left} + f_{right}}{2}  \]
   	\[ P = \frac{P_{left} + P_{right}}{2}  \]
-  	Ekstraksi data CSV dan nilai menggunakan skrip python semisal berikut:\\
-  	 
+  	Ekstraksi data CSV dan nilai frekuensi/SPL menggunakan skrip python semisal berikut:\\
+  	\url{https://github.com/VibrasticLab/pikoakustik/blob/master/nucleo401/doc/itb_0/result/freqSPL.py} 
+  	
+  	\newpage
+  	Berikut adalah hasil modifikasi panjang buffer untuk menguji pergeseran frekuensi:
+  	\begin{itemize}
+  		\item Skala 2 atau panjang buffer $512/2 = 256$.
+  		Nilai frekuensi 732 Hz dan nilai SPL 101 dB
+  		\begin{figure}[H]
+  			\centering
+  			\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine2}
+  			\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine2}
+  		\end{figure}
+  	
+  		\item Skala 4 atau panjang buffer $512/4 = 128$.
+  		Nilai frekuensi 1464 Hz dan nilai SPL 110 dB
+  		\begin{figure}[H]
+  			\centering
+  			\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine4}
+  			\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine4}
+  		\end{figure}
+  	
+  		\item Skala 8 atau panjang buffer $512/8 = 64$.
+  		Nilai frekuensi 2971 Hz dan nilai SPL 91 dB
+  		\begin{figure}[H]
+  			\centering
+  			\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine8}
+  			\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine8}
+  		\end{figure}
+  	
+  		\newpage
+  		\item Skala 16 atau panjang buffer $512/16 = 32$.
+  		Nilai frekuensi 5900 Hz dan nilai SPL 90 dB
+  		\begin{figure}[H]
+  			\centering
+  			\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine16}
+  			\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine16}
+  		\end{figure}
+  	
+  		\item Skala 32 atau panjang buffer $512/32 = 16$.
+  		Nilai frekuensi 11800 Hz dan nilai SPL 85 dB
+  		\begin{figure}[H]
+  			\centering
+  			\includegraphics[width=0.45\linewidth]{result/day_4/newsinehighest}
+  			\includegraphics[width=0.45\linewidth]{result/day_4/newsinehighestfft}
+  		\end{figure}
+  	
+  		\item Skala 0.5 atau panjang buffer $512/0.5 = 1024$.
+  		Nilai frekuensi 172 Hz dan nilai SPL 96 dB
+  		\begin{figure}[H]
+  			\centering
+  			\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine0p5}
+  			\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine0p5}
+  		\end{figure}
+  	
+  		\newpage
+  		\item Skala 0.25 atau panjang buffer $512/0.25 = 2048$.
+  		Nilai frekuensi 86 Hz dan nilai SPL 92 dB
+  		\begin{figure}[H]
+  			\centering
+  			\includegraphics[width=0.45\linewidth]{result/day_4/osi_sine0p25}
+  			\includegraphics[width=0.45\linewidth]{result/day_4/fft_sine0p25}
+  		\end{figure}
+  	\end{itemize}
+	
+	Berikut plot hubungan antara skala frekuensi dengan frekuensi tone yang dihasilkan.
+	Dengan diketahui hubungan skala dan frekuensi linear, maka model sine array dapat dimodifikasi dengan linear.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.45\linewidth]{result/analisa/freq_scaling}
+	\end{figure}
+
+	Dan berikut adalah hubungan	frekuensi dan SPL (\textit{Sound Pressure Level}) yang dihasilkan.
+	Grafik sebelah kiri adalah hubungan frekuensi-SPL,
+	sedangkan sebelah kanan adalah grafik respon frekuensi dari headphone.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.45\linewidth]{result/day_1/FreqResp_JBL}
+		\includegraphics[width=0.45\linewidth]{result/analisa/freq_spl}
+	\end{figure}
+	Dapat terlihat bahwa SPL tidak sepenuhnya konstan baik hasil \textit{frequency-response} 
+	maupun hasil modifikasi frekuensi pada amplitudo maksimal di setiap sinus array yang dihasilkan.
+	
+	\newpage
+	\subsubsection{Pergeseran Amplitudo}
+	Berikut adalah pengujian untuk modifikasi amplitudo dengan menggunakan model sinus yang sebelumnya.
+	Amplitudo maksimal adalah 0.1 dari maksimal signed 16-bit ($0.1*32767=3277$).
+	Kemudian amplitudo tersebut divariasi dengan skala 1 hingga 0.0001.
+	Dengan pendekatan sangat kasar, jika 512 menghasilkan 400Hz (aktualnya 387 Hz), maka skala 1.25 atau $512/1.25=410$
+	akan menghasilkan 500 Hz (aktualnya 473 Hz).
+	Rangkuman model matematis:
+	\[
+	Y(i) = 
+	\begin{cases}
+	S_A C_A sin(2 \pi \frac{i}{410}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < 410\\ 
+	S_A C_A sin(2 \pi \frac{i}{410})+65535, \text{ if } Y < 0, \text{ for } 0 \leq i < 410
+	\end{cases}
+	\]
+	dengan $S_A$ adalah skala $1 \textasciitilde 0.0001$, dan $C_A=3277$ adalah konstanta amplitudo maksimal 
+	untuk signed 16-bit yang telah di atenuasi $0.1$. 
+	Model array-loop:
+	\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+double ampl;	
+buffsize = (uint16_t) 512/1.25;
+for(i=0;i<buffsize;i++){
+	ysin = ampl*0.1*32767*sin(2*3.141592653589793*((double)i/(double)buffsize));
+	if(ysin >= 0){ i2s_tx_buf[i]=ysin; }
+	if(ysin <0  ){ i2s_tx_buf[i]=ysin+65535; }
+}
+i2scfg.size = buffsize;
+	\end{minted}
+	
+	Berikut hasil uji amplitudo untuk semua skala:
+	\begin{itemize}
+		\item Skala 1 dengan hasil amplitudo 98 dB.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone1}
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone1}
+		\end{figure}
+	
+		\item Skala 0.5 dengan hasil amplitudo 92 dB.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone05}
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone05}
+		\end{figure}
+	
+		\newpage
+		\item Skala 0.1 dengan hasil amplitudo 72 dB.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone01}
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone01}
+		\end{figure}
+	
+		\item Skala 0.05 dengan hasil amplitudo 72 dB.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone005}
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone005}
+		\end{figure}
+	
+		\item Skala 0.01 dengan hasil amplitudo 58 dB.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone001}
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone001}
+		\end{figure}
+	
+		\newpage
+		\item Skala 0.005 dengan hasil amplitudo 51 dB.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone0005}
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone0005}
+		\end{figure}
+	
+		\item Skala 0.001 dengan hasil amplitudo 42 dB.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone0001}
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone0001}
+		\end{figure}
+	
+		\item Skala 0.0005 dengan hasil amplitudo 47 dB.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone00005}
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone00005}
+		\end{figure}
+	
+		\newpage
+		\item Skala 0.0001 dengan hasil amplitudo 42 dB.
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/tone00001}
+			\includegraphics[width=0.45\linewidth]{result/day_4/500Hz/fft_tone00001}
+		\end{figure}
+	\end{itemize}
+
+	Kemudian berikut hasil plot logaritmic dari skala amplitudo dengan aktual amplitudo.
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.75\linewidth]{result/analisa/ampl_scaling}
+	\end{figure}
+	Maka terlihat untuk skala logaritma bersesuian dengan skala logaritma amplitudo.
+	
+	\newpage
+	\section{Rangkuman}
+	
+	\subsection{Pencapaian}
+	Beberapa poin pencapaian yang dapat dirangkum:
+	\begin{enumerate}
+		\item Model sinus yang paling bersih adalah sebagai berikut:
+		\begin{itemize}
+			\item Matematis:
+			\[ B = 512/F \]
+			\[
+			Y(i) = 
+			\begin{cases}
+			A sin(2 \pi \frac{i}{B}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < B\\ 
+			A sin(2 \pi \frac{i}{B})+65535, \text{ if } Y < 0, \text{ for } 0 \leq i < B
+			\end{cases}
+			\]
+			dengan A adalah nilai maksimal variabel \textit{signed 16-bit} yaitu 32767
+			dan F adalah skala untuk memodifikasi panjang array buffer.
+			
+			\item Array-Loop pada clock I2S dan Sampling BCLK adalah 16kHz:
+			\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+
+double ampl;
+uint16_t buffsize = (uint16_t) 512/freq;
+for(i=0;i<buffsize;i++){
+	ysin = 0.1*32767*ampl*sin(2*3.141592653589793*((double)i/(double)buffsize));
+	if(ysin >= 0){ i2s_tx_buf[i]=ysin; }
+	if(ysin <0  ){ i2s_tx_buf[i]=ysin+65535; }
+}
+i2scfg.size = buffsize;
+			\end{minted}
+		\end{itemize}
 		
+		\item Frekuensi dan panjang array buffer adalah \textbf{Linear}.
+		
+		\item Respon logaritmik amplitudo dan SPL adalah \textbf{Linear}. 
+	\end{enumerate}
+
+	\subsection{Belum Terselesaikan}
+	Berikut beberapa poin yang belum terselesaikan dapat dirangkum:
+	\begin{itemize}
+		\item Kompensasi headphone yang memiliki respon amplitudo yang
+		tidak flat (data/konstan) terhadap frekuensi.
+		
+		\item Perbedaan signifikan antara array untuk PCM mono dan array PCM stereo.
+		
+		\item Masalah \text{Audio POP} yang masih muncul di akhir \textit{tone play}. 
+	\end{itemize}
+
+	Pengembangan selanjutnya membutuhkan instrumen \textit{Audio Capture/Analyzer}
+	walaupun tidak mengharuskan menggunakan manekin KEMAR.
+	
 \end{document}
