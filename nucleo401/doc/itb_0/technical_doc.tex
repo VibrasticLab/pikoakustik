@@ -552,5 +552,51 @@ for(i=0;i<512;i++){
   		\includegraphics[width=0.45\linewidth]{result/day_4/newsine400}
   		\includegraphics[width=0.45\linewidth]{result/day_4/newsine400fft}
   	\end{figure}
+  
+  	Ini adalah model sinus yang paling bersih hingga saat ini
+  	dan model ini yang menjadi standar model array sinus untuk pengembangan selanjutnya.
+  	Sebagai tambahan konfirmasi, maka hasil ini juga di uji menggunakan osiloskop 200kHz.
+  	\begin{figure}[H]
+  		\centering
+  		\includegraphics[width=0.45\linewidth]{result/day_4/goodsine}
+  	\end{figure} 
+  	Dapat terlihat masih belum sepenuhnya \textit{smooth},
+  	masih ada sisa sinyal squared pada frekuensi tinggi,
+  	namun karena osiloskop ini bekerja pada 200kHz,
+  	maka kemungkinan tertangkap pada Audio Analyzer yang diatur pada rentang 44100Hz.
+  	
+  	\newpage
+  	Sebagai tambahan informasi, berikut tambahan \textit{screen-shot} hasil tersebut:
+  	\begin{figure}[H]
+  		\centering
+  		\includegraphics[width=0.9\linewidth]{result/day_4/BestResult}
+  	\end{figure}
+  
+  	\subsubsection{Pergeseran Frekuensi}
+  	Pengujian selanjutnya adalah bagaimana respon frekuensi terhadap perubahan panjang array.
+  	Model matematis:
+  	\[ B = 512/F \]
+  	\[
+  	Y(i) = 
+  	\begin{cases}
+  	A sin(2 \pi \frac{i}{B}), \text{ if } Y \geq 0, \text{ for } 0 \leq i < 512\\ 
+  	A sin(2 \pi \frac{i}{B})+65535, \text{ if } Y < 0, \text{ for } 0 \leq i < 512
+  	\end{cases}
+  	\]
+  	dengan A adalah nilai maksimal variabel \textbf{signed 16-bit} yaitu 32767
+  	dan F adalah skala untuk memodifikasi panjang array buffer.
+  	Model array-loop:
+  	\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
+buffsize = (uint16_t) 512/freq;
+for(i=0;i<buffsize;i++){
+	ysin = 32767*sin(2*3.141592653589793*((double)i/(double)buffsize));
+	if(ysin >= 0){ i2s_tx_buf[i]=ysin; }
+	if(ysin <0  ){ i2s_tx_buf[i]=ysin+65535; }
+}
+i2scfg.size = buffsize;
+  	\end{minted}
+  	Untuk mendapatkan nilai frekuensi dan spl, digunakan perhitungan Left/2+Right/2 (sesuai dokumentasi MAX98357A).
+  	\[ f = \frac{f_{left} + f_{right}}{2}  \]
+  	\[ P = \frac{P_{left} + P_{right}}{2}  \]
 		
 \end{document}
