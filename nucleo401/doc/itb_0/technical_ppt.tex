@@ -437,7 +437,7 @@ for(i=0;i<127;i++){
 	\begin{exampleblock}{}
 		\begin{minted}[frame=lines,fontsize=\footnotesize]{c}
 for(i=0;i<256;i++){
-	i2s_tx_buf[i] = 32767*sin((double) i*2*(M_PI/256));
+	i2s_tx_buf[i] = 32767*sin( i*2*(M_PI/256));
 }
 		\end{minted}
 	\end{exampleblock}
@@ -558,7 +558,7 @@ for(i=0;i<512;i++){
 \begin{minted}[frame=lines,fontsize=\footnotesize]{c}
 buffsize = (uint16_t) 512/freq;
 for(i=0;i<buffsize;i++){
-	ysin = 32767*sin(2*3.141592653589793*((double)i/(double)buffsize));
+	ysin = 32767*sin(2*3.141592653589793*(i/buffsize));
 	if(ysin >= 0){ i2s_tx_buf[i]=ysin; }
 	if(ysin <0  ){ i2s_tx_buf[i]=ysin+65535; }
 }
@@ -855,7 +855,7 @@ i2scfg.size = buffsize;
 double ampl;
 uint16_t buffsize = (uint16_t) 512/freq;
 for(i=0;i<buffsize;i++){
-	ysin = 0.1*32767*ampl*sin(2*3.141592653589793*((double)i/(double)buffsize));
+	ysin = 0.1*32767*ampl*sin(2*3.141592653589793*(i/buffsize));
 	if(ysin >= 0){ i2s_tx_buf[i]=ysin; }
 	if(ysin <0  ){ i2s_tx_buf[i]=ysin+65535; }
 }
