@@ -9,4 +9,7 @@ rm -vf *.out
 rm -vf *.bbl
 rm -vf *.blg
 rm -vf *.lof
+rm -vf *.nav
+rm -vf *.snm
+rm -vf *.vrb
 rm -rvf ./_minted*
