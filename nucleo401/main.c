@@ -53,7 +53,7 @@ int main(void){
     chSysInit();
 
     ht_audio_Init();
-    ht_audio_Tone(1.25,0.1);
+    ht_audio_Tone(1,0.1);
     ht_audio_Play(TEST_DURATION);
 
     ht_exti_Init();

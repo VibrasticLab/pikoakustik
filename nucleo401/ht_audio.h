@@ -50,9 +50,14 @@
 #define TOTAL_BUFF_SIZE I2S_BUFF_SIZE*16
 
 /**
+ * @brief Wheter use Left/Right or Mono array
+ */
+#define USE_STEREO_ARRAY FALSE
+
+/**
  * @brief Global Duration for Testing
  */
-#define TEST_DURATION   2
+#define TEST_DURATION   4
 
 /**
  * @brief Initiate Audio driver via I2S
