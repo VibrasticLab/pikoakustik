@@ -24,6 +24,7 @@
 
 #include "ch.h"
 #include "hal.h"
+#include "chprintf.h"
 
 #include "ht_audio.h"
 #include "ht_exti.h"
@@ -53,8 +54,10 @@ int main(void){
     chSysInit();
 
     ht_audio_Init();
-    ht_audio_Tone(1,0.1);
+#if USE_STARTUP_TEST
+    ht_audio_Tone(2,0.1);
     ht_audio_Play(TEST_DURATION);
+#endif
 
     ht_exti_Init();
 
@@ -69,6 +72,7 @@ int main(void){
     palClearPad(GPIOA,5);
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
 
+    chprintf((BaseSequentialStream *)&SD1,"Initialization completed\r\n");
     while(1){
         ht_comm_ReInit();
         chThdSleepMicroseconds(100);

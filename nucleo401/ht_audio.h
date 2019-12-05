@@ -27,9 +27,13 @@
 
 /**
  * @brief Default Attenuation
- * @details Hopes can reduce high freq noises
  */
-#define DEFAULT_ATTEN 0.1
+#define DEFAULT_ATTEN 0.01
+
+/**
+ * @brief Default Minimum threshold of 16-bit amplitude
+ */
+#define DEFAULT_AMPL_THD 1
 
 /**
  * @brief I2S protocol buffer size
@@ -52,12 +56,17 @@
 /**
  * @brief Wheter use Left/Right or Mono array
  */
-#define USE_STEREO_ARRAY FALSE
+#define USE_STEREO_ARRAY TRUE
+
+/**
+ * @brief Tone Test at startup
+ */
+#define USE_STARTUP_TEST FALSE
 
 /**
  * @brief Global Duration for Testing
  */
-#define TEST_DURATION   4
+#define TEST_DURATION   2
 
 /**
  * @brief Initiate Audio driver via I2S

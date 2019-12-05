@@ -154,13 +154,18 @@ void ht_audio_Tone(double freq, double ampl){
     uint16_t i;
     uint16_t buffsize;
     double ysin;
+    double ampl_act;
 
     buffsize = (uint16_t) I2S_BUFF_SIZE/freq;
+
+    ampl_act = DEFAULT_ATTEN*ampl*32767;
+    if(ampl_act<=DEFAULT_AMPL_THD){ampl = 0;}
 
     ht_audio_Zero();
 
     for(i=0;i<buffsize;i++){
         ysin = DEFAULT_ATTEN*ampl*32767*sin(2*3.141592653589793*((double)i/(double)buffsize));
+
         if(ysin >= 0){
             i2s_tx_buf[i]=ysin;
 #if USE_STEREO_ARRAY

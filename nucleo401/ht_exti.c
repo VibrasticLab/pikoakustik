@@ -19,6 +19,7 @@
 
 #include "ch.h"
 #include "hal.h"
+#include "chprintf.h"
 
 #include "ht_exti.h"
 #include "ht_audio.h"
@@ -29,6 +30,11 @@
  */
 static uint8_t ext13 = 0;
 
+/**
+ * @brief Amplitude modification each iteration
+ */
+static double ampl_mod = 1;
+
 static THD_WORKING_AREA(waExtiCb, 1024);
 #define ThdFunc_ExtiCb THD_FUNCTION
 /**
@@ -37,13 +43,24 @@ static THD_WORKING_AREA(waExtiCb, 1024);
  */
 static ThdFunc_ExtiCb(thdExtiCb, arg) {
   (void)arg;
+  double ampl_act;
+  uint16_t y_act;
+
   chRegSetThreadName("exti callback");
   while (true) {
       if(ext13==1){
-          ht_led_Shift();
-          ht_audio_Zero();
+
+          ampl_act = DEFAULT_ATTEN*ampl_mod*32767;
+          if(ampl_act<=DEFAULT_AMPL_THD){ampl_mod = 0;}
+          else{ ht_led_Shift(); }
+
+          y_act = DEFAULT_ATTEN*ampl_mod*32767;
+          chprintf((BaseSequentialStream *)&SD1,"Ampl: %5i\r\n",y_act);
+
+          ht_audio_Tone(1,ampl_mod);
           ht_audio_Play(TEST_DURATION);
 
+          ampl_mod = ampl_mod/2;
           ext13=0;
       }
       chThdSleepMicroseconds(100);
