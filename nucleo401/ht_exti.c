@@ -35,7 +35,7 @@ static uint8_t ext13 = 0;
  */
 static double ampl_mod = 1;
 
-static THD_WORKING_AREA(waExtiCb, 1024);
+static THD_WORKING_AREA(waExtiCb, 512);
 #define ThdFunc_ExtiCb THD_FUNCTION
 /**
  * @brief Thread for Interrupt Callback

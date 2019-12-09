@@ -65,8 +65,10 @@ static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 static void mmc_check(void){
     FATFS FatFs;
     FRESULT err;
+#if USE_MMC_FREE
     uint32_t clusters;
     FATFS *fsp;
+#endif
 
     mmc_spi_status_flag=MMC_SPI_OK;
     filesystem_ready=false;
@@ -76,11 +78,15 @@ static void mmc_check(void){
     err = f_mount(&FatFs, "", 0);
     if(err == FR_OK){ filesystem_ready = true; }
 
-    if (!filesystem_ready) { mmc_spi_status_flag=MMC_SPI_FAIL;return; }
+    if(!filesystem_ready){ mmc_spi_status_flag=MMC_SPI_FAIL;return; }
 
+#if USE_MMC_FREE
     mmc_spi_status_flag=MMC_SPI_ERROR;
     err = f_getfree("/", &clusters, &fsp);
     if(err == FR_OK){ mmc_spi_status_flag=MMC_SPI_OK; led_delay=500; }
+#else
+    if(filesystem_ready){mmc_spi_status_flag=MMC_SPI_OK;}
+#endif
 
     f_mount(0, "", 0);
 }

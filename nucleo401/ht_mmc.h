@@ -34,6 +34,12 @@
 #define USE_MMC_CHK 1
 
 /**
+ * @brief Define whether use free-space check routine or not
+ * @details Highly recommended to disable it
+ */
+#define USE_MMC_FREE 0
+
+/**
  * @brief Test Write and Read Simple text in Append mode
  */
 void ht_mmc_Test(void);

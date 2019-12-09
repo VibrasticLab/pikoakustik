@@ -60,9 +60,7 @@ int main(void){
 #endif
 
     ht_exti_Init();
-
     ht_led_Init();
-
     ht_comm_Init();
 
     ht_mmc_Init();
