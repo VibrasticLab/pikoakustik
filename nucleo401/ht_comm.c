@@ -27,6 +27,7 @@
 
 #include "ht_console.h"
 #include "ht_audio.h"
+#include "ht_mmc.h"
 
 /**
  * @brief Shell Console pointer
@@ -192,6 +193,13 @@ static void cmd_half(BaseSequentialStream *chp, int argc, char *argv[]) {
 #endif
 #endif
 
+static void cmd_lsfile(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+    if(argc != 0){chprintf(chp,"usage: ls\r\n");return;}
+
+    ht_mmc_lsFiles();
+}
+
 /**
  * @brief Shell command and it's callback enumeration
  * @details Extending from internal shell's callback
@@ -202,6 +210,7 @@ static const ShellCommand commands[] = {
     {"tone",cmd_tone},
     {"max",cmd_max},
     {"min",cmd_min},
+    {"ls",cmd_lsfile},
 #if AUDIO_TEST_DEV
     {"sine",cmd_sine},
 #if USE_SINE_TABLE

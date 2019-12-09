@@ -17,6 +17,10 @@
  * @{
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "ch.h"
 #include "hal.h"
 #include "chprintf.h"
@@ -99,7 +103,7 @@ void ht_mmc_Test(void){
     FIL Fil;
     UINT bw;
 
-    FatFs = malloc(sizeof (FatFs));
+    FatFs = malloc(sizeof(FatFs));
 
 #if USE_MMC_CHK
     mmc_check();
@@ -133,5 +137,49 @@ void ht_mmc_Init(void){
 
     palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
     palClearPad(GPIOA,5);
+}
+
+static FRESULT scanFile(char *path){
+    FRESULT err;
+    DIR Dir;
+    UINT num;
+    FILINFO Fno;
+
+    err = f_opendir(&Dir,"/");
+    if(err==FR_OK){
+        while(1){
+            err=f_readdir(&Dir,&Fno);
+            if(err!=FR_OK || Fno.fname[0]==0)break;
+
+            if(Fno.fattrib & AM_DIR){
+                num = strlen(path);
+                chsnprintf(&path[num],sizeof(&path[num]),"/%s",Fno.fname);
+                err = scanFile(path);
+                if(err!=FR_OK)break;
+                path[num]=0;
+            }
+            else{
+                chprintf((BaseSequentialStream *)&SD1,"%s/%s\r\n",path,Fno.fname);
+            }
+        }
+        f_closedir(&Dir);
+    }
+    return err;
+}
+
+void ht_mmc_lsFiles(void){
+    FATFS FatFs;
+    FRESULT err;
+    char buff[256];
+
+    chThdSleepMilliseconds(1);
+    err = f_mount(&FatFs,"",0);
+    if(err==FR_OK){
+        strcpy(buff,"/");
+        err = scanFile(buff);
+        if(err==FR_OK){
+            chprintf((BaseSequentialStream *)&SD1,"All files listed\r\n");
+        }
+    }
 }
 /** @} */

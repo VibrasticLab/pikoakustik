@@ -49,5 +49,10 @@ void ht_mmc_Test(void);
  */
 void ht_mmc_Init(void);
 
+/**
+ * @brief List files on directory
+ */
+void ht_mmc_lsFiles(void);
+
 #endif // HT_MMC_H
 /** @} */
