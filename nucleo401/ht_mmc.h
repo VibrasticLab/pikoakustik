@@ -40,6 +40,12 @@
 #define USE_MMC_FREE 0
 
 /**
+ * @brief Define whether scan directory recursively or files only
+ * @details Highly recommended to disable it as still buggy
+ */
+#define USE_SCAN_DIR 0
+
+/**
  * @brief Test Write and Read Simple text in Append mode
  */
 void ht_mmc_Test(void);

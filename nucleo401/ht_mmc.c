@@ -114,7 +114,7 @@ void ht_mmc_Test(void){
 
         f_mount(FatFs, "", 0);
 
-        f_open(&Fil, "tes.txt", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+        f_open(&Fil, "TEST.TXT", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
         f_lseek(&Fil, f_size(&Fil));
         f_write(&Fil, buffer, strlen(buffer), &bw);
         f_close(&Fil);
@@ -142,24 +142,33 @@ void ht_mmc_Init(void){
 static FRESULT scanFile(char *path){
     FRESULT err;
     DIR Dir;
-    UINT num;
     FILINFO Fno;
+#if USE_SCAN_DIR
+    UINT num;
+#endif
 
-    err = f_opendir(&Dir,"/");
+    err = f_opendir(&Dir,path);
     if(err==FR_OK){
         while(1){
             err=f_readdir(&Dir,&Fno);
             if(err!=FR_OK || Fno.fname[0]==0)break;
 
             if(Fno.fattrib & AM_DIR){
+#if USE_SCAN_DIR
                 num = strlen(path);
                 chsnprintf(&path[num],sizeof(&path[num]),"/%s",Fno.fname);
                 err = scanFile(path);
                 if(err!=FR_OK)break;
                 path[num]=0;
+
             }
             else{
-                chprintf((BaseSequentialStream *)&SD1,"%s/%s\r\n",path,Fno.fname);
+                chprintf((BaseSequentialStream *)&SD1,"%s%s\r\n",path,Fno.fname);
+#else
+            }
+            else{
+                chprintf((BaseSequentialStream *)&SD1,"%s\r\n",Fno.fname);
+#endif
             }
         }
         f_closedir(&Dir);
@@ -172,13 +181,14 @@ void ht_mmc_lsFiles(void){
     FRESULT err;
     char buff[256];
 
-    chThdSleepMilliseconds(1);
+    chprintf((BaseSequentialStream *)&SD1,"\r\nFiles on MMC\r\n");
+    chprintf((BaseSequentialStream *)&SD1,"------------\r\n");
     err = f_mount(&FatFs,"",0);
     if(err==FR_OK){
         strcpy(buff,"/");
         err = scanFile(buff);
         if(err==FR_OK){
-            chprintf((BaseSequentialStream *)&SD1,"All files listed\r\n");
+            chprintf((BaseSequentialStream *)&SD1,"------------\r\n\r\n");
         }
     }
 }
