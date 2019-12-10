@@ -60,5 +60,10 @@ void ht_mmc_Init(void);
  */
 void ht_mmc_lsFiles(void);
 
+/**
+ * @brief Read a file on directory
+ */
+void ht_mmc_catFiles(void);
+
 #endif // HT_MMC_H
 /** @} */

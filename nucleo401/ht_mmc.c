@@ -117,6 +117,7 @@ void ht_mmc_Test(void){
         f_open(&Fil, "TEST.TXT", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
         f_lseek(&Fil, f_size(&Fil));
         f_write(&Fil, buffer, strlen(buffer), &bw);
+        f_sync(&Fil);
         f_close(&Fil);
 
         f_mount(0, "", 0);
@@ -190,6 +191,31 @@ void ht_mmc_lsFiles(void){
         if(err==FR_OK){
             chprintf((BaseSequentialStream *)&SD1,"------------\r\n\r\n");
         }
+    }
+}
+
+void ht_mmc_catFiles(void){
+    char buffer[512];
+    FATFS FatFs;
+    FIL Fil;
+    UINT br;
+
+#if USE_MMC_CHK
+    mmc_check();
+#endif
+
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+        f_mount(&FatFs, "", 0);
+
+        chprintf((BaseSequentialStream *)&SD1,"File content:\r\n");
+
+        f_open(&Fil, "TEST.TXT", FA_OPEN_EXISTING | FA_READ);
+        f_read(&Fil,buffer,sizeof(buffer),&br);
+        f_close(&Fil);
+
+        chprintf((BaseSequentialStream *)&SD1,"\r\n",buffer);
+
+        f_mount(0, "", 0);
     }
 }
 /** @} */

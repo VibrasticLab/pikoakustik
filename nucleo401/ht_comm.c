@@ -200,6 +200,13 @@ static void cmd_lsfile(BaseSequentialStream *chp, int argc, char *argv[]) {
     ht_mmc_lsFiles();
 }
 
+static void cmd_catfile(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+    if(argc != 0){chprintf(chp,"usage: cat\r\n");return;}
+
+    ht_mmc_catFiles();
+}
+
 /**
  * @brief Shell command and it's callback enumeration
  * @details Extending from internal shell's callback
@@ -211,6 +218,7 @@ static const ShellCommand commands[] = {
     {"max",cmd_max},
     {"min",cmd_min},
     {"ls",cmd_lsfile},
+    {"cat",cmd_catfile},
 #if AUDIO_TEST_DEV
     {"sine",cmd_sine},
 #if USE_SINE_TABLE
