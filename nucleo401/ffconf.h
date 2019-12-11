@@ -44,7 +44,7 @@
 /   3: f_lseek() function is removed in addition to 2. */
 
 
-#define	_USE_STRFUNC	2	/* 0:Disable or 1-2:Enable */
+#define	_USE_STRFUNC	0	/* 0:Disable or 1-2:Enable */
 /* To enable string functions, set _USE_STRFUNC to 1 or 2. */
 
 
@@ -123,7 +123,7 @@
 /  functions. This option must be 0 when LFN feature is not enabled. */
 
 
-#define _STRF_ENCODE	3	/* 0:ANSI/OEM, 1:UTF-16LE, 2:UTF-16BE, 3:UTF-8 */
+#define _STRF_ENCODE	0	/* 0:ANSI/OEM, 1:UTF-16LE, 2:UTF-16BE, 3:UTF-8 */
 /* When Unicode API is enabled by _LFN_UNICODE option, this option selects the character
 /  encoding on the file to be read/written via string I/O functions, f_gets(), f_putc(),
 /  f_puts and f_printf(). This option has no effect when Unicode API is not enabled. */
@@ -199,7 +199,7 @@
 /  with file lock control. This feature uses bss _FS_LOCK * 12 bytes. */
 
 
-#define _FS_REENTRANT   0               /* 0:Disable or 1:Enable */
+#define _FS_REENTRANT   1               /* 0:Disable or 1:Enable */
 #define _FS_TIMEOUT     MS2ST(1000)     /* Timeout period in unit of time tick */
 #define _SYNC_t         semaphore_t*    /* O/S dependent sync object type. e.g. HANDLE, OS_EVENT*, ID, SemaphoreHandle_t and etc.. */
 /* The _FS_REENTRANT option switches the re-entrancy (thread safe) of the FatFs module.

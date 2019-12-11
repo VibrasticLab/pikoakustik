@@ -69,6 +69,7 @@ static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 static void mmc_check(void){
     FATFS FatFs;
     FRESULT err;
+
 #if USE_MMC_FREE
     uint32_t clusters;
     FATFS *fsp;
@@ -78,9 +79,10 @@ static void mmc_check(void){
     filesystem_ready=false;
 
     if(mmcConnect(&MMCD1)) { filesystem_ready = true; }
-
-    err = f_mount(&FatFs, "", 0);
-    if(err == FR_OK){ filesystem_ready = true; }
+    else{
+        err = f_mount(&FatFs, "", 0);
+        if(err == FR_OK){ filesystem_ready = true; }
+    }
 
     if(!filesystem_ready){ mmc_spi_status_flag=MMC_SPI_FAIL;return; }
 
@@ -88,41 +90,40 @@ static void mmc_check(void){
     mmc_spi_status_flag=MMC_SPI_ERROR;
     err = f_getfree("/", &clusters, &fsp);
     if(err == FR_OK){ mmc_spi_status_flag=MMC_SPI_OK; led_delay=500; }
-#else
-    if(filesystem_ready){mmc_spi_status_flag=MMC_SPI_OK;}
 #endif
 
     f_mount(0, "", 0);
+
+    chThdSleepMilliseconds(100);
 }
 #endif
 
 void ht_mmc_Test(void){
     char buffer[36];
 
-    FATFS *FatFs;
-    FIL Fil;
+    FATFS FatFs;
+    FIL *Fil;
     UINT bw;
 
-    FatFs = malloc(sizeof(FatFs));
+    Fil = (FIL*)malloc(sizeof(FIL));
 
 #if USE_MMC_CHK
     mmc_check();
 #endif
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        chsnprintf(buffer,36,"Test\n");
+        chsnprintf(buffer,sizeof(buffer),"Test\n\r");
 
-        f_mount(FatFs, "", 0);
+        f_mount(&FatFs, "", 0);
 
-        f_open(&Fil, "/test.txt", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
-        f_lseek(&Fil, f_size(&Fil));
-        f_write(&Fil, buffer, strlen(buffer), &bw);
-        f_sync(&Fil);
-        f_close(&Fil);
+        f_open(Fil, "/TEST.TXT", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+        f_lseek(Fil, f_size(Fil));
+        f_write(Fil, buffer, strlen(buffer), &bw);
+        f_close(Fil);
 
         f_mount(0, "", 0);
-        free(FatFs);
     }
+    free(Fil);
 }
 
 void ht_mmc_Init(void){
@@ -182,6 +183,10 @@ void ht_mmc_lsFiles(void){
     FRESULT err;
     char buff[256];
 
+#if USE_MMC_CHK
+    mmc_check();
+#endif
+
     chprintf((BaseSequentialStream *)&SD1,"\r\nFiles on MMC\r\n");
     chprintf((BaseSequentialStream *)&SD1,"------------\r\n");
     err = f_mount(&FatFs,"",0);
@@ -192,34 +197,39 @@ void ht_mmc_lsFiles(void){
             chprintf((BaseSequentialStream *)&SD1,"------------\r\n\r\n");
         }
     }
+    f_mount(0, "", 0);
 }
 
 void ht_mmc_catFiles(void){
-    char buffer[2048];
-    FATFS *FatFs;
-    FIL Fil;
+    char buffer[64];
+    FATFS FatFs;
+    FIL *Fil;
     UINT br;
+    FRESULT err;
 
-    FatFs = malloc(sizeof(FatFs));
+    Fil = (FIL*)malloc(sizeof(FIL));
 
 #if USE_MMC_CHK
     mmc_check();
 #endif
 
+    chprintf((BaseSequentialStream *)&SD1,"Content:\r\n");
+
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        f_mount(FatFs, "", 0);
+        f_mount(&FatFs, "", 0);
 
-        chprintf((BaseSequentialStream *)&SD1,"File content:\r\n");
-
-        f_open(&Fil, "/test.txt", FA_OPEN_EXISTING | FA_READ);
-        f_read(&Fil,buffer,f_size(&Fil),&br);
-        f_close(&Fil);
-
-        chprintf((BaseSequentialStream *)&SD1,"%s",buffer);
-        chprintf((BaseSequentialStream *)&SD1,"\r\n");
+        err=f_open(Fil, "/TEST.TXT", FA_OPEN_EXISTING |FA_READ);
+        if(err==FR_OK){
+            f_read(Fil,buffer,sizeof(buffer),&br);
+            f_close(Fil);
+            chprintf((BaseSequentialStream *)&SD1,"%s\r\n",buffer);
+        }
+        else{
+            chprintf((BaseSequentialStream *)&SD1,"Open Error:%d\r\n",err);
+        }
 
         f_mount(0, "", 0);
-        free(FatFs);
     }
+    free(Fil);
 }
 /** @} */
