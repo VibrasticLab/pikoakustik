@@ -207,13 +207,6 @@ static void cmd_catfile(BaseSequentialStream *chp, int argc, char *argv[]) {
     ht_mmc_catFiles();
 }
 
-static void cmd_lessfile(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
-    if(argc != 0){chprintf(chp,"usage: less\r\n");return;}
-
-    ht_mmc_lessFiles();
-}
-
 /**
  * @brief Shell command and it's callback enumeration
  * @details Extending from internal shell's callback
@@ -226,7 +219,6 @@ static const ShellCommand commands[] = {
     {"min",cmd_min},
     {"ls",cmd_lsfile},
     {"cat",cmd_catfile},
-    {"less",cmd_lessfile},
 #if AUDIO_TEST_DEV
     {"sine",cmd_sine},
 #if USE_SINE_TABLE

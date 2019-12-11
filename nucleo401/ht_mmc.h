@@ -46,6 +46,13 @@
 #define USE_SCAN_DIR 0
 
 /**
+ * @brief Read a file as line by line
+ * @details If enabled, _USE_STRFUNC must 1
+ * @details Highly recommended to enable it
+ */
+#define USE_READ_LINE 1
+
+/**
  * @brief Test Write and Read Simple text in Append mode
  */
 void ht_mmc_Test(void);
@@ -61,14 +68,9 @@ void ht_mmc_Init(void);
 void ht_mmc_lsFiles(void);
 
 /**
- * @brief Read a file at whole
+ * @brief Read a file on directory
  */
 void ht_mmc_catFiles(void);
-
-/**
- * @brief Read a file line by line
- */
-void ht_mmc_lessFiles(void);
 
 #endif // HT_MMC_H
 /** @} */

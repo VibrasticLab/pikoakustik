@@ -204,7 +204,6 @@ void ht_mmc_catFiles(void){
     char buffer[64];
     FATFS FatFs;
     FIL *Fil;
-    UINT br;
     FRESULT err;
 
     Fil = (FIL*)malloc(sizeof(FIL));
@@ -222,52 +221,23 @@ void ht_mmc_catFiles(void){
 
         err=f_open(Fil, "/TEST.TXT", FA_OPEN_EXISTING |FA_READ);
         if(err==FR_OK){
-            f_read(Fil,buffer,sizeof(buffer),&br);
-            f_close(Fil);
-            chprintf((BaseSequentialStream *)&SD1,"%s\r\n",buffer);
-            chprintf((BaseSequentialStream *)&SD1,"------------\r\n\r\n");
-        }
-        else{
-            chprintf((BaseSequentialStream *)&SD1,"Open Error:%d\r\n",err);
-        }
-
-        f_mount(0, "", 0);
-    }
-    free(Fil);
-}
-
-void ht_mmc_lessFiles(void){
-    char buffer[64];
-    char line[8];
-    FATFS FatFs;
-    FIL *Fil;
-    FRESULT err;
-    TCHAR *eof;
-
-    Fil = (FIL*)malloc(sizeof(FIL));
-
-#if USE_MMC_CHK
-    mmc_check();
-#endif
-
-    chprintf((BaseSequentialStream *)&SD1,"\r\nFiles Content\r\n");
-    chprintf((BaseSequentialStream *)&SD1,"------------\r\n");
-    strcpy(buffer,"");
-
-    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        f_mount(&FatFs, "", 0);
-
-        err=f_open(Fil, "/TEST.TXT", FA_OPEN_EXISTING |FA_READ);
-        if(err==FR_OK){
+#if USE_READ_LINE
+            char line[8];
+            TCHAR *eof;
             while(1){
                 strcpy(line,"");
                 eof=f_gets(line,sizeof(line),Fil);
                 if(eof[0]==0)break;
                 chsnprintf(buffer,sizeof(buffer),"%s%s\r",buffer,line);
             }
+#else
+            UINT br;
+            f_read(Fil,buffer,sizeof(buffer),&br);
+#endif
             f_close(Fil);
             chprintf((BaseSequentialStream *)&SD1,"%s\r\n",buffer);
             chprintf((BaseSequentialStream *)&SD1,"------------\r\n\r\n");
+
         }
         else{
             chprintf((BaseSequentialStream *)&SD1,"Open Error:%d\r\n",err);
@@ -277,4 +247,5 @@ void ht_mmc_lessFiles(void){
     }
     free(Fil);
 }
+
 /** @} */
