@@ -126,25 +126,45 @@ void ht_mmc_Test(void){
     free(Fil);
 }
 
-void ht_mmc_Init(void){
-    palSetPadMode(GPIOC, 12, PAL_MODE_ALTERNATE(6) | PAL_STM32_OSPEED_HIGHEST); //MOSI
-    palSetPadMode(GPIOC, 11, PAL_MODE_ALTERNATE(6) | PAL_STM32_OSPEED_HIGHEST); //MISO
-    palSetPadMode(GPIOC, 10, PAL_MODE_ALTERNATE(6) | PAL_STM32_OSPEED_HIGHEST); //SCK
-    palSetPadMode(GPIOA, 15, PAL_MODE_OUTPUT_PUSHPULL | PAL_STM32_OSPEED_HIGHEST); //NSS
-    palSetPad(GPIOA, 15);
+static void string_parse(char *strIn, char *strOut, uint8_t pos, char sep){
+    char strInput[90];
+    char strSplit[3][30];
+    uint8_t i,j,cnt;
 
-    mmcObjectInit(&MMCD1);
-    mmcStart(&MMCD1, &mmccfg);
-    chThdSleepMilliseconds(100);
+    strcpy(strInput,strIn);
+    j=0; cnt=0;
+    for(i=0;i<=strlen(strInput);i++){
+        if(strInput[i]==' ' || strInput[i]=='\0' || strInput[i]==sep){
+            strSplit[cnt][j]='\0';
+            cnt++;
+            j=0;
+        }
+        else {
+            strSplit[cnt][j]=strInput[i];
+            j++;
+        }
+    }
 
-    palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
-    palClearPad(GPIOA,5);
+    strcpy(strOut,strSplit[pos]);
+}
+
+static uint8_t get_fnum(char *strIn){
+    char buffer[64];
+    char filenum[16];
+    uint8_t numOut;
+
+    string_parse(strIn,buffer,1,'_');
+    string_parse(buffer,filenum,0,'.');
+    numOut = atoi(filenum);
+
+    return numOut;
 }
 
 static FRESULT scanFile(char *path,char *lastfname){
     FRESULT err;
     DIR Dir;
     FILINFO Fno;
+    uint8_t fnum;
 #if USE_SCAN_DIR
     UINT num;
 #endif
@@ -170,6 +190,8 @@ static FRESULT scanFile(char *path,char *lastfname){
             }
             else{
                 strcpy(lastfname,Fno.fname);
+                fnum = get_fnum(Fno.fname);
+                chprintf((BaseSequentialStream *)&SD1,"Fnum: %i\r\n",fnum);
                 chprintf((BaseSequentialStream *)&SD1,"%s\r\n",Fno.fname);
 #endif
             }
@@ -230,7 +252,7 @@ void ht_mmc_catFiles(void){
             TCHAR *eof;
             while(1){
                 strcpy(line,"");
-                eof=f_gets(line,sizeof(line),Fil);
+                eof=f_readline(line,sizeof(line),Fil);
                 if(eof[0]==0)break;
                 chsnprintf(buffer,sizeof(buffer),"%s%s\r",buffer,line);
             }
@@ -250,6 +272,21 @@ void ht_mmc_catFiles(void){
         f_mount(0, "", 0);
     }
     free(Fil);
+}
+
+void ht_mmc_Init(void){
+    palSetPadMode(GPIOC, 12, PAL_MODE_ALTERNATE(6) | PAL_STM32_OSPEED_HIGHEST); //MOSI
+    palSetPadMode(GPIOC, 11, PAL_MODE_ALTERNATE(6) | PAL_STM32_OSPEED_HIGHEST); //MISO
+    palSetPadMode(GPIOC, 10, PAL_MODE_ALTERNATE(6) | PAL_STM32_OSPEED_HIGHEST); //SCK
+    palSetPadMode(GPIOA, 15, PAL_MODE_OUTPUT_PUSHPULL | PAL_STM32_OSPEED_HIGHEST); //NSS
+    palSetPad(GPIOA, 15);
+
+    mmcObjectInit(&MMCD1);
+    mmcStart(&MMCD1, &mmccfg);
+    chThdSleepMilliseconds(100);
+
+    palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
+    palClearPad(GPIOA,5);
 }
 
 /** @} */

@@ -28,6 +28,11 @@
 #define MMC_SPI_ERROR   2
 
 /**
+ * @brief rename to match name f_write()
+ */
+#define f_readline      f_gets
+
+/**
  * @brief Define whether use checking routine or not
  * @details Highly recommended to enabled it
  */
