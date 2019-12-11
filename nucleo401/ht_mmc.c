@@ -160,7 +160,7 @@ static uint8_t get_fnum(char *strIn){
     return numOut;
 }
 
-static FRESULT scanFile(char *path,char *lastfname){
+static FRESULT scanFile(char *path, uint8_t *lastfnum){
     FRESULT err;
     DIR Dir;
     FILINFO Fno;
@@ -169,6 +169,7 @@ static FRESULT scanFile(char *path,char *lastfname){
     UINT num;
 #endif
 
+    *lastfnum=0;
     err = f_opendir(&Dir,path);
     if(err==FR_OK){
         while(1){
@@ -185,13 +186,14 @@ static FRESULT scanFile(char *path,char *lastfname){
 
             }
             else{
+                fnum = get_fnum(Fno.fname);
+                if(*lastfnum<=fnum)*lastfnum=fnum;
                 chprintf((BaseSequentialStream *)&SD1,"%s%s\r\n",path,Fno.fname);
 #else
             }
             else{
-                strcpy(lastfname,Fno.fname);
                 fnum = get_fnum(Fno.fname);
-                chprintf((BaseSequentialStream *)&SD1,"Fnum: %i\r\n",fnum);
+                if(*lastfnum<=fnum)*lastfnum=fnum;
                 chprintf((BaseSequentialStream *)&SD1,"%s\r\n",Fno.fname);
 #endif
             }
@@ -205,7 +207,7 @@ void ht_mmc_lsFiles(void){
     FATFS FatFs;
     FRESULT err;
     char buff[256];
-    char lastfile[64];
+    uint8_t lastnum=0;
 
 #if USE_MMC_CHK
     mmc_check();
@@ -216,10 +218,11 @@ void ht_mmc_lsFiles(void){
     err = f_mount(&FatFs,"",0);
     if(err==FR_OK){
         strcpy(buff,"/");
-        err = scanFile(buff,lastfile);
+        err = scanFile(buff,&lastnum);
         if(err==FR_OK){
             chprintf((BaseSequentialStream *)&SD1,"------------\r\n");
-            chprintf((BaseSequentialStream *)&SD1,"Last File: %s\r\n",lastfile);
+            chprintf((BaseSequentialStream *)&SD1,"Last Num: %i\r\n",lastnum);
+            chprintf((BaseSequentialStream *)&SD1,"Last File: TEST_%i.TXT\r\n",lastnum);
             chprintf((BaseSequentialStream *)&SD1,"------------\r\n\r\n");
         }
     }
