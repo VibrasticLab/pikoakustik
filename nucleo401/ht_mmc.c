@@ -141,7 +141,7 @@ void ht_mmc_Init(void){
     palClearPad(GPIOA,5);
 }
 
-static FRESULT scanFile(char *path){
+static FRESULT scanFile(char *path,char *lastfname){
     FRESULT err;
     DIR Dir;
     FILINFO Fno;
@@ -169,6 +169,7 @@ static FRESULT scanFile(char *path){
 #else
             }
             else{
+                strcpy(lastfname,Fno.fname);
                 chprintf((BaseSequentialStream *)&SD1,"%s\r\n",Fno.fname);
 #endif
             }
@@ -182,6 +183,7 @@ void ht_mmc_lsFiles(void){
     FATFS FatFs;
     FRESULT err;
     char buff[256];
+    char lastfile[64];
 
 #if USE_MMC_CHK
     mmc_check();
@@ -192,8 +194,10 @@ void ht_mmc_lsFiles(void){
     err = f_mount(&FatFs,"",0);
     if(err==FR_OK){
         strcpy(buff,"/");
-        err = scanFile(buff);
+        err = scanFile(buff,lastfile);
         if(err==FR_OK){
+            chprintf((BaseSequentialStream *)&SD1,"------------\r\n");
+            chprintf((BaseSequentialStream *)&SD1,"Last File: %s\r\n",lastfile);
             chprintf((BaseSequentialStream *)&SD1,"------------\r\n\r\n");
         }
     }
