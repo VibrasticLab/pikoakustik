@@ -131,68 +131,6 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
     else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
 }
 
-#if AUDIO_TEST_DEV
-/**
- * @brief Audio Play Coba command callback
- * @details Enumerated and not called directly by any normal thread
- */
-static void cmd_sine(BaseSequentialStream *chp, int argc, char *argv[]) {
-    double vfreq,vampl;
-
-    if(argc != 2){chprintf(chp,"usage: sine <freq> <ampl>\r\n");return;}
-
-    vfreq = atof(argv[0]);
-    vampl = atof(argv[1]);
-
-    chprintf(chp,"Coba Audio: Freq:%3.1f Ampl:%3.1f\r\n",vfreq,vampl);
-    ht_audio_Sine(vfreq,vampl);
-    ht_audio_Play(TEST_DURATION);
-    chprintf(chp,"Finished\r\n");
-}
-
-#if USE_SINE_TABLE
-/**
- * @brief Audio Play Table command callback
- * @details Enumerated and not called directly by any normal thread
- */
-static void cmd_table(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
-    if(argc != 0){chprintf(chp,"usage: table\r\n"); return;}
-
-    chprintf(chp,"Coba Audio: Table\r\n");
-    ht_audio_Table();
-    ht_audio_Play(TEST_DURATION);
-    chprintf(chp,"Finished\r\n");
-}
-static void cmd_wave(BaseSequentialStream *chp, int argc, char *argv[]) {
-    if(argc == 0){
-        (void) argv;
-
-        chprintf(chp,"Coba Audio: Wave\r\n");
-        ht_audio_Wave();
-        ht_audio_Play(TEST_DURATION);
-        chprintf(chp,"Finished\r\n");
-    }
-    else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
-}
-
-/**
- * @brief Audio Play Halving-Formula command callback
- * @details Enumerated and not called directly by any normal thread
- */
-static void cmd_half(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
-
-    if(argc != 0){chprintf(chp,"usage: half\r\n");return;}
-
-    chprintf(chp,"Coba Audio: Halving Formula\r\n");
-    ht_audio_Half();
-    ht_audio_Play(TEST_DURATION);
-    chprintf(chp,"Finished\r\n");
-}
-#endif
-#endif
-
 static void cmd_lsfile(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
     if(argc != 0){chprintf(chp,"usage: ls\r\n");return;}
@@ -219,14 +157,6 @@ static const ShellCommand commands[] = {
     {"min",cmd_min},
     {"ls",cmd_lsfile},
     {"cat",cmd_catfile},
-#if AUDIO_TEST_DEV
-    {"sine",cmd_sine},
-#if USE_SINE_TABLE
-    {"half",cmd_half},
-    {"wave",cmd_wave},
-    {"table",cmd_table},
-#endif
-#endif
     {NULL, NULL}
 };
 

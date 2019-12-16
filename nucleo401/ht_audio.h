@@ -21,11 +21,6 @@
 #define HT_AUDIO_H
 
 /**
- * @brief Use Archived Audio Features
- */
-#define AUDIO_TEST_DEV  0
-
-/**
  * @brief Default Attenuation
  */
 #define DEFAULT_ATTEN 0.01
@@ -92,59 +87,6 @@ void ht_audio_Tone(double freq, double ampl);
  * @param[in] Duration to play in seconds
  */
 void ht_audio_Play(uint8_t duration);
-
-#if AUDIO_TEST_DEV
-/**
- * @brief Use SineWave table or not
- */
-#define USE_SINE_TABLE  0
-
-/**
- * @brief I2S table buffer size
- * @details If I2S-SPI and MMC-SPI use same DMA stream, set to 512.
- *          Please check DMA stream ID on both SPI peripherals.
- */
-#define I2S_TABLE_SIZE   256
-
-/**
- * @brief Default Amplitude divided by 1000
- * @details Possible value (signed 16bit) are 32.767
- * @details Recommended value 32.767
- */
-#define DEFAULT_AMPLI 32.767
-
-/**
- * @brief I2S protocol buffer size
- */
-#define SAMPLING_RATE 44100
-
-#if USE_SINE_TABLE
-/**
- * @brief Generate sine wave from array table
- */
-void ht_audio_Table(void);
-
-/**
- * @brief Generate sine waveform from array table
- */
-void ht_audio_Wave(void);
-
-/**
- * @brief Generate sine wave from halving formula
- */
-void ht_audio_Half(void);
-#endif
-
-/**
- * @brief Generate sine wave sample array
- * @param[in] Sine wave sample frequency
- * @param[in] Sine wave sample amplitude (0.1-50)
- * @details WARNING: Dont set Amplitude to maximum (1000)!!!
- *          Your ear would damaged eventually.
- *          Except using speaker (not earphone).
- */
-void ht_audio_Sine(double freq, double ampl);
-#endif
 
 #endif // HT_AUDIO_H
 /** @} */
