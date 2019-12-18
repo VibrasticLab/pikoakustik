@@ -19,7 +19,7 @@ U 1 1 5DF721F4
 P 3500 2300
 F 0 "J1" H 3450 3117 50  0000 C CNN
 F 1 "Micro_SD_Card_Det" H 3450 3026 50  0000 C CNN
-F 2 "" H 5550 3000 50  0001 C CNN
+F 2 "Connector_Card:microSD_HC_Hirose_DM3BT-DSF-PEJS" H 5550 3000 50  0001 C CNN
 F 3 "https://www.hirose.com/product/en/download_file/key_name/DM3/category/Catalog/doc_file_id/49662/?file_category_id=4&item_id=195&is_series=1" H 3500 2400 50  0001 C CNN
 	1    3500 2300
 	1    0    0    -1  
@@ -153,8 +153,6 @@ Text Label 2450 2100 0    50   ~ 0
 MMC_MOSI
 Wire Wire Line
 	2600 2300 2450 2300
-Text Label 2450 2300 0    50   ~ 0
-MCC_SCK
 Text Label 2450 2500 0    50   ~ 0
 MMC_MISO
 $Comp
@@ -688,7 +686,7 @@ U 1 1 5DFEDF17
 P 4700 4850
 F 0 "J-AUDIO1" H 4704 5192 50  0000 C CNN
 F 1 "AudioJack3_Ground" H 4704 5101 50  0000 C CNN
-F 2 "" H 4700 4850 50  0001 C CNN
+F 2 "user:Tayda_3.5mm_stereo_TRS_jack_A-853" H 4700 4850 50  0001 C CNN
 F 3 "~" H 4700 4850 50  0001 C CNN
 	1    4700 4850
 	-1   0    0    -1  
@@ -750,7 +748,7 @@ U 1 1 5DF8ED63
 P 3800 4950
 F 0 "U1" H 3725 5628 50  0000 C CNN
 F 1 "MAX98357_DAC" H 3725 5537 50  0000 C CNN
-F 2 "" H 3450 4850 50  0001 C CNN
+F 2 "dacmax98:dacmax98357" H 3450 4850 50  0001 C CNN
 F 3 "" H 3450 4850 50  0001 C CNN
 	1    3800 4950
 	1    0    0    -1  
@@ -806,10 +804,10 @@ Wire Wire Line
 	4400 5150 4400 4950
 Connection ~ 4400 4950
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0101
 U 1 1 5DFCE022
 P 3750 5600
-F 0 "#PWR?" H 3750 5350 50  0001 C CNN
+F 0 "#PWR0101" H 3750 5350 50  0001 C CNN
 F 1 "GND" H 3755 5427 50  0000 C CNN
 F 2 "" H 3750 5600 50  0001 C CNN
 F 3 "" H 3750 5600 50  0001 C CNN
@@ -818,4 +816,6 @@ F 3 "" H 3750 5600 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3750 5500 3750 5600
+Text Label 2450 2300 0    50   ~ 0
+MMC_SCK
 $EndSCHEMATC
