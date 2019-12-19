@@ -38,11 +38,6 @@
 #define I2S_BUFF_SIZE   512
 
 /**
- * @brief Size of Half Buffer
- */
-#define I2S_HALF_SIZE   ((I2S_BUFF_SIZE/2)-1)
-
-/**
  * @brief Total buffer size
  * @details Just fill it below 44100
  */
