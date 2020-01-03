@@ -1110,12 +1110,4 @@ Wire Wire Line
 	7750 2000 8050 2000
 Text Label 8050 2000 0    50   ~ 0
 LED_FALSE
-Wire Wire Line
-	6450 3300 6150 3300
-Text Label 6150 3300 0    50   ~ 0
-BTN_A
-Wire Wire Line
-	6450 3400 6150 3400
-Text Label 6150 3400 0    50   ~ 0
-BTN_B
 $EndSCHEMATC
