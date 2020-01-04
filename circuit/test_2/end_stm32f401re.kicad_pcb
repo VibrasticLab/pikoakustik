@@ -620,11 +620,6 @@
       (net 20 "Net-(J1-Pad10)"))
     (pad 11 smd rect (at -5.825 7.825 315) (size 0.2 0.2) (layers F.Cu F.Paste F.Mask)
       (net 2 GND))
-    (model ${KISYS3DMOD}/Connector_Card.3dshapes/microSD_HC_Hirose_DM3BT-DSF-PEJS.wrl
-      (at (xyz 0 0 0))
-      (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
-    )
     (model ${KIPRJMOD}/lib/packages3d/microsd_socket.wrl
       (at (xyz 0 0 0))
       (scale (xyz 1 1 1))
