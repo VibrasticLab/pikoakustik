@@ -52,7 +52,6 @@ static ThdFunc_ExtiCb(thdExtiCb, arg) {
 
           ampl_act = DEFAULT_ATTEN*ampl_mod*32767;
           if(ampl_act<=DEFAULT_AMPL_THD){ampl_mod = 0;}
-          else{ ht_led_Shift(); }
 
           y_act = DEFAULT_ATTEN*ampl_mod*32767;
           chprintf((BaseSequentialStream *)&SD1,"Ampl: %5i\r\n",y_act);

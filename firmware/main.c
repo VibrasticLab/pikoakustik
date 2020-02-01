@@ -44,7 +44,7 @@ static ThdFunc_RunLED(thdRunLed, arg) {
   (void)arg;
   chRegSetThreadName("run led");
   while (true) {
-    palTogglePad(GPIOA, 5);
+    palTogglePad(GPIOA, 1);
     chThdSleepMilliseconds(led_delay);
   }
 }
@@ -66,8 +66,8 @@ int main(void){
     ht_mmc_Init();
     ht_mmc_Test();
 
-    palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
-    palClearPad(GPIOA,5);
+    palSetPadMode(GPIOA,1,PAL_MODE_OUTPUT_PUSHPULL);
+    palClearPad(GPIOA,1);
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
 
     chprintf((BaseSequentialStream *)&SD1,"Initialization completed\r\n");
