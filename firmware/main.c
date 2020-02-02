@@ -70,10 +70,9 @@ int main(void){
     palClearPad(GPIOA,1);
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
 
-    chprintf((BaseSequentialStream *)&SD1,"Initialization completed\r\n");
     while(1){
         ht_commUSB_ReInit();
-        chThdSleepMicroseconds(100);
+        chThdSleepMilliseconds(100);
     }
 }
 
