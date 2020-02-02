@@ -61,7 +61,7 @@ int main(void){
 
     ht_exti_Init();
     ht_led_Init();
-    ht_comm_Init();
+    ht_commUSB_Init();
 
     ht_mmc_Init();
     ht_mmc_Test();
@@ -72,7 +72,7 @@ int main(void){
 
     chprintf((BaseSequentialStream *)&SD1,"Initialization completed\r\n");
     while(1){
-        ht_comm_ReInit();
+        ht_commUSB_ReInit();
         chThdSleepMicroseconds(100);
     }
 }

@@ -99,10 +99,22 @@ extern "C" {
 void ht_comm_Init(void);
 
 /**
+ * @brief Start Shell and USB peripheral
+ * @details Serial Interface using USB0 (SDU1)
+ */
+void ht_commUSB_Init(void);
+
+/**
  * @brief Re-Initialize Shell Thread
  * @details This routine should be called on main thread with some delays
  */
 void ht_comm_ReInit(void);
+
+/**
+ * @brief Re-Initialize Shell Thread
+ * @details This routine should be called on main thread with some delays
+ */
+void ht_commUSB_ReInit(void);
 
 #endif // HT_CONSOLE_H
 /** @} */

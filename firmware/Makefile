@@ -123,7 +123,7 @@ CSRC =  $(STARTUPSRC) \
         main.c \
         ht_audio.c ht_exti.c \
         ht_led.c ht_console.c \
-        ht_comm.c ht_mmc.c
+        ht_comm.c ht_mmc.c ht_usb.c
 
 # C++ sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.

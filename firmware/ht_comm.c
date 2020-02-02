@@ -29,6 +29,11 @@
 #include "ht_audio.h"
 #include "ht_mmc.h"
 
+/* USB-CDC pointer object */
+extern SerialUSBDriver SDU1;
+extern const USBConfig usbcfg;
+extern const SerialUSBConfig serusbcfg;
+
 /**
  * @brief Shell Console pointer
  */
@@ -169,6 +174,15 @@ static const ShellConfig shell_cfg1 = {
   commands
 };
 
+/**
+ * @brief Shell Driver Config
+ * @details Serial Interface using USB1 (SDU1)
+ */
+static const ShellConfig usbshell_cfg1 = {
+  (BaseSequentialStream *)&SDU1,
+  commands
+};
+
 void ht_comm_Init(void){
     palSetPadMode(GPIOA, 9,PAL_MODE_ALTERNATE(7) | PAL_STM32_OSPEED_HIGHEST); //TX
     palSetPadMode(GPIOA,10,PAL_MODE_ALTERNATE(7) | PAL_STM32_OSPEED_HIGHEST); //RX
@@ -177,9 +191,34 @@ void ht_comm_Init(void){
     shellInit();
 }
 
+void ht_commUSB_Init(void){
+    sduObjectInit(&SDU1);
+    sduStart(&SDU1, &serusbcfg);
+
+    usbDisconnectBus(serusbcfg.usbp);
+    usbStop(serusbcfg.usbp);
+    chThdSleepMilliseconds(100);
+    usbStart(serusbcfg.usbp, &usbcfg);
+    usbConnectBus(serusbcfg.usbp);
+
+    shellInit();
+}
+
 void ht_comm_ReInit(void){
     if (!shelltp) {
         shelltp = shellCreate(&shell_cfg1, SHELL_WA_SIZE, NORMALPRIO);
+    }
+    else {
+        if (chThdTerminatedX(shelltp)) {
+            chThdRelease(shelltp);
+            shelltp = NULL;
+        }
+    }
+}
+
+void ht_commUSB_ReInit(void){
+    if (!shelltp && (SDU1.config->usbp->state == USB_ACTIVE)) {
+        shelltp = shellCreate(&usbshell_cfg1, SHELL_WA_SIZE, NORMALPRIO);
     }
     else {
         if (chThdTerminatedX(shelltp)) {

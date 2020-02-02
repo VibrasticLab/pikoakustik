@@ -16,5 +16,6 @@ ht_led.c
 ht_led.h
 ht_mmc.c
 ht_mmc.h
+ht_usb.c
 main.c
 mcuconf.h
