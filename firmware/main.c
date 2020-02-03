@@ -63,11 +63,12 @@ int main(void){
     ht_led_Init();
     ht_commUSB_Init();
 
+    palSetPadMode(GPIOA,1,PAL_MODE_OUTPUT_PUSHPULL);
+    palClearPad(GPIOA,1);
+
     ht_mmc_Init();
     ht_mmc_Test();
 
-    palSetPadMode(GPIOA,1,PAL_MODE_OUTPUT_PUSHPULL);
-    palClearPad(GPIOA,1);
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
 
     while(1){
