@@ -28,6 +28,10 @@
 
 #include "ht_mmc.h"
 
+/* USB-CDC pointer object */
+extern SerialUSBDriver SDU1;
+
+/* Blink indicator delay */
 extern uint16_t led_delay;
 
 /**
@@ -78,13 +82,18 @@ static void mmc_check(void){
     mmc_spi_status_flag=MMC_SPI_OK;
     filesystem_ready=false;
 
-    if(mmcConnect(&MMCD1)) { filesystem_ready = true; }
+    if(mmcConnect(&MMCD1)){
+        filesystem_ready = true;
+    }
     else{
         err = f_mount(&FatFs, "", 0);
         if(err == FR_OK){ filesystem_ready = true; }
     }
 
-    if(!filesystem_ready){ mmc_spi_status_flag=MMC_SPI_FAIL;return; }
+    if(!filesystem_ready){
+        mmc_spi_status_flag=MMC_SPI_FAIL;
+        return;
+    }
 
 #if USE_MMC_FREE
     mmc_spi_status_flag=MMC_SPI_ERROR;
@@ -104,6 +113,7 @@ void ht_mmc_Test(void){
     FATFS FatFs;
     FIL *Fil;
     UINT bw;
+    FRESULT err;
 
     Fil = (FIL*)malloc(sizeof(FIL));
 
@@ -116,10 +126,16 @@ void ht_mmc_Test(void){
 
         f_mount(&FatFs, "", 0);
 
-        f_open(Fil, "/TEST.TXT", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
-        f_lseek(Fil, f_size(Fil));
-        f_write(Fil, buffer, strlen(buffer), &bw);
-        f_close(Fil);
+        err = f_open(Fil, "/TEST.TXT", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+        if(err==FR_OK){
+            f_lseek(Fil, f_size(Fil));
+            f_write(Fil, buffer, strlen(buffer), &bw);
+            f_close(Fil);
+            led_delay=500;
+        }
+        else{
+            chprintf((BaseSequentialStream *)&SDU1,"MMC Not OK = %d\r\n",err);
+        }
 
         f_mount(0, "", 0);
     }

@@ -151,6 +151,18 @@ static void cmd_catfile(BaseSequentialStream *chp, int argc, char *argv[]) {
 }
 
 /**
+ * @brief MMC Test command callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_mmc(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+    if(argc != 0){chprintf(chp,"usage: mmc\r\n");return;}
+
+    ht_mmc_Test();
+    chprintf(chp,"MMC R/W Test Finished\r\n");
+}
+
+/**
  * @brief Shell command and it's callback enumeration
  * @details Extending from internal shell's callback
  */
@@ -162,6 +174,7 @@ static const ShellCommand commands[] = {
     {"min",cmd_min},
     {"ls",cmd_lsfile},
     {"cat",cmd_catfile},
+    {"mmc",cmd_mmc},
     {NULL, NULL}
 };
 
