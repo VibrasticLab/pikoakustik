@@ -25,6 +25,24 @@
 #define LED_ANSA    4 //PA.4
 #define LED_ANSB    0 //PB.0
 
+/* LED Answer ON (Inversed) */
+#define led_answerB() palClearPad(GPIOA,LED_ANSA)
+#define led_answerA() palClearPad(GPIOB,LED_ANSB)
+
+/* LED Result ON  */
+#define led_resultYES() palClearPad(GPIOA,LED_TRUE)
+#define led_resultNO() palClearPad(GPIOA,LED_FALSE)
+
+/**
+ * @brief Turn LED answer off
+ */
+void led_answer_off(void);
+
+/**
+ * @brief Turn LED result off
+ */
+void led_result_off(void);
+
 /**
  * @brief LED indicator initialization
  */

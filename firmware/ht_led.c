@@ -22,15 +22,23 @@
 
 #include "ht_led.h"
 
+void led_answer_off(void){
+    palSetPad(GPIOA,LED_ANSA);
+    palSetPad(GPIOB,LED_ANSB);
+}
+
+void led_result_off(void){
+    palSetPad(GPIOA,LED_TRUE);
+    palSetPad(GPIOA,LED_FALSE);
+}
+
 void ht_led_Init(void){
     palSetPadMode(GPIOA,LED_TRUE,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOA,LED_FALSE,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOA,LED_ANSA,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOB,LED_ANSB,PAL_MODE_OUTPUT_PUSHPULL);
 
-    palSetPad(GPIOA,LED_TRUE);
-    palSetPad(GPIOA,LED_FALSE);
-    palSetPad(GPIOA,LED_ANSA);
-    palSetPad(GPIOB,LED_ANSB);
+    led_answer_off();
+    led_result_off();
 }
 /** @} */
