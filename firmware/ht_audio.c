@@ -94,7 +94,7 @@ void ht_audio_Tone(double freq, double ampl){
 void ht_audio_Play(uint8_t duration){
     i2sStart(&I2SD2, &i2scfg);
     i2sStartExchange(&I2SD2);
-    chThdSleepMilliseconds(duration*1000);
+    chThdSleepMilliseconds(duration*10);
     i2sStopExchange(&I2SD2);
     i2sStop(&I2SD2);
 }

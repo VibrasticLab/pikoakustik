@@ -51,12 +51,13 @@
 /**
  * @brief Tone Test at startup
  */
-#define USE_STARTUP_TEST FALSE
+#define USE_STARTUP_TEST TRUE
 
 /**
  * @brief Global Duration for Testing
+ * @details Range is 1 to 250 while 100 means 1000ms
  */
-#define TEST_DURATION   2
+#define TEST_DURATION   50
 
 /**
  * @brief Initiate Audio driver via I2S
