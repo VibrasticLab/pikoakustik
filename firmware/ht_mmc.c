@@ -27,6 +27,7 @@
 #include "ff.h"
 
 #include "ht_mmc.h"
+#include "ht_console.h"
 
 /* USB-CDC pointer object */
 extern SerialUSBDriver SDU1;
@@ -138,10 +139,10 @@ void ht_mmc_Test(void){
             f_lseek(Fil, f_size(Fil));
             f_write(Fil, buffer, strlen(buffer), &bw);
             f_close(Fil);
-            chprintf((BaseSequentialStream *)&SDU1,"MMC R/W Test Success\r\n",err);
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"MMC R/W Test Success\r\n",err);
         }
         else{
-            chprintf((BaseSequentialStream *)&SDU1,"MMC Error code = %i\r\n",err);
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"MMC Error code = %i\r\n",err);
         }
 
         f_mount(0, "", 0);
@@ -211,13 +212,13 @@ static FRESULT scanFile(char *path, uint8_t *lastfnum){
             else{
                 fnum = get_fnum(Fno.fname);
                 if(*lastfnum<=fnum)*lastfnum=fnum;
-                chprintf((BaseSequentialStream *)&SD1,"%s%s\r\n",path,Fno.fname);
+                chprintf((BaseSequentialStream *)&SHELL_IFACE,"%s%s\r\n",path,Fno.fname);
 #else
             }
             else{
                 fnum = get_fnum(Fno.fname);
                 if(*lastfnum<=fnum)*lastfnum=fnum;
-                chprintf((BaseSequentialStream *)&SD1,"%s\r\n",Fno.fname);
+                chprintf((BaseSequentialStream *)&SHELL_IFACE,"%s\r\n",Fno.fname);
 #endif
             }
         }
@@ -236,17 +237,17 @@ void ht_mmc_lsFiles(void){
     mmc_check();
 #endif
 
-    chprintf((BaseSequentialStream *)&SD1,"\r\nFiles on MMC\r\n");
-    chprintf((BaseSequentialStream *)&SD1,"------------\r\n");
+    chprintf((BaseSequentialStream *)&SHELL_IFACE,"\r\nFiles on MMC\r\n");
+    chprintf((BaseSequentialStream *)&SHELL_IFACE,"------------\r\n");
     err = f_mount(&FatFs,"",0);
     if(err==FR_OK){
         strcpy(buff,"/");
         err = scanFile(buff,&lastnum);
         if(err==FR_OK){
-            chprintf((BaseSequentialStream *)&SD1,"------------\r\n");
-            chprintf((BaseSequentialStream *)&SD1,"Last Num: %i\r\n",lastnum);
-            chprintf((BaseSequentialStream *)&SD1,"Last File: TEST_%i.TXT\r\n",lastnum);
-            chprintf((BaseSequentialStream *)&SD1,"------------\r\n\r\n");
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"------------\r\n");
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Last Num: %i\r\n",lastnum);
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Last File: TEST_%i.TXT\r\n",lastnum);
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"------------\r\n\r\n");
         }
     }
     f_mount(0, "", 0);
@@ -264,8 +265,8 @@ void ht_mmc_catFiles(void){
     mmc_check();
 #endif
 
-    chprintf((BaseSequentialStream *)&SD1,"\r\nFiles Content\r\n");
-    chprintf((BaseSequentialStream *)&SD1,"------------\r\n");
+    chprintf((BaseSequentialStream *)&SHELL_IFACE,"\r\nFiles Content\r\n");
+    chprintf((BaseSequentialStream *)&SHELL_IFACE,"------------\r\n");
     strcpy(buffer,"");
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
@@ -287,12 +288,12 @@ void ht_mmc_catFiles(void){
             f_read(Fil,buffer,sizeof(buffer),&br);
 #endif
             f_close(Fil);
-            chprintf((BaseSequentialStream *)&SD1,"%s\r\n",buffer);
-            chprintf((BaseSequentialStream *)&SD1,"------------\r\n\r\n");
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"%s\r\n",buffer);
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"------------\r\n\r\n");
 
         }
         else{
-            chprintf((BaseSequentialStream *)&SD1,"Open Error:%d\r\n",err);
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Open Error:%d\r\n",err);
         }
 
         f_mount(0, "", 0);

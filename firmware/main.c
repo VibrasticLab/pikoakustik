@@ -32,7 +32,7 @@
 #include "ht_console.h"
 #include "ht_mmc.h"
 
-uint16_t led_delay=100;
+uint16_t led_delay=50;
 
 static THD_WORKING_AREA(waRunLed, 128);
 #define ThdFunc_RunLED THD_FUNCTION

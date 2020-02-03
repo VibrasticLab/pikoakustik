@@ -21,6 +21,12 @@
 #define HT_CONSOLE_H
 
 /**
+ * @brief Default interface object for shell
+ * @details Whether SDU1 (USB-0) or SD1 (UART-0)
+ */
+#define SHELL_IFACE SDU1
+
+/**
  * @brief Enables Echo on Shell Console
  */
 #define SHELL_ECHO FALSE
