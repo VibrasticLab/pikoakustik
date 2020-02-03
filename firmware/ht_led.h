@@ -20,8 +20,8 @@
 #ifndef HT_LED_H
 #define HT_LED_H
 
-#define LED_TRUE    0 //PA.0
-#define LED_FALSE   1 //PA.1
+#define LED_TRUE    2 //PA.0
+#define LED_FALSE   3 //PA.1
 #define LED_ANSA    4 //PA.4
 #define LED_ANSB    0 //PB.0
 
