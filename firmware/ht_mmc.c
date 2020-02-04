@@ -98,7 +98,10 @@ static void mmc_check(void){
 #if USE_MMC_FREE
     mmc_spi_status_flag=MMC_SPI_ERROR;
     err = f_getfree("/", &clusters, &fsp);
-    if(err == FR_OK){ mmc_spi_status_flag=MMC_SPI_OK; led_delay=500; }
+    if(err == FR_OK){
+        mmc_spi_status_flag=MMC_SPI_OK;
+        led_delay=500;
+    }
 #endif
 
     f_mount(0, "", 0);
@@ -106,6 +109,10 @@ static void mmc_check(void){
     chThdSleepMilliseconds(100);
 }
 #endif
+
+void ht_mmc_Check(void){
+    ht_mmc_Check();
+}
 
 void ht_mmc_Test(void){
     char buffer[36];
@@ -131,10 +138,10 @@ void ht_mmc_Test(void){
             f_lseek(Fil, f_size(Fil));
             f_write(Fil, buffer, strlen(buffer), &bw);
             f_close(Fil);
-            led_delay=500;
+            chprintf((BaseSequentialStream *)&SDU1,"MMC R/W Test Success\r\n",err);
         }
         else{
-            chprintf((BaseSequentialStream *)&SDU1,"MMC Not OK = %d\r\n",err);
+            chprintf((BaseSequentialStream *)&SDU1,"MMC Error code = %i\r\n",err);
         }
 
         f_mount(0, "", 0);

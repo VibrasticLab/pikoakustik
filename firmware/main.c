@@ -67,7 +67,11 @@ int main(void){
     palClearPad(GPIOA,1);
 
     ht_mmc_Init();
+#if USE_MMC_RWCHK
     ht_mmc_Test();
+#else
+    ht_mmc_Check();
+#endif
 
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
 
