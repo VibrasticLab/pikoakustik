@@ -26,9 +26,6 @@
 #include "ht_console.h"
 #include "ht_led.h"
 
-/* USB-CDC pointer object */
-extern SerialUSBDriver SDU1;
-
 uint8_t mode_status = STT_IDLE;
 
 static THD_WORKING_AREA(waRunMetri, 128);

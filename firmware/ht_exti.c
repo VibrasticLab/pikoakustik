@@ -25,6 +25,10 @@
 #include "ht_audio.h"
 #include "ht_led.h"
 #include "ht_metri.h"
+#include "ht_console.h"
+
+/* USB-CDC pointer object */
+extern SerialUSBDriver SDU1;
 
 extern uint8_t mode_status;
 
@@ -44,6 +48,7 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
         mode_btnA=1;
 
         if(mode_btnB==1){
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Standby\r\n");
             mode_status=STT_STDBY;
             mode_btnA=0;
             mode_btnB=0;
@@ -69,6 +74,7 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
         mode_btnB=1;
 
         if(mode_btnA==1){
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Standby\r\n");
             mode_status=STT_STDBY;
             mode_btnA=0;
             mode_btnB=0;
