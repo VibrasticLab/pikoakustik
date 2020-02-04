@@ -31,6 +31,9 @@
 #include "ht_led.h"
 #include "ht_console.h"
 #include "ht_mmc.h"
+#include "ht_metri.h"
+
+extern uint8_t mode_status;
 
 uint16_t led_delay=50;
 
@@ -44,8 +47,26 @@ static ThdFunc_RunLED(thdRunLed, arg) {
   (void)arg;
   chRegSetThreadName("run led");
   while (true) {
-    palTogglePad(GPIOA, 1);
-    chThdSleepMilliseconds(led_delay);
+    if(mode_status==STT_IDLE){
+        palTogglePad(GPIOA, 1);
+        chThdSleepMilliseconds(led_delay);
+    }
+    else if(mode_status==STT_STDBY){
+        palClearPad(GPIOA, 1);
+        chThdSleepMilliseconds(50);
+        palSetPad(GPIOA, 1);
+        chThdSleepMilliseconds(1500);
+    }
+    else if(mode_status==STT_METRI){
+        palClearPad(GPIOA, 1);
+        chThdSleepMilliseconds(50);
+        palSetPad(GPIOA, 1);
+        chThdSleepMilliseconds(100);
+        palClearPad(GPIOA, 1);
+        chThdSleepMilliseconds(50);
+        palSetPad(GPIOA, 1);
+        chThdSleepMilliseconds(1500);
+    }
   }
 }
 
@@ -73,6 +94,7 @@ int main(void){
     ht_mmc_Check();
 #endif
 
+    ht_metri_Init();
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
 
     while(1){

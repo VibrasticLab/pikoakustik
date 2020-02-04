@@ -14,6 +14,8 @@ ht_exti.c
 ht_exti.h
 ht_led.c
 ht_led.h
+ht_metri.c
+ht_metri.h
 ht_mmc.c
 ht_mmc.h
 ht_usb.c

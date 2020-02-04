@@ -24,6 +24,11 @@
 #include "ht_exti.h"
 #include "ht_audio.h"
 #include "ht_led.h"
+#include "ht_metri.h"
+
+extern uint8_t mode_status;
+
+uint8_t mode_btnA, mode_btnB;
 
 /**
  * @brief Button answer A callback
@@ -33,11 +38,21 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
     (void)extp;
     (void)channel;
 
-    led_answer_off();
-    led_answerA();
+    if(mode_status==STT_IDLE){
+        led_answer_off();
+        led_answerA();
+        mode_btnA=1;
 
-    led_result_off();
-    led_resultYES();
+        if(mode_btnB==1){
+            mode_status=STT_STDBY;
+            mode_btnA=0;
+            mode_btnB=0;
+            led_answer_off();
+        }
+    }
+    else if(mode_status==STT_STDBY){
+        mode_status=STT_METRI;
+    }
 }
 
 /**
@@ -48,11 +63,21 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
     (void)extp;
     (void)channel;
 
-    led_answer_off();
-    led_answerB();
+    if(mode_status==STT_IDLE){
+        led_answer_off();
+        led_answerB();
+        mode_btnB=1;
 
-    led_result_off();
-    led_resultNO();
+        if(mode_btnA==1){
+            mode_status=STT_STDBY;
+            mode_btnA=0;
+            mode_btnB=0;
+            led_answer_off();
+        }
+    }
+    else if(mode_status==STT_STDBY){
+        mode_status=STT_METRI;
+    }
 }
 
 /**
@@ -93,6 +118,9 @@ void ht_exti_Init(void){
     extStart(&EXTD1, &extcfg);
     extChannelEnable(&EXTD1, BTN_ANS_A);
     extChannelEnable(&EXTD1, BTN_ANS_B);
+
+    mode_btnA=0;
+    mode_btnB=0;
 }
 
 
