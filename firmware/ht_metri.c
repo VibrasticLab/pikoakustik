@@ -33,6 +33,8 @@
 extern SerialUSBDriver SDU1;
 
 uint8_t mode_status = STT_IDLE;
+uint8_t mode_step = STEP_ASK;
+uint8_t numresp,numask;
 
 static THD_WORKING_AREA(waRunMetri, 128);
 #define ThdFunc_RunMetri THD_FUNCTION
@@ -43,8 +45,8 @@ static THD_WORKING_AREA(waRunMetri, 128);
 static ThdFunc_RunMetri(thdRunMetri, arg) {
     (void)arg;
 
-    uint8_t rndans;
     uint8_t rndnum;
+    uint8_t rndask;
     chRegSetThreadName("run led");
     srand(5);
     while (true) {
@@ -55,18 +57,41 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
         }
         else if(mode_status==STT_METRI){
             rndnum = rand() % 100;
-            rndans = rndnum % 2;
-            if(rndans==0){
-                led_answer_off();
-                chThdSleepMilliseconds(500);
-                led_answerA();
+            rndask = rndnum % 2;
+
+            if(mode_step==STEP_ASK){
+                if(rndask==0){
+                    led_answerA();
+                    numask = 1;
+                }
+                else if(rndask==1){
+                    led_answerB();
+                    numask = 2;
+                }
+                mode_step=STEP_WAIT;
+                chprintf((BaseSequentialStream *)&SHELL_IFACE,"Question is %i\r\n",numask);
             }
-            else if(rndans==1){
+            else if(mode_step==STEP_CHK){
+                if(numresp==numask){
+                    led_result_off();
+                    led_resultYES();
+                    chprintf((BaseSequentialStream *)&SHELL_IFACE,"Conclusion True\r\n");
+                }
+                else{
+                    led_result_off();
+                    led_resultNO();
+                    chprintf((BaseSequentialStream *)&SHELL_IFACE,"Conclusion False\r\n");
+                }
+
+                numask = 0;
+                numresp = 0;
+                chThdSleepMilliseconds(1000);
+
                 led_answer_off();
-                chThdSleepMilliseconds(500);
-                led_answerB();
+                led_result_off();
+                mode_step=STEP_ASK;
+                chThdSleepMilliseconds(1000);
             }
-            chThdSleepMilliseconds(1000);
         }
         chThdSleepMilliseconds(100);
     }

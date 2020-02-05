@@ -24,8 +24,8 @@
 #define LED_READY   1
 #define LED_METRI   2
 
-#define LED_TRUE    3 //PA.3
-#define LED_FALSE   2 //PA.2
+#define LED_TRUE    2 //PA.2
+#define LED_FALSE   3 //PA.3
 #define LED_ANSA    4 //PA.4
 #define LED_ANSB    0 //PB.0
 

@@ -31,9 +31,29 @@
 extern SerialUSBDriver SDU1;
 
 extern uint8_t mode_status;
+extern uint8_t mode_step;
 extern uint8_t mode_led;
+extern uint8_t numresp;
 
 uint8_t mode_btnA, mode_btnB;
+
+static void exti_idle_cb(void){
+    chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Standby\r\n");
+    mode_status=STT_STDBY;
+    mode_btnA=0;
+    mode_btnB=0;
+    led_answer_off();
+    led_result_off();
+    led_resultYES();
+}
+
+static void exti_stdby_cb(void){
+    chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Audiometri\r\n");
+    mode_status=STT_METRI;
+    mode_led=LED_METRI;
+    led_answer_off();
+    led_result_off();
+}
 
 /**
  * @brief Button answer A callback
@@ -49,21 +69,18 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
         mode_btnA=1;
 
         if(mode_btnB==1){
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Standby\r\n");
-            mode_status=STT_STDBY;
-            mode_btnA=0;
-            mode_btnB=0;
-            led_answer_off();
-            led_result_off();
-            led_resultYES();
+            exti_idle_cb();
         }
     }
     else if(mode_status==STT_STDBY){
-        chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Audiometri\r\n");
-        mode_status=STT_METRI;
-        mode_led=LED_METRI;
-        led_answer_off();
-        led_result_off();
+        exti_stdby_cb();
+    }
+    else if(mode_status==STT_METRI){
+        if(mode_step==STEP_WAIT){
+            numresp = 1;
+            mode_step = STEP_CHK;
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Answer is %i\r\n",numresp);
+        }
     }
 }
 
@@ -81,21 +98,18 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
         mode_btnB=1;
 
         if(mode_btnA==1){
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Standby\r\n");
-            mode_status=STT_STDBY;
-            mode_btnA=0;
-            mode_btnB=0;
-            led_answer_off();
-            led_result_off();
-            led_resultYES();
+            exti_idle_cb();
         }
     }
     else if(mode_status==STT_STDBY){
-        chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Audiometri\r\n");
-        mode_status=STT_METRI;
-        mode_led=LED_METRI;
-        led_answer_off();
-        led_result_off();
+        exti_stdby_cb();
+    }
+    else if(mode_status==STT_METRI){
+        if(mode_step==STEP_WAIT){
+            numresp = 2;
+            mode_step = STEP_CHK;
+            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Answer is %i\r\n",numresp);
+        }
     }
 }
 

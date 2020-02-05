@@ -24,6 +24,10 @@
 #define STT_STDBY   1
 #define STT_METRI   2
 
+#define STEP_ASK    0
+#define STEP_WAIT   1
+#define STEP_CHK    2
+
 void ht_metri_Init(void);
 
 #endif // HT_METRI_H
