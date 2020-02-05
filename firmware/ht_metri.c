@@ -72,18 +72,15 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     numask = 2;
                 }
                 mode_step=STEP_WAIT;
-                chprintf((BaseSequentialStream *)&SHELL_IFACE,"Question is %i\r\n",numask);
             }
             else if(mode_step==STEP_CHK){
                 if(numresp==numask){
                     led_result_off();
                     led_resultYES();
-                    chprintf((BaseSequentialStream *)&SHELL_IFACE,"Conclusion True\r\n");
                 }
                 else{
                     led_result_off();
                     led_resultNO();
-                    chprintf((BaseSequentialStream *)&SHELL_IFACE,"Conclusion False\r\n");
                 }
 
                 numask = 0;

@@ -79,9 +79,10 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
         if(mode_step==STEP_WAIT){
             numresp = 1;
             mode_step = STEP_CHK;
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Answer is %i\r\n",numresp);
         }
     }
+
+    return;
 }
 
 /**
@@ -108,9 +109,9 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
         if(mode_step==STEP_WAIT){
             numresp = 2;
             mode_step = STEP_CHK;
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Answer is %i\r\n",numresp);
         }
     }
+    return;
 }
 
 /**
