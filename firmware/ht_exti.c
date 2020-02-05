@@ -118,8 +118,8 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
  */
 static const EXTConfig extcfg = {
   {
-    {EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOC, extiAnsA}, //0
-    {EXT_CH_MODE_RISING_EDGE | EXT_MODE_GPIOC, extiAnsB}, //1
+    {EXT_CH_MODE_RISING_EDGE | EXT_CH_MODE_AUTOSTART | EXT_MODE_GPIOC, extiAnsA}, //0
+    {EXT_CH_MODE_RISING_EDGE | EXT_CH_MODE_AUTOSTART | EXT_MODE_GPIOC, extiAnsB}, //1
     {EXT_CH_MODE_DISABLED, NULL}, //2
     {EXT_CH_MODE_DISABLED, NULL}, //3
     {EXT_CH_MODE_DISABLED, NULL}, //4

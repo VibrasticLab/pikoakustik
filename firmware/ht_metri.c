@@ -36,7 +36,7 @@ uint8_t mode_status = STT_IDLE;
 uint8_t mode_step = STEP_ASK;
 uint8_t numresp,numask;
 
-static THD_WORKING_AREA(waRunMetri, 128);
+static THD_WORKING_AREA(waRunMetri, 512);
 #define ThdFunc_RunMetri THD_FUNCTION
 /**
  * @brief Thread for System Running Indicator
@@ -47,8 +47,9 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
     uint8_t rndnum;
     uint8_t rndask;
+    srand(3);
     chRegSetThreadName("run led");
-    srand(5);
+
     while (true) {
         if(mode_status==STT_STDBY){
             palTogglePad(GPIOA,LED_TRUE);
@@ -56,7 +57,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
             chThdSleepMilliseconds(500);
         }
         else if(mode_status==STT_METRI){
-            rndnum = rand() % 100;
+            rndnum = rand() % 50;
             rndask = rndnum % 2;
 
             if(mode_step==STEP_ASK){
