@@ -35,11 +35,18 @@ static THD_WORKING_AREA(waRunMetri, 128);
  * @details Smallest Thread to check either system in Run or Freeze
  */
 static ThdFunc_RunMetri(thdRunMetri, arg) {
-  (void)arg;
-  chRegSetThreadName("run led");
-  while (true) {
+    (void)arg;
+
+
+    chRegSetThreadName("run led");
+
+
+    while (true) {
+        if(mode_status==STT_METRI){
+
+        }
     chThdSleepMilliseconds(100);
-  }
+    }
 }
 
 void ht_metri_Init(void){

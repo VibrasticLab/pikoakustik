@@ -96,7 +96,7 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
     if(argc != 0){chprintf(chp,"usage: min\r\n");return;}
 
     chprintf(chp,"Test Audio: Sine Min\r\n");
-    ht_audio_Tone(1.25,0.0001);
+    ht_audio_Tone(1.25,0);
     ht_audio_Play(TEST_DURATION);
     chprintf(chp,"Finished\r\n");
 }
@@ -110,7 +110,7 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
         (void) argv;
 
         chprintf(chp,"Coba Audio: Tone\r\n");
-        ht_audio_Tone(2,0.01);
+        ht_audio_Tone(2,SMALLEST_DB);
         ht_audio_Play(TEST_DURATION);
         chprintf(chp,"Finished\r\n");
     }

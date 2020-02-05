@@ -57,7 +57,14 @@
  * @brief Global Duration for Testing
  * @details Range is 1 to 250 while 100 means 1000ms
  */
-#define TEST_DURATION   50
+#define TEST_DURATION   10
+
+/**
+ * @brief Smallest signal can produced as far for now
+ * @details Note this use DEFAULT_ATTEN as 0.01
+ * @details So signal value is SMALLEST_DB*DEFAULT_ATTEN*32767=1
+ */
+#define SMALLEST_DB     0.0031
 
 /**
  * @brief Initiate Audio driver via I2S
@@ -80,7 +87,7 @@ void ht_audio_Tone(double freq, double ampl);
 /**
  * @brief Play Audio via I2S
  * @details Play I2S Transmit buffer in loop
- * @param[in] Duration to play in seconds
+ * @param[in] double Durasi untuk putar data I2S
  */
 void ht_audio_Play(uint8_t duration);
 

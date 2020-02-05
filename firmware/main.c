@@ -70,13 +70,17 @@ static ThdFunc_RunLED(thdRunLed, arg) {
   }
 }
 
+/**
+ * @brief Main Function as start entry
+ * @return Nothing
+ */
 int main(void){
     halInit();
     chSysInit();
 
     ht_audio_Init();
 #if USE_STARTUP_TEST
-    ht_audio_Tone(2,0.1);
+    ht_audio_Tone(1,SMALLEST_DB);
     ht_audio_Play(TEST_DURATION);
 #endif
 

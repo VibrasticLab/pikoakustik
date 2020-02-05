@@ -56,6 +56,7 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
         }
     }
     else if(mode_status==STT_STDBY){
+        chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Audiometri\r\n");
         mode_status=STT_METRI;
     }
 }
@@ -82,6 +83,7 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
         }
     }
     else if(mode_status==STT_STDBY){
+        chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Audiometri\r\n");
         mode_status=STT_METRI;
     }
 }
