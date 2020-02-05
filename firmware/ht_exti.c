@@ -30,6 +30,7 @@
 /* USB-CDC pointer object */
 extern SerialUSBDriver SDU1;
 
+extern uint8_t wait_input;
 extern uint8_t mode_status;
 
 uint8_t mode_btnA, mode_btnB;
@@ -53,11 +54,19 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
             mode_btnA=0;
             mode_btnB=0;
             led_answer_off();
+            led_result_off();
+            led_resultYES();
         }
     }
     else if(mode_status==STT_STDBY){
         chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Audiometri\r\n");
         mode_status=STT_METRI;
+        led_answer_off();
+        led_result_off();
+    }
+    else if(mode_status==STT_METRI){
+        led_answer_off();
+        wait_input=0;
     }
 }
 
@@ -80,11 +89,19 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
             mode_btnA=0;
             mode_btnB=0;
             led_answer_off();
+            led_result_off();
+            led_resultYES();
         }
     }
     else if(mode_status==STT_STDBY){
         chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Audiometri\r\n");
         mode_status=STT_METRI;
+        led_answer_off();
+        led_result_off();
+    }
+    else if(mode_status==STT_METRI){
+        led_answer_off();
+        wait_input=0;
     }
 }
 

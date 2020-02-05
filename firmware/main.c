@@ -47,17 +47,7 @@ static ThdFunc_RunLED(thdRunLed, arg) {
   (void)arg;
   chRegSetThreadName("run led");
   while (true) {
-    if(mode_status==STT_IDLE){
-        palTogglePad(GPIOA, 1);
-        chThdSleepMilliseconds(led_delay);
-    }
-    else if(mode_status==STT_STDBY){
-        palClearPad(GPIOA, 1);
-        chThdSleepMilliseconds(50);
-        palSetPad(GPIOA, 1);
-        chThdSleepMilliseconds(1500);
-    }
-    else if(mode_status==STT_METRI){
+    if(mode_status==STT_METRI){
         palClearPad(GPIOA, 1);
         chThdSleepMilliseconds(50);
         palSetPad(GPIOA, 1);
@@ -66,6 +56,10 @@ static ThdFunc_RunLED(thdRunLed, arg) {
         chThdSleepMilliseconds(50);
         palSetPad(GPIOA, 1);
         chThdSleepMilliseconds(1500);
+    }
+    else{
+        palTogglePad(GPIOA, 1);
+        chThdSleepMilliseconds(led_delay);
     }
   }
 }
@@ -80,7 +74,7 @@ int main(void){
 
     ht_audio_Init();
 #if USE_STARTUP_TEST
-    ht_audio_Tone(1,SMALLEST_DB);
+    ht_audio_Tone(1,2*SMALLEST_DB);
     ht_audio_Play(TEST_DURATION);
 #endif
 
