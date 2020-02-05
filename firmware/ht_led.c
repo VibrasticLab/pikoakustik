@@ -22,6 +22,8 @@
 
 #include "ht_led.h"
 
+uint8_t mode_led=LED_FAIL;
+
 void led_answer_off(void){
     palSetPad(GPIOA,LED_ANSA);
     palSetPad(GPIOB,LED_ANSB);

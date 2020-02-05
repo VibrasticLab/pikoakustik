@@ -34,8 +34,7 @@
 #include "ht_metri.h"
 
 extern uint8_t mode_status;
-
-uint16_t led_delay=50;
+extern uint8_t mode_led;
 
 static THD_WORKING_AREA(waRunLed, 128);
 #define ThdFunc_RunLED THD_FUNCTION
@@ -47,7 +46,7 @@ static ThdFunc_RunLED(thdRunLed, arg) {
   (void)arg;
   chRegSetThreadName("run led");
   while (true) {
-    if(mode_status==STT_METRI){
+    if(mode_led==LED_FAIL){
         palClearPad(GPIOA, 1);
         chThdSleepMilliseconds(50);
         palSetPad(GPIOA, 1);
@@ -57,10 +56,15 @@ static ThdFunc_RunLED(thdRunLed, arg) {
         palSetPad(GPIOA, 1);
         chThdSleepMilliseconds(1500);
     }
-    else{
+    else if(mode_led==LED_READY){
         palTogglePad(GPIOA, 1);
-        chThdSleepMilliseconds(led_delay);
+        chThdSleepMilliseconds(500);
     }
+    else if(mode_led==LED_METRI){
+        palTogglePad(GPIOA, 1);
+        chThdSleepMilliseconds(50);
+    }
+
   }
 }
 

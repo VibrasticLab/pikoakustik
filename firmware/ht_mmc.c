@@ -27,13 +27,14 @@
 #include "ff.h"
 
 #include "ht_mmc.h"
+#include "ht_led.h"
 #include "ht_console.h"
 
 /* USB-CDC pointer object */
 extern SerialUSBDriver SDU1;
 
-/* Blink indicator delay */
-extern uint16_t led_delay;
+/* Blink indicator mode */
+extern uint8_t mode_led;
 
 /**
  * @brief Global MMC Driver Pointer
@@ -88,11 +89,14 @@ static void mmc_check(void){
     }
     else{
         err = f_mount(&FatFs, "", 0);
-        if(err == FR_OK){ filesystem_ready = true; }
+        if(err == FR_OK){
+            filesystem_ready = true;
+        }
     }
 
     if(!filesystem_ready){
         mmc_spi_status_flag=MMC_SPI_FAIL;
+        mode_led=LED_FAIL;
         return;
     }
 
@@ -101,7 +105,7 @@ static void mmc_check(void){
     err = f_getfree("/", &clusters, &fsp);
     if(err == FR_OK){
         mmc_spi_status_flag=MMC_SPI_OK;
-        led_delay=500;
+        mode_led=LED_READY;
     }
 #endif
 
@@ -140,9 +144,11 @@ void ht_mmc_Test(void){
             f_write(Fil, buffer, strlen(buffer), &bw);
             f_close(Fil);
             chprintf((BaseSequentialStream *)&SHELL_IFACE,"MMC R/W Test Success\r\n",err);
+            mode_led=LED_READY;
         }
         else{
             chprintf((BaseSequentialStream *)&SHELL_IFACE,"MMC Error code = %i\r\n",err);
+            mode_led=LED_FAIL;
         }
 
         f_mount(0, "", 0);

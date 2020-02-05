@@ -32,7 +32,6 @@
 /* USB-CDC pointer object */
 extern SerialUSBDriver SDU1;
 
-uint8_t wait_input = 0;
 uint8_t mode_status = STT_IDLE;
 
 static THD_WORKING_AREA(waRunMetri, 128);
