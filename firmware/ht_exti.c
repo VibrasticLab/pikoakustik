@@ -49,8 +49,8 @@ static void exti_idle_cb(void){
 
 static void exti_stdby_cb(void){
     chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Audiometri\r\n");
-    mode_status=STT_METRI;
     mode_led=LED_METRI;
+    mode_status=STT_METRI;
     led_answer_off();
     led_result_off();
 }

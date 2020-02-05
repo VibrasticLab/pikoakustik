@@ -60,6 +60,8 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
             rndask = rndnum % 2;
 
             if(mode_step==STEP_ASK){
+                chThdSleepMilliseconds(1000);
+
                 if(rndask==0){
                     led_answerA();
                     numask = 1;
@@ -90,7 +92,6 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 led_answer_off();
                 led_result_off();
                 mode_step=STEP_ASK;
-                chThdSleepMilliseconds(1000);
             }
         }
         chThdSleepMilliseconds(100);
