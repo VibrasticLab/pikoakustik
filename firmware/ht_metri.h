@@ -28,6 +28,8 @@
 #define STEP_WAIT   1
 #define STEP_CHK    2
 
+#define TEST_SPEED_DELAY 200
+
 void ht_metri_Init(void);
 
 #endif // HT_METRI_H

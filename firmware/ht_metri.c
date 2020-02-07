@@ -28,6 +28,9 @@
 #include "ht_exti.h"
 #include "ht_console.h"
 #include "ht_led.h"
+#include "ht_audio.h"
+
+extern uint8_t mode_led;
 
 uint8_t mode_status = STT_IDLE;
 uint8_t mode_step = STEP_ASK;
@@ -44,6 +47,9 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
     uint8_t rndnum;
     uint8_t rndask;
+    double ampl_test = FIRSTTEST_DB;
+    char strbuff[IFACE_BUFF_SIZE];
+
     srand(3);
     chRegSetThreadName("run led");
 
@@ -53,22 +59,38 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
             palTogglePad(GPIOA,LED_FALSE);
             chThdSleepMilliseconds(500);
         }
-        else if(mode_status==STT_METRI){
+        else if(mode_status==STT_METRI){          
             rndnum = rand() % 50;
             rndask = rndnum % 2;
 
             if(mode_step==STEP_ASK){
                 chThdSleepMilliseconds(1000);
+                led_answer_off();
 
+                led_answerA();
                 if(rndask==0){
-                    led_answerA();
+                    ht_audio_Tone(1.25,ampl_test);
+                    ht_audio_Play(TEST_DURATION);
                     numask = 1;
                 }
-                else if(rndask==1){
-                    led_answerB();
+                chThdSleepMilliseconds(TEST_SPEED_DELAY);
+                led_answer_off();
+
+                chThdSleepMilliseconds(TEST_SPEED_DELAY);
+
+                led_answerB();
+                if(rndask==1){
+                    ht_audio_Tone(1.25,ampl_test);
+                    ht_audio_Play(TEST_DURATION);
                     numask = 2;
                 }
+                chThdSleepMilliseconds(TEST_SPEED_DELAY);
+                led_answer_off();
+
                 mode_step=STEP_WAIT;
+                ht_comm_Buff(strbuff,sizeof(strbuff),"amplitude level :%5.4f\r\n",ampl_test);
+                ht_comm_Msg(strbuff);
+                ampl_test = ampl_test / 2;
             }
             else if(mode_step==STEP_CHK){
                 if(numresp==numask){
@@ -89,6 +111,13 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 led_answer_off();
                 led_result_off();
                 mode_step=STEP_ASK;
+
+                if(ampl_test <= SMALLEST_DB){
+                    mode_status=STT_IDLE;
+                    ampl_test = FIRSTTEST_DB;
+                    mode_led = LED_READY;
+                    ht_comm_Msg("Testing Finish\r\n");
+                }
             }
         }
         chThdSleepMilliseconds(100);

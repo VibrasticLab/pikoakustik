@@ -67,6 +67,11 @@
 #define SMALLEST_DB     0.0031
 
 /**
+ * @brief First dB level at first step on audiotest
+ */
+#define FIRSTTEST_DB     1
+
+/**
  * @brief Initiate Audio driver via I2S
  */
 void ht_audio_Init(void);
