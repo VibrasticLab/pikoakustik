@@ -41,7 +41,7 @@
 /**
  * @brief Define whether use R/W Test routine or MMC readyness
  */
-#define USE_MMC_RWCHK TRUE
+#define USE_MMC_RWCHK FALSE
 
 /**
  * @brief Define whether use free-space check routine or not

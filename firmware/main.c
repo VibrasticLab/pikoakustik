@@ -78,13 +78,18 @@ int main(void){
 
     ht_audio_Init();
 #if USE_STARTUP_TEST
-    ht_audio_Tone(1,2*SMALLEST_DB);
+    ht_audio_Tone(1,0.01);
     ht_audio_Play(TEST_DURATION);
 #endif
 
     ht_exti_Init();
     ht_led_Init();
+
+#if USE_USB_IFACE
     ht_commUSB_Init();
+#else
+    ht_comm_Init();
+#endif
 
     palSetPadMode(GPIOA,1,PAL_MODE_OUTPUT_PUSHPULL);
     palClearPad(GPIOA,1);
@@ -100,7 +105,11 @@ int main(void){
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
 
     while(1){
+#if USE_USB_IFACE
         ht_commUSB_ReInit();
+#else
+        ht_comm_ReInit();
+#endif
         chThdSleepMilliseconds(100);
     }
 }

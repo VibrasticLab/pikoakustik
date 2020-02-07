@@ -30,8 +30,9 @@
 #include "ht_led.h"
 #include "ht_console.h"
 
-/* USB-CDC pointer object */
+#if USE_USB_IFACE
 extern SerialUSBDriver SDU1;
+#endif
 
 /* Blink indicator mode */
 extern uint8_t mode_led;
@@ -116,11 +117,12 @@ static void mmc_check(void){
 #endif
 
 void ht_mmc_Check(void){
-    ht_mmc_Check();
+    mmc_check();
 }
 
 void ht_mmc_Test(void){
     char buffer[36];
+    char strbuff[IFACE_BUFF_SIZE];
 
     FATFS FatFs;
     FIL *Fil;
@@ -134,7 +136,7 @@ void ht_mmc_Test(void){
 #endif
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        chsnprintf(buffer,sizeof(buffer),"Test\n");
+        ht_comm_Buff(buffer,sizeof(buffer),"Test\n");
 
         f_mount(&FatFs, "", 0);
 
@@ -143,11 +145,12 @@ void ht_mmc_Test(void){
             f_lseek(Fil, f_size(Fil));
             f_write(Fil, buffer, strlen(buffer), &bw);
             f_close(Fil);
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"MMC R/W Test Success\r\n",err);
+            ht_comm_Msg("MMC R/W Test Success\r\n");
             mode_led=LED_READY;
         }
         else{
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"MMC Error code = %i\r\n",err);
+            ht_comm_Buff(strbuff,sizeof(strbuff),"MMC Error code = %i\r\n",err);
+            ht_comm_Msg(strbuff);
             mode_led=LED_FAIL;
         }
 
@@ -191,6 +194,7 @@ static uint8_t get_fnum(char *strIn){
 }
 
 static FRESULT scanFile(char *path, uint8_t *lastfnum){
+    char strbuff[IFACE_BUFF_SIZE];
     FRESULT err;
     DIR Dir;
     FILINFO Fno;
@@ -218,13 +222,15 @@ static FRESULT scanFile(char *path, uint8_t *lastfnum){
             else{
                 fnum = get_fnum(Fno.fname);
                 if(*lastfnum<=fnum)*lastfnum=fnum;
-                chprintf((BaseSequentialStream *)&SHELL_IFACE,"%s%s\r\n",path,Fno.fname);
+                ht_comm_Buff(strbuff,sizeof(strbuff),"%s%s\r\n",path,Fno.fname);
+                ht_comm_Msg(strbuff);
 #else
             }
             else{
                 fnum = get_fnum(Fno.fname);
                 if(*lastfnum<=fnum)*lastfnum=fnum;
-                chprintf((BaseSequentialStream *)&SHELL_IFACE,"%s\r\n",Fno.fname);
+                ht_comm_Buff(strbuff,sizeof(strbuff),"%s\r\n",Fno.fname);
+                ht_comm_Msg(strbuff);
 #endif
             }
         }
@@ -234,6 +240,7 @@ static FRESULT scanFile(char *path, uint8_t *lastfnum){
 }
 
 void ht_mmc_lsFiles(void){
+    char strbuff[IFACE_BUFF_SIZE];
     FATFS FatFs;
     FRESULT err;
     char buff[256];
@@ -243,17 +250,21 @@ void ht_mmc_lsFiles(void){
     mmc_check();
 #endif
 
-    chprintf((BaseSequentialStream *)&SHELL_IFACE,"\r\nFiles on MMC\r\n");
-    chprintf((BaseSequentialStream *)&SHELL_IFACE,"------------\r\n");
+    ht_comm_Msg("\r\nFiles on MMC\r\n");
+    ht_comm_Msg("------------\r\n");
+
     err = f_mount(&FatFs,"",0);
     if(err==FR_OK){
         strcpy(buff,"/");
         err = scanFile(buff,&lastnum);
         if(err==FR_OK){
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"------------\r\n");
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Last Num: %i\r\n",lastnum);
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Last File: TEST_%i.TXT\r\n",lastnum);
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"------------\r\n\r\n");
+            ht_comm_Msg("------------\r\n");
+            ht_comm_Buff(strbuff,sizeof(strbuff),"Last Num: %i\r\n",lastnum);
+            ht_comm_Msg(strbuff);
+            ht_comm_Buff(strbuff,sizeof(strbuff),"Last File: TEST_%i.TXT\r\n",lastnum);
+            ht_comm_Msg(strbuff);
+            ht_comm_Msg("------------\r\n");
+
         }
     }
     f_mount(0, "", 0);
@@ -261,6 +272,7 @@ void ht_mmc_lsFiles(void){
 
 void ht_mmc_catFiles(void){
     char buffer[64];
+    char strbuff[IFACE_BUFF_SIZE];
     FATFS FatFs;
     FIL *Fil;
     FRESULT err;
@@ -271,8 +283,8 @@ void ht_mmc_catFiles(void){
     mmc_check();
 #endif
 
-    chprintf((BaseSequentialStream *)&SHELL_IFACE,"\r\nFiles Content\r\n");
-    chprintf((BaseSequentialStream *)&SHELL_IFACE,"------------\r\n");
+    ht_comm_Msg("\r\nFiles Content\r\n");
+    ht_comm_Msg("------------\r\n");
     strcpy(buffer,"");
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
@@ -287,19 +299,22 @@ void ht_mmc_catFiles(void){
                 strcpy(line,"");
                 eof=f_readline(line,sizeof(line),Fil);
                 if(eof[0]==0)break;
-                chsnprintf(buffer,sizeof(buffer),"%s%s\r",buffer,line);
+                ht_comm_Buff(buffer,sizeof(buffer),"%s%s\r",buffer,line);
             }
 #else
             UINT br;
             f_read(Fil,buffer,sizeof(buffer),&br);
 #endif
             f_close(Fil);
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"%s\r\n",buffer);
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"------------\r\n\r\n");
+
+            ht_comm_Buff(strbuff,sizeof(strbuff),"%s\r\n",buffer);
+            ht_comm_Msg(strbuff);
+            ht_comm_Msg("------------\r\n\r\n");
 
         }
         else{
-            chprintf((BaseSequentialStream *)&SHELL_IFACE,"Open Error:%d\r\n",err);
+            ht_comm_Buff(strbuff,sizeof(strbuff),"Open Error:%d\r\n",err);
+            ht_comm_Msg(strbuff);
         }
 
         f_mount(0, "", 0);

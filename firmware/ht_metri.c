@@ -29,9 +29,6 @@
 #include "ht_console.h"
 #include "ht_led.h"
 
-/* USB-CDC pointer object */
-extern SerialUSBDriver SDU1;
-
 uint8_t mode_status = STT_IDLE;
 uint8_t mode_step = STEP_ASK;
 uint8_t numresp,numask;
@@ -77,10 +74,12 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 if(numresp==numask){
                     led_result_off();
                     led_resultYES();
+                    ht_comm_Msg("Answer is True\r\n");
                 }
                 else{
                     led_result_off();
                     led_resultNO();
+                    ht_comm_Msg("Answer is False\r\n");
                 }
 
                 numask = 0;

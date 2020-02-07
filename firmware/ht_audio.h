@@ -51,7 +51,7 @@
 /**
  * @brief Tone Test at startup
  */
-#define USE_STARTUP_TEST FALSE
+#define USE_STARTUP_TEST TRUE
 
 /**
  * @brief Global Duration for Testing

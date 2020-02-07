@@ -240,4 +240,14 @@ void ht_commUSB_ReInit(void){
     }
 }
 
+void ht_comm_Msg(char *string){
+#if USE_USB_IFACE
+    if(SDU1.config->usbp->state == USB_ACTIVE){
+        chprintf((BaseSequentialStream *)&SDU1,string);
+    }
+#else
+    chprintf((BaseSequentialStream *)&SD1,string);
+#endif
+}
+
 /** @} */

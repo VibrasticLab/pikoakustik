@@ -22,9 +22,15 @@
 
 /**
  * @brief Default interface object for shell
- * @details Whether SDU1 (USB-0) or SD1 (UART-0)
+ * @details If True, system use USB-CDC as serial interface
+ * @details Otherwise, use UART-0
  */
-#define SHELL_IFACE SDU1
+#define USE_USB_IFACE TRUE
+
+/**
+ * @brief Size off buffer for chsnprintf() on interface
+ */
+#define IFACE_BUFF_SIZE 128
 
 /**
  * @brief Enables Echo on Shell Console
@@ -99,6 +105,11 @@ extern "C" {
 #endif
 
 /**
+ * @brief For easy remember, chsnprintf() defined as ht_comm_BUff()
+ */
+#define ht_comm_Buff chsnprintf
+
+/**
  * @brief Start Shell and UART peripheral
  * @details Serial Interface using UART0 (SD1)
  */
@@ -121,6 +132,12 @@ void ht_comm_ReInit(void);
  * @details This routine should be called on main thread with some delays
  */
 void ht_commUSB_ReInit(void);
+
+/**
+ * @brief Common message function
+ * @param[in] String Message to chprintf() on chosen interface.
+ */
+void ht_comm_Msg(char *string);
 
 #endif // HT_CONSOLE_H
 /** @} */

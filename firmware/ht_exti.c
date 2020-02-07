@@ -27,9 +27,6 @@
 #include "ht_metri.h"
 #include "ht_console.h"
 
-/* USB-CDC pointer object */
-extern SerialUSBDriver SDU1;
-
 extern uint8_t mode_status;
 extern uint8_t mode_step;
 extern uint8_t mode_led;
@@ -38,7 +35,7 @@ extern uint8_t numresp;
 uint8_t mode_btnA, mode_btnB;
 
 static void exti_idle_cb(void){
-    chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Standby\r\n");
+    ht_comm_Msg("Entering Mode: Standby\r\n");
     mode_status=STT_STDBY;
     mode_btnA=0;
     mode_btnB=0;
@@ -48,7 +45,7 @@ static void exti_idle_cb(void){
 }
 
 static void exti_stdby_cb(void){
-    chprintf((BaseSequentialStream *)&SHELL_IFACE,"Entering Mode: Audiometri\r\n");
+    ht_comm_Msg("Entering Mode: Audiotest\r\n");
     mode_led=LED_METRI;
     mode_status=STT_METRI;
     led_answer_off();
