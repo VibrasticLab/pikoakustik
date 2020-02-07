@@ -28,6 +28,22 @@
 #define MMC_SPI_ERROR   2
 
 /**
+ * @details File buffer maximal size
+ * @details More than 256 cause all system freeze
+ */
+#define FILE_BUFF_SIZE 256
+
+/**
+ * @details Maximal buffer size for each line
+ */
+#define LINE_BUFF_SIZE 16
+
+/**
+ * @details Print cat() line by line
+ */
+#define CAT_BY_LINE   TRUE
+
+/**
  * @brief rename to match name f_write()
  */
 #define f_readline      f_gets

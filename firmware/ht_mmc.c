@@ -121,7 +121,7 @@ void ht_mmc_Check(void){
 }
 
 void ht_mmc_Test(void){
-    char buffer[36];
+    char buffer[FILE_BUFF_SIZE];
     char strbuff[IFACE_BUFF_SIZE];
 
     FATFS FatFs;
@@ -199,6 +199,7 @@ static FRESULT scanFile(char *path, uint8_t *lastfnum){
     DIR Dir;
     FILINFO Fno;
     uint8_t fnum;
+
 #if USE_SCAN_DIR
     UINT num;
 #endif
@@ -243,35 +244,38 @@ void ht_mmc_lsFiles(void){
     char strbuff[IFACE_BUFF_SIZE];
     FATFS FatFs;
     FRESULT err;
-    char buff[256];
+    char buff[FILE_BUFF_SIZE];
     uint8_t lastnum=0;
 
 #if USE_MMC_CHK
     mmc_check();
 #endif
 
-    ht_comm_Msg("\r\nFiles on MMC\r\n");
-    ht_comm_Msg("------------\r\n");
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+        ht_comm_Msg("\r\nFiles on MMC\r\n");
+        ht_comm_Msg("------------\r\n");
 
-    err = f_mount(&FatFs,"",0);
-    if(err==FR_OK){
-        strcpy(buff,"/");
-        err = scanFile(buff,&lastnum);
+        err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
-            ht_comm_Msg("------------\r\n");
-            ht_comm_Buff(strbuff,sizeof(strbuff),"Last Num: %i\r\n",lastnum);
-            ht_comm_Msg(strbuff);
-            ht_comm_Buff(strbuff,sizeof(strbuff),"Last File: TEST_%i.TXT\r\n",lastnum);
-            ht_comm_Msg(strbuff);
-            ht_comm_Msg("------------\r\n");
+            strcpy(buff,"/");
+            err = scanFile(buff,&lastnum);
+            if(err==FR_OK){
+                ht_comm_Msg("------------\r\n");
+                ht_comm_Buff(strbuff,sizeof(strbuff),"Last Num: %i\r\n",lastnum);
+                ht_comm_Msg(strbuff);
+                ht_comm_Buff(strbuff,sizeof(strbuff),"Last File: TEST_%i.TXT\r\n",lastnum);
+                ht_comm_Msg(strbuff);
+                ht_comm_Msg("------------\r\n");
 
+            }
         }
+        f_mount(0, "", 0);
     }
-    f_mount(0, "", 0);
 }
 
 void ht_mmc_catFiles(void){
-    char buffer[64];
+    uint16_t line_num=0;
+    char buffer[FILE_BUFF_SIZE];
     char strbuff[IFACE_BUFF_SIZE];
     FATFS FatFs;
     FIL *Fil;
@@ -293,13 +297,20 @@ void ht_mmc_catFiles(void){
         err=f_open(Fil, "/TEST.TXT", FA_OPEN_EXISTING |FA_READ);
         if(err==FR_OK){
 #if USE_READ_LINE
-            char line[8];
+            char line[LINE_BUFF_SIZE];
             TCHAR *eof;
             while(1){
+                line_num++;
                 strcpy(line,"");
                 eof=f_readline(line,sizeof(line),Fil);
                 if(eof[0]==0)break;
+
+    #if CAT_BY_LINE
+                ht_comm_Buff(strbuff,sizeof(strbuff),"%3i %s\r",line_num,line);
+                ht_comm_Msg(strbuff);
+    #else
                 ht_comm_Buff(buffer,sizeof(buffer),"%s%s\r",buffer,line);
+    #endif
             }
 #else
             UINT br;
@@ -307,10 +318,12 @@ void ht_mmc_catFiles(void){
 #endif
             f_close(Fil);
 
+#if !(CAT_BY_LINE)
             ht_comm_Buff(strbuff,sizeof(strbuff),"%s\r\n",buffer);
             ht_comm_Msg(strbuff);
+            ht_comm_Msg("All line printed at once\r\n\r\n");
+#endif
             ht_comm_Msg("------------\r\n\r\n");
-
         }
         else{
             ht_comm_Buff(strbuff,sizeof(strbuff),"Open Error:%d\r\n",err);
@@ -336,5 +349,4 @@ void ht_mmc_Init(void){
     palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
     palClearPad(GPIOA,5);
 }
-
 /** @} */
