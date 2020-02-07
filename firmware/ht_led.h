@@ -22,7 +22,8 @@
 
 #define LED_FAIL    0
 #define LED_READY   1
-#define LED_METRI   2
+#define LED_CFILE   2
+#define LED_METRI   3
 
 #define LED_TRUE    2 //PA.2
 #define LED_FALSE   3 //PA.3

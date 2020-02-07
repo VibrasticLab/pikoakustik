@@ -29,6 +29,7 @@
 #include "ht_console.h"
 #include "ht_led.h"
 #include "ht_audio.h"
+#include "ht_mmc.h"
 
 extern uint8_t mode_led;
 
@@ -36,7 +37,7 @@ uint8_t mode_status = STT_IDLE;
 uint8_t mode_step = STEP_ASK;
 uint8_t numresp,numask;
 
-static THD_WORKING_AREA(waRunMetri, 512);
+static THD_WORKING_AREA(waRunMetri, 2048);
 #define ThdFunc_RunMetri THD_FUNCTION
 /**
  * @brief Thread for System Running Indicator
@@ -59,7 +60,12 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
             palTogglePad(GPIOA,LED_FALSE);
             chThdSleepMilliseconds(500);
         }
-        else if(mode_status==STT_METRI){          
+        else if(mode_status==STT_CFILE){
+            ht_mmcMetri_chkFile();
+            mode_led=LED_METRI;
+            mode_status=STT_METRI;
+        }
+        else if(mode_status==STT_METRI){
             rndnum = rand() % 50;
             rndask = rndnum % 2;
 
@@ -88,7 +94,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 led_answer_off();
 
                 mode_step=STEP_WAIT;
-                ht_comm_Buff(strbuff,sizeof(strbuff),"amplitude level :%5.4f\r\n",ampl_test);
+                ht_comm_Buff(strbuff,sizeof(strbuff),"amplitude level: %5.4f\r\n",ampl_test);
                 ht_comm_Msg(strbuff);
                 ampl_test = ampl_test / 2;
             }
@@ -97,11 +103,13 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     led_result_off();
                     led_resultYES();
                     ht_comm_Msg("Answer is True\r\n");
+                    ht_mmcMetri_lineResult(1.25,ampl_test,1);
                 }
                 else{
                     led_result_off();
                     led_resultNO();
                     ht_comm_Msg("Answer is False\r\n");
+                    ht_mmcMetri_lineResult(1.25,ampl_test,0);
                 }
 
                 numask = 0;
@@ -113,10 +121,10 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 mode_step=STEP_ASK;
 
                 if(ampl_test <= SMALLEST_DB){
-                    mode_status=STT_IDLE;
+                    ht_comm_Msg("Testing Finish\r\n");
+                    mode_status = STT_IDLE;
                     ampl_test = FIRSTTEST_DB;
                     mode_led = LED_READY;
-                    ht_comm_Msg("Testing Finish\r\n");
                 }
             }
         }

@@ -60,11 +60,14 @@ static ThdFunc_RunLED(thdRunLed, arg) {
         palTogglePad(GPIOA, 1);
         chThdSleepMilliseconds(500);
     }
+    else if(mode_led==LED_CFILE){
+        palSetPad(GPIOA, 1);
+        chThdSleepMilliseconds(1);
+    }
     else if(mode_led==LED_METRI){
         palTogglePad(GPIOA, 1);
         chThdSleepMilliseconds(50);
     }
-
   }
 }
 

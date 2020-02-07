@@ -105,5 +105,14 @@ void ht_mmc_lsFiles(void);
  */
 void ht_mmc_catFiles(void);
 
+/**
+ * @brief Check save file existence before audiometri
+ * @details If last number file already exist, create new in incremented
+ * @details Otherwise, use current last number
+ */
+void ht_mmcMetri_chkFile(void);
+
+void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result);
+
 #endif // HT_MMC_H
 /** @} */

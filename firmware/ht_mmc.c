@@ -42,6 +42,8 @@ extern uint8_t mode_led;
  */
 MMCDriver MMCD1;
 
+static uint8_t lastnum=0;
+
 /**
  * @brief FatFS ready status flag
  */
@@ -72,8 +74,9 @@ static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
  * @brief Checking readiness FatFS
  * @details Must calling before mounting actual media MMC
  * @details Checking both Peripheral and Filesystem status
+ * @param[in] uint8_t Status to change LED mode or not
  */
-static void mmc_check(void){
+static void mmc_check(uint8_t chgLED){
     FATFS FatFs;
     FRESULT err;
 
@@ -106,7 +109,9 @@ static void mmc_check(void){
     err = f_getfree("/", &clusters, &fsp);
     if(err == FR_OK){
         mmc_spi_status_flag=MMC_SPI_OK;
-        mode_led=LED_READY;
+        if(chgLED==1){
+            mode_led=LED_READY;
+        }
     }
 #endif
 
@@ -117,7 +122,7 @@ static void mmc_check(void){
 #endif
 
 void ht_mmc_Check(void){
-    mmc_check();
+    mmc_check(1);
 }
 
 void ht_mmc_Test(void){
@@ -132,7 +137,7 @@ void ht_mmc_Test(void){
     Fil = (FIL*)malloc(sizeof(FIL));
 
 #if USE_MMC_CHK
-    mmc_check();
+    mmc_check(1);
 #endif
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
@@ -193,7 +198,7 @@ static uint8_t get_fnum(char *strIn){
     return numOut;
 }
 
-static FRESULT scanFile(char *path, uint8_t *lastfnum){
+static FRESULT scanFile(char *path, uint8_t *lastfnum, uint8_t stt_print){
     char strbuff[IFACE_BUFF_SIZE];
     FRESULT err;
     DIR Dir;
@@ -223,15 +228,21 @@ static FRESULT scanFile(char *path, uint8_t *lastfnum){
             else{
                 fnum = get_fnum(Fno.fname);
                 if(*lastfnum<=fnum)*lastfnum=fnum;
-                ht_comm_Buff(strbuff,sizeof(strbuff),"%s%s\r\n",path,Fno.fname);
-                ht_comm_Msg(strbuff);
+
+                if(stt_print==1){
+                    ht_comm_Buff(strbuff,sizeof(strbuff),"%s%s\r\n",path,Fno.fname);
+                    ht_comm_Msg(strbuff);
+                }
 #else
             }
             else{
                 fnum = get_fnum(Fno.fname);
                 if(*lastfnum<=fnum)*lastfnum=fnum;
-                ht_comm_Buff(strbuff,sizeof(strbuff),"%s\r\n",Fno.fname);
-                ht_comm_Msg(strbuff);
+
+                if(stt_print==1){
+                    ht_comm_Buff(strbuff,sizeof(strbuff),"%s\r\n",Fno.fname);
+                    ht_comm_Msg(strbuff);
+                }
 #endif
             }
         }
@@ -243,34 +254,62 @@ static FRESULT scanFile(char *path, uint8_t *lastfnum){
 void ht_mmc_lsFiles(void){
     char strbuff[IFACE_BUFF_SIZE];
     FATFS FatFs;
+    FIL *Fil;
     FRESULT err;
     char buff[FILE_BUFF_SIZE];
-    uint8_t lastnum=0;
+    char buffer[FILE_BUFF_SIZE];
+    char fname[LINE_BUFF_SIZE];
+
+    Fil = (FIL*)malloc(sizeof(FIL));
 
 #if USE_MMC_CHK
-    mmc_check();
+    mmc_check(1);
 #endif
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+        ht_comm_Buff(buffer,sizeof(buffer),"Audiotest record:\n");
+
         ht_comm_Msg("\r\nFiles on MMC\r\n");
         ht_comm_Msg("------------\r\n");
 
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
             strcpy(buff,"/");
-            err = scanFile(buff,&lastnum);
+            err = scanFile(buff,&lastnum,1);
             if(err==FR_OK){
                 ht_comm_Msg("------------\r\n");
                 ht_comm_Buff(strbuff,sizeof(strbuff),"Last Num: %i\r\n",lastnum);
                 ht_comm_Msg(strbuff);
                 ht_comm_Buff(strbuff,sizeof(strbuff),"Last File: TEST_%i.TXT\r\n",lastnum);
                 ht_comm_Msg(strbuff);
-                ht_comm_Msg("------------\r\n");
 
+                if(lastnum < 255){
+                    ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+
+                    err = f_open(Fil, fname, FA_READ | FA_OPEN_EXISTING);
+                    if(err==FR_OK){
+                        f_close(Fil);
+                        ht_comm_Buff(strbuff,sizeof(strbuff),"File %s exist\r\n",fname);
+                        ht_comm_Msg(strbuff);                      
+                    }
+                    else if(err==FR_NO_FILE){
+                        ht_comm_Buff(strbuff,sizeof(strbuff),"File %s not exist\r\n",fname);
+                        ht_comm_Msg(strbuff);                        
+                    }
+                    else{
+                        ht_comm_Buff(strbuff,sizeof(strbuff),"File %s error code = %i\r\n",fname,err);
+                        ht_comm_Msg(strbuff);
+                    }
+                }
+                else{
+                    ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
+                }
+                ht_comm_Msg("------------\r\n");
             }
         }
         f_mount(0, "", 0);
     }
+    free(Fil);
 }
 
 void ht_mmc_catFiles(void){
@@ -284,7 +323,7 @@ void ht_mmc_catFiles(void){
     Fil = (FIL*)malloc(sizeof(FIL));
 
 #if USE_MMC_CHK
-    mmc_check();
+    mmc_check(1);
 #endif
 
     ht_comm_Msg("\r\nFiles Content\r\n");
@@ -331,6 +370,113 @@ void ht_mmc_catFiles(void){
         }
 
         f_mount(0, "", 0);
+    }
+    free(Fil);
+}
+
+void ht_mmcMetri_chkFile(void){
+    char strbuff[IFACE_BUFF_SIZE];
+    FATFS FatFs;
+    FIL *Fil;
+    FRESULT err;
+    UINT bw;
+    char buff[FILE_BUFF_SIZE];
+    char buffer[FILE_BUFF_SIZE];
+    char fname[LINE_BUFF_SIZE];
+
+    Fil = (FIL*)malloc(sizeof(FIL));
+
+#if USE_MMC_CHK
+    mmc_check(0);
+#endif
+
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+        ht_comm_Buff(buffer,sizeof(buffer),"Audiotest record\n");
+
+        err = f_mount(&FatFs,"",0);
+        if(err==FR_OK){
+            strcpy(buff,"/");
+            err = scanFile(buff,&lastnum,0);
+
+            if(lastnum < 255){
+                ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+
+                err = f_open(Fil, fname, FA_READ | FA_OPEN_EXISTING);
+                if(err==FR_OK){
+                    f_close(Fil);
+                    ht_comm_Buff(strbuff,sizeof(strbuff),"File %s exist\r\n",fname);
+                    ht_comm_Msg(strbuff);
+
+                    lastnum++;
+                    ht_comm_Msg("File name incremented\r\n");
+                    ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+
+                    err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+                    if(err==FR_OK){
+                        f_lseek(Fil, f_size(Fil));
+                        f_write(Fil, buffer, strlen(buffer), &bw);
+                        f_close(Fil);
+                    }
+                }
+                else if(err==FR_NO_FILE){
+                    ht_comm_Buff(strbuff,sizeof(strbuff),"File %s not exist\r\n",fname);
+                    ht_comm_Msg(strbuff);
+
+                    ht_comm_Msg("File name created now\r\n");
+                    ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+
+                    err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+                    if(err==FR_OK){
+                        f_lseek(Fil, f_size(Fil));
+                        f_write(Fil, buffer, strlen(buffer), &bw);
+                        f_close(Fil);
+                    }
+                }
+                else{
+                    ht_comm_Buff(strbuff,sizeof(strbuff),"File %s error code = %i\r\n",fname,err);
+                    ht_comm_Msg(strbuff);
+                }
+            }
+            else{
+                ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
+            }
+        }
+    }
+    free(Fil);
+}
+
+void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
+    char buffer[FILE_BUFF_SIZE];
+    char fname[LINE_BUFF_SIZE];
+    FATFS FatFs;
+    FIL *Fil;
+    UINT bw;
+    FRESULT err;
+
+    Fil = (FIL*)malloc(sizeof(FIL));
+
+#if USE_MMC_CHK
+    mmc_check(0);
+#endif
+
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+
+        if(result==0){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, FALSE\n",freq,ample);}
+        else if(result==1){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, TRUE\n",freq,ample);}
+
+        if(lastnum < 255){
+            f_mount(&FatFs, "", 0);
+
+            ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+            err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+            if(err==FR_OK){
+                f_lseek(Fil, f_size(Fil));
+                f_write(Fil, buffer, strlen(buffer), &bw);
+                f_close(Fil);
+            }
+
+            f_mount(0, "", 0);
+        }
     }
     free(Fil);
 }

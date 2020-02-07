@@ -46,10 +46,11 @@ static void exti_idle_cb(void){
 
 static void exti_stdby_cb(void){
     ht_comm_Msg("Entering Mode: Audiotest\r\n");
-    mode_led=LED_METRI;
-    mode_status=STT_METRI;
+    palSetPad(GPIOA, 1);
     led_answer_off();
     led_result_off();
+    mode_led=LED_CFILE;
+    mode_status=STT_CFILE;
 }
 
 /**
