@@ -145,9 +145,11 @@ static void cmd_lsfile(BaseSequentialStream *chp, int argc, char *argv[]) {
 
 static void cmd_catfile(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
-    if(argc != 0){chprintf(chp,"usage: cat\r\n");return;}
+    uint8_t fnum;
 
-    ht_mmc_catFiles();
+    if(argc==0 || argc>1){chprintf(chp,"usage: cat file_number\r\n");return;}
+    fnum = atoi(argv[0]);
+    ht_mmc_catFiles(fnum);
 }
 
 /**

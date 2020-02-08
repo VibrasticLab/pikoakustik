@@ -49,19 +49,30 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
     uint8_t rndnum;
     uint8_t rndask;
     double ampl_test = FIRSTTEST_DB;
+    double freq_test[] = {1,2,4,8,16,32};
+    uint8_t freq_idx = 0;
+    uint8_t freq_max = sizeof(freq_test)/sizeof(freq_test[0]);
     char strbuff[IFACE_BUFF_SIZE];
 
     srand(3);
     chRegSetThreadName("run led");
 
     while (true) {
-        if(mode_status==STT_STDBY){
+        if(mode_status==STT_SETUP){
+            chThdSleepMilliseconds(100);
+            ht_comm_Msg("Entering Mode: Ready\r\n");
+            mode_status = STT_READY;
+        }
+        else if(mode_status==STT_STDBY){
             palTogglePad(GPIOA,LED_TRUE);
             palTogglePad(GPIOA,LED_FALSE);
+            ht_comm_Buff(strbuff,sizeof(strbuff),"Freq: %5.2f\r\n",freq_test[freq_idx]);
+            ht_comm_Msg(strbuff);
             chThdSleepMilliseconds(500);
         }
         else if(mode_status==STT_CFILE){
             ht_mmcMetri_chkFile();
+            ht_comm_Msg("Entering Mode: Audiometri\r\n");
             mode_led=LED_METRI;
             mode_status=STT_METRI;
         }
@@ -94,7 +105,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 led_answer_off();
 
                 mode_step=STEP_WAIT;
-                ht_comm_Buff(strbuff,sizeof(strbuff),"amplitude level: %5.4f\r\n",ampl_test);
+                ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %5.2f, %5.4f\r\n",1.25,ampl_test);
                 ht_comm_Msg(strbuff);
                 ampl_test = ampl_test / 2;
             }
@@ -121,10 +132,17 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 mode_step=STEP_ASK;
 
                 if(ampl_test <= SMALLEST_DB){
-                    ht_comm_Msg("Testing Finish\r\n");
-                    mode_status = STT_IDLE;
-                    ampl_test = FIRSTTEST_DB;
-                    mode_led = LED_READY;
+                    freq_idx++;
+
+                    if(freq_idx == freq_max){
+                        ht_comm_Msg("Testing Finish\r\n");
+                        mode_status = STT_IDLE;
+                        ampl_test = FIRSTTEST_DB;
+                        mode_led = LED_READY;
+                    }
+                    else{
+                        ht_comm_Msg("Ampliying next Frequency\r\n");
+                    }
                 }
             }
         }

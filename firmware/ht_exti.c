@@ -45,7 +45,7 @@ static void exti_idle_cb(void){
 }
 
 static void exti_stdby_cb(void){
-    ht_comm_Msg("Entering Mode: Audiotest\r\n");
+    ht_comm_Msg("Entering Mode: Checking Save File\r\n");
     palSetPad(GPIOA, 1);
     led_answer_off();
     led_result_off();
@@ -66,6 +66,10 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
         led_answerA();
         mode_btnA=1;
 
+        ht_comm_Msg("Entering Mode: Setup\r\n");
+        mode_status = STT_SETUP;
+    }
+    else if(mode_status==STT_READY){
         if(mode_btnB==1){
             exti_idle_cb();
         }
@@ -96,6 +100,10 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
         led_answerB();
         mode_btnB=1;
 
+        ht_comm_Msg("Entering Mode: Setup\r\n");
+        mode_status = STT_SETUP;
+    }
+    else if(mode_status==STT_READY){
         if(mode_btnA==1){
             exti_idle_cb();
         }
@@ -117,8 +125,8 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
  */
 static const EXTConfig extcfg = {
   {
-    {EXT_CH_MODE_RISING_EDGE | EXT_CH_MODE_AUTOSTART | EXT_MODE_GPIOC, extiAnsA}, //0
-    {EXT_CH_MODE_RISING_EDGE | EXT_CH_MODE_AUTOSTART | EXT_MODE_GPIOC, extiAnsB}, //1
+    {EXT_CH_MODE_FALLING_EDGE  | EXT_MODE_GPIOC, extiAnsA}, //0
+    {EXT_CH_MODE_FALLING_EDGE  | EXT_MODE_GPIOC, extiAnsB}, //1
     {EXT_CH_MODE_DISABLED, NULL}, //2
     {EXT_CH_MODE_DISABLED, NULL}, //3
     {EXT_CH_MODE_DISABLED, NULL}, //4

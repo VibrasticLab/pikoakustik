@@ -103,7 +103,7 @@ void ht_mmc_lsFiles(void);
 /**
  * @brief Read a file on directory
  */
-void ht_mmc_catFiles(void);
+void ht_mmc_catFiles(uint8_t fnum);
 
 /**
  * @brief Check save file existence before audiometri

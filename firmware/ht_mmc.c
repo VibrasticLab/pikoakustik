@@ -28,6 +28,7 @@
 
 #include "ht_mmc.h"
 #include "ht_led.h"
+#include "ht_metri.h"
 #include "ht_console.h"
 
 #if USE_USB_IFACE
@@ -36,6 +37,7 @@ extern SerialUSBDriver SDU1;
 
 /* Blink indicator mode */
 extern uint8_t mode_led;
+extern uint8_t mode_status;
 
 /**
  * @brief Global MMC Driver Pointer
@@ -312,10 +314,11 @@ void ht_mmc_lsFiles(void){
     free(Fil);
 }
 
-void ht_mmc_catFiles(void){
+void ht_mmc_catFiles(uint8_t fnum){
     uint16_t line_num=0;
     char buffer[FILE_BUFF_SIZE];
     char strbuff[IFACE_BUFF_SIZE];
+    char fname[LINE_BUFF_SIZE];
     FATFS FatFs;
     FIL *Fil;
     FRESULT err;
@@ -330,10 +333,11 @@ void ht_mmc_catFiles(void){
     ht_comm_Msg("------------\r\n");
     strcpy(buffer,"");
 
+    ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",fnum);
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         f_mount(&FatFs, "", 0);
 
-        err=f_open(Fil, "/TEST.TXT", FA_OPEN_EXISTING |FA_READ);
+        err=f_open(Fil, fname, FA_OPEN_EXISTING |FA_READ);
         if(err==FR_OK){
 #if USE_READ_LINE
             char line[LINE_BUFF_SIZE];
@@ -438,6 +442,8 @@ void ht_mmcMetri_chkFile(void){
                 }
             }
             else{
+                mode_status = STT_IDLE;
+                mode_led = LED_READY;
                 ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
             }
         }

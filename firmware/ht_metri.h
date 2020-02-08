@@ -21,9 +21,11 @@
 #define HT_METRI_H
 
 #define STT_IDLE    0
-#define STT_STDBY   1
-#define STT_CFILE   2
-#define STT_METRI   3
+#define STT_SETUP   1
+#define STT_READY   2
+#define STT_STDBY   3
+#define STT_CFILE   4
+#define STT_METRI   5
 
 #define STEP_ASK    0
 #define STEP_WAIT   1
