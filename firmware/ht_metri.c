@@ -66,8 +66,6 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
         else if(mode_status==STT_STDBY){
             palTogglePad(GPIOA,LED_TRUE);
             palTogglePad(GPIOA,LED_FALSE);
-            ht_comm_Buff(strbuff,sizeof(strbuff),"Freq: %5.2f\r\n",freq_test[freq_idx]);
-            ht_comm_Msg(strbuff);
             chThdSleepMilliseconds(500);
         }
         else if(mode_status==STT_CFILE){
@@ -86,7 +84,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
                 led_answerA();
                 if(rndask==0){
-                    ht_audio_Tone(1.25,ampl_test);
+                    ht_audio_Tone(freq_test[freq_idx],ampl_test);
                     ht_audio_Play(TEST_DURATION);
                     numask = 1;
                 }
@@ -97,7 +95,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
                 led_answerB();
                 if(rndask==1){
-                    ht_audio_Tone(1.25,ampl_test);
+                    ht_audio_Tone(freq_test[freq_idx],ampl_test);
                     ht_audio_Play(TEST_DURATION);
                     numask = 2;
                 }
@@ -105,7 +103,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 led_answer_off();
 
                 mode_step=STEP_WAIT;
-                ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %5.2f, %5.4f\r\n",1.25,ampl_test);
+                ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %5.2f, %5.4f\r\n",freq_test[freq_idx],ampl_test);
                 ht_comm_Msg(strbuff);
                 ampl_test = ampl_test / 2;
             }
@@ -114,13 +112,13 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     led_result_off();
                     led_resultYES();
                     ht_comm_Msg("Answer is True\r\n");
-                    ht_mmcMetri_lineResult(1.25,ampl_test,1);
+                    ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,1);
                 }
                 else{
                     led_result_off();
                     led_resultNO();
                     ht_comm_Msg("Answer is False\r\n");
-                    ht_mmcMetri_lineResult(1.25,ampl_test,0);
+                    ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,0);
                 }
 
                 numask = 0;
@@ -141,6 +139,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                         mode_led = LED_READY;
                     }
                     else{
+                        ampl_test = FIRSTTEST_DB;
                         ht_comm_Msg("Ampliying next Frequency\r\n");
                     }
                 }

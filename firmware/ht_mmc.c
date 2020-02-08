@@ -395,6 +395,7 @@ void ht_mmcMetri_chkFile(void){
 #endif
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+#if RECORD_TEST
         ht_comm_Buff(buffer,sizeof(buffer),"Audiotest record\n");
 
         err = f_mount(&FatFs,"",0);
@@ -447,6 +448,7 @@ void ht_mmcMetri_chkFile(void){
                 ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
             }
         }
+#endif
     }
     free(Fil);
 }
@@ -467,6 +469,7 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
+#if RECORD_TEST
         if(result==0){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, FALSE\n",freq,ample);}
         else if(result==1){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, TRUE\n",freq,ample);}
 
@@ -483,6 +486,12 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
 
             f_mount(0, "", 0);
         }
+        else{
+            mode_status = STT_IDLE;
+            mode_led = LED_READY;
+            ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
+        }
+#endif
     }
     free(Fil);
 }
