@@ -381,21 +381,22 @@ void ht_mmc_catFiles(uint8_t fnum){
 void ht_mmcMetri_chkFile(void){
     char strbuff[IFACE_BUFF_SIZE];
     FATFS FatFs;
-    FIL *Fil;
+    FIL *Fil_last;
+    FIL *Fil_new;
     FRESULT err;
     UINT bw;
     char buff[FILE_BUFF_SIZE];
     char buffer[FILE_BUFF_SIZE];
     char fname[LINE_BUFF_SIZE];
 
-    Fil = (FIL*)malloc(sizeof(FIL));
+    Fil_last = (FIL*)malloc(sizeof(FIL));
+    Fil_new = (FIL*)malloc(sizeof(FIL));
 
 #if USE_MMC_CHK
     mmc_check(0);
 #endif
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-#if RECORD_TEST
         ht_comm_Buff(buffer,sizeof(buffer),"Audiotest record\n");
 
         err = f_mount(&FatFs,"",0);
@@ -406,9 +407,9 @@ void ht_mmcMetri_chkFile(void){
             if(lastnum < 255){
                 ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
 
-                err = f_open(Fil, fname, FA_READ | FA_OPEN_EXISTING);
+                err = f_open(Fil_last, fname, FA_READ | FA_OPEN_EXISTING);
                 if(err==FR_OK){
-                    f_close(Fil);
+                    f_close(Fil_last);
                     ht_comm_Buff(strbuff,sizeof(strbuff),"File %s exist\r\n",fname);
                     ht_comm_Msg(strbuff);
 
@@ -416,11 +417,11 @@ void ht_mmcMetri_chkFile(void){
                     ht_comm_Msg("File name incremented\r\n");
                     ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
 
-                    err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+                    err = f_open(Fil_new, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
                     if(err==FR_OK){
-                        f_lseek(Fil, f_size(Fil));
-                        f_write(Fil, buffer, strlen(buffer), &bw);
-                        f_close(Fil);
+                        f_lseek(Fil_new, f_size(Fil_new));
+                        f_write(Fil_new, buffer, strlen(buffer), &bw);
+                        f_close(Fil_new);
                     }
                 }
                 else if(err==FR_NO_FILE){
@@ -430,16 +431,18 @@ void ht_mmcMetri_chkFile(void){
                     ht_comm_Msg("File name created now\r\n");
                     ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
 
-                    err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+                    err = f_open(Fil_new, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
                     if(err==FR_OK){
-                        f_lseek(Fil, f_size(Fil));
-                        f_write(Fil, buffer, strlen(buffer), &bw);
-                        f_close(Fil);
+                        f_lseek(Fil_new, f_size(Fil_new));
+                        f_write(Fil_new, buffer, strlen(buffer), &bw);
+                        f_close(Fil_new);
                     }
                 }
                 else{
                     ht_comm_Buff(strbuff,sizeof(strbuff),"File %s error code = %i\r\n",fname,err);
                     ht_comm_Msg(strbuff);
+                    mode_status = STT_IDLE;
+                    mode_led = LED_READY;
                 }
             }
             else{
@@ -448,9 +451,9 @@ void ht_mmcMetri_chkFile(void){
                 ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
             }
         }
-#endif
     }
-    free(Fil);
+    free(Fil_last);
+    free(Fil_new);
 }
 
 void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
@@ -468,8 +471,6 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
 #endif
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-
-#if RECORD_TEST
         if(result==0){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, FALSE\n",freq,ample);}
         else if(result==1){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, TRUE\n",freq,ample);}
 
@@ -491,7 +492,6 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
             mode_led = LED_READY;
             ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
         }
-#endif
     }
     free(Fil);
 }

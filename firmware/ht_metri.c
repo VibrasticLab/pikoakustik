@@ -37,7 +37,8 @@ uint8_t mode_status = STT_IDLE;
 uint8_t mode_step = STEP_ASK;
 uint8_t numresp,numask;
 
-static THD_WORKING_AREA(waRunMetri, 2048);
+/* More action/statement need more allocated memory space */
+static THD_WORKING_AREA(waRunMetri, 4096);
 #define ThdFunc_RunMetri THD_FUNCTION
 /**
  * @brief Thread for System Running Indicator
@@ -63,13 +64,10 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
             ht_comm_Msg("Entering Mode: Ready\r\n");
             mode_status = STT_READY;
         }
-        else if(mode_status==STT_STDBY){
-            palTogglePad(GPIOA,LED_TRUE);
-            palTogglePad(GPIOA,LED_FALSE);
-            chThdSleepMilliseconds(500);
-        }
         else if(mode_status==STT_CFILE){
+#if RECORD_TEST
             ht_mmcMetri_chkFile();
+#endif
             ht_comm_Msg("Entering Mode: Audiometri\r\n");
             mode_led=LED_METRI;
             mode_status=STT_METRI;
@@ -112,13 +110,18 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     led_result_off();
                     led_resultYES();
                     ht_comm_Msg("Answer is True\r\n");
+#if RECORD_TEST
                     ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,1);
+#endif
                 }
                 else{
                     led_result_off();
                     led_resultNO();
                     ht_comm_Msg("Answer is False\r\n");
+#if RECORD_TEST
                     ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,0);
+#endif
+
                 }
 
                 numask = 0;
