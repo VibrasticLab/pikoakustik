@@ -117,7 +117,18 @@ void ht_mmc_catFiles(uint8_t fnum);
  */
 void ht_mmcMetri_chkFile(void);
 
+/**
+ * @brief Save each line for every result
+ * @param[in] double Frequency scaling
+ * @param[in] double Amplitude scaling
+ * @param[in] double Result True of False
+ */
 void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result);
+
+/**
+ * @brief Save word END on save files
+ */
+void ht_mmcMetri_endResult(void);
 
 #endif // HT_MMC_H
 /** @} */

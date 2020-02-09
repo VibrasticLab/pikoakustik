@@ -22,6 +22,9 @@
 
 #include "ht_led.h"
 
+/**
+ * @brief LED Mode global variable
+ */
 uint8_t mode_led=LED_FAIL;
 
 void led_answer_off(void){

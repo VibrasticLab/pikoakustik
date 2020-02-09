@@ -192,7 +192,7 @@ void shellInit(void) {
  * @note    Must be invoked from the command handlers.
  * @note    Does not return.
  *
- * @param[in] msg       shell exit code
+ * @param[in] msg_t shell exit code
  *
  * @api
  */

@@ -32,8 +32,19 @@ extern uint8_t mode_step;
 extern uint8_t mode_led;
 extern uint8_t numresp;
 
-uint8_t mode_btnA, mode_btnB;
+/**
+ * @brief Mode button combination for entering next mode
+ */
+static uint8_t mode_btnA;
 
+/**
+ * @brief Mode button combination for entering next mode
+ */
+static uint8_t mode_btnB;
+
+/**
+ * @brief EXTI callback function for entering Standby Mode
+ */
 static void exti_idle_cb(void){
     ht_comm_Msg("Entering Mode: Standby\r\n");
     mode_status=STT_STDBY;
@@ -44,6 +55,9 @@ static void exti_idle_cb(void){
     led_resultYES();
 }
 
+/**
+ * @brief EXTI callback function for entering Check Save File Mode
+ */
 static void exti_stdby_cb(void){
     ht_comm_Msg("Entering Mode: Checking Save File\r\n");
     palSetPad(GPIOA, 1);
@@ -162,6 +176,4 @@ void ht_exti_Init(void){
     mode_btnA=0;
     mode_btnB=0;
 }
-
-
- /** @} */
+/** @} */

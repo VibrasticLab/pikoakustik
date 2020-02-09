@@ -21,7 +21,7 @@
 #define HT_AUDIO_H
 
 /**
- * @brief Default Attenuation
+ * @brief Default Attenuation scale
  */
 #define DEFAULT_ATTEN 0.01
 
@@ -60,14 +60,14 @@
 #define TEST_DURATION   10
 
 /**
- * @brief Smallest signal can produced as far for now
+ * @brief Smallest signal scale can produced as far for now
  * @details Note this use DEFAULT_ATTEN as 0.01
  * @details So signal value is SMALLEST_DB*DEFAULT_ATTEN*32767=1
  */
 #define SMALLEST_DB     0.0031
 
 /**
- * @brief First dB level at first step on audiotest
+ * @brief First dB scale at first step on audiotest
  */
 #define FIRSTTEST_DB     1
 
@@ -84,15 +84,15 @@ void ht_audio_Zero(void);
 /**
  * @brief Generate sine wave tone from halving formula with Frequency and Amplitude
  * @details This function intended to be actual implementaion of sample preparation
- * @param[in] Sine wave sample frequency in linear scaling from 400Hz (0.25,0.5,1,2,4,8,16,32) -> 500Hz=1.25
- * @param[in] Sine wave sample amplitude in linear scaling from 100dB (1 ~ 0.0001 or use ht_audio_Zero())
+ * @param[in] double Sine wave sample frequency in linear scaling from 400Hz (0.25,0.5,1,2,4,8,16,32) -> 500Hz=1.25
+ * @param[in] double Sine wave sample amplitude in linear scaling from 100dB (1 ~ 0.0001 or use ht_audio_Zero())
  */
 void ht_audio_Tone(double freq, double ampl);
 
 /**
  * @brief Play Audio via I2S
  * @details Play I2S Transmit buffer in loop
- * @param[in] double Durasi untuk putar data I2S
+ * @param[in] uint8_t Durasi untuk putar data I2S
  */
 void ht_audio_Play(uint8_t duration);
 

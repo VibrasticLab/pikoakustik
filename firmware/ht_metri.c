@@ -33,13 +33,30 @@
 
 extern uint8_t mode_led;
 
+/**
+ * @brief Device mode variable
+ */
 uint8_t mode_status = STT_IDLE;
+
+/**
+ * @brief Audiometri step variable
+ */
 uint8_t mode_step = STEP_ASK;
-uint8_t numresp,numask;
+
+/**
+ * @brief User response number
+ */
+uint8_t numresp;
+
+/**
+ * @brief User asking number
+ */
+uint8_t numask;
 
 /* More action/statement need more allocated memory space */
 static THD_WORKING_AREA(waRunMetri, 4096);
 #define ThdFunc_RunMetri THD_FUNCTION
+
 /**
  * @brief Thread for System Running Indicator
  * @details Smallest Thread to check either system in Run or Freeze
@@ -136,6 +153,9 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     freq_idx++;
 
                     if(freq_idx == freq_max){
+#if RECORD_TEST
+                        ht_mmcMetri_endResult();
+#endif
                         ht_comm_Msg("Testing Finish\r\n");
                         mode_status = STT_IDLE;
                         ampl_test = FIRSTTEST_DB;

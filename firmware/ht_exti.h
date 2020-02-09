@@ -20,10 +20,6 @@
 #ifndef HT_EXTI_H
 #define HT_EXTI_H
 
-/* External Interrupt Flag number */
-#define EXTI_BTN_A 1
-#define EXTI_BTN_B 2
-
 /**
  * @brief Button answer A on port C1
  */

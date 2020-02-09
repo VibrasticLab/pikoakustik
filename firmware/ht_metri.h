@@ -33,6 +33,9 @@
 
 #define TEST_SPEED_DELAY 200
 
+/**
+ * @brief Audiometri process Initialization
+ */
 void ht_metri_Init(void);
 
 #endif // HT_METRI_H

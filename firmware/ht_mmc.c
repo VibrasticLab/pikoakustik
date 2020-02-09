@@ -44,6 +44,9 @@ extern uint8_t mode_status;
  */
 MMCDriver MMCD1;
 
+/**
+ * @brief Save file last number variable
+ */
 static uint8_t lastnum=0;
 
 /**
@@ -269,7 +272,7 @@ void ht_mmc_lsFiles(void){
 #endif
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        ht_comm_Buff(buffer,sizeof(buffer),"Audiotest record:\n");
+        ht_comm_Buff(buffer,sizeof(buffer),"START\n");
 
         ht_comm_Msg("\r\nFiles on MMC\r\n");
         ht_comm_Msg("------------\r\n");
@@ -397,7 +400,7 @@ void ht_mmcMetri_chkFile(void){
 #endif
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        ht_comm_Buff(buffer,sizeof(buffer),"Audiotest record\n");
+        ht_comm_Buff(buffer,sizeof(buffer),"START\n");
 
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
@@ -473,6 +476,45 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         if(result==0){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, FALSE\n",freq,ample);}
         else if(result==1){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, TRUE\n",freq,ample);}
+
+        if(lastnum < 255){
+            f_mount(&FatFs, "", 0);
+
+            ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+            err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+            if(err==FR_OK){
+                f_lseek(Fil, f_size(Fil));
+                f_write(Fil, buffer, strlen(buffer), &bw);
+                f_close(Fil);
+            }
+
+            f_mount(0, "", 0);
+        }
+        else{
+            mode_status = STT_IDLE;
+            mode_led = LED_READY;
+            ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
+        }
+    }
+    free(Fil);
+}
+
+void ht_mmcMetri_endResult(void){
+    char buffer[FILE_BUFF_SIZE];
+    char fname[LINE_BUFF_SIZE];
+    FATFS FatFs;
+    FIL *Fil;
+    UINT bw;
+    FRESULT err;
+
+    Fil = (FIL*)malloc(sizeof(FIL));
+
+#if USE_MMC_CHK
+    mmc_check(0);
+#endif
+
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+        ht_comm_Buff(buffer,sizeof(buffer),"END\n");
 
         if(lastnum < 255){
             f_mount(&FatFs, "", 0);

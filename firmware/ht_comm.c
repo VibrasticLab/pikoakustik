@@ -136,6 +136,10 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
     else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
 }
 
+/**
+ * @brief List available files on MMC and get saves last number
+ * @details Enumerated and not called directly by any normal thread
+ */
 static void cmd_lsfile(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
     if(argc != 0){chprintf(chp,"usage: ls\r\n");return;}

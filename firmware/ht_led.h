@@ -20,9 +20,24 @@
 #ifndef HT_LED_H
 #define HT_LED_H
 
+/**
+ * @brief LED Mode when MMC failed
+ */
 #define LED_FAIL    0
+
+/**
+ * @brief LED Mode when device Idle and Ready
+ */
 #define LED_READY   1
+
+/**
+ * @brief LED Mode when Checking File Save
+ */
 #define LED_CFILE   2
+
+/**
+ * @brief LED Mode when Audiometri start
+ */
 #define LED_METRI   3
 
 #define LED_TRUE    2 //PA.2

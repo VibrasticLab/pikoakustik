@@ -38,6 +38,7 @@ extern uint8_t mode_led;
 
 static THD_WORKING_AREA(waRunLed, 128);
 #define ThdFunc_RunLED THD_FUNCTION
+
 /**
  * @brief Thread for System Running Indicator
  * @details Smallest Thread to check either system in Run or Freeze

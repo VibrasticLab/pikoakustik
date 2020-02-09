@@ -125,7 +125,6 @@ bool mmc_lld_is_write_protected(MMCDriver *mmcp) {
 
 /**
  * @brief   Board-specific initialization code.
- * @todo    Add your board-specific code, if any.
  */
 void boardInit(void) {}
 /** @} */

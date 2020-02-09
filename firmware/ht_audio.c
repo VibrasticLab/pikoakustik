@@ -98,5 +98,4 @@ void ht_audio_Play(uint8_t duration){
     i2sStopExchange(&I2SD2);
     i2sStop(&I2SD2);
 }
-
 /** @} */
