@@ -107,12 +107,13 @@ void ht_mmc_lsFiles(void);
 
 /**
  * @brief Read a file on directory
+ * @param[in] uint8_t Last number of Save file
  */
 void ht_mmc_catFiles(uint8_t fnum);
 
 /**
  * @brief Check save file existence before audiometri
- * @details If last number file already exist, create new in incremented
+ * @details If last number file already exist, create new in incremented last number
  * @details Otherwise, use current last number
  */
 void ht_mmcMetri_chkFile(void);

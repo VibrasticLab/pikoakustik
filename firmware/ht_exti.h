@@ -32,6 +32,8 @@
 
 /**
  * @brief External Interrupt Initialization
+ * @details Never put or calling any delay or chThdSleep() on EXTI callback
+ * @details By doing so would cause the entire system frozen
  */
 void ht_exti_Init(void);
 
