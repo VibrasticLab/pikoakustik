@@ -120,7 +120,6 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 mode_step=STEP_WAIT;
                 ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %5.2f, %5.4f\r\n",freq_test[freq_idx],ampl_test);
                 ht_comm_Msg(strbuff);
-                ampl_test = ampl_test / 2;
             }
             else if(mode_step==STEP_CHK){
                 if(numresp==numask){
@@ -148,6 +147,8 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 led_answer_off();
                 led_result_off();
                 mode_step=STEP_ASK;
+
+                ampl_test = ampl_test / 2;
 
                 if(ampl_test <= SMALLEST_DB){
                     freq_idx++;
