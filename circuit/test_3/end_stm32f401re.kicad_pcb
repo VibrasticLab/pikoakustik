@@ -10,6 +10,12 @@
   )
 
   (page User 200 150.012)
+  (title_block
+    (title "Basic Blueprint (Layout)")
+    (date 2020-02-22)
+    (company VibrasticLab)
+  )
+
   (layers
     (0 F.Cu signal)
     (31 B.Cu signal)

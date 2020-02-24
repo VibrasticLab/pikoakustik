@@ -31,7 +31,17 @@
 #define STEP_WAIT   1
 #define STEP_CHK    2
 
+#define OPT_ASK_A   0
+#define OPT_ASK_B   1
+#define OPT_ASK_C   2
+
 #define TEST_SPEED_DELAY 200
+
+/**
+ * @brief Random number to choose answer position
+ * @return Answer number position
+ */
+uint8_t ht_metri_RndOpt(void);
 
 /**
  * @brief Audiometri process Initialization

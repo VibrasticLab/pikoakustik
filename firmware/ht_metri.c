@@ -64,7 +64,6 @@ static THD_WORKING_AREA(waRunMetri, 4096);
 static ThdFunc_RunMetri(thdRunMetri, arg) {
     (void)arg;
 
-    uint8_t rndnum;
     uint8_t rndask;
     double ampl_test = FIRSTTEST_DB;
     double freq_test[] = {1,2,4,8,16,32};
@@ -90,15 +89,14 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
             mode_status=STT_METRI;
         }
         else if(mode_status==STT_METRI){
-            rndnum = rand() % 50;
-            rndask = rndnum % 2;
+            rndask = ht_metri_RndOpt();
 
             if(mode_step==STEP_ASK){
                 chThdSleepMilliseconds(1000);
                 led_answer_off();
 
                 led_answerA();
-                if(rndask==0){
+                if(rndask == OPT_ASK_A){
                     ht_audio_Tone(freq_test[freq_idx],ampl_test);
                     ht_audio_Play(TEST_DURATION);
                     numask = 1;
@@ -109,7 +107,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
 
                 led_answerB();
-                if(rndask==1){
+                if(rndask == OPT_ASK_B){
                     ht_audio_Tone(freq_test[freq_idx],ampl_test);
                     ht_audio_Play(TEST_DURATION);
                     numask = 2;
@@ -171,6 +169,15 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
         }
         chThdSleepMilliseconds(100);
     }
+}
+
+uint8_t ht_metri_RndOpt(void){
+    uint8_t rndnum, rndnumask;
+
+    rndnum = rand() % 50;
+    rndnumask = rndnum % 2;
+
+    return rndnumask;
 }
 
 void ht_metri_Init(void){
