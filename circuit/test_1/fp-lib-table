@@ -1,4 +1,0 @@
-(fp_lib_table
-  (lib (name dacmax98)(type KiCad)(uri ${KIPRJMOD}/lib/dacmax98.pretty)(options "")(descr ""))
-  (lib (name user)(type KiCad)(uri /usr/share/kicad/userlib/footprints/user)(options "")(descr ""))
-)
