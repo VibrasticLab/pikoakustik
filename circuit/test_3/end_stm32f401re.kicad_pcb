@@ -310,7 +310,7 @@
   )
 
   (module viblab:viblab (layer B.Cu) (tedit 0) (tstamp 5E5680AC)
-    (at 80.725 78.625 180)
+    (at 80.525 82.525 180)
     (fp_text reference G*** (at 0 0) (layer B.SilkS) hide
       (effects (font (size 1.524 1.524) (thickness 0.3)) (justify mirror))
     )
