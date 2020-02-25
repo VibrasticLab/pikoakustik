@@ -1631,11 +1631,11 @@ Wire Wire Line
 Wire Wire Line
 	7450 7000 7550 7000
 Text Label 7550 6900 0    50   ~ 0
-ESP_P0
+ESP_RST
 Wire Wire Line
 	7450 6900 7550 6900
 Text Label 7550 6800 0    50   ~ 0
-ESP_RST
+ESP_P0
 Wire Wire Line
 	7450 6800 7550 6800
 Wire Wire Line
@@ -1721,4 +1721,37 @@ Wire Wire Line
 	10700 6300 10700 6450
 Text Label 10700 6450 0    50   ~ 0
 ESP_TXD
+$Comp
+L Mechanical:MountingHole H2
+U 1 1 5E57D278
+P 5300 7050
+F 0 "H2" H 5400 7096 50  0000 L CNN
+F 1 "MountingHole" H 5400 7005 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.5mm_Pad_Via" H 5300 7050 50  0001 C CNN
+F 3 "~" H 5300 7050 50  0001 C CNN
+	1    5300 7050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H1
+U 1 1 5E580073
+P 5300 6800
+F 0 "H1" H 5400 6846 50  0000 L CNN
+F 1 "MountingHole" H 5400 6755 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.5mm_Pad_Via" H 5300 6800 50  0001 C CNN
+F 3 "~" H 5300 6800 50  0001 C CNN
+	1    5300 6800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H3
+U 1 1 5E5947C1
+P 5300 7300
+F 0 "H3" H 5400 7346 50  0000 L CNN
+F 1 "MountingHole" H 5400 7255 50  0000 L CNN
+F 2 "MountingHole:MountingHole_2.5mm_Pad_Via" H 5300 7300 50  0001 C CNN
+F 3 "~" H 5300 7300 50  0001 C CNN
+	1    5300 7300
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
