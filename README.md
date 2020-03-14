@@ -35,6 +35,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	+ [x] ESP-12E slot on PCB
 	+ [ ] WiFi handling
 	+ [ ] TCP Data exchange
+	+ [ ] MQTT Protocol
 	+ [ ] Standard Data Format
 	+ [ ] Data Identification
 	+ [ ] Database Server
@@ -47,7 +48,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	+ [ ] Calibrated Frequency array
 	+ [ ] Calibrated SPL range
 	+ [ ] Calibrated SPL scaling
-	
+
 - [x] Hearing Test
 	+ [x] User Test Flow
 	+ [ ] Convinient Level at 75%
