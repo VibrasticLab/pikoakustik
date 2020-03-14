@@ -66,6 +66,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
     uint8_t rndask;
     double ampl_test = FIRSTTEST_DB;
+    //need to calibrate
     double freq_test[] = {1,2,4,8,16,32};
     uint8_t freq_idx = 0;
     uint8_t freq_max = sizeof(freq_test)/sizeof(freq_test[0]);
