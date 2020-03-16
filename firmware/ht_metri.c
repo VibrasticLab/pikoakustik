@@ -66,8 +66,18 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
     uint8_t rndask;
     double ampl_test = FIRSTTEST_DB;
+
     //need to calibrate
-    double freq_test[] = {1,2,4,8,16,32};
+
+#if USE_ORI_FREQ //original frequency scaling
+    double ori_freq_test[] = {1,2,4,8,16,32};
+#endif
+
+    //calibrated frequency array
+    //last calibration: 1.25 = 500Hz
+    //requiement: 250,500,1000,2000,4000,8000
+    double freq_test[] = {0.625,1.25,2.5,5,10,20};
+
     uint8_t freq_idx = 0;
     uint8_t freq_max = sizeof(freq_test)/sizeof(freq_test[0]);
     char strbuff[IFACE_BUFF_SIZE];
