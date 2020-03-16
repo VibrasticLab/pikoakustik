@@ -193,15 +193,18 @@ uint8_t ht_metri_RndOpt(void){
 
     if(rndnum==0 || rndnum==3 || rndnum==6 || rndnum==9 || rndnum==12){
         rndnumask = OPT_ASK_A;
+        ht_comm_Msg("Option A\r\n");
     }
     else if(rndnum==1 ||rndnum==4 || rndnum==7 || rndnum==10 || rndnum==13){
         rndnumask = OPT_ASK_B;
+        ht_comm_Msg("Option B\r\n");
     }
     else if(rndnum==2 ||rndnum==5 || rndnum==8 || rndnum==11 || rndnum==14){
         rndnumask = OPT_ASK_C;
+        ht_comm_Msg("Option C\r\n");
     }
     else{
-        ht_comm_Msg("Caution Non-distributed condition reached\r\n");
+        ht_comm_Msg("Caution:Non-distributed condition reached\r\n");
         rndnumask = OPT_ASK_A;
     }
 #else
