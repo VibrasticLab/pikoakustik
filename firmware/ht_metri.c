@@ -53,6 +53,31 @@ uint8_t numresp;
  */
 uint8_t numask;
 
+/**
+ * @brief Counter for test in each frequency
+ * @details Should be not exceed 50 as it will exhausting
+ */
+uint8_t test_count = 0;
+
+/**
+ * @brief Counter for right answer
+ * @details Should be not exceed 72% of test_count
+ * @details Which is maximum at 36 (72% of 50)
+ */
+uint8_t test_right = 0;
+
+/**
+ * @brief Global flag for last answer status
+ * @details Either False:0 or True:1
+ */
+uint8_t test_answer;
+
+/**
+ * @brief Global flag for convinient limit status
+ * @details If reached should be True:0
+ */
+uint8_t test_conv = 0;
+
 /* More action/statement need more allocated memory space */
 static THD_WORKING_AREA(waRunMetri, 4096);
 #define ThdFunc_RunMetri THD_FUNCTION
@@ -66,14 +91,9 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
     uint8_t rndask;
     double ampl_test = FIRSTTEST_DB;
+    double conv_level;
 
-    //need to calibrate
-
-#if USE_ORI_FREQ //original frequency scaling
-    double ori_freq_test[] = {1,2,4,8,16,32};
-#endif
-
-    //calibrated frequency array
+    //TODO: calibrated frequency array
     //last calibration: 1.25 = 500Hz
     //requiement: 250,500,1000,2000,4000,8000
     double freq_test[] = {0.625,1.25,2.5,5,10,20};
@@ -129,8 +149,9 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 #if USE_3FC
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
 
-                led_answerC();
-                if(rndask == OPT_ASK_B){
+                //TODO: implement LED for Answer C
+                //led_answerC();
+                if(rndask == OPT_ASK_C){
                     ht_audio_Tone(freq_test[freq_idx],ampl_test);
                     ht_audio_Play(TEST_DURATION);
                     numask = 3;
@@ -140,13 +161,17 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 #endif
 
                 mode_step=STEP_WAIT;
+                test_count++;
                 ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %5.2f, %5.4f\r\n",freq_test[freq_idx],ampl_test);
                 ht_comm_Msg(strbuff);
             }
             else if(mode_step==STEP_CHK){
+                //TODO: Check correspondent EXTI button for proper numresp
                 if(numresp==numask){
                     led_result_off();
                     led_resultYES();
+                    test_answer = 1;
+                    test_right++;
                     ht_comm_Msg("Answer is True\r\n");
 #if RECORD_TEST
                     ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,1);
@@ -155,11 +180,11 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 else{
                     led_result_off();
                     led_resultNO();
+                    test_answer = 0;
                     ht_comm_Msg("Answer is False\r\n");
 #if RECORD_TEST
                     ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,0);
 #endif
-
                 }
 
                 numask = 0;
@@ -170,10 +195,28 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 led_result_off();
                 mode_step=STEP_ASK;
 
-                ampl_test = ampl_test / 2;
+                // TODO: redefined on amplitude scaling method
+                if(test_answer==1){
+                    ampl_test = ampl_test / 2;
+                }
+                else{
+                    ampl_test = ampl_test * 2;
+                }
 
-                if(ampl_test <= SMALLEST_DB){
+                conv_level = test_right*100/test_count;
+                if(conv_level>=72){
+                    test_conv = 1;
+                }
+                else{
+                    test_conv = 0;
+                }
+
+                if(ampl_test <= SMALLEST_DB || test_conv == 1){
                     freq_idx++;
+                    ampl_test = FIRSTTEST_DB;
+                    test_conv = 0;
+                    test_right = 0;
+                    test_count = 0;
 
                     if(freq_idx == freq_max){
 #if RECORD_TEST
@@ -181,12 +224,10 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 #endif
                         ht_comm_Msg("Testing Finish\r\n");
                         mode_status = STT_IDLE;
-                        ampl_test = FIRSTTEST_DB;
                         mode_led = LED_READY;
                     }
                     else{
-                        ampl_test = FIRSTTEST_DB;
-                        ht_comm_Msg("Ampliying next Frequency\r\n");
+                        ht_comm_Msg("Continue next Frequency\r\n");
                     }
                 }
             }
