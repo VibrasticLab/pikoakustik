@@ -13,8 +13,8 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 - [X] LED Play Choices
 - [X] Button Choices
 	+ [x] 3 Button Choices
-        + [x] 3 Choices Random Generator
-        + [x] 3 Choice Answer Placement
+	+ [x] 3 Choices Random Generator
+	+ [x] 3 Choice Answer Placement
 
 ###### Data Communication:
 
