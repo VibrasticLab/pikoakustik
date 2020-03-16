@@ -116,6 +116,19 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
                 led_answer_off();
 
+#if USE_3FC
+                chThdSleepMilliseconds(TEST_SPEED_DELAY);
+
+                led_answerC();
+                if(rndask == OPT_ASK_B){
+                    ht_audio_Tone(freq_test[freq_idx],ampl_test);
+                    ht_audio_Play(TEST_DURATION);
+                    numask = 3;
+                }
+                chThdSleepMilliseconds(TEST_SPEED_DELAY);
+                led_answer_off();
+#endif
+
                 mode_step=STEP_WAIT;
                 ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %5.2f, %5.4f\r\n",freq_test[freq_idx],ampl_test);
                 ht_comm_Msg(strbuff);
@@ -175,8 +188,26 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 uint8_t ht_metri_RndOpt(void){
     uint8_t rndnum, rndnumask;
 
+#if USE_3FC
+    rndnum = rand() % 15;
+
+    if(rndnum==0 || rndnum==3 || rndnum==6 || rndnum==9 || rndnum==12){
+        rndnumask = OPT_ASK_A;
+    }
+    else if(rndnum==1 ||rndnum==4 || rndnum==7 || rndnum==10 || rndnum==13){
+        rndnumask = OPT_ASK_B;
+    }
+    else if(rndnum==2 ||rndnum==5 || rndnum==8 || rndnum==11 || rndnum==14){
+        rndnumask = OPT_ASK_C;
+    }
+    else{
+        ht_comm_Msg("Caution Non-distributed condition reached\r\n");
+        rndnumask = OPT_ASK_A;
+    }
+#else
     rndnum = rand() % 50;
     rndnumask = rndnum % 2;
+#endif
 
     return rndnumask;
 }

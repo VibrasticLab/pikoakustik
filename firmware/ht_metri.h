@@ -38,6 +38,11 @@
 #define TEST_SPEED_DELAY 200
 
 /**
+ * Whether use 2 or 3 force choice
+ */
+#define USE_3FC 1
+
+/**
  * @brief Random number to choose answer position
  * @return Answer number position
  */
