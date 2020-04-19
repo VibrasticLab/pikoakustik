@@ -1,0 +1,10 @@
+(fp_lib_table
+  (lib (name user)(type KiCad)(uri /usr/share/kicad/userlib/footprints/user)(options "")(descr ""))
+  (lib (name viblab)(type KiCad)(uri ${KIPRJMOD}/lib/viblab)(options "")(descr ""))
+  (lib (name digikey)(type KiCad)(uri /usr/share/kicad/modules/digikey-footprints.pretty/)(options "")(descr ""))
+  (lib (name Sparkfun-Board)(type KiCad)(uri /usr/share/kicad/footprints/SparkFun-Boards.pretty/)(options "")(descr ""))
+  (lib (name Sparkfun-Connector)(type KiCad)(uri /usr/share/kicad/footprints/SparkFun-Connectors.pretty)(options "")(descr ""))
+  (lib (name Adafruit)(type KiCad)(uri /usr/share/kicad/footprints/adafruit.pretty)(options "")(descr ""))
+  (lib (name OPL_Connector)(type KiCad)(uri /usr/share/kicad/userlib/footprints/seeedopl/OPL_Connector.pretty/)(options "")(descr ""))
+  (lib (name vpin)(type KiCad)(uri ${KIPRJMOD}/lib/vpin.pretty)(options "")(descr ""))
+)
