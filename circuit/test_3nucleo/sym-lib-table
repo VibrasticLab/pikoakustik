@@ -1,0 +1,5 @@
+(sym_lib_table
+  (lib (name NUCLEO-64)(type Legacy)(uri /usr/share/kicad/userlib/symbols/user/NUCLEO-64.lib)(options "")(descr ""))
+  (lib (name dacmax98)(type Legacy)(uri ${KIPRJMOD}/lib/dacmax98/dacmax98.lib)(options "")(descr ""))
+  (lib (name OPL_Connector)(type Legacy)(uri /usr/share/kicad/userlib/symbols/seeedopl/OPL_Connector.lib)(options "")(descr ""))
+)
