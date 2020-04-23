@@ -800,7 +800,7 @@ Wire Wire Line
 Wire Wire Line
 	3050 1750 2750 1750
 Text Label 2750 1750 0    50   ~ 0
-MMC_NNS
+MMC_NSS
 Wire Wire Line
 	3050 1850 2750 1850
 Text Label 2750 1850 0    50   ~ 0
