@@ -46,19 +46,19 @@ F 3 "~" H 5950 7200 50  0001 C CNN
 	1    5950 7200
 	1    0    0    -1  
 $EndComp
-Text Label 11350 6600 0    50   ~ 0
+Text Label 11350 6600 1    50   ~ 0
 ESP_TXD
 Wire Wire Line
 	11350 6450 11350 6600
-Text Label 11250 6600 0    50   ~ 0
+Text Label 11250 6600 1    50   ~ 0
 ESP_RXD
 Wire Wire Line
 	11250 6450 11250 6600
-Text Label 11350 6050 0    50   ~ 0
+Text Label 11350 6050 1    50   ~ 0
 WIFI_RXD
 Wire Wire Line
 	11350 6150 11350 6050
-Text Label 11250 6050 0    50   ~ 0
+Text Label 11250 6050 1    50   ~ 0
 WIFI_TXD
 Wire Wire Line
 	11250 6150 11250 6050
