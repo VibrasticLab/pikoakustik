@@ -324,6 +324,70 @@ void ht_mmc_lsFiles(void){
     free(Fil);
 }
 
+void ht_mmc_catTest(void){
+    uint16_t line_num=0;
+    char buffer[FILE_BUFF_SIZE];
+    char strbuff[IFACE_BUFF_SIZE];
+    char fname[LINE_BUFF_SIZE];
+    FATFS FatFs;
+    FIL *Fil;
+    FRESULT err;
+
+    Fil = (FIL*)malloc(sizeof(FIL));
+
+#if USER_MMC_CHK
+    mmc_check(1);
+#endif
+
+    ht_comm_Msg("\r\nFiles Content\r\n");
+    ht_comm_Msg("------------\r\n");
+    strcpy(buffer,"");
+
+    ht_comm_Buff(fname,sizeof(fname),"/TEST.TXT");
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+        f_mount(&FatFs, "", 0);
+
+        err=f_open(Fil, fname, FA_OPEN_EXISTING |FA_READ);
+        if(err==FR_OK){
+#if USE_READ_LINE
+            char line[LINE_BUFF_SIZE];
+            TCHAR *eof;
+            while(1){
+                line_num++;
+                strcpy(line,"");
+                eof=f_readline(line,sizeof(line),Fil);
+                if(eof[0]==0)break;
+
+    #if CAT_BY_LINE
+                ht_comm_Buff(strbuff,sizeof(strbuff),"%3i %s\r",line_num,line);
+                ht_comm_Msg(strbuff);
+    #else
+                ht_comm_Buff(buffer,sizeof(buffer),"%s%s\r",buffer,line);
+    #endif
+            }
+#else
+            UINT br;
+            f_read(Fil,buffer,sizeof(buffer),&br);
+#endif
+            f_close(Fil);
+
+#if !(CAT_BY_LINE)
+            ht_comm_Buff(strbuff,sizeof(strbuff),"%s\r\n",buffer);
+            ht_comm_Msg(strbuff);
+            ht_comm_Msg("All line printed at once\r\n\r\n");
+#endif
+            ht_comm_Msg("------------\r\n\r\n");
+        }
+        else{
+            ht_comm_Buff(strbuff,sizeof(strbuff),"Open Error:%d\r\n",err);
+            ht_comm_Msg(strbuff);
+        }
+
+        f_mount(0, "", 0);
+    }
+    free(Fil);
+}
+
 void ht_mmc_catFiles(uint8_t fnum){
     uint16_t line_num=0;
     char buffer[FILE_BUFF_SIZE];

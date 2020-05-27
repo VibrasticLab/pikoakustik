@@ -95,13 +95,7 @@ int main(void){
 
 #if !(USER_LED_RUN_ONLY)
 
-#if USER_AUDIO
-    ht_audio_Init();
- #if USER_AUDIO_STARTUP
-    ht_audio_Tone(1,1);
-    ht_audio_Play(TEST_DURATION);
- #endif
-#endif
+    ht_led_Init();
 
 #if USER_SERIAL
  #if USER_SERIAL_USB
@@ -120,7 +114,13 @@ int main(void){
  #endif
 #endif
 
-   ht_led_Init();
+#if USER_AUDIO
+    ht_audio_Init();
+ #if USER_AUDIO_STARTUP
+    ht_audio_Tone(1,1);
+    ht_audio_Play(TEST_DURATION);
+ #endif
+#endif
 
 #if USER_METRI
     ht_exti_Init();

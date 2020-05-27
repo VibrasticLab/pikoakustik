@@ -73,6 +73,11 @@
 void ht_mmc_Test(void);
 
 /**
+ * @brief Test CAT on Simple text
+ */
+void ht_mmc_catTest(void);
+
+/**
  * @brief Check MMC readyness
  */
 void ht_mmc_Check(void);
