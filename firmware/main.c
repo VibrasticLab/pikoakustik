@@ -26,6 +26,8 @@
 #include "hal.h"
 #include "chprintf.h"
 
+#include "user_conf.h"
+
 #include "ht_audio.h"
 #include "ht_exti.h"
 #include "ht_led.h"
@@ -46,7 +48,16 @@ static THD_WORKING_AREA(waRunLed, 128);
 static ThdFunc_RunLED(thdRunLed, arg) {
   (void)arg;
   chRegSetThreadName("run led");
+
+  palSetPadMode(GPIOA,1,PAL_MODE_OUTPUT_PUSHPULL);
+  palClearPad(GPIOA,1);
+
   while (true) {
+
+#if USER_LED_RUN_ONLY
+      palTogglePad(GPIOA, 1);
+      chThdSleepMilliseconds(500);
+#else
     if(mode_led==LED_FAIL){
         palClearPad(GPIOA, 1);
         chThdSleepMilliseconds(50);
@@ -69,6 +80,8 @@ static ThdFunc_RunLED(thdRunLed, arg) {
         palTogglePad(GPIOA, 1);
         chThdSleepMilliseconds(50);
     }
+#endif
+
   }
 }
 
@@ -80,41 +93,49 @@ int main(void){
     halInit();
     chSysInit();
 
+#if USER_AUDIO
     ht_audio_Init();
-#if USE_STARTUP_TEST
+ #if USER_AUDIO_STARTUP
     ht_audio_Tone(1,1);
     ht_audio_Play(TEST_DURATION);
+ #endif
 #endif
 
+#if USER_SERIAL
+ #if USER_SERIAL_USB
+   ht_commUSB_Init();
+ #else
+   ht_comm_Init();
+ #endif
+#endif
+
+#if !(USER_LED_RUN_ONLY)
     ht_exti_Init();
     ht_led_Init();
 
-#if USE_USB_IFACE
-    ht_commUSB_Init();
-#else
-    ht_comm_Init();
-#endif
-
-    palSetPadMode(GPIOA,1,PAL_MODE_OUTPUT_PUSHPULL);
-    palClearPad(GPIOA,1);
-
     ht_mmc_Init();
-#if USE_MMC_RWCHK
+ #if USE_MMC_RWCHK
     ht_mmc_Test();
-#else
+ #else
     ht_mmc_Check();
-#endif
+ #endif
 
     ht_metri_Init();
+#endif
+
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
 
     while(1){
-#if USE_USB_IFACE
+
+#if USER_SERIAL
+ #if USER_SERIAL_USB
         ht_commUSB_ReInit();
-#else
+ #else
         ht_comm_ReInit();
+ #endif
 #endif
-        chThdSleepMilliseconds(100);
+
+        chThdSleepMilliseconds(500);
     }
 }
 

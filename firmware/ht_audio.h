@@ -49,11 +49,6 @@
 #define USE_STEREO_ARRAY TRUE
 
 /**
- * @brief Tone Test at startup
- */
-#define USE_STARTUP_TEST TRUE
-
-/**
  * @brief Global Duration for Testing
  * @details Range is 1 to 250 while 100 means 1000ms
  */

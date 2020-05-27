@@ -26,12 +26,13 @@
 #include "chprintf.h"
 #include "ff.h"
 
+#include "user_conf.h"
 #include "ht_mmc.h"
 #include "ht_led.h"
 #include "ht_metri.h"
 #include "ht_console.h"
 
-#if USE_USB_IFACE
+#if USER_SERIAL_USB
 extern SerialUSBDriver SDU1;
 #endif
 

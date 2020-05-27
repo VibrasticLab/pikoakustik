@@ -25,6 +25,7 @@
 #include "hal.h"
 #include "chprintf.h"
 
+#include "user_conf.h"
 #include "ht_console.h"
 #include "ht_audio.h"
 #include "ht_mmc.h"
@@ -58,10 +59,15 @@ static void cmd_zero(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
     if(argc != 0){chprintf(chp,"usage: zero\r\n");return;}
 
+#if USER_AUDIO
     chprintf(chp,"Test Audio: Sine Zero\r\n");
     ht_audio_Tone(1,0);
     ht_audio_Play(TEST_DURATION);
     chprintf(chp,"Finished\r\n");
+#else
+    chprintf(chp,"Audio currently Disabled\r\n");
+#endif
+
 }
 
 /**
@@ -72,6 +78,7 @@ static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
     if(argc != 0){chprintf(chp,"usage: max\r\n");return;}
 
+#if USER_AUDIO
     chprintf(chp,"Test Audio: Sine Max\r\n");
 
     chprintf(chp,"--------------------------\r\n");
@@ -85,6 +92,9 @@ static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
     ht_audio_Tone(1.25,1);
     ht_audio_Play(TEST_DURATION);
     chprintf(chp,"Finished\r\n");
+#else
+    chprintf(chp,"Audio currently Disabled\r\n");
+#endif
 }
 
 /**
@@ -95,10 +105,15 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
     if(argc != 0){chprintf(chp,"usage: min\r\n");return;}
 
+#if USER_AUDIO
     chprintf(chp,"Test Audio: Sine Min\r\n");
     ht_audio_Tone(1.25,0);
     ht_audio_Play(TEST_DURATION);
     chprintf(chp,"Finished\r\n");
+#else
+    chprintf(chp,"Audio currently Disabled\r\n");
+#endif
+
 }
 
 /**
@@ -106,6 +121,8 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
  * @details Enumerated and not called directly by any normal thread
  */
 static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+#if USER_AUDIO
     if(argc == 0){
         (void) argv;
 
@@ -134,6 +151,9 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
         chprintf(chp,"Finished\r\n");
     }
     else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
+#else
+    chprintf(chp,"Audio currently Disabled\r\n");
+#endif
 }
 
 /**
@@ -174,10 +194,12 @@ static void cmd_mmc(BaseSequentialStream *chp, int argc, char *argv[]) {
  */
 static const ShellCommand commands[] = {
     {"test",cmd_test},
+#if USER_AUDIO
     {"zero",cmd_zero},
     {"tone",cmd_tone},
     {"max",cmd_max},
     {"min",cmd_min},
+#endif
     {"ls",cmd_lsfile},
     {"cat",cmd_catfile},
     {"mmc",cmd_mmc},
@@ -247,7 +269,7 @@ void ht_commUSB_ReInit(void){
 }
 
 void ht_comm_Msg(char *string){
-#if USE_USB_IFACE
+#if USER_SERIAL_USB
     if(SDU1.config->usbp->state == USB_ACTIVE){
         chprintf((BaseSequentialStream *)&SDU1,string);
     }

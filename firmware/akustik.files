@@ -21,3 +21,4 @@ ht_mmc.h
 ht_usb.c
 main.c
 mcuconf.h
+user_conf.h

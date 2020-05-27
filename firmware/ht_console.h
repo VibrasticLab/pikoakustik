@@ -21,13 +21,6 @@
 #define HT_CONSOLE_H
 
 /**
- * @brief Default interface object for shell
- * @details If True, system use USB-CDC as serial interface
- * @details Otherwise, use UART-0
- */
-#define USE_USB_IFACE TRUE
-
-/**
  * @brief Size off buffer for chsnprintf() on interface
  */
 #define IFACE_BUFF_SIZE 128
