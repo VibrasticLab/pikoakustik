@@ -50,24 +50,6 @@
 #define f_readline      f_gets
 
 /**
- * @brief Define whether use checking routine or not
- * @details Highly recommended to enabled it
- */
-#define USE_MMC_CHK TRUE
-
-/**
- * @brief Define whether use R/W Test routine or MMC readyness
- */
-#define USE_MMC_RWCHK FALSE
-
-/**
- * @brief Define whether use free-space check routine or not
- * @details If enabled, _FS_MINIMIZE must 0
- * @details Highly recommended to enable it
- */
-#define USE_MMC_FREE TRUE
-
-/**
  * @brief Define whether scan directory recursively or files only
  * @details Highly recommended to disable it as still buggy
  */

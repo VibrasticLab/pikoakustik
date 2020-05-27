@@ -59,15 +59,10 @@ static void cmd_zero(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
     if(argc != 0){chprintf(chp,"usage: zero\r\n");return;}
 
-#if USER_AUDIO
     chprintf(chp,"Test Audio: Sine Zero\r\n");
     ht_audio_Tone(1,0);
     ht_audio_Play(TEST_DURATION);
     chprintf(chp,"Finished\r\n");
-#else
-    chprintf(chp,"Audio currently Disabled\r\n");
-#endif
-
 }
 
 /**
@@ -78,7 +73,6 @@ static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
     if(argc != 0){chprintf(chp,"usage: max\r\n");return;}
 
-#if USER_AUDIO
     chprintf(chp,"Test Audio: Sine Max\r\n");
 
     chprintf(chp,"--------------------------\r\n");
@@ -92,9 +86,6 @@ static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
     ht_audio_Tone(1.25,1);
     ht_audio_Play(TEST_DURATION);
     chprintf(chp,"Finished\r\n");
-#else
-    chprintf(chp,"Audio currently Disabled\r\n");
-#endif
 }
 
 /**
@@ -105,15 +96,10 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
     if(argc != 0){chprintf(chp,"usage: min\r\n");return;}
 
-#if USER_AUDIO
     chprintf(chp,"Test Audio: Sine Min\r\n");
     ht_audio_Tone(1.25,0);
     ht_audio_Play(TEST_DURATION);
     chprintf(chp,"Finished\r\n");
-#else
-    chprintf(chp,"Audio currently Disabled\r\n");
-#endif
-
 }
 
 /**
@@ -122,7 +108,6 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
  */
 static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
 
-#if USER_AUDIO
     if(argc == 0){
         (void) argv;
 
@@ -151,9 +136,6 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
         chprintf(chp,"Finished\r\n");
     }
     else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
-#else
-    chprintf(chp,"Audio currently Disabled\r\n");
-#endif
 }
 
 /**
@@ -200,9 +182,11 @@ static const ShellCommand commands[] = {
     {"max",cmd_max},
     {"min",cmd_min},
 #endif
+#if USER_MMC
     {"ls",cmd_lsfile},
     {"cat",cmd_catfile},
     {"mmc",cmd_mmc},
+#endif
     {NULL, NULL}
 };
 

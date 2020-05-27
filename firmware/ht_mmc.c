@@ -75,7 +75,7 @@ static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1};
  */
 static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 
-#if USE_MMC_CHK
+
 /**
  * @brief Checking readiness FatFS
  * @details Must calling before mounting actual media MMC
@@ -86,7 +86,7 @@ static void mmc_check(uint8_t chgLED){
     FATFS FatFs;
     FRESULT err;
 
-#if USE_MMC_FREE
+#if USER_MMC_FREE
     uint32_t clusters;
     FATFS *fsp;
 #endif
@@ -110,7 +110,7 @@ static void mmc_check(uint8_t chgLED){
         return;
     }
 
-#if USE_MMC_FREE
+#if USER_MMC_FREE
     mmc_spi_status_flag=MMC_SPI_ERROR;
     err = f_getfree("/", &clusters, &fsp);
     if(err == FR_OK){
@@ -119,16 +119,22 @@ static void mmc_check(uint8_t chgLED){
             mode_led=LED_READY;
         }
     }
+#else
+    if(chgLED==1){
+        ht_comm_Msg("MMC Free Test Disabled\r\n");
+        mode_led=LED_READY;
+    }
 #endif
 
     f_mount(0, "", 0);
 
     chThdSleepMilliseconds(100);
 }
-#endif
 
 void ht_mmc_Check(void){
+#if USER_MMC_CHK
     mmc_check(1);
+#endif
 }
 
 void ht_mmc_Test(void){
@@ -142,7 +148,7 @@ void ht_mmc_Test(void){
 
     Fil = (FIL*)malloc(sizeof(FIL));
 
-#if USE_MMC_CHK
+#if USER_MMC_CHK
     mmc_check(1);
 #endif
 
@@ -268,7 +274,7 @@ void ht_mmc_lsFiles(void){
 
     Fil = (FIL*)malloc(sizeof(FIL));
 
-#if USE_MMC_CHK
+#if USER_MMC_CHK
     mmc_check(1);
 #endif
 
@@ -329,7 +335,7 @@ void ht_mmc_catFiles(uint8_t fnum){
 
     Fil = (FIL*)malloc(sizeof(FIL));
 
-#if USE_MMC_CHK
+#if USER_MMC_CHK
     mmc_check(1);
 #endif
 
@@ -396,7 +402,7 @@ void ht_mmcMetri_chkFile(void){
     Fil_last = (FIL*)malloc(sizeof(FIL));
     Fil_new = (FIL*)malloc(sizeof(FIL));
 
-#if USE_MMC_CHK
+#if USER_MMC_CHK
     mmc_check(0);
 #endif
 
@@ -470,7 +476,7 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
 
     Fil = (FIL*)malloc(sizeof(FIL));
 
-#if USE_MMC_CHK
+#if USER_MMC_CHK
     mmc_check(0);
 #endif
 
@@ -510,7 +516,7 @@ void ht_mmcMetri_endResult(void){
 
     Fil = (FIL*)malloc(sizeof(FIL));
 
-#if USE_MMC_CHK
+#if USER_MMC_CHK
     mmc_check(0);
 #endif
 

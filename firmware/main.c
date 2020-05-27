@@ -93,6 +93,8 @@ int main(void){
     halInit();
     chSysInit();
 
+#if !(USER_LED_RUN_ONLY)
+
 #if USER_AUDIO
     ht_audio_Init();
  #if USER_AUDIO_STARTUP
@@ -109,29 +111,35 @@ int main(void){
  #endif
 #endif
 
-#if !(USER_LED_RUN_ONLY)
-    ht_exti_Init();
-    ht_led_Init();
-
-    ht_mmc_Init();
- #if USE_MMC_RWCHK
-    ht_mmc_Test();
+#if USER_MMC
+   ht_mmc_Init();
+ #if USER_MMC_RWCHK
+   ht_mmc_Test();
  #else
-    ht_mmc_Check();
+   ht_mmc_Check();
  #endif
+#endif
 
+   ht_led_Init();
+
+#if USER_METRI
+    ht_exti_Init();
     ht_metri_Init();
+#endif
+
 #endif
 
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
 
     while(1){
 
-#if USER_SERIAL
- #if USER_SERIAL_USB
+#if !(USER_LED_RUN_ONLY)
+ #if USER_SERIAL
+  #if USER_SERIAL_USB
         ht_commUSB_ReInit();
- #else
+  #else
         ht_comm_ReInit();
+  #endif
  #endif
 #endif
 
