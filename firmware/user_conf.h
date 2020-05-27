@@ -9,7 +9,6 @@
 #define USER_MMC            TRUE
  #define USER_MMC_CHK       TRUE
  #define USER_MMC_FREE      TRUE
- #define USER_MMC_RWCHK     TRUE
 
 #define USER_AUDIO          TRUE
  #define USER_AUDIO_STARTUP TRUE

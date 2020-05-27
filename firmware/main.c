@@ -95,8 +95,6 @@ int main(void){
 
 #if !(USER_LED_RUN_ONLY)
 
-    ht_led_Init();
-
 #if USER_SERIAL
  #if USER_SERIAL_USB
    ht_commUSB_Init();
@@ -107,11 +105,7 @@ int main(void){
 
 #if USER_MMC
    ht_mmc_Init();
- #if USER_MMC_RWCHK
-   ht_mmc_Test();
- #else
    ht_mmc_Check();
- #endif
 #endif
 
 #if USER_AUDIO
@@ -121,6 +115,8 @@ int main(void){
     ht_audio_Play(TEST_DURATION);
  #endif
 #endif
+
+     ht_led_Init();
 
 #if USER_METRI
     ht_exti_Init();
