@@ -1,7 +1,7 @@
 #ifndef USER_CONF_H
 #define USER_CONF_H
 
-#define USER_LED_RUN_ONLY   FALSE
+#define USER_TEST_STATE     TRUE
 
 #define USER_SERIAL         TRUE
  #define USER_SERIAL_USB    TRUE

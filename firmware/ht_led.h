@@ -44,10 +44,12 @@
 #define LED_FALSE   3 //PA.3
 #define LED_ANSA    4 //PA.4
 #define LED_ANSB    0 //PB.0
+#define LED_ANSC    1 //PB.1
 
 /* LED Answer ON (Inversed) */
 #define led_answerB() palClearPad(GPIOA,LED_ANSA)
 #define led_answerA() palClearPad(GPIOB,LED_ANSB)
+#define led_answerC() palClearPad(GPIOB,LED_ANSC)
 
 /* LED Result ON  */
 #define led_resultYES() palClearPad(GPIOA,LED_TRUE)

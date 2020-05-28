@@ -30,6 +30,7 @@ uint8_t mode_led=LED_FAIL;
 void led_answer_off(void){
     palSetPad(GPIOA,LED_ANSA);
     palSetPad(GPIOB,LED_ANSB);
+    palSetPad(GPIOB,LED_ANSC);
 }
 
 void led_result_off(void){
@@ -42,6 +43,7 @@ void ht_led_Init(void){
     palSetPadMode(GPIOA,LED_FALSE,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOA,LED_ANSA,PAL_MODE_OUTPUT_PUSHPULL);
     palSetPadMode(GPIOB,LED_ANSB,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(GPIOB,LED_ANSC,PAL_MODE_OUTPUT_PUSHPULL);
 
     led_answer_off();
     led_result_off();

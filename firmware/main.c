@@ -54,9 +54,16 @@ static ThdFunc_RunLED(thdRunLed, arg) {
 
   while (true) {
 
-#if USER_LED_RUN_ONLY
+#if USER_TEST_STATE
       palTogglePad(GPIOA, 1);
-      chThdSleepMilliseconds(500);
+
+      led_result_off();
+      led_resultYES();
+      chThdSleepMilliseconds(250);
+
+      led_result_off();
+      led_resultNO();
+      chThdSleepMilliseconds(250);
 #else
     if(mode_led==LED_FAIL){
         palClearPad(GPIOA, 1);
@@ -93,7 +100,8 @@ int main(void){
     halInit();
     chSysInit();
 
-#if !(USER_LED_RUN_ONLY)
+    ht_led_Init();
+    ht_exti_Init();
 
 #if USER_SERIAL
  #if USER_SERIAL_USB
@@ -102,6 +110,8 @@ int main(void){
    ht_comm_Init();
  #endif
 #endif
+
+#if !(USER_TEST_STATE)
 
 #if USER_MMC
    ht_mmc_Init();
@@ -116,10 +126,7 @@ int main(void){
  #endif
 #endif
 
-     ht_led_Init();
-
 #if USER_METRI
-    ht_exti_Init();
     ht_metri_Init();
 #endif
 
@@ -129,13 +136,11 @@ int main(void){
 
     while(1){
 
-#if !(USER_LED_RUN_ONLY)
- #if USER_SERIAL
-  #if USER_SERIAL_USB
+#if USER_SERIAL
+ #if USER_SERIAL_USB
         ht_commUSB_ReInit();
-  #else
+ #else
         ht_comm_ReInit();
-  #endif
  #endif
 #endif
 

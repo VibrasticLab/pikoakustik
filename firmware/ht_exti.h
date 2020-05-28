@@ -31,6 +31,11 @@
 #define BTN_ANS_B 0
 
 /**
+ * @brief Button answer C on port C2
+ */
+#define BTN_ANS_C 2
+
+/**
  * @brief External Interrupt Initialization
  * @details Never put or calling any delay or chThdSleep() on EXTI callback
  * @details By doing so would cause the entire system frozen
