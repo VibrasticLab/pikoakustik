@@ -639,8 +639,6 @@ void ht_mmc_Init(void){
     palSetPadMode(GPIOA, 15, PAL_MODE_OUTPUT_PUSHPULL | PAL_STM32_OSPEED_HIGHEST); //NSS
     palSetPad(GPIOA, 15);
 
-    chThdSleepMilliseconds(500);
-
     mmcObjectInit(&MMCD1);
     mmcStart(&MMCD1, &mmccfg);
 

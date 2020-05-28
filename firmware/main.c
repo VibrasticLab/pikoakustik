@@ -152,7 +152,6 @@ int main(void){
 
 #if USER_MMC
    ht_mmc_Init();
-   chThdSleepMilliseconds(500);
    ht_mmc_Check();
 #endif
 
