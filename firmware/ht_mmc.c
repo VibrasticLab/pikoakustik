@@ -85,7 +85,6 @@ static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 static void mmc_check(uint8_t chgLED){
     FATFS FatFs;
     FRESULT err;
-    char strbuff[IFACE_BUFF_SIZE];
 
 #if USER_MMC_FREE
     uint32_t clusters;
@@ -97,29 +96,13 @@ static void mmc_check(uint8_t chgLED){
 
     if(mmcConnect(&MMCD1)){
         filesystem_ready = true;
-        ht_comm_Msg("MMC connect OK. Mounting\r\n");
-        err = f_mount(&FatFs, "", 0);
-        if(err == FR_OK){
-            filesystem_ready = true;
-        }
-        else{
-            ht_comm_Buff(strbuff,sizeof(strbuff),"MMC Force Moune error code = %i\r\n",err);
-            ht_comm_Msg(strbuff);
-        }
     }
     else{
-        ht_comm_Msg("MMC connect NOT OK. Force to Mount\r\n");
         err = f_mount(&FatFs, "", 0);
         if(err == FR_OK){
             filesystem_ready = true;
         }
-        else{
-            ht_comm_Buff(strbuff,sizeof(strbuff),"MMC Force Moune error code = %i\r\n",err);
-            ht_comm_Msg(strbuff);
-        }
     }
-
-
 
     if(!filesystem_ready){
         ht_comm_Msg("MMC Filesystem Not Ready\r\n");
@@ -137,10 +120,6 @@ static void mmc_check(uint8_t chgLED){
         if(chgLED==1){
             mode_led=LED_READY;
         }
-    }
-    else{
-        ht_comm_Buff(strbuff,sizeof(strbuff),"MMC Free error code = %i\r\n",err);
-        ht_comm_Msg(strbuff);
     }
 #else
     if(chgLED==1){
