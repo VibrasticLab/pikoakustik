@@ -149,6 +149,10 @@ static void cmd_lsfile(BaseSequentialStream *chp, int argc, char *argv[]) {
     ht_mmc_lsFiles();
 }
 
+/**
+ * @brief CAT content file on given number suffix
+ * @details Enumerated and not called directly by any normal thread
+ */
 static void cmd_catfile(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
     uint8_t fnum;
@@ -159,10 +163,10 @@ static void cmd_catfile(BaseSequentialStream *chp, int argc, char *argv[]) {
 }
 
 /**
- * @brief MMC Test command callback
+ * @brief MMC Write Test command callback
  * @details Enumerated and not called directly by any normal thread
  */
-static void cmd_mmc(BaseSequentialStream *chp, int argc, char *argv[]) {
+static void cmd_mmcwrt(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
     if(argc != 0){chprintf(chp,"usage: mmc\r\n");return;}
 
@@ -179,6 +183,19 @@ static void cmd_mmcat(BaseSequentialStream *chp, int argc, char *argv[]) {
     if(argc != 0){chprintf(chp,"usage: mmcat\r\n");return;}
 
     ht_mmc_catTest();
+    chprintf(chp,"MMC R/W Content look Finished\r\n\r\n");
+}
+
+/**
+ * @brief MMC Check Test command callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_mmchk(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+    if(argc != 0){chprintf(chp,"usage: mmc\r\n");return;}
+
+    ht_mmc_Check();
+    chprintf(chp,"MMC R/W Check Finished\r\n\r\n");
 }
 
 /**
@@ -196,8 +213,9 @@ static const ShellCommand commands[] = {
 #if USER_MMC
     {"ls",cmd_lsfile},
     {"cat",cmd_catfile},
-    {"mmc",cmd_mmc},
+    {"mmcwr",cmd_mmcwrt},
     {"mmcat",cmd_mmcat},
+    {"mmchk",cmd_mmchk},
 #endif
     {NULL, NULL}
 };
