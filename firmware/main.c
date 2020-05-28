@@ -49,42 +49,67 @@ static ThdFunc_RunLED(thdRunLed, arg) {
   (void)arg;
   chRegSetThreadName("run led");
 
-  palSetPadMode(GPIOA,1,PAL_MODE_OUTPUT_PUSHPULL);
-  palClearPad(GPIOA,1);
+  palSetPadMode(GPIOA,LED_RUN,PAL_MODE_OUTPUT_PUSHPULL);
+  palClearPad(GPIOA,LED_READY);
 
   while (true) {
 
 #if USER_TEST_STATE
-      palTogglePad(GPIOA, 1);
+    if(mode_led==LED_FAIL){
+        led_result_off();
 
-      led_result_off();
-      led_resultYES();
-      chThdSleepMilliseconds(250);
+        palClearPad(GPIOA, LED_RUN);
+        chThdSleepMilliseconds(200);
 
-      led_result_off();
-      led_resultNO();
-      chThdSleepMilliseconds(250);
+        palSetPad(GPIOA, LED_RUN);
+        chThdSleepMilliseconds(200);
+
+        palClearPad(GPIOA, LED_RUN);
+        chThdSleepMilliseconds(200);
+
+        palSetPad(GPIOA, LED_RUN);
+        chThdSleepMilliseconds(200);
+
+        led_result_off();
+        led_resultYES();
+        chThdSleepMilliseconds(200);
+
+        led_result_off();
+        led_resultNO();
+        chThdSleepMilliseconds(200);
+    }
+    else if(mode_led==LED_READY){
+        palTogglePad(GPIOA, LED_RUN);
+
+        led_result_off();
+        led_resultYES();
+        chThdSleepMilliseconds(250);
+
+        led_result_off();
+        led_resultNO();
+        chThdSleepMilliseconds(250);
+    }
 #else
     if(mode_led==LED_FAIL){
-        palClearPad(GPIOA, 1);
+        palClearPad(GPIOA, LED_RUN);
         chThdSleepMilliseconds(50);
-        palSetPad(GPIOA, 1);
+        palSetPad(GPIOA, LED_RUN);
         chThdSleepMilliseconds(100);
-        palClearPad(GPIOA, 1);
+        palClearPad(GPIOA, LED_RUN);
         chThdSleepMilliseconds(50);
-        palSetPad(GPIOA, 1);
+        palSetPad(GPIOA, LED_RUN);
         chThdSleepMilliseconds(1500);
     }
     else if(mode_led==LED_READY){
-        palTogglePad(GPIOA, 1);
+        palTogglePad(GPIOA, LED_RUN);
         chThdSleepMilliseconds(500);
     }
     else if(mode_led==LED_CFILE){
-        palSetPad(GPIOA, 1);
+        palSetPad(GPIOA, LED_RUN);
         chThdSleepMilliseconds(1);
     }
     else if(mode_led==LED_METRI){
-        palTogglePad(GPIOA, 1);
+        palTogglePad(GPIOA, LED_RUN);
         chThdSleepMilliseconds(50);
     }
 #endif
@@ -111,13 +136,6 @@ int main(void){
  #endif
 #endif
 
-#if !(USER_TEST_STATE)
-
-#if USER_MMC
-   ht_mmc_Init();
-   ht_mmc_Check();
-#endif
-
 #if USER_AUDIO
     ht_audio_Init();
  #if USER_AUDIO_STARTUP
@@ -126,10 +144,13 @@ int main(void){
  #endif
 #endif
 
-#if USER_METRI
-    ht_metri_Init();
+#if USER_MMC
+   ht_mmc_Init();
+   ht_mmc_Check();
 #endif
 
+#if USER_METRI
+    ht_metri_Init();
 #endif
 
     chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);

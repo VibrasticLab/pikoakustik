@@ -67,7 +67,7 @@ static void exti_idle_cb(void){
  */
 static void exti_stdby_cb(void){
     ht_comm_Msg("Entering Mode: Checking Save File\r\n");
-    palSetPad(GPIOA, 1);
+    palSetPad(GPIOA, LED_RUN);
     led_answer_off();
     led_result_off();
     mode_led=LED_CFILE;

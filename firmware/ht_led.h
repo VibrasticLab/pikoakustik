@@ -40,6 +40,8 @@
  */
 #define LED_METRI   3
 
+/* LED MACRO */
+#define LED_RUN     1 //PA.1
 #define LED_TRUE    2 //PA.2
 #define LED_FALSE   3 //PA.3
 #define LED_ANSA    4 //PA.4
