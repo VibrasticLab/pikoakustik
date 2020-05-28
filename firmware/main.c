@@ -90,6 +90,8 @@ static ThdFunc_RunLED(thdRunLed, arg) {
         led_result_off();
         led_resultNO();
         chThdSleepMilliseconds(250);
+
+        led_answer_off();
     }
 #else
     if(mode_led==LED_FAIL){

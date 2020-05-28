@@ -167,7 +167,7 @@ static void cmd_mmc(BaseSequentialStream *chp, int argc, char *argv[]) {
     if(argc != 0){chprintf(chp,"usage: mmc\r\n");return;}
 
     ht_mmc_Test();
-    chprintf(chp,"MMC R/W Test Finished\r\n");
+    chprintf(chp,"MMC R/W Test Finished\r\n\r\n");
 }
 
 /**
