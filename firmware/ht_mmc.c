@@ -85,6 +85,7 @@ static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 static void mmc_check(uint8_t chgLED){
     FATFS FatFs;
     FRESULT err;
+    char strbuff[IFACE_BUFF_SIZE];
 
 #if USER_MMC_FREE
     uint32_t clusters;
@@ -96,6 +97,7 @@ static void mmc_check(uint8_t chgLED){
 
     if(mmcConnect(&MMCD1)){
         filesystem_ready = true;
+        f_mount(&FatFs, "", 0);
     }
     else{
         err = f_mount(&FatFs, "", 0);
@@ -110,6 +112,9 @@ static void mmc_check(uint8_t chgLED){
         mode_led=LED_FAIL;
         return;
     }
+    else{
+        ht_comm_Msg("MMC Filesystem Ready\r\n");
+    }
 
 #if USER_MMC_FREE
     mmc_spi_status_flag=MMC_SPI_ERROR;
@@ -120,6 +125,11 @@ static void mmc_check(uint8_t chgLED){
         if(chgLED==1){
             mode_led=LED_READY;
         }
+    }
+    else{
+        ht_comm_Buff(strbuff,sizeof(strbuff),"MMC Error code = %i\r\n",err);
+        ht_comm_Msg(strbuff);
+        mode_led=LED_FAIL;
     }
 #else
     if(chgLED==1){
