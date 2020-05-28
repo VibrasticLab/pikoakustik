@@ -49,6 +49,7 @@ static uint8_t mode_btnB;
  */
 static uint8_t mode_btnC;
 
+#if !(USER_TEST_STATE)
 /**
  * @brief EXTI callback function for entering Standby Mode
  */
@@ -73,6 +74,7 @@ static void exti_stdby_cb(void){
     mode_led=LED_CFILE;
     mode_status=STT_CFILE;
 }
+#endif
 
 /**
  * @brief Button answer A callback

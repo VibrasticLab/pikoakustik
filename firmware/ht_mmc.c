@@ -316,7 +316,7 @@ void ht_mmc_lsFiles(void){
                 else{
                     ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
                 }
-                ht_comm_Msg("------------\r\n");
+                ht_comm_Msg("------------\r\n\r\n");
             }
         }
         f_mount(0, "", 0);
@@ -616,7 +616,7 @@ void ht_mmc_Init(void){
     palSetPadMode(GPIOA, 15, PAL_MODE_OUTPUT_PUSHPULL | PAL_STM32_OSPEED_HIGHEST); //NSS
     palSetPad(GPIOA, 15);
 
-    chThdSleepMilliseconds(500);
+    chThdSleepMilliseconds(250);
 
     mmcObjectInit(&MMCD1);
     mmcStart(&MMCD1, &mmccfg);
