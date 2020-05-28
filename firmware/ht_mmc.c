@@ -75,7 +75,7 @@ static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1};
  */
 static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 
-
+#if USER_MMC_CHK
 /**
  * @brief Checking readiness FatFS
  * @details Must calling before mounting actual media MMC
@@ -130,6 +130,7 @@ static void mmc_check(uint8_t chgLED){
 
     chThdSleepMilliseconds(100);
 }
+#endif
 
 void ht_mmc_Check(void){
 #if USER_MMC_CHK
@@ -287,6 +288,7 @@ void ht_mmc_lsFiles(void){
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
             strcpy(buff,"/");
+            ht_comm_Msg("Listing Files from \"\\\" \r\n");
             err = scanFile(buff,&lastnum,1);
             if(err==FR_OK){
                 ht_comm_Msg("------------\r\n");
@@ -616,11 +618,10 @@ void ht_mmc_Init(void){
     palSetPadMode(GPIOA, 15, PAL_MODE_OUTPUT_PUSHPULL | PAL_STM32_OSPEED_HIGHEST); //NSS
     palSetPad(GPIOA, 15);
 
+    chThdSleepMilliseconds(500);
+
     mmcObjectInit(&MMCD1);
     mmcStart(&MMCD1, &mmccfg);
-    chThdSleepMilliseconds(100);
 
-    palSetPadMode(GPIOA,5,PAL_MODE_OUTPUT_PUSHPULL);
-    palClearPad(GPIOA,5);
 }
 /** @} */

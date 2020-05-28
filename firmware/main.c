@@ -77,6 +77,8 @@ static ThdFunc_RunLED(thdRunLed, arg) {
         led_result_off();
         led_resultNO();
         chThdSleepMilliseconds(200);
+
+        led_answer_off();
     }
     else if(mode_led==LED_READY){
         palTogglePad(GPIOA, LED_RUN);
@@ -125,15 +127,17 @@ int main(void){
     halInit();
     chSysInit();
 
-    ht_led_Init();
-    ht_exti_Init();
-
 #if USER_SERIAL
  #if USER_SERIAL_USB
    ht_commUSB_Init();
  #else
    ht_comm_Init();
  #endif
+#endif
+
+#if USER_MMC
+   ht_mmc_Init();
+   ht_mmc_Check();
 #endif
 
 #if USER_AUDIO
@@ -144,12 +148,9 @@ int main(void){
  #endif
 #endif
 
-#if USER_MMC
-   ht_mmc_Init();
-   ht_mmc_Check();
-#endif
-
 #if USER_METRI
+    ht_led_Init();
+    ht_exti_Init();
     ht_metri_Init();
 #endif
 
