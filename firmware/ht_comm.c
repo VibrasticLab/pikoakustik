@@ -251,6 +251,7 @@ void ht_commUSB_Init(void){
     sduStart(&SDU1, &serusbcfg);
 
     usbDisconnectBus(serusbcfg.usbp);
+    usbStop(serusbcfg.usbp);
     chThdSleepMilliseconds(500);
     usbStart(serusbcfg.usbp, &usbcfg);
     usbConnectBus(serusbcfg.usbp);

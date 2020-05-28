@@ -115,7 +115,7 @@ static void mmc_check(uint8_t chgLED){
     mmc_spi_status_flag=MMC_SPI_ERROR;
     err = f_getfree("/", &clusters, &fsp);
     if(err == FR_OK){
-        ht_comm_Msg("MMC Free OK\r\n");
+        ht_comm_Msg("MMC Checking OK\r\n");
         mmc_spi_status_flag=MMC_SPI_OK;
         if(chgLED==1){
             mode_led=LED_READY;
@@ -123,7 +123,7 @@ static void mmc_check(uint8_t chgLED){
     }
 #else
     if(chgLED==1){
-        ht_comm_Msg("MMC Free Test Disabled\r\n");
+        ht_comm_Msg("MMC Free Check Disabled\r\n");
         mode_led=LED_READY;
     }
 #endif
