@@ -127,6 +127,11 @@ int main(void){
     halInit();
     chSysInit();
 
+#if USER_LED_BUTTON
+    ht_led_Init();
+    ht_exti_Init();
+#endif
+
 #if USER_SERIAL
  #if USER_SERIAL_USB
    ht_commUSB_Init();
@@ -149,8 +154,6 @@ int main(void){
 #endif
 
 #if USER_METRI
-    ht_led_Init();
-    ht_exti_Init();
     ht_metri_Init();
 #endif
 

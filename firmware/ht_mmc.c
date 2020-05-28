@@ -225,6 +225,7 @@ static FRESULT scanFile(char *path, uint8_t *lastfnum, uint8_t stt_print){
     *lastfnum=0;
     err = f_opendir(&Dir,path);
     if(err==FR_OK){
+        ht_comm_Msg("------------\r\n");
         while(1){
             err=f_readdir(&Dir,&Fno);
             if(err!=FR_OK || Fno.fname[0]==0)break;
@@ -282,13 +283,10 @@ void ht_mmc_lsFiles(void){
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         ht_comm_Buff(buffer,sizeof(buffer),"START\n");
 
-        ht_comm_Msg("\r\nFiles on MMC\r\n");
-        ht_comm_Msg("------------\r\n");
-
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
+            ht_comm_Msg("\r\nFiles on MMC\r\n");
             strcpy(buff,"/");
-            ht_comm_Msg("Listing Files from \"\\\" \r\n");
             err = scanFile(buff,&lastnum,1);
             if(err==FR_OK){
                 ht_comm_Msg("------------\r\n");
