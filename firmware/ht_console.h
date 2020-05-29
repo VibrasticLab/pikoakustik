@@ -39,7 +39,7 @@
  * @brief Shell thread working area size
  * @details Set to bigger size if necessary
  */
-#define SHELL_WA_SIZE THD_WORKING_AREA_SIZE(4096)
+#define SHELL_WA_SIZE THD_WORKING_AREA_SIZE(2048)
 
 /**
  * @brief   Shell maximum input line length.
