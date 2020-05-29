@@ -152,7 +152,7 @@ int main(void){
 
 #if USER_MMC
    ht_mmc_Init();
-   ht_mmc_Check();
+   ht_mmc_initCheck();
 #endif
 
 #if USER_METRI

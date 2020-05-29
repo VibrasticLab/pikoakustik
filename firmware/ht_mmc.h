@@ -80,7 +80,7 @@ void ht_mmc_catTest(void);
 /**
  * @brief Check MMC readyness
  */
-void ht_mmc_Check(void);
+void ht_mmc_initCheck(void);
 
 /**
  * @brief Initialize MMC-SPI peripherals

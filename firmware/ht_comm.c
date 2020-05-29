@@ -194,7 +194,7 @@ static void cmd_mmchk(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
     if(argc != 0){chprintf(chp,"usage: mmc\r\n");return;}
 
-    ht_mmc_Check();
+    ht_mmc_initCheck();
     chprintf(chp,"MMC R/W Check Finished\r\n\r\n");
 }
 
