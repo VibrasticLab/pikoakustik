@@ -70,6 +70,7 @@ static ThdFunc_RunLED(thdRunLed, arg) {
         palSetPad(GPIOA, LED_RUN);
         chThdSleepMilliseconds(200);
 
+ #if USER_LED_BUTTON
         led_result_off();
         led_resultYES();
         chThdSleepMilliseconds(200);
@@ -79,10 +80,14 @@ static ThdFunc_RunLED(thdRunLed, arg) {
         chThdSleepMilliseconds(200);
 
         led_answer_off();
+ #else
+        chThdSleepMilliseconds(400);
+ #endif
     }
     else if(mode_led==LED_READY){
         palTogglePad(GPIOA, LED_RUN);
 
+ #if USER_LED_BUTTON
         led_result_off();
         led_resultYES();
         chThdSleepMilliseconds(250);
@@ -92,6 +97,10 @@ static ThdFunc_RunLED(thdRunLed, arg) {
         chThdSleepMilliseconds(250);
 
         led_answer_off();
+ #else
+        chThdSleepMilliseconds(500);
+ #endif
+
     }
 #else
     if(mode_led==LED_FAIL){
@@ -152,6 +161,7 @@ int main(void){
 
 #if USER_MMC
    ht_mmc_Init();
+   chThdSleepMilliseconds(500);
    ht_mmc_initCheck();
 #endif
 
