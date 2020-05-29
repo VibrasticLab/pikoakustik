@@ -104,6 +104,11 @@ static void mmc_check(uint8_t chgLED){
         if(err == FR_OK){
             filesystem_ready = true;
         }
+        else{
+            ht_comm_Buff(strbuff,sizeof(strbuff),"MMC Error code = %i\r\n",err);
+            ht_comm_Msg(strbuff);
+            mode_led=LED_FAIL;
+        }
     }
 
     if(!filesystem_ready){
