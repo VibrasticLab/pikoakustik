@@ -75,108 +75,6 @@ static SPIConfig ls_spicfg = {NULL, GPIOA, 15, SPI_CR1_BR_2 | SPI_CR1_BR_1};
  */
 static MMCConfig mmccfg = {&SPID3, &ls_spicfg, &hs_spicfg};
 
-/**
- * @brief Checking readiness FatFS
- * @details Must calling before mounting actual media MMC
- * @details Checking both Peripheral and Filesystem status
- * @param[in] uint8_t Status to change LED mode or not
- */
-static void mmc_check(uint8_t chgLED){
-    FATFS FatFs;
-    FRESULT err;
-    char strbuff[IFACE_BUFF_SIZE];
-
-    uint32_t clusters;
-    FATFS *fsp;
-
-    mmc_spi_status_flag=MMC_SPI_OK;
-    filesystem_ready=false;
-
-    if(mmcConnect(&MMCD1)){
-        filesystem_ready = true;
-        f_mount(&FatFs, "", 0);
-    }
-    else{
-        err = f_mount(&FatFs, "", 0);
-        if(err == FR_OK){
-            filesystem_ready = true;
-        }
-        else{
-            ht_comm_Buff(strbuff,sizeof(strbuff),"MMC mount error = %i\r\n",err);
-            ht_comm_Msg(strbuff);
-            mode_led=LED_FAIL;
-            return;
-        }
-    }
-
-    if(!filesystem_ready){
-        ht_comm_Msg("MMC Filesystem Not Ready\r\n");
-        mmc_spi_status_flag=MMC_SPI_FAIL;
-        mode_led=LED_FAIL;
-        return;
-    }
-    else{
-        ht_comm_Msg("MMC Filesystem Ready\r\n");
-    }
-
-    mmc_spi_status_flag=MMC_SPI_ERROR;
-    err = f_getfree("/", &clusters, &fsp);
-    if(err == FR_OK){
-        ht_comm_Msg("MMC Checking OK\r\n");
-        mmc_spi_status_flag=MMC_SPI_OK;
-        if(chgLED==1){
-            mode_led=LED_READY;
-        }
-    }
-    else{
-        ht_comm_Buff(strbuff,sizeof(strbuff),"MMC getfree error = %i\r\n",err);
-        ht_comm_Msg(strbuff);
-        mode_led=LED_FAIL;
-        return;
-    }
-
-    f_mount(0, "", 0);
-}
-
-void ht_mmc_initCheck(void){
-    mmc_check(1);
-}
-
-void ht_mmc_Test(void){
-    char buffer[FILE_BUFF_SIZE];
-    char strbuff[IFACE_BUFF_SIZE];
-
-    FATFS FatFs;
-    FIL *Fil;
-    UINT bw;
-    FRESULT err;
-
-    Fil = (FIL*)malloc(sizeof(FIL));
-
-    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        ht_comm_Buff(buffer,sizeof(buffer),"Test\n");
-
-        f_mount(&FatFs, "", 0);
-
-        err = f_open(Fil, "/TEST.TXT", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
-        if(err==FR_OK){
-            f_lseek(Fil, f_size(Fil));
-            f_write(Fil, buffer, strlen(buffer), &bw);
-            f_close(Fil);
-            ht_comm_Msg("MMC R/W Test Success\r\n");
-            mode_led=LED_READY;
-        }
-        else{
-            ht_comm_Buff(strbuff,sizeof(strbuff),"MMC Error code = %i\r\n",err);
-            ht_comm_Msg(strbuff);
-            mode_led=LED_FAIL;
-        }
-
-        f_mount(0, "", 0);
-    }
-    free(Fil);
-}
-
 static void string_parse(char *strIn, char *strOut, uint8_t pos, char sep){
     char strInput[90];
     char strSplit[3][30];
@@ -265,56 +163,152 @@ static FRESULT scanFile(char *path, uint8_t *lastfnum, uint8_t stt_print){
     return err;
 }
 
-void ht_mmc_lsFiles(void){
+/**
+ * @brief Checking readiness FatFS
+ * @details Must calling before mounting actual media MMC
+ * @details Checking both Peripheral and Filesystem status
+ * @param[in] uint8_t Status to change LED mode or not
+ */
+static FRESULT mmc_check(void){
+    FATFS FatFs;
+    FRESULT err;
+
+    uint32_t clusters;
+    FATFS *fsp;
+
+    mmc_spi_status_flag=MMC_SPI_OK;
+    filesystem_ready=false;
+    err = FR_OK;
+
+    if(mmcConnect(&MMCD1)){
+        filesystem_ready = true;
+        f_mount(&FatFs, "", 0);
+    }
+    else{
+        err = f_mount(&FatFs, "", 0);
+        if(err == FR_OK){
+            filesystem_ready = true;
+        }
+        else{
+            if(mode_led!=LED_METRI)mode_led=LED_FAIL;
+            return err;
+        }
+    }
+
+    if(!filesystem_ready){
+        mmc_spi_status_flag=MMC_SPI_FAIL;
+        if(mode_led!=LED_METRI)mode_led=LED_FAIL;
+        return err;
+    }
+
+    mmc_spi_status_flag=MMC_SPI_ERROR;
+    err = f_getfree("/", &clusters, &fsp);
+    if(err == FR_OK){
+        mmc_spi_status_flag=MMC_SPI_OK;
+        if(mode_led!=LED_METRI)mode_led=LED_READY;
+    }
+    else{
+        if(mode_led!=LED_METRI)mode_led=LED_FAIL;
+        return err;
+    }
+
+    f_mount(0, "", 0);
+
+    return err;
+}
+
+void ht_mmc_initCheck(void){
+    FATFS FatFs;
+    FRESULT err;
     char strbuff[IFACE_BUFF_SIZE];
+
+    uint32_t clusters;
+    FATFS *fsp;
+
+    mmc_spi_status_flag=MMC_SPI_OK;
+    filesystem_ready=false;
+
+    if(mmcConnect(&MMCD1)){
+        filesystem_ready = true;
+        f_mount(&FatFs, "", 0);
+    }
+    else{
+        err = f_mount(&FatFs, "", 0);
+        if(err == FR_OK){
+            filesystem_ready = true;
+        }
+        else{
+            ht_comm_Buff(strbuff,sizeof(strbuff),"MMC mount error = %i\r\n",err);
+            ht_comm_Msg(strbuff);
+            if(mode_led!=LED_METRI)mode_led=LED_FAIL;
+            return;
+        }
+    }
+
+    if(!filesystem_ready){
+        ht_comm_Msg("MMC Filesystem Not Ready\r\n");
+        mmc_spi_status_flag=MMC_SPI_FAIL;
+        if(mode_led!=LED_METRI)mode_led=LED_FAIL;
+        return;
+    }
+    else{
+        ht_comm_Msg("MMC Filesystem Ready\r\n");
+    }
+
+    mmc_spi_status_flag=MMC_SPI_ERROR;
+    err = f_getfree("/", &clusters, &fsp);
+    if(err == FR_OK){
+        ht_comm_Msg("MMC Checking OK\r\n");
+        mmc_spi_status_flag=MMC_SPI_OK;
+        if(mode_led!=LED_METRI)mode_led=LED_READY;
+    }
+    else{
+        ht_comm_Buff(strbuff,sizeof(strbuff),"MMC getfree error = %i\r\n",err);
+        ht_comm_Msg(strbuff);
+        if(mode_led!=LED_METRI)mode_led=LED_FAIL;
+        return;
+    }
+
+    f_mount(0, "", 0);
+}
+
+void ht_mmc_Test(void){
+    char buffer[FILE_BUFF_SIZE];
+    char strbuff[IFACE_BUFF_SIZE];
+
     FATFS FatFs;
     FIL *Fil;
+    UINT bw;
     FRESULT err;
-    char buff[FILE_BUFF_SIZE];
-    char buffer[FILE_BUFF_SIZE];
-    char fname[LINE_BUFF_SIZE];
 
     Fil = (FIL*)malloc(sizeof(FIL));
 
+    err = mmc_check();
+    if(err!=FR_OK){
+        ht_comm_Buff(strbuff,sizeof(strbuff),"MMC Error code = %i\r\n",err);
+        ht_comm_Msg(strbuff);
+        return;
+    }
+
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        ht_comm_Buff(buffer,sizeof(buffer),"START\n");
+        ht_comm_Buff(buffer,sizeof(buffer),"Test\n");
 
-        err = f_mount(&FatFs,"",0);
+        f_mount(&FatFs, "", 0);
+
+        err = f_open(Fil, "/TEST.TXT", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
         if(err==FR_OK){
-            ht_comm_Msg("\r\nFiles on MMC\r\n");
-            strcpy(buff,"/");
-            err = scanFile(buff,&lastnum,1);
-            if(err==FR_OK){
-                ht_comm_Msg("------------\r\n");
-                ht_comm_Buff(strbuff,sizeof(strbuff),"Last Num: %i\r\n",lastnum);
-                ht_comm_Msg(strbuff);
-                ht_comm_Buff(strbuff,sizeof(strbuff),"Last File: TEST_%i.TXT\r\n",lastnum);
-                ht_comm_Msg(strbuff);
-
-                if(lastnum < 255){
-                    ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
-
-                    err = f_open(Fil, fname, FA_READ | FA_OPEN_EXISTING);
-                    if(err==FR_OK){
-                        f_close(Fil);
-                        ht_comm_Buff(strbuff,sizeof(strbuff),"File %s exist\r\n",fname);
-                        ht_comm_Msg(strbuff);                      
-                    }
-                    else if(err==FR_NO_FILE){
-                        ht_comm_Buff(strbuff,sizeof(strbuff),"File %s not exist\r\n",fname);
-                        ht_comm_Msg(strbuff);                        
-                    }
-                    else{
-                        ht_comm_Buff(strbuff,sizeof(strbuff),"File %s error code = %i\r\n",fname,err);
-                        ht_comm_Msg(strbuff);
-                    }
-                }
-                else{
-                    ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
-                }
-                ht_comm_Msg("------------\r\n\r\n");
-            }
+            f_lseek(Fil, f_size(Fil));
+            f_write(Fil, buffer, strlen(buffer), &bw);
+            f_close(Fil);
+            ht_comm_Msg("MMC R/W Test Success\r\n");
+            mode_led=LED_READY;
         }
+        else{
+            ht_comm_Buff(strbuff,sizeof(strbuff),"MMC Error code = %i\r\n",err);
+            ht_comm_Msg(strbuff);
+            mode_led=LED_FAIL;
+        }
+
         f_mount(0, "", 0);
     }
     free(Fil);
@@ -331,10 +325,17 @@ void ht_mmc_catTest(void){
 
     Fil = (FIL*)malloc(sizeof(FIL));
 
+    err = mmc_check();
+    if(err!=FR_OK){
+        ht_comm_Buff(strbuff,sizeof(strbuff),"MMC Error code = %i\r\n",err);
+        ht_comm_Msg(strbuff);
+        return;
+    }
+
     ht_comm_Msg("\r\nFiles Content\r\n");
     ht_comm_Msg("------------\r\n");
-    strcpy(buffer,"");
 
+    strcpy(buffer,"");
     ht_comm_Buff(fname,sizeof(fname),"/TEST.TXT");
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         f_mount(&FatFs, "", 0);
@@ -380,6 +381,63 @@ void ht_mmc_catTest(void){
     free(Fil);
 }
 
+void ht_mmc_lsFiles(void){
+    char strbuff[IFACE_BUFF_SIZE];
+    FATFS FatFs;
+    FIL *Fil;
+    FRESULT err;
+    char buff[FILE_BUFF_SIZE];
+    char buffer[FILE_BUFF_SIZE];
+    char fname[LINE_BUFF_SIZE];
+
+    Fil = (FIL*)malloc(sizeof(FIL));
+
+    if(mmc_check()!=FR_OK){return;}
+
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+        ht_comm_Buff(buffer,sizeof(buffer),"START\n");
+
+        err = f_mount(&FatFs,"",0);
+        if(err==FR_OK){
+            ht_comm_Msg("\r\nFiles on MMC\r\n");
+            strcpy(buff,"/");
+            err = scanFile(buff,&lastnum,1);
+            if(err==FR_OK){
+                ht_comm_Msg("------------\r\n");
+                ht_comm_Buff(strbuff,sizeof(strbuff),"Last Num: %i\r\n",lastnum);
+                ht_comm_Msg(strbuff);
+                ht_comm_Buff(strbuff,sizeof(strbuff),"Last File: TEST_%i.TXT\r\n",lastnum);
+                ht_comm_Msg(strbuff);
+
+                if(lastnum < 255){
+                    ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+
+                    err = f_open(Fil, fname, FA_READ | FA_OPEN_EXISTING);
+                    if(err==FR_OK){
+                        f_close(Fil);
+                        ht_comm_Buff(strbuff,sizeof(strbuff),"File %s exist\r\n",fname);
+                        ht_comm_Msg(strbuff);                      
+                    }
+                    else if(err==FR_NO_FILE){
+                        ht_comm_Buff(strbuff,sizeof(strbuff),"File %s not exist\r\n",fname);
+                        ht_comm_Msg(strbuff);                        
+                    }
+                    else{
+                        ht_comm_Buff(strbuff,sizeof(strbuff),"File %s error code = %i\r\n",fname,err);
+                        ht_comm_Msg(strbuff);
+                    }
+                }
+                else{
+                    ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
+                }
+                ht_comm_Msg("------------\r\n\r\n");
+            }
+        }
+        f_mount(0, "", 0);
+    }
+    free(Fil);
+}
+
 void ht_mmc_catFiles(uint8_t fnum){
     uint16_t line_num=0;
     char buffer[FILE_BUFF_SIZE];
@@ -394,6 +452,8 @@ void ht_mmc_catFiles(uint8_t fnum){
     ht_comm_Msg("\r\nFiles Content\r\n");
     ht_comm_Msg("------------\r\n");
     strcpy(buffer,"");
+
+    if(mmc_check()!=FR_OK){return;}
 
     ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",fnum);
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
@@ -453,6 +513,8 @@ void ht_mmcMetri_chkFile(void){
 
     Fil_last = (FIL*)malloc(sizeof(FIL));
     Fil_new = (FIL*)malloc(sizeof(FIL));
+
+    if(mmc_check()!=FR_OK){return;}
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         ht_comm_Buff(buffer,sizeof(buffer),"START\n");
@@ -524,6 +586,8 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
 
     Fil = (FIL*)malloc(sizeof(FIL));
 
+    if(mmc_check()!=FR_OK){return;}
+
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         if(result==0){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, FALSE\n",freq,ample);}
         else if(result==1){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, TRUE\n",freq,ample);}
@@ -559,6 +623,8 @@ void ht_mmcMetri_endResult(void){
     FRESULT err;
 
     Fil = (FIL*)malloc(sizeof(FIL));
+
+    if(mmc_check()!=FR_OK){return;}
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         ht_comm_Buff(buffer,sizeof(buffer),"END\n");
