@@ -151,18 +151,17 @@ int main(void){
  #endif
 #endif
 
+#if USER_MMC
+   ht_mmc_Init();
+   ht_mmc_initCheck();
+#endif
+
 #if USER_AUDIO
     ht_audio_Init();
  #if USER_AUDIO_STARTUP
     ht_audio_Tone(1,1);
     ht_audio_Play(TEST_DURATION);
  #endif
-#endif
-
-#if USER_MMC
-   ht_mmc_Init();
-   chThdSleepMilliseconds(500);
-   ht_mmc_initCheck();
 #endif
 
 #if USER_METRI

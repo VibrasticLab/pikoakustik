@@ -661,5 +661,6 @@ void ht_mmc_Init(void){
     mmcObjectInit(&MMCD1);
     mmcStart(&MMCD1, &mmccfg);
 
+    chThdSleepMilliseconds(500);
 }
 /** @} */

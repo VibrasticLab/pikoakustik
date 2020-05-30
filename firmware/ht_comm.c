@@ -195,7 +195,7 @@ static void cmd_mmchk(BaseSequentialStream *chp, int argc, char *argv[]) {
     if(argc != 0){chprintf(chp,"usage: mmc\r\n");return;}
 
     ht_mmc_initCheck();
-    chprintf(chp,"MMC Filesystem Check Finished\r\n\r\n");
+    chprintf(chp,"MMC Checking Finished\r\n\r\n");
 }
 
 /**
