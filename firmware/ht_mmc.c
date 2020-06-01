@@ -202,7 +202,7 @@ static FRESULT mmc_check(void){
     }
 
     mmc_spi_status_flag=MMC_SPI_ERROR;
-    err = f_getfree("/", &clusters, &fsp);
+    err = f_getfree("", &clusters, &fsp);
     if(err == FR_OK){
         mmc_spi_status_flag=MMC_SPI_OK;
         if(mode_led!=LED_METRI)mode_led=LED_READY;
@@ -256,19 +256,19 @@ void ht_mmc_initCheck(void){
     }
 
     if(!filesystem_ready){
-        ht_comm_Msg("MMC Filesystem Not Ready\r\n");
+        ht_comm_Msg("MMC filesystem Not Ready\r\n");
         mmc_spi_status_flag=MMC_SPI_FAIL;
         if(mode_led!=LED_METRI)mode_led=LED_FAIL;
         return;
     }
     else{
-        ht_comm_Msg("MMC Filesystem Ready\r\n");
+        ht_comm_Msg("MMC filesystem Ready\r\n");
     }
 
     mmc_spi_status_flag=MMC_SPI_ERROR;
-    err = f_getfree("/", &clusters, &fsp);
+    err = f_getfree("", &clusters, &fsp);
     if(err == FR_OK){
-        ht_comm_Msg("MMC Checking OK\r\n");
+        ht_comm_Msg("MMC checking OK\r\n");
         mmc_spi_status_flag=MMC_SPI_OK;
         if(mode_led!=LED_METRI)mode_led=LED_READY;
     }
@@ -671,6 +671,6 @@ void ht_mmc_Init(void){
     mmcObjectInit(&MMCD1);
     mmcStart(&MMCD1, &mmccfg);
 
-    chThdSleepMilliseconds(500);
+    chThdSleepMilliseconds(1000);
 }
 /** @} */
