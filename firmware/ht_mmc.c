@@ -1,4 +1,4 @@
-/*
+﻿/*
               UNKNOWN PUBLIC LICENSE
 
  Copyright (C) 2019 Achmadi S.T. M.T.
@@ -230,11 +230,21 @@ void ht_mmc_initCheck(void){
 
     if(mmcConnect(&MMCD1)){
         filesystem_ready = true;
-        f_mount(&FatFs, "", 0);
+        err = f_mount(&FatFs, "", 0);
+        if(err == FR_OK){
+            ht_comm_Msg("MMC connected and mounted\r\n");
+        }
+        else{
+            ht_comm_Buff(strbuff,sizeof(strbuff),"MMC connected but not mounted with error = %i\r\n",err);
+            ht_comm_Msg(strbuff);
+            if(mode_led!=LED_METRI)mode_led=LED_FAIL;
+            return;
+        }
     }
     else{
         err = f_mount(&FatFs, "", 0);
         if(err == FR_OK){
+            ht_comm_Msg("MMC mount forcefully\r\n");
             filesystem_ready = true;
         }
         else{
