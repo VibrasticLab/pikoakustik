@@ -67,7 +67,7 @@
 / Locale and Namespace Configurations
 /---------------------------------------------------------------------------*/
 
-#define _CODE_PAGE	1252
+#define _CODE_PAGE	1
 /* The _CODE_PAGE specifies the OEM code page to be used on the target system.
 /  Incorrect setting of the code page can cause a file open failure.
 /
@@ -122,7 +122,7 @@
 /  functions. This option must be 0 when LFN feature is not enabled. */
 
 
-#define _STRF_ENCODE	3	/* 0:ANSI/OEM, 1:UTF-16LE, 2:UTF-16BE, 3:UTF-8 */
+#define _STRF_ENCODE	0	/* 0:ANSI/OEM, 1:UTF-16LE, 2:UTF-16BE, 3:UTF-8 */
 /* When Unicode API is enabled by _LFN_UNICODE option, this option selects the character
 /  encoding on the file to be read/written via string I/O functions, f_gets(), f_putc(),
 /  f_puts and f_printf(). This option has no effect when Unicode API is not enabled. */

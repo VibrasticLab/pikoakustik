@@ -154,10 +154,6 @@ int main(void){
 #if USER_MMC
    ht_mmc_Init();
    ht_mmc_initCheck();
- #if USER_MMC_RWTEST
-   chThdSleepMilliseconds(500);
-   ht_mmc_Test();
- #endif
 #endif
 
 #if USER_AUDIO

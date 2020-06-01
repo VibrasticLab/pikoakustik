@@ -7,7 +7,6 @@
  #define USER_SERIAL_USB    TRUE
 
 #define USER_MMC            TRUE
- #define USER_MMC_RWTEST    TRUE
 
 #define USER_AUDIO          TRUE
  #define USER_AUDIO_STARTUP TRUE
