@@ -106,7 +106,7 @@ extern "C" {
  * @brief Start Shell and UART peripheral
  * @details Serial Interface using UART0 (SD1)
  */
-void ht_comm_Init(void);
+void ht_commUART_Init(void);
 
 /**
  * @brief Start Shell and USB peripheral
@@ -118,13 +118,13 @@ void ht_commUSB_Init(void);
  * @brief Re-Initialize Shell Thread
  * @details This routine should be called on main thread with some delays
  */
-void ht_comm_ReInit(void);
+void ht_commUART_shInit(void);
 
 /**
  * @brief Re-Initialize Shell Thread
  * @details This routine should be called on main thread with some delays
  */
-void ht_commUSB_ReInit(void);
+void ht_commUSB_shInit(void);
 
 /**
  * @brief Common message function

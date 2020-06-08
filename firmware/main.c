@@ -144,11 +144,8 @@ int main(void){
 #endif
 
 #if USER_SERIAL
- #if USER_SERIAL_USB
+   ht_commUART_Init();
    ht_commUSB_Init();
- #else
-   ht_comm_Init();
- #endif
 #endif
 
 #if USER_MMC
@@ -173,15 +170,11 @@ int main(void){
     while(1){
 
 #if USER_SERIAL
- #if USER_SERIAL_USB
-        ht_commUSB_ReInit();
- #else
-        ht_comm_ReInit();
- #endif
+        ht_commUART_shInit();
+        ht_commUSB_shInit();
 #endif
 
         chThdSleepMilliseconds(500);
     }
 }
-
 /** @} */

@@ -15,30 +15,17 @@
 */
 
 /**
- * @file    user_conf.h
- * @brief   Global User config header.
+ * @file    ht_iot.c
+ * @brief   ESP8266 related code.
  *
- * @addtogroup Main
+ * @addtogroup IOT
  * @{
  */
-#ifndef USER_CONF_H
-#define USER_CONF_H
+#include "ch.h"
+#include "hal.h"
+#include "chprintf.h"
 
-#define USER_TEST_STATE     TRUE
+#include "user_conf.h"
 
-#define USER_SERIAL         TRUE
- #define USER_SERMSG_USB    TRUE
-
-#define USER_MMC            TRUE
-
-#define USER_IOT            TRUE
-
-#define USER_AUDIO          TRUE
- #define USER_AUDIO_STARTUP TRUE
-
-#define USER_LED_BUTTON     TRUE
-
-#define USER_METRI          FALSE
-
-#endif // USER_CONF_H
+#include "ht_iot.h"
 /** @} */

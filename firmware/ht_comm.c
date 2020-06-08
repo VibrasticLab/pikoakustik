@@ -35,10 +35,9 @@ extern SerialUSBDriver SDU1;
 extern const USBConfig usbcfg;
 extern const SerialUSBConfig serusbcfg;
 
-/**
- * @brief Shell Console pointer
- */
-static thread_t *shelltp = NULL;
+/*******************************************
+ * Serial Command Callback
+ *******************************************/
 
 /**
  * @brief Test command callback
@@ -50,6 +49,8 @@ static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
 
     chprintf(chp,"Serial Console at %d & buffer size %d bit\r\n",SERIAL_DEFAULT_BITRATE,SERIAL_BUFFERS_SIZE);
 }
+
+/*******************************************/
 
 /**
  * @brief Audio Zero command callback
@@ -138,6 +139,8 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
     else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
 }
 
+/*******************************************/
+
 /**
  * @brief List available files on MMC and get saves last number
  * @details Enumerated and not called directly by any normal thread
@@ -198,6 +201,8 @@ static void cmd_mmchk(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp,"MMC Checking Finished\r\n\r\n");
 }
 
+/*******************************************/
+
 /**
  * @brief Shell command and it's callback enumeration
  * @details Extending from internal shell's callback
@@ -220,11 +225,25 @@ static const ShellCommand commands[] = {
     {NULL, NULL}
 };
 
+/*******************************************
+ * Serial Peripheral Setup
+ *******************************************/
+
+/**
+ * @brief UART Shell Console pointer
+ */
+static thread_t *shelltp_uart = NULL;
+
+/**
+ * @brief USB Shell Console pointer
+ */
+static thread_t *shelltp_usb = NULL;
+
 /**
  * @brief Shell Driver Config
  * @details Serial Interface using UART0 (SD1)
  */
-static const ShellConfig shell_cfg1 = {
+static const ShellConfig shell_uart_cfg = {
   (BaseSequentialStream *)&SD1,
   commands
 };
@@ -233,12 +252,12 @@ static const ShellConfig shell_cfg1 = {
  * @brief Shell Driver Config
  * @details Serial Interface using USB1 (SDU1)
  */
-static const ShellConfig usbshell_cfg1 = {
+static const ShellConfig shell_usb_cfg = {
   (BaseSequentialStream *)&SDU1,
   commands
 };
 
-void ht_comm_Init(void){
+void ht_commUART_Init(void){
     palSetPadMode(GPIOA, 9,PAL_MODE_ALTERNATE(7) | PAL_STM32_OSPEED_HIGHEST); //TX
     palSetPadMode(GPIOA,10,PAL_MODE_ALTERNATE(7) | PAL_STM32_OSPEED_HIGHEST); //RX
     sdStart(&SD1,NULL);
@@ -259,32 +278,32 @@ void ht_commUSB_Init(void){
     shellInit();
 }
 
-void ht_comm_ReInit(void){
-    if (!shelltp) {
-        shelltp = shellCreate(&shell_cfg1, SHELL_WA_SIZE, NORMALPRIO);
+void ht_commUART_shInit(void){
+    if (!shelltp_uart) {
+        shelltp_uart = shellCreate(&shell_uart_cfg, SHELL_WA_SIZE, NORMALPRIO);
     }
     else {
-        if (chThdTerminatedX(shelltp)) {
-            chThdRelease(shelltp);
-            shelltp = NULL;
+        if (chThdTerminatedX(shelltp_uart)) {
+            chThdRelease(shelltp_uart);
+            shelltp_uart = NULL;
         }
     }
 }
 
-void ht_commUSB_ReInit(void){
-    if (!shelltp && (SDU1.config->usbp->state == USB_ACTIVE)) {
-        shelltp = shellCreate(&usbshell_cfg1, SHELL_WA_SIZE, NORMALPRIO);
+void ht_commUSB_shInit(void){
+    if (!shelltp_usb && (SDU1.config->usbp->state == USB_ACTIVE)) {
+        shelltp_usb = shellCreate(&shell_usb_cfg, SHELL_WA_SIZE, NORMALPRIO);
     }
     else {
-        if (chThdTerminatedX(shelltp)) {
-            chThdRelease(shelltp);
-            shelltp = NULL;
+        if (chThdTerminatedX(shelltp_usb)) {
+            chThdRelease(shelltp_usb);
+            shelltp_usb = NULL;
         }
     }
 }
 
 void ht_comm_Msg(char *string){
-#if USER_SERIAL_USB
+#if USER_SERMSG_USB
     if(SDU1.config->usbp->state == USB_ACTIVE){
         chprintf((BaseSequentialStream *)&SDU1,string);
     }

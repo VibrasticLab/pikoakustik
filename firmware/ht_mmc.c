@@ -32,10 +32,6 @@
 #include "ht_metri.h"
 #include "ht_console.h"
 
-#if USER_SERIAL_USB
-extern SerialUSBDriver SDU1;
-#endif
-
 /* Blink indicator mode */
 extern uint8_t mode_led;
 extern uint8_t mode_status;
