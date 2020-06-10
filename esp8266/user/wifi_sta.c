@@ -83,10 +83,10 @@ LOCAL void ICACHE_FLASH_ATTR user_wifi_station_conf(void){
 
     wifi_station_get_config(&stationConf);
 
-    os_strcpy(ssid,"cobaMQTT");
+    os_strcpy(ssid,"AchmadiWifi");
     os_memcpy(&stationConf.ssid, ssid, 32);
 
-    os_strcpy(password,"cobamqtt");
+    os_strcpy(password,"achmadiwifi");
     os_memcpy(&stationConf.password, password, 64);
 
     wifi_station_set_config(&stationConf);

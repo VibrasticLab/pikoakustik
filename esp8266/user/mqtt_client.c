@@ -11,7 +11,7 @@ LOCAL void mqttConnectedCb(uint32_t *args){
     os_printf("MQTT: Connected\r\n");
 
 #if TEST_MQTT_WAHYU
-    MQTT_Subscribe(client, "device/penis", 0);
+    MQTT_Subscribe(client, "device/esp8266", 0);
 #else
     MQTT_Subscribe(client, "hello/world", 0);
     MQTT_Publish(client, "hello/world", "hello_mqtt", 10, 0, 0);
