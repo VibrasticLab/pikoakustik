@@ -40,6 +40,7 @@
 #include "mqtt.h"
 
 #include "user_config.h"
+#include "mqtt_client.h"
 
 extern UartDevice UartDev;
 extern MQTT_Client mqttClient;
@@ -270,27 +271,6 @@ uart_response(uint8 inChar){
             "pub " \
             "help";
 
-#if TEST_MQTT_WAHYU
-    const char esp8266[]="{\"nodeid\":\"esp8266\","\
-                     "\"signal\":0.4721340367221931,\"battery\":0.4806644371638398,\"context\":\"\","\
-                     "\"location\":{"\
-                        "\"lat\":-7.283511242678959,"\
-                        "\"long\":112.78932384338379,"\
-                        "\"altitude\":289"\
-                     "},"\
-                     "\"sensor\":{"\
-                        "\"temperature\":["\
-                            "{\"sensorid\":\"esp8266-cold\",\"value\":14,\"context\":\"\"},"\
-                            "{\"sensorid\":\"esp8266-hot\", \"value\":54,\"context\":\"\"}"\
-                         "],"\
-                         "\"level\":["\
-                            "{\"sensorid\":\"esp8266-short\",\"value\":6,\"context\":\"\"},"\
-                            "{\"sensorid\":\"esp8266-long\",\"value\":10,\"context\":\"\"}"\
-                        "]"\
-                     "}"\
-                   "}";
-#endif
-
     if(inChar == '\n' || inChar == '\r'){
 
         // Here are request string responses
@@ -328,8 +308,13 @@ uart_response(uint8 inChar){
             }
             else if(os_strcmp("sub",strReq)==0){
 #if TEST_MQTT_WAHYU
+ #if SUB_SAME_TOPIC
                 MQTT_Subscribe(&mqttClient, "device/esp8266", 0);
                 os_printf("MQTT Subscribed: device/esp8266 \r\n");
+ #else
+                MQTT_Subscribe(&mqttClient, "device/null", 0);
+                os_printf("MQTT Subscribed: device/null \r\n");
+ #endif
 #else
                 MQTT_Subscribe(&mqttClient, "hello/world", 0);
                 os_printf("MQTT Subscribed: hello/world \r\n");
@@ -337,7 +322,7 @@ uart_response(uint8 inChar){
             }
             else if(os_strcmp("pub",strReq)==0){
 #if TEST_MQTT_WAHYU
-                MQTT_Publish(&mqttClient, "device/esp8266", esp8266, os_strlen(esp8266), 0, 0);
+                mqttWahyuTest();
 #else
                 MQTT_Publish(&mqttClient, "hello/world", "hello_esp8266", 13, 0, 0);
 #endif

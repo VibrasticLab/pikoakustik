@@ -30,6 +30,11 @@
  */
 #define TEST_MQTT_WAHYU TRUE
 
+/**
+ * @brief Stop receive same topic
+ */
+#define SUB_SAME_TOPIC  FALSE
+
 #endif
 
 /** @} */
