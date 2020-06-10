@@ -25,6 +25,11 @@
  */
 #define SERIALBAUD 9600
 
+/**
+ * @brief Wahyu Anggoro gak ada kerjaan
+ */
+#define TEST_MQTT_WAHYU TRUE
+
 #endif
 
 /** @} */

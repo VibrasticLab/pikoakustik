@@ -9,8 +9,13 @@ MQTT_Client mqttClient;
 LOCAL void mqttConnectedCb(uint32_t *args){
     MQTT_Client* client = (MQTT_Client*)args;
     os_printf("MQTT: Connected\r\n");
+
+#if TEST_MQTT_WAHYU
+    MQTT_Subscribe(client, "device/penis", 0);
+#else
     MQTT_Subscribe(client, "hello/world", 0);
     MQTT_Publish(client, "hello/world", "hello_mqtt", 10, 0, 0);
+#endif
 }
 
 LOCAL void mqttDisconnectedCb(uint32_t *args){
@@ -50,7 +55,11 @@ void mqttWifiConnectCb(uint8_t status){
 }
 
 void mqttClientInit(void){
+#if TEST_MQTT_WAHYU
+    MQTT_InitConnection(&mqttClient, "iot.elefante.co.id", 1883, 0);
+#else
     MQTT_InitConnection(&mqttClient, "192.168.43.1", 1883, 0);
+#endif
     MQTT_InitClient(&mqttClient, "esp8266", NULL, NULL, 120, 0);
 
     MQTT_OnConnected(&mqttClient, mqttConnectedCb);

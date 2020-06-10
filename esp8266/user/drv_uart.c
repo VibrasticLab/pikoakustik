@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ESPRESSIF MIT License
  *
  * Copyright (c) 2016 <ESPRESSIF SYSTEMS (SHANGHAI) PTE LTD>
@@ -270,6 +270,27 @@ uart_response(uint8 inChar){
             "pub " \
             "help";
 
+#if TEST_MQTT_WAHYU
+    const char penis[]="{\"nodeid\":penis,"\
+                     "\"signal\":0.4721340367221931,\"battery\":0.4806644371638398,\"context\":\"\","\
+                     "\"location\":{"\
+                        "\"lat\":-7.283511242678959,"\
+                        "\"long\":112.78932384338379,"\
+                        "\"altitude\":289"\
+                     "},"\
+                     "\"sensor\":{"\
+                        "\"temperature\":["\
+                            "{\"sensorid\":\"penis-cold\",\"value\":14,\"context\":\"\"},"\
+                            "{\"sensorid\":\"penis-hot\", \"value\":54,\"context\":\"\"}"\
+                         "],"\
+                         "\"level\":["\
+                            "{\"sensorid\":\"penis-short\",\"value\":6,\"context\":\"\"},"\
+                            "{\"sensorid\":\"penis-long\",\"value\":10,\"context\":\"\"}"\
+                        "]"\
+                     "}"\
+                   "}";
+#endif
+
     if(inChar == '\n' || inChar == '\r'){
 
         // Here are request string responses
@@ -306,11 +327,20 @@ uart_response(uint8 inChar){
                 system_restart();
             }
             else if(os_strcmp("sub",strReq)==0){
+#if TEST_MQTT_WAHYU
+                MQTT_Subscribe(&mqttClient, "device/penis", 0);
+                os_printf("MQTT Subscribed: device/penis \r\n");
+#else
                 MQTT_Subscribe(&mqttClient, "hello/world", 0);
                 os_printf("MQTT Subscribed: hello/world \r\n");
+#endif
             }
             else if(os_strcmp("pub",strReq)==0){
+#if TEST_MQTT_WAHYU
+                MQTT_Publish(&mqttClient, "device/penis", penis, os_strlen(penis), 0, 0);
+#else
                 MQTT_Publish(&mqttClient, "hello/world", "hello_esp8266", 13, 0, 0);
+#endif
             }
             else if(os_strcmp("sysinfo",strReq)==0){
                 os_printf("\r\n\r\n[INFO] -------------------------------------------\r\n");
