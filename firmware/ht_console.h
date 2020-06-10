@@ -132,5 +132,11 @@ void ht_commUSB_shInit(void);
  */
 void ht_comm_Msg(char *string);
 
+/**
+ * @brief Send Message to ESP8266 function
+ * @param[in] String Message to serial interface to ESP8266.
+ */
+void ht_comm_IoT(char *string);
+
 #endif // HT_CONSOLE_H
 /** @} */

@@ -204,6 +204,32 @@ static void cmd_mmchk(BaseSequentialStream *chp, int argc, char *argv[]) {
 /*******************************************/
 
 /**
+ * @brief IoT Subscribe Test command callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_iotsub(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+    if(argc != 0){chprintf(chp,"usage: sub\r\n");return;}
+
+    ht_comm_IoT("sub\r\n");
+    chprintf(chp,"IoT subscribe hello/world Finished\r\n\r\n");
+}
+
+/**
+ * @brief IoT Publish Test command callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_iotpub(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+    if(argc != 0){chprintf(chp,"usage: pub\r\n");return;}
+
+    ht_comm_IoT("pub\r\n");
+    chprintf(chp,"IoT publish hello/world Finished\r\n\r\n");
+}
+
+/*******************************************/
+
+/**
  * @brief Shell command and it's callback enumeration
  * @details Extending from internal shell's callback
  */
@@ -221,6 +247,10 @@ static const ShellCommand commands[] = {
     {"mmcwr",cmd_mmcwrt},
     {"mmcat",cmd_mmcat},
     {"mmchk",cmd_mmchk},
+#endif
+#if USER_IOT
+    {"sub",cmd_iotsub},
+    {"pub",cmd_iotpub},
 #endif
     {NULL, NULL}
 };
@@ -310,6 +340,10 @@ void ht_comm_Msg(char *string){
 #else
     chprintf((BaseSequentialStream *)&SD1,string);
 #endif
+}
+
+void ht_comm_IoT(char *string){
+    chprintf((BaseSequentialStream *)&SD1,string);
 }
 
 /** @} */

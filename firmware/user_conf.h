@@ -32,6 +32,7 @@
 #define USER_MMC            TRUE
 
 #define USER_IOT            TRUE
+ #define USER_IOTSEND_ONLY  TRUE
 
 #define USER_AUDIO          TRUE
  #define USER_AUDIO_STARTUP TRUE

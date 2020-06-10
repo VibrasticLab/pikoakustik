@@ -144,7 +144,9 @@ int main(void){
 #endif
 
 #if USER_SERIAL
+ #if USER_IOT
    ht_commUART_Init();
+ #endif
    ht_commUSB_Init();
 #endif
 
@@ -170,7 +172,11 @@ int main(void){
     while(1){
 
 #if USER_SERIAL
+ #if USER_IOT
+  #if !(USER_IOTSEND_ONLY)
         ht_commUART_shInit();
+  #endif
+ #endif
         ht_commUSB_shInit();
 #endif
 
