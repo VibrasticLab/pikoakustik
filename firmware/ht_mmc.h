@@ -63,11 +63,6 @@
 #define USE_READ_LINE TRUE
 
 /**
- * @brief Whether record test on MMC or not (for debugging)
- */
-#define RECORD_TEST TRUE
-
-/**
  * @brief Test Write and Read Simple text in Append mode
  */
 void ht_mmc_Test(void);

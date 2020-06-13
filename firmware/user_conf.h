@@ -40,6 +40,9 @@
 #define USER_LED_BUTTON     TRUE
 
 #define USER_METRI          FALSE
+ #if USER_MMC
+ #define USER_METRI_RECORD  TRUE
+ #endif
 
 #endif // USER_CONF_H
 /** @} */

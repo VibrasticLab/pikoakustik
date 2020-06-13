@@ -78,6 +78,32 @@ uint8_t test_answer;
  */
 uint8_t test_conv = 0;
 
+/**
+ * @brief calibrated array ratio for frequency
+ * @details Last Calibrated: 1.25 = 500 Hz
+ * @details Requirement: 250,500,1000,2000,4000,8000
+ */
+static double freq_test[] = {0.625,1.25,2.5,5,10,20};
+
+/**
+ * @brief Amplification ratio
+ */
+static double ampl_test = FIRSTTEST_DB;
+
+/**
+ * @brief Frequency array ID
+ */
+static uint8_t freq_idx = 0;
+
+/**
+ * @brief Audio Play function
+ * @details Played in Metri routine
+ */
+static void ht_metri_AudioPlay(void){
+    ht_audio_Tone(freq_test[freq_idx],ampl_test);
+    ht_audio_Play(TEST_DURATION);
+}
+
 /* More action/statement need more allocated memory space */
 static THD_WORKING_AREA(waRunMetri, 4096);
 #define ThdFunc_RunMetri THD_FUNCTION
@@ -90,15 +116,8 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
     (void)arg;
 
     uint8_t rndask;
-    double ampl_test = FIRSTTEST_DB;
     double conv_level;
 
-    //TODO: calibrated frequency array
-    //last calibration: 1.25 = 500Hz
-    //requiement: 250,500,1000,2000,4000,8000
-    double freq_test[] = {0.625,1.25,2.5,5,10,20};
-
-    uint8_t freq_idx = 0;
     uint8_t freq_max = sizeof(freq_test)/sizeof(freq_test[0]);
     char strbuff[IFACE_BUFF_SIZE];
 
@@ -111,61 +130,67 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
             ht_comm_Msg("Entering Mode: Ready\r\n");
             mode_status = STT_READY;
         }
+
         else if(mode_status==STT_CFILE){
-#if RECORD_TEST
+
+#if defined(USER_METRI_RECORD) && defined(USER_MMC)
             ht_mmcMetri_chkFile();
 #endif
             ht_comm_Msg("Entering Mode: Audiometri\r\n");
             mode_led=LED_METRI;
             mode_status=STT_METRI;
         }
+
         else if(mode_status==STT_METRI){
             rndask = ht_metri_RndOpt();
 
             if(mode_step==STEP_ASK){
+
                 chThdSleepMilliseconds(1000);
                 led_answer_off();
 
+                /*************************************/
                 led_answerA();
                 if(rndask == OPT_ASK_A){
-                    ht_audio_Tone(freq_test[freq_idx],ampl_test);
-                    ht_audio_Play(TEST_DURATION);
+                    ht_metri_AudioPlay();
                     numask = 1;
                 }
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
                 led_answer_off();
+                /*************************************/
 
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
 
+                /*************************************/
                 led_answerB();
                 if(rndask == OPT_ASK_B){
-                    ht_audio_Tone(freq_test[freq_idx],ampl_test);
-                    ht_audio_Play(TEST_DURATION);
+                    ht_metri_AudioPlay();
                     numask = 2;
                 }
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
                 led_answer_off();
+                /*************************************/
 
-#if USE_3FC
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
 
-                //TODO: implement LED for Answer C
-                //led_answerC();
+                /*************************************/
+                led_answerC();
                 if(rndask == OPT_ASK_C){
-                    ht_audio_Tone(freq_test[freq_idx],ampl_test);
-                    ht_audio_Play(TEST_DURATION);
+                    ht_metri_AudioPlay();
                     numask = 3;
                 }
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
                 led_answer_off();
-#endif
+                /*************************************/
 
                 mode_step=STEP_WAIT;
                 test_count++;
                 ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %5.2f, %5.4f\r\n",freq_test[freq_idx],ampl_test);
                 ht_comm_Msg(strbuff);
             }
+
             else if(mode_step==STEP_CHK){
+
                 //TODO: Check correspondent EXTI button for proper numresp
                 if(numresp==numask){
                     led_result_off();
@@ -173,7 +198,8 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     test_answer = 1;
                     test_right++;
                     ht_comm_Msg("Answer is True\r\n");
-#if RECORD_TEST
+
+#if defined(USER_METRI_RECORD) && defined(USER_MMC)
                     ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,1);
 #endif
                 }
@@ -182,7 +208,8 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     led_resultNO();
                     test_answer = 0;
                     ht_comm_Msg("Answer is False\r\n");
-#if RECORD_TEST
+
+#if defined(USER_METRI_RECORD) && defined(USER_MMC)
                     ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,0);
 #endif
                 }
@@ -219,7 +246,8 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     test_count = 0;
 
                     if(freq_idx == freq_max){
-#if RECORD_TEST
+
+#if defined(USER_METRI_RECORD) && defined(USER_MMC)
                         ht_mmcMetri_endResult();
 #endif
                         ht_comm_Msg("Testing Finish\r\n");
@@ -239,7 +267,6 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 uint8_t ht_metri_RndOpt(void){
     uint8_t rndnum, rndnumask;
 
-#if USE_3FC
     rndnum = rand() % 15;
 
     if(rndnum==0 || rndnum==3 || rndnum==6 || rndnum==9 || rndnum==12){
@@ -258,10 +285,6 @@ uint8_t ht_metri_RndOpt(void){
         ht_comm_Msg("Caution:Non-distributed condition reached\r\n");
         rndnumask = OPT_ASK_A;
     }
-#else
-    rndnum = rand() % 50;
-    rndnumask = rndnum % 2;
-#endif
 
     return rndnumask;
 }

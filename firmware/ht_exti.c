@@ -58,6 +58,7 @@ static void exti_idle_cb(void){
     mode_status=STT_STDBY;
     mode_btnA=0;
     mode_btnB=0;
+    mode_btnC=0;
     led_answer_off();
     led_result_off();
     led_resultYES();
