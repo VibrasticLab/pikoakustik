@@ -143,16 +143,16 @@ int main(void){
     ht_exti_Init();
 #endif
 
+#if USER_MMC
+   ht_mmc_Init();
+   ht_mmc_initCheck();
+#endif
+
 #if USER_SERIAL
  #if USER_IOT
    ht_commUART_Init();
  #endif
    ht_commUSB_Init();
-#endif
-
-#if USER_MMC
-   ht_mmc_Init();
-   ht_mmc_initCheck();
 #endif
 
 #if USER_AUDIO
