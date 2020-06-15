@@ -28,7 +28,12 @@
 /**
  * @brief Wahyu Anggoro gak ada kerjaan
  */
-#define TEST_MQTT_WAHYU TRUE
+#define TEST_MQTT_WAHYU FALSE
+
+/**
+ * @brief Enable subscribe routines
+ */
+#define SUBSCRIBE_CMD   FALSE
 
 /**
  * @brief Stop receive same topic

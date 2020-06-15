@@ -52,19 +52,23 @@ LOCAL void mqttConnectedCb(uint32_t *args){
     os_printf("MQTT: Connected\r\n");
 
 #if TEST_MQTT_WAHYU
- #if SUB_SAME_TOPIC
+ #if SUBSCRIBE_CMD
+  #if SUB_SAME_TOPIC
     MQTT_Subscribe(client, "device/esp8266", 0);
     os_printf("MQTT Subscribed: device/esp8266 \r\n");
- #else
+  #else
     MQTT_Subscribe(client, "device/null", 0);
     os_printf("MQTT Subscribed: device/null \r\n");
+  #endif
  #endif
 
     os_timer_disarm(&mqttWahyu_timer);
     os_timer_setfn(&mqttWahyu_timer, (os_timer_func_t *)mqttWahyu_timer_handler, NULL);
     os_timer_arm(&mqttWahyu_timer, 5000, 1);
 #else
+ #if SUBSCRIBE_CMD
     MQTT_Subscribe(client, "hello/world", 0);
+ #endif
     MQTT_Publish(client, "hello/world", "hello_mqtt", 10, 0, 0);
 #endif
 }

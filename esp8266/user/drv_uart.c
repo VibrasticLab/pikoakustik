@@ -306,20 +306,22 @@ uart_response(uint8 inChar){
                 for(i=0;i<100;i++){os_delay_us(10000);}
                 system_restart();
             }
+#if SUBSCRIBE_CMD
             else if(os_strcmp("sub",strReq)==0){
-#if TEST_MQTT_WAHYU
- #if SUB_SAME_TOPIC
+ #if TEST_MQTT_WAHYU
+  #if SUB_SAME_TOPIC
                 MQTT_Subscribe(&mqttClient, "device/esp8266", 0);
                 os_printf("MQTT Subscribed: device/esp8266 \r\n");
- #else
+  #else
                 MQTT_Subscribe(&mqttClient, "device/null", 0);
                 os_printf("MQTT Subscribed: device/null \r\n");
- #endif
-#else
+  #endif
+ #else
                 MQTT_Subscribe(&mqttClient, "hello/world", 0);
                 os_printf("MQTT Subscribed: hello/world \r\n");
-#endif
+ #endif
             }
+#endif
             else if(os_strcmp("pub",strReq)==0){
 #if TEST_MQTT_WAHYU
                 mqttWahyuTest();
