@@ -81,6 +81,11 @@ uint8_t test_answer;
 uint8_t test_conv = 0;
 
 /**
+ * @brief Last recorded random number
+ */
+static uint8_t last_rnd;
+
+/**
  * @brief calibrated array ratio for frequency
  * @details Last Calibrated: 1.25 = 500 Hz
  * @details Requirement: 250,500,1000,2000,4000,8000
@@ -147,17 +152,17 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
             ht_comm_Msg("Entering Mode: Audiometri\r\n");
             mode_led=LED_METRI;
             mode_status=STT_METRI;
+            srand((unsigned long)chVTGetSystemTime());
         }
 
         else if(mode_status==STT_METRI){
             if(mode_step==STEP_ASK){
+                rndask = ht_metri_RndOpt();
 #if USER_TEST_RNG
-                ht_comm_Buff(strbuff,sizeof(strbuff),"%lu\r\n", (unsigned long)chVTGetSystemTime());
+                ht_comm_Buff(strbuff,sizeof(strbuff),"rng: %4i\r\n", rndask);
                 ht_comm_Msg(strbuff);
                 chThdSleepMilliseconds(1000);
 #else
-                rndask = ht_metri_RndOpt();
-
                 chThdSleepMilliseconds(1000);
                 led_answer_off();
 
@@ -282,26 +287,31 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 uint8_t ht_metri_RndOpt(void){
     uint8_t rndnum, rndnumask;
 
-    rndnum = rand() % 15;
+    rndnum = rand() % 33;
+    while(rndnum==last_rnd){rndnum = rand() % 33;}
+    last_rnd = rndnum;
 
-    if(rndnum==0 || rndnum==3 || rndnum==6 || rndnum==9 || rndnum==12){
+    if(rndnum==0||rndnum==3||rndnum==6||rndnum==9||rndnum==12||rndnum==15||rndnum==18||rndnum==21||rndnum==24||rndnum==27||rndnum==30){
         rndnumask = OPT_ASK_A;
         ht_comm_Msg("Option A\r\n");
     }
-    else if(rndnum==1 ||rndnum==4 || rndnum==7 || rndnum==10 || rndnum==13){
+    else if(rndnum==1||rndnum==4||rndnum==7||rndnum==10||rndnum==13||rndnum==16||rndnum==19||rndnum==22||rndnum==25||rndnum==28||rndnum==31){
         rndnumask = OPT_ASK_B;
         ht_comm_Msg("Option B\r\n");
     }
-    else if(rndnum==2 ||rndnum==5 || rndnum==8 || rndnum==11 || rndnum==14){
+    else if(rndnum==2||rndnum==5||rndnum==8||rndnum==11||rndnum==14||rndnum==17||rndnum==20||rndnum==23||rndnum==26||rndnum==29||rndnum==32){
         rndnumask = OPT_ASK_C;
         ht_comm_Msg("Option C\r\n");
     }
     else{
-        ht_comm_Msg("Caution:Non-distributed condition reached\r\n");
         rndnumask = OPT_ASK_A;
     }
 
+#if USER_TEST_RNG
+    return rndnum;
+#else
     return rndnumask;
+#endif
 }
 
 void ht_metri_Init(void){

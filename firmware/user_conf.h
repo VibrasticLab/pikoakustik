@@ -25,7 +25,7 @@
 #define USER_CONF_H
 
 #define USER_TEST_STATE     FALSE
- #define USER_TEST_RNG      TRUE
+ #define USER_TEST_RNG      FALSE
 
 #define USER_SERIAL         TRUE
  #define USER_SERMSG_USB    TRUE

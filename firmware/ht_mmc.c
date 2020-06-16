@@ -323,7 +323,7 @@ void ht_mmc_Test(void){
 void ht_mmc_catTest(void){
     uint16_t line_num=0;
     char buffer[FILE_BUFF_SIZE];
-    char strbuff[IFACE_BUFF_SIZE];
+    char strbuff[FILE_BUFF_SIZE];
     char fname[LINE_BUFF_SIZE];
     FATFS FatFs;
     FIL *Fil;
@@ -447,7 +447,7 @@ void ht_mmc_lsFiles(void){
 void ht_mmc_catFiles(uint8_t fnum){
     uint16_t line_num=0;
     char buffer[FILE_BUFF_SIZE];
-    char strbuff[IFACE_BUFF_SIZE];
+    char strbuff[FILE_BUFF_SIZE];
     char fname[LINE_BUFF_SIZE];
     FATFS FatFs;
     FIL *Fil;
