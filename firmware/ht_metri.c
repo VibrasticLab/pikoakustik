@@ -31,6 +31,8 @@
 #include "ht_audio.h"
 #include "ht_mmc.h"
 
+#include "user_conf.h"
+
 extern uint8_t mode_led;
 
 /**
@@ -83,7 +85,11 @@ uint8_t test_conv = 0;
  * @details Last Calibrated: 1.25 = 500 Hz
  * @details Requirement: 250,500,1000,2000,4000,8000
  */
+#if USER_METRI_1FREQ
+static double freq_test[] = {1.25};
+#else
 static double freq_test[] = {0.625,1.25,2.5,5,10,20};
+#endif
 
 /**
  * @brief Amplification ratio
@@ -116,7 +122,9 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
     (void)arg;
 
     uint8_t rndask;
+#if USER_METRI_CONVLV
     double conv_level;
+#endif
 
     uint8_t freq_max = sizeof(freq_test)/sizeof(freq_test[0]);
     char strbuff[IFACE_BUFF_SIZE];
@@ -142,9 +150,13 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
         }
 
         else if(mode_status==STT_METRI){
-            rndask = ht_metri_RndOpt();
-
             if(mode_step==STEP_ASK){
+#if USER_TEST_RNG
+                ht_comm_Buff(strbuff,sizeof(strbuff),"%lu\r\n", (unsigned long)chVTGetSystemTime());
+                ht_comm_Msg(strbuff);
+                chThdSleepMilliseconds(1000);
+#else
+                rndask = ht_metri_RndOpt();
 
                 chThdSleepMilliseconds(1000);
                 led_answer_off();
@@ -187,11 +199,10 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 test_count++;
                 ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %5.2f, %5.4f\r\n",freq_test[freq_idx],ampl_test);
                 ht_comm_Msg(strbuff);
+#endif
             }
 
             else if(mode_step==STEP_CHK){
-
-                //TODO: Check correspondent EXTI button for proper numresp
                 if(numresp==numask){
                     led_result_off();
                     led_resultYES();
@@ -230,6 +241,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     ampl_test = ampl_test * 2;
                 }
 
+#if USER_TEST_STATE
                 conv_level = test_right*100/test_count;
                 if(conv_level>=72){
                     test_conv = 1;
@@ -237,6 +249,9 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 else{
                     test_conv = 0;
                 }
+#else
+                test_conv = 0;
+#endif
 
                 if(ampl_test <= SMALLEST_DB || test_conv == 1){
                     freq_idx++;

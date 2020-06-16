@@ -98,7 +98,7 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
         mode_status = STT_SETUP;
     }
     else if(mode_status==STT_READY){
-        if(mode_btnB==1){
+        if((mode_btnB==1)||(mode_btnC==1)){
             exti_idle_cb();
         }
     }
@@ -137,7 +137,7 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
         mode_status = STT_SETUP;
     }
     else if(mode_status==STT_READY){
-        if(mode_btnA==1){
+        if((mode_btnA==1)||(mode_btnC==1)){
             exti_idle_cb();
         }
     }
@@ -169,14 +169,14 @@ static void extiAnsC(EXTDriver *extp, expchannel_t channel) {
 #else
     if(mode_status==STT_IDLE){
         led_answer_off();
-        led_answerB();
-        mode_btnB=1;
+        led_answerC();
+        mode_btnC=1;
 
         ht_comm_Msg("Entering Mode: Setup\r\n");
         mode_status = STT_SETUP;
     }
     else if(mode_status==STT_READY){
-        if(mode_btnA==1){
+        if((mode_btnA==1)||(mode_btnB==1)){
             exti_idle_cb();
         }
     }
@@ -185,7 +185,7 @@ static void extiAnsC(EXTDriver *extp, expchannel_t channel) {
     }
     else if(mode_status==STT_METRI){
         if(mode_step==STEP_WAIT){
-            numresp = 2;
+            numresp = 3;
             mode_step = STEP_CHK;
         }
     }
