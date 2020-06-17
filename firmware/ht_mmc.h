@@ -31,23 +31,7 @@
  * @brief File buffer maximal size
  * @details More than 256 cause all system freeze
  */
-#define FILE_BUFF_SIZE 256
-
-/**
- * @brief Maximal buffer size for each line
- */
-#define LINE_BUFF_SIZE 16
-
-/**
- * @brief Print cat() line by line
- * @details Recommended to use this option
- */
-#define CAT_BY_LINE   TRUE
-
-/**
- * @brief rename to match name f_write()
- */
-#define f_readline      f_gets
+#define STR_BUFF_SIZE 128
 
 /**
  * @brief Define whether scan directory recursively or files only
@@ -56,11 +40,9 @@
 #define USE_SCAN_DIR FALSE
 
 /**
- * @brief Read a file as line by line
- * @details If enabled, _USE_STRFUNC must 1
- * @details Highly recommended to enable it
+ * @brief rename to match name f_write()
  */
-#define USE_READ_LINE TRUE
+#define f_readline    f_gets
 
 /**
  * @brief Test Write and Read Simple text in Append mode

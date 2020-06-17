@@ -1,4 +1,4 @@
-﻿/*
+/*
               UNKNOWN PUBLIC LICENSE
 
  Copyright (C) 2019 Achmadi S.T. M.T.
@@ -279,7 +279,7 @@ void ht_mmc_initCheck(void){
 }
 
 void ht_mmc_Test(void){
-    char buffer[FILE_BUFF_SIZE];
+    char buffer[STR_BUFF_SIZE];
     char strbuff[IFACE_BUFF_SIZE];
 
     FATFS FatFs;
@@ -322,9 +322,9 @@ void ht_mmc_Test(void){
 
 void ht_mmc_catTest(void){
     uint16_t line_num=0;
-    char buffer[FILE_BUFF_SIZE];
-    char strbuff[FILE_BUFF_SIZE];
-    char fname[LINE_BUFF_SIZE];
+    char buffer[STR_BUFF_SIZE];
+    char strbuff[STR_BUFF_SIZE];
+    char fname[STR_BUFF_SIZE];
     FATFS FatFs;
     FIL *Fil;
     FRESULT err;
@@ -348,8 +348,7 @@ void ht_mmc_catTest(void){
 
         err=f_open(Fil, fname, FA_OPEN_EXISTING |FA_READ);
         if(err==FR_OK){
-#if USE_READ_LINE
-            char line[LINE_BUFF_SIZE];
+            char line[STR_BUFF_SIZE];
             TCHAR *eof;
             while(1){
                 line_num++;
@@ -357,24 +356,11 @@ void ht_mmc_catTest(void){
                 eof=f_readline(line,sizeof(line),Fil);
                 if(eof[0]==0)break;
 
-    #if CAT_BY_LINE
                 ht_comm_Buff(strbuff,sizeof(strbuff),"%3i %s\r",line_num,line);
                 ht_comm_Msg(strbuff);
-    #else
-                ht_comm_Buff(buffer,sizeof(buffer),"%s%s\r",buffer,line);
-    #endif
             }
-#else
-            UINT br;
-            f_read(Fil,buffer,sizeof(buffer),&br);
-#endif
             f_close(Fil);
 
-#if !(CAT_BY_LINE)
-            ht_comm_Buff(strbuff,sizeof(strbuff),"%s\r\n",buffer);
-            ht_comm_Msg(strbuff);
-            ht_comm_Msg("All line printed at once\r\n\r\n");
-#endif
             ht_comm_Msg("------------\r\n\r\n");
         }
         else{
@@ -392,9 +378,9 @@ void ht_mmc_lsFiles(void){
     FATFS FatFs;
     FIL *Fil;
     FRESULT err;
-    char buff[FILE_BUFF_SIZE];
-    char buffer[FILE_BUFF_SIZE];
-    char fname[LINE_BUFF_SIZE];
+    char buff[STR_BUFF_SIZE];
+    char buffer[STR_BUFF_SIZE];
+    char fname[STR_BUFF_SIZE];
 
     Fil = (FIL*)malloc(sizeof(FIL));
 
@@ -446,9 +432,9 @@ void ht_mmc_lsFiles(void){
 
 void ht_mmc_catFiles(uint8_t fnum){
     uint16_t line_num=0;
-    char buffer[FILE_BUFF_SIZE];
-    char strbuff[FILE_BUFF_SIZE];
-    char fname[LINE_BUFF_SIZE];
+    char buffer[STR_BUFF_SIZE];
+    char strbuff[STR_BUFF_SIZE];
+    char fname[STR_BUFF_SIZE];
     FATFS FatFs;
     FIL *Fil;
     FRESULT err;
@@ -467,8 +453,7 @@ void ht_mmc_catFiles(uint8_t fnum){
 
         err=f_open(Fil, fname, FA_OPEN_EXISTING |FA_READ);
         if(err==FR_OK){
-#if USE_READ_LINE
-            char line[LINE_BUFF_SIZE];
+            char line[STR_BUFF_SIZE];
             TCHAR *eof;
             while(1){
                 line_num++;
@@ -476,24 +461,11 @@ void ht_mmc_catFiles(uint8_t fnum){
                 eof=f_readline(line,sizeof(line),Fil);
                 if(eof[0]==0)break;
 
-    #if CAT_BY_LINE
                 ht_comm_Buff(strbuff,sizeof(strbuff),"%3i %s\r",line_num,line);
                 ht_comm_Msg(strbuff);
-    #else
-                ht_comm_Buff(buffer,sizeof(buffer),"%s%s\r",buffer,line);
-    #endif
             }
-#else
-            UINT br;
-            f_read(Fil,buffer,sizeof(buffer),&br);
-#endif
             f_close(Fil);
 
-#if !(CAT_BY_LINE)
-            ht_comm_Buff(strbuff,sizeof(strbuff),"%s\r\n",buffer);
-            ht_comm_Msg(strbuff);
-            ht_comm_Msg("All line printed at once\r\n\r\n");
-#endif
             ht_comm_Msg("------------\r\n\r\n");
         }
         else{
@@ -513,9 +485,9 @@ void ht_mmcMetri_chkFile(void){
     FIL *Fil_new;
     FRESULT err;
     UINT bw;
-    char buff[FILE_BUFF_SIZE];
-    char buffer[FILE_BUFF_SIZE];
-    char fname[LINE_BUFF_SIZE];
+    char buff[STR_BUFF_SIZE];
+    char buffer[STR_BUFF_SIZE];
+    char fname[STR_BUFF_SIZE];
 
     Fil_last = (FIL*)malloc(sizeof(FIL));
     Fil_new = (FIL*)malloc(sizeof(FIL));
@@ -583,8 +555,8 @@ void ht_mmcMetri_chkFile(void){
 }
 
 void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
-    char buffer[FILE_BUFF_SIZE];
-    char fname[LINE_BUFF_SIZE];
+    char buffer[STR_BUFF_SIZE];
+    char fname[STR_BUFF_SIZE];
     FATFS FatFs;
     FIL *Fil;
     UINT bw;
@@ -595,8 +567,8 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
     if(mmc_check()!=FR_OK){return;}
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        if(result==0){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, FALSE\n",freq,ample);}
-        else if(result==1){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, TRUE\n",freq,ample);}
+        if(result==0){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, false\n",freq,ample);}
+        else if(result==1){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, true\n",freq,ample);}
 
         if(lastnum < 255){
             f_mount(&FatFs, "", 0);
@@ -621,8 +593,8 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
 }
 
 void ht_mmcMetri_endResult(void){
-    char buffer[FILE_BUFF_SIZE];
-    char fname[LINE_BUFF_SIZE];
+    char buffer[STR_BUFF_SIZE];
+    char fname[STR_BUFF_SIZE];
     FATFS FatFs;
     FIL *Fil;
     UINT bw;
