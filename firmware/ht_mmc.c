@@ -567,8 +567,7 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
     if(mmc_check()!=FR_OK){return;}
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        if(result==0){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, false\n",freq,ample);}
-        else if(result==1){ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, true\n",freq,ample);}
+        ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, %1i\n",freq,ample,result);
 
         if(lastnum < 255){
             f_mount(&FatFs, "", 0);

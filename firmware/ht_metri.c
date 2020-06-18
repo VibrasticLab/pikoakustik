@@ -150,6 +150,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
             ht_mmcMetri_chkFile();
 #endif
             ht_comm_Msg("Entering Mode: Audiometri\r\n");
+            ht_comm_Msg("------------\r\n");
             mode_led=LED_METRI;
             mode_status=STT_METRI;
             srand((unsigned long)chVTGetSystemTime());

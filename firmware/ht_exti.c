@@ -51,16 +51,25 @@ static uint8_t mode_btnC;
 
 #if !(USER_TEST_STATE)
 /**
- * @brief EXTI callback function for entering Standby Mode
+ * @brief Reset Button function called by EXTI callback
  */
-static void exti_idle_cb(void){
-    ht_comm_Msg("Entering Mode: Standby\r\n");
-    mode_status=STT_STDBY;
+static void reset_ledbutton(void){
     mode_btnA=0;
     mode_btnB=0;
     mode_btnC=0;
     led_answer_off();
     led_result_off();
+}
+
+/**
+ * @brief EXTI callback function for entering Standby Mode
+ */
+static void exti_idle_cb(void){
+    ht_comm_Msg("Entering Mode: Standby\r\n");
+    mode_status=STT_STDBY;
+
+    reset_ledbutton();
+
     led_resultYES();
 }
 
@@ -70,10 +79,11 @@ static void exti_idle_cb(void){
 static void exti_stdby_cb(void){
     ht_comm_Msg("Entering Mode: Checking Save File\r\n");
     palSetPad(GPIOA, LED_RUN);
-    led_answer_off();
-    led_result_off();
+
     mode_led=LED_CFILE;
     mode_status=STT_CFILE;
+
+    reset_ledbutton();
 }
 #endif
 
@@ -98,8 +108,10 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
         mode_status = STT_SETUP;
     }
     else if(mode_status==STT_READY){
-        if((mode_btnB==1)||(mode_btnC==1)){
-            exti_idle_cb();
+        if(mode_btnA==0){
+            if((mode_btnB==1)||(mode_btnC==1)){
+                exti_idle_cb();
+            }
         }
     }
     else if(mode_status==STT_STDBY){
@@ -137,8 +149,10 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
         mode_status = STT_SETUP;
     }
     else if(mode_status==STT_READY){
-        if((mode_btnA==1)||(mode_btnC==1)){
-            exti_idle_cb();
+        if(mode_btnB==0){
+            if((mode_btnA==1)||(mode_btnC==1)){
+                exti_idle_cb();
+            }
         }
     }
     else if(mode_status==STT_STDBY){
@@ -176,8 +190,10 @@ static void extiAnsC(EXTDriver *extp, expchannel_t channel) {
         mode_status = STT_SETUP;
     }
     else if(mode_status==STT_READY){
-        if((mode_btnA==1)||(mode_btnB==1)){
-            exti_idle_cb();
+        if(mode_btnC==0){
+            if((mode_btnA==1)||(mode_btnB==1)){
+                exti_idle_cb();
+            }
         }
     }
     else if(mode_status==STT_STDBY){
