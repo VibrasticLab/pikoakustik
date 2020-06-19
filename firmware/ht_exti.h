@@ -21,14 +21,14 @@
 #define HT_EXTI_H
 
 /**
- * @brief Button answer A on port C1
+ * @brief Button answer A on port C0
  */
-#define BTN_ANS_A 1
+#define BTN_ANS_A 0
 
 /**
- * @brief Button answer B on port C0
+ * @brief Button answer B on port C1
  */
-#define BTN_ANS_B 0
+#define BTN_ANS_B 1
 
 /**
  * @brief Button answer C on port C2

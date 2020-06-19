@@ -288,19 +288,19 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 uint8_t ht_metri_RndOpt(void){
     uint8_t rndnum, rndnumask;
 
-    rndnum = rand() % 33;
-    while(rndnum==last_rnd){rndnum = rand() % 33;}
+    rndnum = rand() % 36;
+    while(rndnum==last_rnd){rndnum = rand() % 36;}
     last_rnd = rndnum;
 
-    if(rndnum==0||rndnum==3||rndnum==6||rndnum==9||rndnum==12||rndnum==15||rndnum==18||rndnum==21||rndnum==24||rndnum==27||rndnum==30){
+    if(rndnum==0||rndnum==3||rndnum==6||rndnum==9||rndnum==12||rndnum==15||rndnum==18||rndnum==21||rndnum==24||rndnum==27||rndnum==30||rndnum==33){
         rndnumask = OPT_ASK_A;
         ht_comm_Msg("Option A\r\n");
     }
-    else if(rndnum==1||rndnum==4||rndnum==7||rndnum==10||rndnum==13||rndnum==16||rndnum==19||rndnum==22||rndnum==25||rndnum==28||rndnum==31){
+    else if(rndnum==1||rndnum==4||rndnum==7||rndnum==10||rndnum==13||rndnum==16||rndnum==19||rndnum==22||rndnum==25||rndnum==28||rndnum==31||rndnum==34){
         rndnumask = OPT_ASK_B;
         ht_comm_Msg("Option B\r\n");
     }
-    else if(rndnum==2||rndnum==5||rndnum==8||rndnum==11||rndnum==14||rndnum==17||rndnum==20||rndnum==23||rndnum==26||rndnum==29||rndnum==32){
+    else if(rndnum==2||rndnum==5||rndnum==8||rndnum==11||rndnum==14||rndnum==17||rndnum==20||rndnum==23||rndnum==26||rndnum==29||rndnum==32||rndnum==35){
         rndnumask = OPT_ASK_C;
         ht_comm_Msg("Option C\r\n");
     }

@@ -111,11 +111,12 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
         if(mode_btnA==0){
             if((mode_btnB==1)||(mode_btnC==1)){
                 exti_idle_cb();
+                mode_btnA=1;
             }
         }
     }
     else if(mode_status==STT_STDBY){
-        exti_stdby_cb();
+        if(mode_btnA==0){exti_stdby_cb();}
     }
     else if(mode_status==STT_METRI){
         if(mode_step==STEP_WAIT){
@@ -152,11 +153,12 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
         if(mode_btnB==0){
             if((mode_btnA==1)||(mode_btnC==1)){
                 exti_idle_cb();
+                mode_btnB=1;
             }
         }
     }
     else if(mode_status==STT_STDBY){
-        exti_stdby_cb();
+        if(mode_btnB==0){exti_stdby_cb();}
     }
     else if(mode_status==STT_METRI){
         if(mode_step==STEP_WAIT){
@@ -193,11 +195,12 @@ static void extiAnsC(EXTDriver *extp, expchannel_t channel) {
         if(mode_btnC==0){
             if((mode_btnA==1)||(mode_btnB==1)){
                 exti_idle_cb();
+                mode_btnC=1;
             }
         }
     }
     else if(mode_status==STT_STDBY){
-        exti_stdby_cb();
+        if(mode_btnC==0){exti_stdby_cb();}
     }
     else if(mode_status==STT_METRI){
         if(mode_step==STEP_WAIT){
@@ -215,8 +218,8 @@ static void extiAnsC(EXTDriver *extp, expchannel_t channel) {
  */
 static const EXTConfig extcfg = {
   {
-    {EXT_CH_MODE_FALLING_EDGE  | EXT_MODE_GPIOC, extiAnsB}, //0
-    {EXT_CH_MODE_FALLING_EDGE  | EXT_MODE_GPIOC, extiAnsA}, //1
+    {EXT_CH_MODE_FALLING_EDGE  | EXT_MODE_GPIOC, extiAnsA}, //0
+    {EXT_CH_MODE_FALLING_EDGE  | EXT_MODE_GPIOC, extiAnsB}, //1
     {EXT_CH_MODE_FALLING_EDGE  | EXT_MODE_GPIOC, extiAnsC}, //2
     {EXT_CH_MODE_DISABLED, NULL}, //3
     {EXT_CH_MODE_DISABLED, NULL}, //4
