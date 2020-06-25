@@ -79,6 +79,7 @@ void ht_mmc_catFiles(uint8_t fnum);
  * @brief Check save file existence before audiometri
  * @details If last number file already exist, create new in incremented last number
  * @details Otherwise, use current last number
+ * @details Save START on save files
  */
 void ht_mmcMetri_chkFile(void);
 
