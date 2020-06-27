@@ -247,7 +247,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     ampl_test = ampl_test * 2;
                 }
 
-#if USER_TEST_STATE
+#if USER_METRI_CONVLV
                 conv_level = test_right*100/test_count;
                 if(conv_level>=72){
                     test_conv = 1;
