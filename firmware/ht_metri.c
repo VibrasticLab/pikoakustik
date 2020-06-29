@@ -112,7 +112,7 @@ static uint8_t freq_idx = 0;
  */
 static void ht_metri_AudioPlay(void){
     ht_audio_Tone(freq_test[freq_idx],ampl_test);
-    ht_audio_Play(TEST_DURATION);
+    ht_audio_Play(TEST_DURATION,OUT_LEFT);
 }
 
 /* More action/statement need more allocated memory space */

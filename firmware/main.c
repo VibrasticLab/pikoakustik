@@ -158,8 +158,7 @@ int main(void){
 #if USER_AUDIO
     ht_audio_Init();
  #if USER_AUDIO_STARTUP
-    ht_audio_Tone(1,1);
-    ht_audio_Play(TEST_DURATION);
+    ht_audio_Test();
  #endif
 #endif
 

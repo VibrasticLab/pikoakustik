@@ -48,6 +48,12 @@ static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
     if(argc != 0){chprintf(chp,"usage: test\r\n");return;}
 
     chprintf(chp,"Serial Console at %d & buffer size %d bit\r\n",SERIAL_DEFAULT_BITRATE,SERIAL_BUFFERS_SIZE);
+
+#if USER_AUDIO
+    chprintf(chp,"Playing Audio Test\r\n");
+    ht_audio_Test();
+    chprintf(chp,"Audio Test Finished\r\n");
+#endif
 }
 
 /*******************************************/
@@ -62,7 +68,7 @@ static void cmd_zero(BaseSequentialStream *chp, int argc, char *argv[]) {
 
     chprintf(chp,"Test Audio: Sine Zero\r\n");
     ht_audio_Tone(1,0);
-    ht_audio_Play(TEST_DURATION);
+    ht_audio_Play(TEST_DURATION,OUT_LEFT);
     chprintf(chp,"Finished\r\n");
 }
 
@@ -85,7 +91,7 @@ static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
     chThdSleepMilliseconds(3000);
 
     ht_audio_Tone(1.25,1);
-    ht_audio_Play(TEST_DURATION);
+    ht_audio_Play(TEST_DURATION,OUT_LEFT);
     chprintf(chp,"Finished\r\n");
 }
 
@@ -99,7 +105,7 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
 
     chprintf(chp,"Test Audio: Sine Min\r\n");
     ht_audio_Tone(1.25,0);
-    ht_audio_Play(TEST_DURATION);
+    ht_audio_Play(TEST_DURATION,OUT_LEFT);
     chprintf(chp,"Finished\r\n");
 }
 
@@ -114,7 +120,7 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
 
         chprintf(chp,"Coba Audio: Tone\r\n");
         ht_audio_Tone(1,2*SMALLEST_DB);
-        ht_audio_Play(TEST_DURATION);
+        ht_audio_Play(TEST_DURATION,OUT_LEFT);
         chprintf(chp,"Finished\r\n");
     }
     else if (argc == 2) {
@@ -123,7 +129,7 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
 
         chprintf(chp,"Coba Tone: Freq:%3.1f Ampl:%3.1f\r\n",vfreq,vampl);
         ht_audio_Tone(vfreq,vampl);
-        ht_audio_Play(TEST_DURATION);
+        ht_audio_Play(TEST_DURATION,OUT_LEFT);
         chprintf(chp,"Finished\r\n");
     }
     else if (argc == 3) {
@@ -133,7 +139,7 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
 
         chprintf(chp,"Test Audio: Freq:%3.1f Ampl:%3.1f Durr:%1i\r\n",vfreq,vampl,vdurr);
         ht_audio_Tone(vfreq,vampl);
-        ht_audio_Play(vdurr);
+        ht_audio_Play(vdurr,OUT_LEFT);
         chprintf(chp,"Finished\r\n");
     }
     else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}

@@ -21,6 +21,31 @@
 #define HT_AUDIO_H
 
 /**
+ * @brief GPIO Port to enables Audio DAC
+ */
+#define AUDIO_IO    GPIOC
+
+/**
+ * @brief Pin to enables LEFT Audio DAC on GPIOC.9
+ */
+#define AUDIO_L     9
+
+/**
+ * @brief Pin to enables RIGHT Audio DAC on GPIOC.8
+ */
+#define AUDIO_R     8
+
+/**
+ * @brief Play Left Audio DAC
+ */
+#define OUT_LEFT    0
+
+/**
+ * @brief Play Right Audio DAC
+ */
+#define OUT_RIGHT   1
+
+/**
  * @brief Default Attenuation scale
  */
 #define DEFAULT_ATTEN 0.01
@@ -87,9 +112,15 @@ void ht_audio_Tone(double freq, double ampl);
 /**
  * @brief Play Audio via I2S
  * @details Play I2S Transmit buffer in loop
- * @param[in] uint8_t Durasi untuk putar data I2S
+ * @param[in] uint8_t Duration to play loop
+ * @param[in] uint8_t Choose @p OUT_LEFT or @p OUT_RIGHT
  */
-void ht_audio_Play(uint8_t duration);
+void ht_audio_Play(uint8_t duration, uint8_t lrc);
+
+/**
+ * @brief Test Audio DAC Left then Right
+ */
+void ht_audio_Test(void);
 
 #endif // HT_AUDIO_H
 /** @} */

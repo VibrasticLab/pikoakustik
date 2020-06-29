@@ -1,0 +1,8 @@
+- connect VDD to VREF+
+- Tantalum Cap (+) to VCAP1
+- Tantalum Cap (-) to GND
+- Tantalum Cap exactly 4.7uF
+- Remove XTALL Pin
+- Cap Audio Jack 220pF
+- Check Ferrit Audio Jack
+- R-Gain 0ohm in 2 position

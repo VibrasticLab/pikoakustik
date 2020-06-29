@@ -35,7 +35,7 @@
 #define USER_IOT            TRUE
  #define USER_IOTSEND_ONLY  TRUE
 
-#define USER_AUDIO          FALSE
+#define USER_AUDIO          TRUE
  #define USER_AUDIO_STARTUP TRUE
 
 #define USER_LED_BUTTON     TRUE

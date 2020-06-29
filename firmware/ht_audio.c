@@ -49,6 +49,12 @@ void ht_audio_Init(void){
     palSetPadMode(GPIOB, 12, PAL_MODE_ALTERNATE(5));
     palSetPadMode(GPIOB, 10, PAL_MODE_ALTERNATE(5));
     palSetPadMode(GPIOC, 3 , PAL_MODE_ALTERNATE(5));
+
+    palSetPadMode(AUDIO_IO,AUDIO_L,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(AUDIO_IO,AUDIO_R,PAL_MODE_OUTPUT_PUSHPULL);
+
+    palClearPad(AUDIO_IO,AUDIO_L);
+    palClearPad(AUDIO_IO,AUDIO_R);
 }
 
 void ht_audio_Zero(void){
@@ -91,11 +97,37 @@ void ht_audio_Tone(double freq, double ampl){
     i2scfg.size = buffsize;
 }
 
-void ht_audio_Play(uint8_t duration){
+void ht_audio_Play(uint8_t duration, uint8_t lrc){
+
+    switch (lrc) {
+        case OUT_LEFT: palSetPad(AUDIO_IO,AUDIO_L); break;
+        case OUT_RIGHT: palSetPad(AUDIO_IO,AUDIO_R);; break;
+        default: palSetPad(AUDIO_IO,AUDIO_L); break;
+    }
+
     i2sStart(&I2SD2, &i2scfg);
     i2sStartExchange(&I2SD2);
     chThdSleepMilliseconds(duration*10);
     i2sStopExchange(&I2SD2);
     i2sStop(&I2SD2);
+
+    palClearPad(AUDIO_IO,AUDIO_L);
+    palClearPad(AUDIO_IO,AUDIO_R);
+}
+
+void ht_audio_Test(void){
+    ht_audio_Tone(1,1);
+
+    chThdSleepMilliseconds(200);
+    ht_audio_Play(TEST_DURATION,OUT_LEFT);
+
+    chThdSleepMilliseconds(200);
+    ht_audio_Play(TEST_DURATION,OUT_RIGHT);
+
+    chThdSleepMilliseconds(200);
+    ht_audio_Play(TEST_DURATION,OUT_LEFT);
+
+    chThdSleepMilliseconds(200);
+    ht_audio_Play(TEST_DURATION,OUT_RIGHT);
 }
 /** @} */
