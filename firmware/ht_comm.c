@@ -44,16 +44,49 @@ extern const SerialUSBConfig serusbcfg;
  * @details Enumerated and not called directly by any normal thread
  */
 static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
-    if(argc != 0){chprintf(chp,"usage: test\r\n");return;}
+    uint8_t lrc;
 
     chprintf(chp,"Serial Console at %d & buffer size %d bit\r\n",SERIAL_DEFAULT_BITRATE,SERIAL_BUFFERS_SIZE);
-
-#if USER_AUDIO
     chprintf(chp,"Playing Audio Test\r\n");
+
+    if(argc==0){
+#if USER_AUDIO
+    chprintf(chp,"Test on both Channel\r\n");
     ht_audio_Test();
-    chprintf(chp,"Audio Test Finished\r\n");
+#else
+    chprintf(chp,"Audio features disabled\r\n");
 #endif
+    }
+    else if(argc == 1){
+#if USER_AUDIO
+        lrc = atoi(argv[0]);
+        ht_audio_Tone(1,1);
+
+        if(lrc==OUT_LEFT){
+            chprintf(chp,"Test on Left Channel\r\n");
+            ht_audio_Play(TEST_DURATION,OUT_LEFT);
+            chThdSleepMilliseconds(200);
+            ht_audio_Play(TEST_DURATION,OUT_LEFT);
+        }
+        else if(lrc==OUT_RIGHT){
+            chprintf(chp,"Test on Right Channel\r\n");
+            ht_audio_Play(TEST_DURATION,OUT_RIGHT);
+            chThdSleepMilliseconds(200);
+            ht_audio_Play(TEST_DURATION,OUT_RIGHT);
+        }
+        else{
+            chprintf(chp,"Channel option incorrect \r\n");
+        }
+#else
+        chprintf(chp,"Audio features disabled\r\n");
+#endif
+    }
+    else{
+        chprintf(chp,"usage: test [0|1] \r\n");
+        chprintf(chp,"0 -> Left Channel \r\n");
+        chprintf(chp,"1 -> Righ Channel \r\n");
+        return;
+    }
 }
 
 /*******************************************/
@@ -127,7 +160,7 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
         double vfreq = atof(argv[0]);
         double vampl = atof(argv[1]);
 
-        chprintf(chp,"Coba Tone: Freq:%3.1f Ampl:%3.1f\r\n",vfreq,vampl);
+        chprintf(chp,"Coba Tone: Freq:%5.3f Ampl:%5.3f\r\n",vfreq,vampl);
         ht_audio_Tone(vfreq,vampl);
         ht_audio_Play(TEST_DURATION,OUT_LEFT);
         chprintf(chp,"Finished\r\n");

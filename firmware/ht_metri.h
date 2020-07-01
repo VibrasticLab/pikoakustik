@@ -35,7 +35,7 @@
 #define OPT_ASK_B   1
 #define OPT_ASK_C   2
 
-#define TEST_SPEED_DELAY 200
+#define TEST_SPEED_DELAY 300
 
 /**
  * @brief Random number to choose answer position

@@ -6,3 +6,6 @@
 - Cap Audio Jack 220pF
 - Check Ferrit Audio Jack
 - R-Gain 0ohm in 2 position
+- Mount hole at PCB's edge
+- Add R 0ohm VDD ESP8266
+- ESP8266 Wifi-LED

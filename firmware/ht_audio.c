@@ -113,10 +113,12 @@ void ht_audio_Play(uint8_t duration, uint8_t lrc){
 
     palClearPad(AUDIO_IO,AUDIO_L);
     palClearPad(AUDIO_IO,AUDIO_R);
+
+    chThdSleepMilliseconds(100);
 }
 
 void ht_audio_Test(void){
-    ht_audio_Tone(1,1);
+    ht_audio_Tone(4,SMALLEST_DB);
 
     chThdSleepMilliseconds(200);
     ht_audio_Play(TEST_DURATION,OUT_LEFT);
