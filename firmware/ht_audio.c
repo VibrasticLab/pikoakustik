@@ -118,7 +118,7 @@ void ht_audio_Play(uint8_t duration, uint8_t lrc){
 }
 
 void ht_audio_Test(void){
-    ht_audio_Tone(4,SMALLEST_DB);
+    ht_audio_Tone(4,1);
 
     chThdSleepMilliseconds(200);
     ht_audio_Play(TEST_DURATION,OUT_LEFT);

@@ -9,3 +9,4 @@
 - Mount hole at PCB's edge
 - Add R 0ohm VDD ESP8266
 - ESP8266 Wifi-LED
+- LRC must exit or too loud
