@@ -171,7 +171,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 led_answerA();
                 if(rndask == OPT_ASK_A){
                     ht_metri_AudioPlay();
-                    numask = 1;
+                    numask = BTN_ANS_A;
                 }
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
                 led_answer_off();
@@ -183,7 +183,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 led_answerB();
                 if(rndask == OPT_ASK_B){
                     ht_metri_AudioPlay();
-                    numask = 2;
+                    numask = BTN_ANS_B;
                 }
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
                 led_answer_off();
@@ -195,7 +195,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 led_answerC();
                 if(rndask == OPT_ASK_C){
                     ht_metri_AudioPlay();
-                    numask = 3;
+                    numask = BTN_ANS_C;
                 }
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
                 led_answer_off();
@@ -316,7 +316,9 @@ uint8_t ht_metri_RndOpt(void){
 }
 
 void ht_metri_Init(void){
+#if !defined(USER_TEST_STATE)
     chThdCreateStatic(waRunMetri, sizeof(waRunMetri), NORMALPRIO, thdRunMetri, NULL);
+#endif
 }
 
 /** @} */

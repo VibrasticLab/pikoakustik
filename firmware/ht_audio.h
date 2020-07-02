@@ -118,9 +118,24 @@ void ht_audio_Tone(double freq, double ampl);
 void ht_audio_Play(uint8_t duration, uint8_t lrc);
 
 /**
+ * @brief Generate tone for testing
+ */
+void ht_audio_TestTone(void);
+
+/**
  * @brief Test Audio DAC Left then Right
  */
-void ht_audio_Test(void);
+void ht_audio_TestBoth(void);
+
+/**
+ * @brief Test Audio DAC Left only
+ */
+void ht_audio_TestLeft(void);
+
+/**
+ * @brief Test Audio DAC Right only
+ */
+void ht_audio_TestRight(void);
 
 #endif // HT_AUDIO_H
 /** @} */

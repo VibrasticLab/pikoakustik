@@ -29,6 +29,7 @@
 
 #define USER_SERIAL         TRUE
  #define USER_SERMSG_USB    TRUE
+ #define USER_SERCONSOLE    TRUE
 
 #define USER_MMC            TRUE
 

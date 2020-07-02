@@ -78,8 +78,6 @@ static ThdFunc_RunLED(thdRunLed, arg) {
         led_result_off();
         led_resultNO();
         chThdSleepMilliseconds(200);
-
-        led_answer_off();
  #else
         chThdSleepMilliseconds(400);
  #endif
@@ -90,17 +88,14 @@ static ThdFunc_RunLED(thdRunLed, arg) {
  #if USER_LED_BUTTON
         led_result_off();
         led_resultYES();
-        chThdSleepMilliseconds(250);
+        chThdSleepMilliseconds(200);
 
         led_result_off();
         led_resultNO();
-        chThdSleepMilliseconds(250);
-
-        led_answer_off();
+        chThdSleepMilliseconds(200);
  #else
-        chThdSleepMilliseconds(500);
+        chThdSleepMilliseconds(400);
  #endif
-
     }
 #else
     if(mode_led==LED_FAIL){
@@ -158,7 +153,7 @@ int main(void){
 #if USER_AUDIO
     ht_audio_Init();
  #if USER_AUDIO_STARTUP
-    ht_audio_Test();
+    ht_audio_TestBoth();
  #endif
 #endif
 

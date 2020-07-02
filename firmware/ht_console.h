@@ -20,20 +20,17 @@
 #ifndef HT_CONSOLE_H
 #define HT_CONSOLE_H
 
+#include "user_conf.h"
+
+#if USER_SERCONSOLE
+ #define SHELL_ECHO     TRUE
+ #define SHELL_PROMPT   TRUE
+#endif
+
 /**
  * @brief Size off buffer for chsnprintf() on interface
  */
 #define IFACE_BUFF_SIZE 128
-
-/**
- * @brief Enables Echo on Shell Console
- */
-#define SHELL_ECHO FALSE
-
-/**
- * @brief Enables Prompt on Shell Console
- */
-#define SHELL_PROMPT FALSE
 
 /**
  * @brief Shell thread working area size

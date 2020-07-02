@@ -49,6 +49,11 @@ static uint8_t mode_btnB;
  */
 static uint8_t mode_btnC;
 
+/**
+ * @brief Test button status variable
+ */
+static uint8_t test_button = 0;
+
 #if !(USER_TEST_STATE)
 /**
  * @brief Reset Button function called by EXTI callback
@@ -98,6 +103,7 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
 #if USER_TEST_STATE
     led_answer_off();
     led_answerA();
+    test_button = BTN_ANS_A;
 #else
     if(mode_status==STT_IDLE){
         led_answer_off();
@@ -120,7 +126,7 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
     }
     else if(mode_status==STT_METRI){
         if(mode_step==STEP_WAIT){
-            numresp = 1;
+            numresp = BTN_ANS_A;
             mode_step = STEP_CHK;
         }
     }
@@ -140,6 +146,7 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
 #if USER_TEST_STATE
     led_answer_off();
     led_answerB();
+    test_button = BTN_ANS_B;
 #else
     if(mode_status==STT_IDLE){
         led_answer_off();
@@ -162,7 +169,7 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
     }
     else if(mode_status==STT_METRI){
         if(mode_step==STEP_WAIT){
-            numresp = 2;
+            numresp = BTN_ANS_B;
             mode_step = STEP_CHK;
         }
     }
@@ -182,6 +189,7 @@ static void extiAnsC(EXTDriver *extp, expchannel_t channel) {
 #if USER_TEST_STATE
     led_answer_off();
     led_answerC();
+    test_button = BTN_ANS_C;
 #else
     if(mode_status==STT_IDLE){
         led_answer_off();
@@ -204,7 +212,7 @@ static void extiAnsC(EXTDriver *extp, expchannel_t channel) {
     }
     else if(mode_status==STT_METRI){
         if(mode_step==STEP_WAIT){
-            numresp = 3;
+            numresp = BTN_ANS_C;
             mode_step = STEP_CHK;
         }
     }
@@ -244,6 +252,41 @@ static const EXTConfig extcfg = {
   }
 };
 
+static THD_WORKING_AREA(waAudioTest, 512);
+#define ThdFunc_AudioTest THD_FUNCTION
+
+/**
+ * @brief Thread for Test Audio on Button command
+ */
+static ThdFunc_AudioTest(thdAudioTest, arg) {
+    (void)arg;
+    chRegSetThreadName("audio test");
+
+    ht_audio_Tone(4,1);
+
+    while(1){
+        switch(test_button){
+            case BTN_ANS_A:
+                ht_comm_Msg("Testing Left Channel\r\n");
+                ht_audio_TestLeft();
+                break;
+            case BTN_ANS_B:
+                ht_comm_Msg("Testing Both Channel\r\n");
+                ht_audio_TestBoth();
+                break;
+            case BTN_ANS_C:
+                ht_comm_Msg("Testing Right Channel\r\n");
+                ht_audio_TestRight();
+                break;
+            default: break;
+        }
+
+        test_button = 0;
+        led_answer_off();
+        chThdSleepMilliseconds(200);
+    }
+}
+
 void ht_exti_Init(void){
     palSetPadMode(GPIOC, BTN_ANS_A, PAL_MODE_INPUT_PULLUP);
     palSetPadMode(GPIOC, BTN_ANS_B, PAL_MODE_INPUT_PULLUP);
@@ -257,5 +300,9 @@ void ht_exti_Init(void){
     mode_btnA=0;
     mode_btnB=0;
     mode_btnC=0;
+
+#if USER_TEST_STATE
+    chThdCreateStatic(waAudioTest, sizeof(waAudioTest), NORMALPRIO, thdAudioTest, NULL);
+#endif
 }
 /** @} */

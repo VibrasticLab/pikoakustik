@@ -117,8 +117,12 @@ void ht_audio_Play(uint8_t duration, uint8_t lrc){
     chThdSleepMilliseconds(100);
 }
 
-void ht_audio_Test(void){
+void ht_audio_TestTone(void){
     ht_audio_Tone(4,1);
+}
+
+void ht_audio_TestBoth(void){
+    ht_audio_TestTone();
 
     chThdSleepMilliseconds(200);
     ht_audio_Play(TEST_DURATION,OUT_LEFT);
@@ -128,6 +132,26 @@ void ht_audio_Test(void){
 
     chThdSleepMilliseconds(200);
     ht_audio_Play(TEST_DURATION,OUT_LEFT);
+
+    chThdSleepMilliseconds(200);
+    ht_audio_Play(TEST_DURATION,OUT_RIGHT);
+}
+
+void ht_audio_TestLeft(void){
+    ht_audio_TestTone();
+
+    chThdSleepMilliseconds(200);
+    ht_audio_Play(TEST_DURATION,OUT_LEFT);
+
+    chThdSleepMilliseconds(200);
+    ht_audio_Play(TEST_DURATION,OUT_LEFT);
+}
+
+void ht_audio_TestRight(void){
+    ht_audio_TestTone();
+
+    chThdSleepMilliseconds(200);
+    ht_audio_Play(TEST_DURATION,OUT_RIGHT);
 
     chThdSleepMilliseconds(200);
     ht_audio_Play(TEST_DURATION,OUT_RIGHT);

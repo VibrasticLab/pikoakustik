@@ -52,7 +52,7 @@ static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
     if(argc==0){
 #if USER_AUDIO
     chprintf(chp,"Test on both Channel\r\n");
-    ht_audio_Test();
+    ht_audio_TestBoth();
 #else
     chprintf(chp,"Audio features disabled\r\n");
 #endif
