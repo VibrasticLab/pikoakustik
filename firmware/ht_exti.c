@@ -262,8 +262,6 @@ static ThdFunc_AudioTest(thdAudioTest, arg) {
     (void)arg;
     chRegSetThreadName("audio test");
 
-    ht_audio_Tone(4,1);
-
     while(1){
         switch(test_button){
             case BTN_ANS_A:
@@ -288,14 +286,14 @@ static ThdFunc_AudioTest(thdAudioTest, arg) {
 }
 
 void ht_exti_Init(void){
-    palSetPadMode(GPIOC, BTN_ANS_A, PAL_MODE_INPUT_PULLUP);
-    palSetPadMode(GPIOC, BTN_ANS_B, PAL_MODE_INPUT_PULLUP);
-    palSetPadMode(GPIOC, BTN_ANS_C, PAL_MODE_INPUT_PULLUP);
+    palSetPadMode(GPIOC, 0, PAL_MODE_INPUT_PULLUP);
+    palSetPadMode(GPIOC, 1, PAL_MODE_INPUT_PULLUP);
+    palSetPadMode(GPIOC, 2, PAL_MODE_INPUT_PULLUP);
 
     extStart(&EXTD1, &extcfg);
-    extChannelEnable(&EXTD1, BTN_ANS_A);
-    extChannelEnable(&EXTD1, BTN_ANS_B);
-    extChannelEnable(&EXTD1, BTN_ANS_C);
+    extChannelEnable(&EXTD1, 0);
+    extChannelEnable(&EXTD1, 1);
+    extChannelEnable(&EXTD1, 2);
 
     mode_btnA=0;
     mode_btnB=0;
