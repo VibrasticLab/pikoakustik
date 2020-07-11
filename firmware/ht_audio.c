@@ -118,7 +118,7 @@ void ht_audio_Play(uint8_t duration, uint8_t lrc){
 }
 
 void ht_audio_TestTone(void){
-    ht_audio_Tone(4,1);
+    ht_audio_Tone(1.25,1);
 }
 
 void ht_audio_TestBoth(void){
