@@ -20,6 +20,8 @@
 #ifndef HT_AUDIO_H
 #define HT_AUDIO_H
 
+#include "user_conf.h"
+
 /**
  * @brief GPIO Port to enables Audio DAC
  */
@@ -47,6 +49,7 @@
 
 /**
  * @brief Default Attenuation scale
+ * @details Dont increase as it will make noise more prominent
  */
 #define DEFAULT_ATTEN 0.01
 

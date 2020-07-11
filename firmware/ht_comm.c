@@ -60,7 +60,7 @@ static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
     else if(argc == 1){
 #if USER_AUDIO
         lrc = atoi(argv[0]);
-        ht_audio_Tone(1,1);
+        ht_audio_Tone(1.25,1);
 
         if(lrc==OUT_LEFT){
             chprintf(chp,"Test on Left Channel\r\n");

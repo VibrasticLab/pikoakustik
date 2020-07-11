@@ -495,7 +495,12 @@ void ht_mmcMetri_chkFile(void){
     if(mmc_check()!=FR_OK){return;}
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+
+#if USER_MMC_JSON
+        ht_comm_Buff(buffer,sizeof(buffer),"{");
+#else
         ht_comm_Buff(buffer,sizeof(buffer),"START\n");
+#endif
 
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
@@ -554,7 +559,7 @@ void ht_mmcMetri_chkFile(void){
     free(Fil_new);
 }
 
-void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
+void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t result){
     char buffer[STR_BUFF_SIZE];
     char fname[STR_BUFF_SIZE];
     FATFS FatFs;
@@ -567,7 +572,12 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t result){
     if(mmc_check()!=FR_OK){return;}
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, %1i\n",freq,ample,result);
+
+#if USER_MMC_JSON
+        ht_comm_Buff(buffer,sizeof(buffer),"{%5.2f: {%5.4f,%1i,%1i}}",freq,ample,lr_ch,result);
+#else
+        ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, %1i, %1i\n",freq,ample,lr_ch,result);
+#endif
 
         if(lastnum < 255){
             f_mount(&FatFs, "", 0);
@@ -604,7 +614,12 @@ void ht_mmcMetri_endResult(void){
     if(mmc_check()!=FR_OK){return;}
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+
+#if USER_MMC_JSON
+        ht_comm_Buff(buffer,sizeof(buffer),"}");
+#else
         ht_comm_Buff(buffer,sizeof(buffer),"END\n");
+#endif
 
         if(lastnum < 255){
             f_mount(&FatFs, "", 0);

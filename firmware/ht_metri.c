@@ -86,6 +86,11 @@ uint8_t test_conv = 0;
 static uint8_t last_rnd;
 
 /**
+ * @brief Channel status variable
+ */
+static uint8_t channel_stt=OUT_LEFT;
+
+/**
  * @brief calibrated array ratio for frequency
  * @details Last Calibrated: 1.25 = 500 Hz
  * @details Requirement: 250,500,1000,2000,4000,8000
@@ -110,9 +115,9 @@ static uint8_t freq_idx = 0;
  * @brief Audio Play function
  * @details Played in Metri routine
  */
-static void ht_metri_AudioPlay(void){
+static void ht_metri_AudioPlay(uint8_t lr_stt){
     ht_audio_Tone(freq_test[freq_idx],ampl_test);
-    ht_audio_Play(TEST_DURATION,OUT_LEFT);
+    ht_audio_Play(TEST_DURATION,lr_stt);
 }
 
 /* More action/statement need more allocated memory space */
@@ -170,7 +175,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 /*************************************/
                 led_answerA();
                 if(rndask == OPT_ASK_A){
-                    ht_metri_AudioPlay();
+                    ht_metri_AudioPlay(channel_stt);
                     numask = BTN_ANS_A;
                 }
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
@@ -182,7 +187,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 /*************************************/
                 led_answerB();
                 if(rndask == OPT_ASK_B){
-                    ht_metri_AudioPlay();
+                    ht_metri_AudioPlay(channel_stt);
                     numask = BTN_ANS_B;
                 }
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
@@ -194,7 +199,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 /*************************************/
                 led_answerC();
                 if(rndask == OPT_ASK_C){
-                    ht_metri_AudioPlay();
+                    ht_metri_AudioPlay(channel_stt);
                     numask = BTN_ANS_C;
                 }
                 chThdSleepMilliseconds(TEST_SPEED_DELAY);
@@ -217,7 +222,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     ht_comm_Msg("Answer is True\r\n");
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
-                    ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,1);
+                    ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,channel_stt,1);
 #endif
                 }
                 else{
@@ -227,7 +232,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     ht_comm_Msg("Answer is False\r\n");
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
-                    ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,0);
+                    ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,channel_stt,0);
 #endif
                 }
 
@@ -316,9 +321,7 @@ uint8_t ht_metri_RndOpt(void){
 }
 
 void ht_metri_Init(void){
-#if !defined(USER_TEST_STATE)
     chThdCreateStatic(waRunMetri, sizeof(waRunMetri), NORMALPRIO, thdRunMetri, NULL);
-#endif
 }
 
 /** @} */

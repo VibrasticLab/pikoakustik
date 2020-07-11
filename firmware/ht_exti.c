@@ -49,11 +49,6 @@ static uint8_t mode_btnB;
  */
 static uint8_t mode_btnC;
 
-/**
- * @brief Test button status variable
- */
-static uint8_t test_button = 0;
-
 #if !(USER_TEST_STATE)
 /**
  * @brief Reset Button function called by EXTI callback
@@ -252,6 +247,13 @@ static const EXTConfig extcfg = {
   }
 };
 
+#if USER_TEST_STATE
+/**
+ * @brief Test button status variable
+ */
+static uint8_t test_button = 0;
+
+
 static THD_WORKING_AREA(waAudioTest, 512);
 #define ThdFunc_AudioTest THD_FUNCTION
 
@@ -284,6 +286,7 @@ static ThdFunc_AudioTest(thdAudioTest, arg) {
         chThdSleepMilliseconds(200);
     }
 }
+#endif
 
 void ht_exti_Init(void){
     palSetPadMode(GPIOC, 0, PAL_MODE_INPUT_PULLUP);
