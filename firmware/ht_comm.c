@@ -35,6 +35,9 @@ extern SerialUSBDriver SDU1;
 extern const USBConfig usbcfg;
 extern const SerialUSBConfig serusbcfg;
 
+/* File related*/
+extern uint8_t lastnum;
+
 /*******************************************
  * Serial Command Callback
  *******************************************/
@@ -266,6 +269,18 @@ static void cmd_iotpub(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp,"IoT publish hello/world Finished\r\n\r\n");
 }
 
+/**
+ * @brief IoT Publish last saved
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_iotsend(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+    if(argc != 0){chprintf(chp,"usage: send\r\n");return;}
+
+    ht_mmc_lsFiles();
+    ht_mmc_sendFiles(lastnum);
+}
+
 /*******************************************/
 
 /**
@@ -290,6 +305,7 @@ static const ShellCommand commands[] = {
 #if USER_IOT
     {"sub",cmd_iotsub},
     {"pub",cmd_iotpub},
+    {"send",cmd_iotsend},
 #endif
     {NULL, NULL}
 };

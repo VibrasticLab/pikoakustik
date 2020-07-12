@@ -40,6 +40,11 @@
 #define USE_SCAN_DIR FALSE
 
 /**
+ * @brief File Buffer length variable
+ */
+#define FILE_BUFF_LEN 4096
+
+/**
  * @brief rename to match name f_write()
  */
 #define f_readline    f_gets
@@ -70,10 +75,16 @@ void ht_mmc_Init(void);
 void ht_mmc_lsFiles(void);
 
 /**
- * @brief Read a file on directory
+ * @brief Read a file on directory and print
  * @param[in] uint8_t Last number of Save file
  */
 void ht_mmc_catFiles(uint8_t fnum);
+
+/**
+ * @brief Read a file on directory and send to IoT
+ * @param[in] uint8_t Last number of Save file
+ */
+void ht_mmc_sendFiles(uint8_t fnum);
 
 /**
  * @brief Check save file existence before audiometri

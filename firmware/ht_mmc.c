@@ -44,7 +44,7 @@ MMCDriver MMCD1;
 /**
  * @brief Save file last number variable
  */
-static uint8_t lastnum=0;
+uint8_t lastnum=0;
 
 /**
  * @brief FatFS ready status flag
@@ -431,8 +431,6 @@ void ht_mmc_lsFiles(void){
 }
 
 void ht_mmc_catFiles(uint8_t fnum){
-    uint16_t line_num=0;
-    char buffer[STR_BUFF_SIZE];
     char strbuff[STR_BUFF_SIZE];
     char fname[STR_BUFF_SIZE];
     FATFS FatFs;
@@ -443,7 +441,6 @@ void ht_mmc_catFiles(uint8_t fnum){
 
     ht_comm_Msg("\r\nFiles Content\r\n");
     ht_comm_Msg("------------\r\n");
-    strcpy(buffer,"");
 
     if(mmc_check()!=FR_OK){return;}
 
@@ -456,17 +453,61 @@ void ht_mmc_catFiles(uint8_t fnum){
             char line[STR_BUFF_SIZE];
             TCHAR *eof;
             while(1){
-                line_num++;
                 strcpy(line,"");
                 eof=f_readline(line,sizeof(line),Fil);
                 if(eof[0]==0)break;
 
-                ht_comm_Buff(strbuff,sizeof(strbuff),"%3i %s\r",line_num,line);
+                ht_comm_Buff(strbuff,sizeof(strbuff),"%s\r",line);
                 ht_comm_Msg(strbuff);
             }
             f_close(Fil);
 
             ht_comm_Msg("------------\r\n\r\n");
+        }
+        else{
+            ht_comm_Buff(strbuff,sizeof(strbuff),"Open Error:%d\r\n",err);
+            ht_comm_Msg(strbuff);
+        }
+
+        f_mount(0, "", 0);
+    }
+    free(Fil);
+}
+
+void ht_mmc_sendFiles(uint8_t fnum){
+    char filebuff[FILE_BUFF_LEN+10];
+    char strbuff[STR_BUFF_SIZE];
+    char fname[STR_BUFF_SIZE];
+    FATFS FatFs;
+    FIL *Fil;
+    FRESULT err;
+
+    Fil = (FIL*)malloc(sizeof(FIL));
+
+    if(mmc_check()!=FR_OK){return;}
+
+    ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",fnum);
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+        f_mount(&FatFs, "", 0);
+
+        err=f_open(Fil, fname, FA_OPEN_EXISTING |FA_READ);
+        if(err==FR_OK){
+            ht_comm_Msg("send ");
+            ht_comm_IoT("send ");
+            char line[STR_BUFF_SIZE];
+            TCHAR *eof;
+            while(1){
+                strcpy(line,"");
+                eof=f_readline(line,sizeof(line),Fil);
+                if(eof[0]==0)break;
+
+                chsnprintf(filebuff,sizeof(filebuff),"%s",line);
+                ht_comm_Msg(filebuff);
+                ht_comm_IoT(filebuff);
+            }
+            ht_comm_Msg("\r\n");
+            ht_comm_IoT("\r\n");
+            f_close(Fil);
         }
         else{
             ht_comm_Buff(strbuff,sizeof(strbuff),"Open Error:%d\r\n",err);
@@ -497,7 +538,7 @@ void ht_mmcMetri_chkFile(void){
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
 #if USER_MMC_JSON
-        ht_comm_Buff(buffer,sizeof(buffer),"{");
+        ht_comm_Buff(buffer,sizeof(buffer),"[");
 #else
         ht_comm_Buff(buffer,sizeof(buffer),"START\n");
 #endif
@@ -560,6 +601,11 @@ void ht_mmcMetri_chkFile(void){
 }
 
 void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t result){
+
+#if USER_MMC_JSON
+    (void) lr_ch;
+#endif
+
     char buffer[STR_BUFF_SIZE];
     char fname[STR_BUFF_SIZE];
     FATFS FatFs;
@@ -574,7 +620,12 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t re
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
 #if USER_MMC_JSON
-        ht_comm_Buff(buffer,sizeof(buffer),"{%5.2f: {%5.4f,%1i,%1i}}",freq,ample,lr_ch,result);
+        if(result==1){
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"frequency\":%5.2f,\"amplitudo\":%5.4f,\"value\":true},",freq,ample);
+        }
+        else{
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"frequency\":%5.2f,\"amplitudo\":%5.4f,\"value\":false},",freq,ample);
+        }
 #else
         ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, %1i, %1i\n",freq,ample,lr_ch,result);
 #endif
@@ -616,7 +667,7 @@ void ht_mmcMetri_endResult(void){
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
 #if USER_MMC_JSON
-        ht_comm_Buff(buffer,sizeof(buffer),"}");
+        ht_comm_Buff(buffer,sizeof(buffer),"]");
 #else
         ht_comm_Buff(buffer,sizeof(buffer),"END\n");
 #endif
