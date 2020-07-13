@@ -37,7 +37,7 @@
 /**
  * @brief LED-16 blinky timer
  */
-LOCAL os_timer_t blinky_timer;
+os_timer_t blinky_timer;
 
 /**
  * @brief LED-16 blinky flag
@@ -51,6 +51,11 @@ LOCAL void ICACHE_FLASH_ATTR blinky_timer_handler(void *prv){
     if (blink_led==1) { gpio_output_set(0, BIT2, BIT2, 0); blink_led=0; }
     else { gpio_output_set(BIT2, 0, BIT2, 0); blink_led=1; }
 }
+
+/**
+ * @brief LED-16 blinky timer
+ */
+os_timer_t blinky_timer;
 
 /**
  * @brief Print some OS information

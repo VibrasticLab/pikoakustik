@@ -30,6 +30,8 @@
 #include "wifi_sta.h"
 #include "mqtt_client.h"
 
+extern os_timer_t blinky_timer;
+
 /**
  * @brief Test IP routine timer
  */
@@ -39,6 +41,11 @@ LOCAL os_timer_t ip_test_timer;
  * @brief ip_configured
  */
 LOCAL uint8 ip_configured = 0;
+
+/**
+ * @brief connected led ip_configured
+ */
+LOCAL uint8 led_ip_connect = 0;
 
 /**
  * @brief Wifi Station IP check routine
@@ -59,10 +66,19 @@ LOCAL void ICACHE_FLASH_ATTR user_wifi_station_check_ip(void){
             os_printf("Connecting to MQTT Broker \r\n");
             mqttWifiConnectCb(STATION_GOT_IP);
             ip_configured = 1;
+
+            os_timer_disarm(&blinky_timer);
+            os_timer_arm(&blinky_timer, 50, 1);
+            led_ip_connect = 1;
         }
     }
     else{
         ip_configured = 0;
+        if(led_ip_connect==1){
+            os_timer_disarm(&blinky_timer);
+            os_timer_arm(&blinky_timer, 500, 1);
+            led_ip_connect = 0;
+        }
     }
 
     os_timer_setfn(&ip_test_timer, (os_timer_func_t *)user_wifi_station_check_ip, NULL);
@@ -83,19 +99,13 @@ LOCAL void ICACHE_FLASH_ATTR user_wifi_station_conf(void){
 
     wifi_station_get_config(&stationConf);
 
-#if TEST_MQTT_WAHYU
-    os_strcpy(ssid,"AchmadiWifi");
+//    os_strcpy(ssid,"VibrasticLab");
+    os_strcpy(ssid,"H5");
     os_memcpy(&stationConf.ssid, ssid, 32);
 
-    os_strcpy(password,"achmadiwifi");
+//    os_strcpy(password,"bismillah");
+    os_strcpy(password,"gh0stpr0t0c0l");
     os_memcpy(&stationConf.password, password, 64);
-#else
-    os_strcpy(ssid,"cobaMQTT");
-    os_memcpy(&stationConf.ssid, ssid, 32);
-
-    os_strcpy(password,"cobamqtt");
-    os_memcpy(&stationConf.password, password, 64);
-#endif
 
     wifi_station_set_config(&stationConf);
 

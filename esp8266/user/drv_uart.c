@@ -306,29 +306,6 @@ uart_response(uint8 inChar){
                 for(i=0;i<100;i++){os_delay_us(10000);}
                 system_restart();
             }
-#if SUBSCRIBE_CMD
-            else if(os_strcmp("sub",strReq)==0){
- #if TEST_MQTT_WAHYU
-  #if SUB_SAME_TOPIC
-                MQTT_Subscribe(&mqttClient, "device/esp8266", 0);
-                os_printf("MQTT Subscribed: device/esp8266 \r\n");
-  #else
-                MQTT_Subscribe(&mqttClient, "device/null", 0);
-                os_printf("MQTT Subscribed: device/null \r\n");
-  #endif
- #else
-                MQTT_Subscribe(&mqttClient, "hello/world", 0);
-                os_printf("MQTT Subscribed: hello/world \r\n");
- #endif
-            }
-#endif
-            else if(os_strcmp("pub",strReq)==0){
-#if TEST_MQTT_WAHYU
-                mqttWahyuTest();
-#else
-                MQTT_Publish(&mqttClient, "hello/world", "hello_esp8266", 13, 0, 0);
-#endif
-            }
             else if(os_strcmp("sysinfo",strReq)==0){
                 os_printf("\r\n\r\n[INFO] -------------------------------------------\r\n");
 
@@ -347,6 +324,17 @@ uart_response(uint8 inChar){
 
                 os_printf("[INFO] -------------------------------------------\r\n");
                 os_printf("\r\n\r\n");
+            }
+            else if(os_strcmp("send",strReq)==0){
+                char jsonData[4096];
+                uint16_t jsonSize;
+
+                os_strcpy(jsonData,"[{\"frequency\": 1.25,\"amplitudo\":1.0000,\"value\":true},{\"frequency\": 1.25,\"amplitudo\":0.5000,\"value\":true},{\"frequency\": 1.25,\"amplitudo\":0.2500,\"value\":true},{\"frequency\": 1.25,\"amplitudo\":0.1250,\"value\":true},{\"frequency\": 1.25,\"amplitudo\":0.0625,\"value\":true},{\"frequency\": 1.25,\"amplitudo\":0.0312,\"value\":true},{\"frequency\": 1.25,\"amplitudo\":0.0156,\"value\":true},{\"frequency\": 1.25,\"amplitudo\":0.0078,\"value\":true},{\"frequency\": 1.25,\"amplitudo\":0.0039,\"value\":true},]");
+                jsonSize = os_strlen(jsonData);
+
+                os_printf("%s\r\n",jsonData);
+                os_printf("strlen=%d\r\n",jsonSize);
+                MQTT_Publish(&mqttClient, "device/audiometri", jsonData, jsonSize, 0, 0);
             }
             else if(os_strcmp("help",strReq)==0){
                 os_printf("%s\r\n",cmdlist);
