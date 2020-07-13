@@ -279,6 +279,7 @@ static void cmd_iotsend(BaseSequentialStream *chp, int argc, char *argv[]) {
 
     ht_mmc_lsFiles();
     ht_mmc_sendFiles(lastnum);
+    ht_comm_IoT("send\r\n");
 }
 
 /*******************************************/

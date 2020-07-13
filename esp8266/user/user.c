@@ -98,6 +98,6 @@ void ICACHE_FLASH_ATTR user_init(){
     PIN_PULLUP_DIS(PERIPHS_IO_MUX_GPIO2_U);
     
     os_timer_setfn(&blinky_timer, (os_timer_func_t *)blinky_timer_handler, NULL);
-    os_timer_arm(&blinky_timer, 500, 1);
+    os_timer_arm(&blinky_timer, 1000, 1);
 }
 /** @} */

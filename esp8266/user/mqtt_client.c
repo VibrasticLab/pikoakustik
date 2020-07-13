@@ -4,16 +4,29 @@
 #include "user_interface.h"
 #include "mem.h"
 
+extern os_timer_t blinky_timer;
+
 MQTT_Client mqttClient;
+
+/**
+ * @brief MQTT connected led
+ */
+LOCAL uint8 led_mqtt_connect = 0;
 
 LOCAL void mqttConnectedCb(uint32_t *args){
     MQTT_Client* client = (MQTT_Client*)args;
     os_printf("MQTT: Connected\r\n");
+
+    os_timer_disarm(&blinky_timer);
+    os_timer_arm(&blinky_timer, 50, 1);
 }
 
 LOCAL void mqttDisconnectedCb(uint32_t *args){
     MQTT_Client* client = (MQTT_Client*)args;
     os_printf("MQTT: Disconnected\r\n");
+
+    os_timer_disarm(&blinky_timer);
+    os_timer_arm(&blinky_timer, 500, 1);
 }
 
 LOCAL void mqttPublishedCb(uint32_t *args){

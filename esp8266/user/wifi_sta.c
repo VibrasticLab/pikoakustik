@@ -43,7 +43,7 @@ LOCAL os_timer_t ip_test_timer;
 LOCAL uint8 ip_configured = 0;
 
 /**
- * @brief connected led ip_configured
+ * @brief IP connected led
  */
 LOCAL uint8 led_ip_connect = 0;
 
@@ -67,16 +67,18 @@ LOCAL void ICACHE_FLASH_ATTR user_wifi_station_check_ip(void){
             mqttWifiConnectCb(STATION_GOT_IP);
             ip_configured = 1;
 
-            os_timer_disarm(&blinky_timer);
-            os_timer_arm(&blinky_timer, 50, 1);
-            led_ip_connect = 1;
+            if(led_ip_connect==0){
+                os_timer_disarm(&blinky_timer);
+                os_timer_arm(&blinky_timer, 500, 1);
+                led_ip_connect = 1;
+            }
         }
     }
     else{
         ip_configured = 0;
         if(led_ip_connect==1){
             os_timer_disarm(&blinky_timer);
-            os_timer_arm(&blinky_timer, 500, 1);
+            os_timer_arm(&blinky_timer, 1000, 1);
             led_ip_connect = 0;
         }
     }
@@ -99,12 +101,17 @@ LOCAL void ICACHE_FLASH_ATTR user_wifi_station_conf(void){
 
     wifi_station_get_config(&stationConf);
 
-//    os_strcpy(ssid,"VibrasticLab");
-    os_strcpy(ssid,"H5");
-    os_memcpy(&stationConf.ssid, ssid, 32);
+#if WIFI_LAB
+    os_strcpy(ssid,"VibrasticLab");
+    os_strcpy(password,"bismillah");
+#endif
 
-//    os_strcpy(password,"bismillah");
+#if WIFI_WAHYU
+    os_strcpy(ssid,"H5");
     os_strcpy(password,"gh0stpr0t0c0l");
+#endif
+
+    os_memcpy(&stationConf.ssid, ssid, 32);
     os_memcpy(&stationConf.password, password, 64);
 
     wifi_station_set_config(&stationConf);

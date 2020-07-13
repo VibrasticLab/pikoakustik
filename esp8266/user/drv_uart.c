@@ -339,12 +339,13 @@ uart_response(uint8 inChar){
             else if(os_strcmp("help",strReq)==0){
                 os_printf("%s\r\n",cmdlist);
             }
+#if UART_SEND_NACK
             else{
                 os_strcat(strReq,"\r\n");
                 uart0_sendStr("Serial Data is ");
                 uart0_sendStr(strReq);
             }
-
+#endif
             os_memset(uart_rx_buffer,0,sizeof(uart_rx_buffer));
             uart_rx_cnt = 0;
             uart_rx_send = 1;

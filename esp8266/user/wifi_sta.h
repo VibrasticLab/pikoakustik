@@ -20,6 +20,9 @@
 #ifndef WIFI_STA_H
 #define WIFI_STA_H
 
+#define WIFI_WAHYU  FALSE
+#define WIFI_LAB    TRUE
+
 /**
  * @brief Wifi Station Initialization
  */

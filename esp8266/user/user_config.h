@@ -40,6 +40,11 @@
  */
 #define SUB_SAME_TOPIC  FALSE
 
+/**
+ * @brief Whether UART Send NACK command or not
+ */
+#define UART_SEND_NACK  FALSE
+
 #endif
 
 /** @} */

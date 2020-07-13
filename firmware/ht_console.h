@@ -25,6 +25,9 @@
 #if USER_SERCONSOLE
  #define SHELL_ECHO     TRUE
  #define SHELL_PROMPT   TRUE
+#else
+ #define SHELL_ECHO     FALSE
+ #define SHELL_PROMPT   FALSE
 #endif
 
 /**
