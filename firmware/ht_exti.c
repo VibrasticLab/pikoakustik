@@ -49,6 +49,14 @@ static uint8_t mode_btnB;
  */
 static uint8_t mode_btnC;
 
+#if USER_TEST_STATE
+
+/**
+ * @brief Global test button variable
+ */
+static uint8_t test_button;
+#endif
+
 #if !(USER_TEST_STATE)
 /**
  * @brief Reset Button function called by EXTI callback

@@ -87,7 +87,7 @@
  * @details Note this use DEFAULT_ATTEN as 0.01
  * @details So signal value is SMALLEST_DB*DEFAULT_ATTEN*32767=1
  */
-#define SMALLEST_DB     0.0031
+#define SMALLEST_DB     0.001
 
 /**
  * @brief First dB scale at first step on audiotest
@@ -118,7 +118,7 @@ void ht_audio_Tone(double freq, double ampl);
  * @param[in] uint8_t Duration to play loop
  * @param[in] uint8_t Choose @p OUT_LEFT or @p OUT_RIGHT
  */
-void ht_audio_Play(uint8_t duration, uint8_t lrc);
+void ht_audio_Play(uint16_t duration, uint8_t lrc);
 
 /**
  * @brief Generate tone for testing

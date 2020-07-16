@@ -97,7 +97,10 @@ void ht_audio_Tone(double freq, double ampl){
     i2scfg.size = buffsize;
 }
 
-void ht_audio_Play(uint8_t duration, uint8_t lrc){
+void ht_audio_Play(uint16_t duration, uint8_t lrc){
+
+    palClearPad(AUDIO_IO,AUDIO_L);
+    palClearPad(AUDIO_IO,AUDIO_R);
 
     switch (lrc) {
         case OUT_LEFT: palSetPad(AUDIO_IO,AUDIO_L); break;
