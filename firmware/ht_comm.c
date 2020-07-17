@@ -102,11 +102,23 @@ static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
  * @details Enumerated and not called directly by any normal thread
  */
 static void cmd_zero(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
-    if(argc != 0){chprintf(chp,"usage: zero\r\n");return;}
+    if(argc != 1){chprintf(chp,"usage: zero <0/1>\r\n");return;}
+
+    uint8_t lrc = atoi(argv[0]);
+    switch(lrc){
+        case OUT_LEFT:
+            ht_audio_LeftCh();
+            chprintf(chp,"Left Channel on\r\n");
+            break;
+
+        case OUT_RIGHT:
+            ht_audio_RightCh();
+            chprintf(chp,"Right Channel on\r\n");
+            break;
+    }
 
     chprintf(chp,"Test Audio: Sine Zero\r\n");
-    ht_audio_Tone(1,0);
+    ht_audio_Tone(1.25,0);
     ht_audio_LeftCh();
     ht_audio_Play(TEST_DURATION);
     ht_audio_DisableCh();
@@ -118,19 +130,22 @@ static void cmd_zero(BaseSequentialStream *chp, int argc, char *argv[]) {
  * @details Enumerated and not called directly by any normal thread
  */
 static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
-    if(argc != 0){chprintf(chp,"usage: max\r\n");return;}
+    if(argc != 1){chprintf(chp,"usage: max <0/1>\r\n");return;}
 
-    chprintf(chp,"Test Audio: Sine Max\r\n");
+    uint8_t lrc = atoi(argv[0]);
+    switch(lrc){
+        case OUT_LEFT:
+            ht_audio_LeftCh();
+            chprintf(chp,"Left Channel on\r\n");
+            break;
 
-    chprintf(chp,"--------------------------\r\n");
-    chprintf(chp,"DONT PLAY MAX ON HEADPHONE !!!\r\n");
-    chprintf(chp,"OR YOUR EAR WILL DAMAGED !!!\r\n");
-    chprintf(chp,"--------------------------\r\n");
+        case OUT_RIGHT:
+            ht_audio_RightCh();
+            chprintf(chp,"Right Channel on\r\n");
+            break;
+    }
 
-    chprintf(chp,"Play Max in 3s !!!\r\n");
-    chThdSleepMilliseconds(3000);
-
+    chprintf(chp,"Test Audio: Sine Maximum\r\n");
     ht_audio_Tone(1.25,1);
     ht_audio_LeftCh();
     ht_audio_Play(TEST_DURATION);
@@ -143,11 +158,23 @@ static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
  * @details Enumerated and not called directly by any normal thread
  */
 static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
-    if(argc != 0){chprintf(chp,"usage: min\r\n");return;}
+    if(argc != 1){chprintf(chp,"usage: min <0/1>\r\n");return;}
 
-    chprintf(chp,"Test Audio: Sine Min\r\n");
-    ht_audio_Tone(1.25,0);
+    uint8_t lrc = atoi(argv[0]);
+    switch(lrc){
+        case OUT_LEFT:
+            ht_audio_LeftCh();
+            chprintf(chp,"Left Channel on\r\n");
+            break;
+
+        case OUT_RIGHT:
+            ht_audio_RightCh();
+            chprintf(chp,"Right Channel on\r\n");
+            break;
+    }
+
+    chprintf(chp,"Test Audio: Sine Minimum\r\n");
+    ht_audio_Tone(1.25,SMALLEST_DB);
     ht_audio_LeftCh();
     ht_audio_Play(TEST_DURATION);
     ht_audio_DisableCh();
@@ -155,51 +182,10 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
 }
 
 /**
- * @brief Audio Play with Frequency, Amplitude, Duration command callback
- * @details Enumerated and not called directly by any normal thread
- */
-static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
-
-    if(argc == 0){
-        (void) argv;
-
-        chprintf(chp,"Coba Audio: Tone\r\n");
-        ht_audio_Tone(1,1);
-        ht_audio_LeftCh();
-        ht_audio_Play(TEST_DURATION);
-        chprintf(chp,"Finished\r\n");
-    }
-    else if (argc == 2) {
-        double vfreq = atof(argv[0]);
-        double vampl = atof(argv[1]);
-
-        chprintf(chp,"Coba Tone: Freq:%5.3f Ampl:%5.3f\r\n",vfreq,vampl);
-        ht_audio_Tone(vfreq,vampl);
-        ht_audio_LeftCh();
-        ht_audio_Play(TEST_DURATION);
-        chprintf(chp,"Finished\r\n");
-    }
-    else if (argc == 3) {
-        double vfreq = atof(argv[0]);
-        double vampl = atof(argv[1]);
-        u_int8_t vdurr = atoi(argv[2]);
-
-        chprintf(chp,"Test Audio: Freq:%3.1f Ampl:%3.1f Durr:%1i\r\n",vfreq,vampl,vdurr);
-        ht_audio_Tone(vfreq,vampl);
-        ht_audio_TestLeft();
-        ht_audio_Play(vdurr);
-        chprintf(chp,"Finished\r\n");
-    }
-    else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
-
-    ht_audio_DisableCh();
-}
-
-/**
  * @brief Audio Play at a frequency and down from highest to lowest amplitude
  * @details Enumerated and not called directly by any normal thread
  */
-static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
+static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
     double vampl = 1;
     double vfreq = 1.25;
     uint8_t lrc = 0;
@@ -216,7 +202,7 @@ static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
     }
     else if(argc == 2){
         vfreq = atof(argv[0]);
-        lrc = atof(argv[1]);
+        lrc = atoi(argv[1]);
 
         switch(lrc){
             case OUT_LEFT:
@@ -236,7 +222,7 @@ static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
 
 
     while(1){
-        chprintf(chp,"Sing: Freq:%5.3f Ampl:%5.3f\r\n",vfreq,vampl);
+        chprintf(chp,"Sing: Freq:%5.3f Ampl:%6.4f\r\n",vfreq,vampl);
         ht_audio_Tone(vfreq,vampl);
         ht_audio_Play(sing_durr);
         chThdSleepMilliseconds(500);
@@ -362,7 +348,6 @@ static const ShellCommand commands[] = {
 #if USER_AUDIO
     {"zero",cmd_zero},
     {"tone",cmd_tone},
-    {"sing",cmd_sing},
     {"max",cmd_max},
     {"min",cmd_min},
 #endif

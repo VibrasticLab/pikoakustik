@@ -87,7 +87,7 @@
  * @details Note this use DEFAULT_ATTEN at 0.01
  * @details So signal value is SMALLEST_DB*DEFAULT_ATTEN*32767=1
  */
-#define SMALLEST_DB     0.003
+#define SMALLEST_DB     0.0031
 
 /**
  * @brief First dB scale at first step on audiotest
