@@ -84,10 +84,10 @@
 
 /**
  * @brief Smallest signal scale can produced as far for now
- * @details Note this use DEFAULT_ATTEN as 0.01
+ * @details Note this use DEFAULT_ATTEN at 0.01
  * @details So signal value is SMALLEST_DB*DEFAULT_ATTEN*32767=1
  */
-#define SMALLEST_DB     0.001
+#define SMALLEST_DB     0.003
 
 /**
  * @brief First dB scale at first step on audiotest
@@ -116,9 +116,24 @@ void ht_audio_Tone(double freq, double ampl);
  * @brief Play Audio via I2S
  * @details Play I2S Transmit buffer in loop
  * @param[in] uint8_t Duration to play loop
- * @param[in] uint8_t Choose @p OUT_LEFT or @p OUT_RIGHT
  */
-void ht_audio_Play(uint16_t duration, uint8_t lrc);
+void ht_audio_Play(uint16_t duration);
+
+/**
+ * @brief Disable both DAC channel
+ * @details Must called after every @p ht_audio_Play()
+ */
+void ht_audio_DisableCh(void);
+
+/**
+ * @brief Enable DAC Left Channel
+ */
+void ht_audio_LeftCh(void);
+
+/**
+ * @brief Enable DAC Right Channel
+ */
+void ht_audio_RightCh(void);
 
 /**
  * @brief Generate tone for testing

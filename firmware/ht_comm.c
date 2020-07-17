@@ -66,20 +66,23 @@ static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
         ht_audio_Tone(1.25,1);
 
         if(lrc==OUT_LEFT){
+            ht_audio_LeftCh();
             chprintf(chp,"Test on Left Channel\r\n");
-            ht_audio_Play(TEST_DURATION,OUT_LEFT);
+            ht_audio_Play(TEST_DURATION);
             chThdSleepMilliseconds(200);
-            ht_audio_Play(TEST_DURATION,OUT_LEFT);
+            ht_audio_Play(TEST_DURATION);
         }
         else if(lrc==OUT_RIGHT){
+            ht_audio_RightCh();
             chprintf(chp,"Test on Right Channel\r\n");
-            ht_audio_Play(TEST_DURATION,OUT_RIGHT);
+            ht_audio_Play(TEST_DURATION);
             chThdSleepMilliseconds(200);
-            ht_audio_Play(TEST_DURATION,OUT_RIGHT);
+            ht_audio_Play(TEST_DURATION);
         }
         else{
             chprintf(chp,"Channel option incorrect \r\n");
         }
+        ht_audio_DisableCh();
 #else
         chprintf(chp,"Audio features disabled\r\n");
 #endif
@@ -104,7 +107,9 @@ static void cmd_zero(BaseSequentialStream *chp, int argc, char *argv[]) {
 
     chprintf(chp,"Test Audio: Sine Zero\r\n");
     ht_audio_Tone(1,0);
-    ht_audio_Play(TEST_DURATION,OUT_LEFT);
+    ht_audio_LeftCh();
+    ht_audio_Play(TEST_DURATION);
+    ht_audio_DisableCh();
     chprintf(chp,"Finished\r\n");
 }
 
@@ -127,7 +132,9 @@ static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
     chThdSleepMilliseconds(3000);
 
     ht_audio_Tone(1.25,1);
-    ht_audio_Play(TEST_DURATION,OUT_LEFT);
+    ht_audio_LeftCh();
+    ht_audio_Play(TEST_DURATION);
+    ht_audio_DisableCh();
     chprintf(chp,"Finished\r\n");
 }
 
@@ -141,7 +148,9 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
 
     chprintf(chp,"Test Audio: Sine Min\r\n");
     ht_audio_Tone(1.25,0);
-    ht_audio_Play(TEST_DURATION,OUT_LEFT);
+    ht_audio_LeftCh();
+    ht_audio_Play(TEST_DURATION);
+    ht_audio_DisableCh();
     chprintf(chp,"Finished\r\n");
 }
 
@@ -156,7 +165,8 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
 
         chprintf(chp,"Coba Audio: Tone\r\n");
         ht_audio_Tone(1,1);
-        ht_audio_Play(TEST_DURATION,OUT_LEFT);
+        ht_audio_LeftCh();
+        ht_audio_Play(TEST_DURATION);
         chprintf(chp,"Finished\r\n");
     }
     else if (argc == 2) {
@@ -165,7 +175,8 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
 
         chprintf(chp,"Coba Tone: Freq:%5.3f Ampl:%5.3f\r\n",vfreq,vampl);
         ht_audio_Tone(vfreq,vampl);
-        ht_audio_Play(TEST_DURATION,OUT_LEFT);
+        ht_audio_LeftCh();
+        ht_audio_Play(TEST_DURATION);
         chprintf(chp,"Finished\r\n");
     }
     else if (argc == 3) {
@@ -175,10 +186,13 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
 
         chprintf(chp,"Test Audio: Freq:%3.1f Ampl:%3.1f Durr:%1i\r\n",vfreq,vampl,vdurr);
         ht_audio_Tone(vfreq,vampl);
-        ht_audio_Play(vdurr,OUT_LEFT);
+        ht_audio_TestLeft();
+        ht_audio_Play(vdurr);
         chprintf(chp,"Finished\r\n");
     }
     else{chprintf(chp,"usage: tone | tone <freq> <ampl>\r\n");}
+
+    ht_audio_DisableCh();
 }
 
 /**
@@ -186,17 +200,17 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
  * @details Enumerated and not called directly by any normal thread
  */
 static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
     double vampl = 1;
     uint16_t sing_durr = 500;
 
     if(argc != 1){chprintf(chp,"usage: sing <freq>\r\n");return;}
     double vfreq = atof(argv[0]);
 
+    ht_audio_RightCh();
     while(1){
         chprintf(chp,"Coba Tone: Freq:%5.3f Ampl:%5.3f\r\n",vfreq,vampl);
-        ht_audio_Tone(1.25,vampl);
-        ht_audio_Play(sing_durr,OUT_LEFT);
+        ht_audio_Tone(vfreq,vampl);
+        ht_audio_Play(sing_durr);
         chThdSleepMilliseconds(500);
 
         vampl = vampl/2;
@@ -205,6 +219,33 @@ static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
             break;
         }
     }
+    ht_audio_DisableCh();
+}
+
+/**
+ * @brief Test enable the DAC
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_dacon(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+
+    if(argc != 0){chprintf(chp,"usage: dacon\r\n");return;}
+
+    palSetPad(AUDIO_IO,AUDIO_L);
+    palSetPad(AUDIO_IO,AUDIO_R);
+}
+
+/**
+ * @brief Test disable the DAC
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_dacoff(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+
+    if(argc != 0){chprintf(chp,"usage: dacon\r\n");return;}
+
+    palClearPad(AUDIO_IO,AUDIO_L);
+    palClearPad(AUDIO_IO,AUDIO_R);
 }
 
 /*******************************************/
@@ -322,6 +363,8 @@ static const ShellCommand commands[] = {
     {"sing",cmd_sing},
     {"max",cmd_max},
     {"min",cmd_min},
+    {"dacon",cmd_dacon},
+    {"dacoff",cmd_dacoff},
 #endif
 #if USER_MMC
     {"ls",cmd_lsfile},

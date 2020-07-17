@@ -117,7 +117,12 @@ static uint8_t freq_idx = 0;
  */
 static void ht_metri_AudioPlay(uint8_t lr_stt){
     ht_audio_Tone(freq_test[freq_idx],ampl_test);
-    ht_audio_Play(TEST_DURATION,lr_stt);
+
+    if(lr_stt==OUT_LEFT)ht_audio_LeftCh();
+    else if(lr_stt==OUT_RIGHT) ht_audio_RightCh();
+
+    ht_audio_Play(TEST_DURATION);
+    ht_audio_DisableCh();
 }
 
 /* More action/statement need more allocated memory space */

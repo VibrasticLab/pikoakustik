@@ -55,6 +55,8 @@ void ht_audio_Init(void){
 
     palClearPad(AUDIO_IO,AUDIO_L);
     palClearPad(AUDIO_IO,AUDIO_R);
+
+    ht_audio_DisableCh();
 }
 
 void ht_audio_Zero(void){
@@ -97,27 +99,27 @@ void ht_audio_Tone(double freq, double ampl){
     i2scfg.size = buffsize;
 }
 
-void ht_audio_Play(uint16_t duration, uint8_t lrc){
-
-    palClearPad(AUDIO_IO,AUDIO_L);
-    palClearPad(AUDIO_IO,AUDIO_R);
-
-    switch (lrc) {
-        case OUT_LEFT: palSetPad(AUDIO_IO,AUDIO_L); break;
-        case OUT_RIGHT: palSetPad(AUDIO_IO,AUDIO_R);; break;
-        default: palSetPad(AUDIO_IO,AUDIO_L); break;
-    }
-
+void ht_audio_Play(uint16_t duration){
     i2sStart(&I2SD2, &i2scfg);
     i2sStartExchange(&I2SD2);
     chThdSleepMilliseconds(duration*10);
     i2sStopExchange(&I2SD2);
     i2sStop(&I2SD2);
+}
 
+void ht_audio_DisableCh(void){
     palClearPad(AUDIO_IO,AUDIO_L);
     palClearPad(AUDIO_IO,AUDIO_R);
+}
 
-    chThdSleepMilliseconds(100);
+void ht_audio_LeftCh(void){
+    ht_audio_DisableCh();
+    palSetPad(AUDIO_IO,AUDIO_L);
+}
+
+void ht_audio_RightCh(void){
+    ht_audio_DisableCh();
+    palSetPad(AUDIO_IO,AUDIO_R);
 }
 
 void ht_audio_TestTone(void){
@@ -128,35 +130,49 @@ void ht_audio_TestBoth(void){
     ht_audio_TestTone();
 
     chThdSleepMilliseconds(200);
-    ht_audio_Play(TEST_DURATION,OUT_LEFT);
+    ht_audio_LeftCh();
+    ht_audio_Play(TEST_DURATION);
+    ht_audio_DisableCh();
 
     chThdSleepMilliseconds(200);
-    ht_audio_Play(TEST_DURATION,OUT_RIGHT);
+    ht_audio_RightCh();
+    ht_audio_Play(TEST_DURATION);
+    ht_audio_DisableCh();
 
     chThdSleepMilliseconds(200);
-    ht_audio_Play(TEST_DURATION,OUT_LEFT);
+    ht_audio_LeftCh();
+    ht_audio_Play(TEST_DURATION);
+    ht_audio_DisableCh();
 
     chThdSleepMilliseconds(200);
-    ht_audio_Play(TEST_DURATION,OUT_RIGHT);
+    ht_audio_RightCh();
+    ht_audio_Play(TEST_DURATION);
+    ht_audio_DisableCh();
 }
 
 void ht_audio_TestLeft(void){
     ht_audio_TestTone();
+    ht_audio_LeftCh();
 
     chThdSleepMilliseconds(200);
-    ht_audio_Play(TEST_DURATION,OUT_LEFT);
+    ht_audio_Play(TEST_DURATION);
 
     chThdSleepMilliseconds(200);
-    ht_audio_Play(TEST_DURATION,OUT_LEFT);
+    ht_audio_Play(TEST_DURATION);
+
+    ht_audio_DisableCh();
 }
 
 void ht_audio_TestRight(void){
     ht_audio_TestTone();
+    ht_audio_RightCh();
 
     chThdSleepMilliseconds(200);
-    ht_audio_Play(TEST_DURATION,OUT_RIGHT);
+    ht_audio_Play(TEST_DURATION);
 
     chThdSleepMilliseconds(200);
-    ht_audio_Play(TEST_DURATION,OUT_RIGHT);
+    ht_audio_Play(TEST_DURATION);
+
+    ht_audio_DisableCh();
 }
 /** @} */
