@@ -201,14 +201,42 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
  */
 static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
     double vampl = 1;
+    double vfreq = 1.25;
+    uint8_t lrc = 0;
     uint16_t sing_durr = 500;
 
-    if(argc != 1){chprintf(chp,"usage: sing <freq>\r\n");return;}
-    double vfreq = atof(argv[0]);
+    if(argc == 0){
+        ht_audio_RightCh();
+        chprintf(chp,"Right Channel on\r\n");
+    }
+    else if(argc == 1){
+        vfreq = atof(argv[0]);
+        ht_audio_RightCh();
+        chprintf(chp,"Right Channel on\r\n");
+    }
+    else if(argc == 2){
+        vfreq = atof(argv[0]);
+        lrc = atof(argv[1]);
 
-    ht_audio_RightCh();
+        switch(lrc){
+            case OUT_LEFT:
+                ht_audio_LeftCh();
+                chprintf(chp,"Left Channel on\r\n");
+                break;
+
+            case OUT_RIGHT:
+                ht_audio_RightCh();
+                chprintf(chp,"Right Channel on\r\n");
+                break;
+        }
+    }
+    else{
+        chprintf(chp,"usage: sing <freq> <0/1>\r\n");return;
+    }
+
+
     while(1){
-        chprintf(chp,"Coba Tone: Freq:%5.3f Ampl:%5.3f\r\n",vfreq,vampl);
+        chprintf(chp,"Sing: Freq:%5.3f Ampl:%5.3f\r\n",vfreq,vampl);
         ht_audio_Tone(vfreq,vampl);
         ht_audio_Play(sing_durr);
         chThdSleepMilliseconds(500);
@@ -220,32 +248,6 @@ static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
         }
     }
     ht_audio_DisableCh();
-}
-
-/**
- * @brief Test enable the DAC
- * @details Enumerated and not called directly by any normal thread
- */
-static void cmd_dacon(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
-
-    if(argc != 0){chprintf(chp,"usage: dacon\r\n");return;}
-
-    palSetPad(AUDIO_IO,AUDIO_L);
-    palSetPad(AUDIO_IO,AUDIO_R);
-}
-
-/**
- * @brief Test disable the DAC
- * @details Enumerated and not called directly by any normal thread
- */
-static void cmd_dacoff(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
-
-    if(argc != 0){chprintf(chp,"usage: dacon\r\n");return;}
-
-    palClearPad(AUDIO_IO,AUDIO_L);
-    palClearPad(AUDIO_IO,AUDIO_R);
 }
 
 /*******************************************/
@@ -363,8 +365,6 @@ static const ShellCommand commands[] = {
     {"sing",cmd_sing},
     {"max",cmd_max},
     {"min",cmd_min},
-    {"dacon",cmd_dacon},
-    {"dacoff",cmd_dacoff},
 #endif
 #if USER_MMC
     {"ls",cmd_lsfile},

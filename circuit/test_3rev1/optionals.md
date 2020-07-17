@@ -9,4 +9,4 @@
 - C-SN1
 - C-SPL1
 - C-SPR1
-- R-GAIN2
+- R-GAIN1
