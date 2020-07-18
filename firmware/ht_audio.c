@@ -50,8 +50,8 @@ void ht_audio_Init(void){
     palSetPadMode(GPIOB, 10, PAL_MODE_ALTERNATE(5));
     palSetPadMode(GPIOC, 3 , PAL_MODE_ALTERNATE(5));
 
-    palSetPadMode(AUDIO_IO,AUDIO_L,PAL_MODE_OUTPUT_PUSHPULL);
-    palSetPadMode(AUDIO_IO,AUDIO_R,PAL_MODE_OUTPUT_PUSHPULL);
+    palSetPadMode(AUDIO_IO,AUDIO_L,PAL_MODE_OUTPUT_OPENDRAIN);
+    palSetPadMode(AUDIO_IO,AUDIO_R,PAL_MODE_OUTPUT_OPENDRAIN);
 
     palClearPad(AUDIO_IO,AUDIO_L);
     palClearPad(AUDIO_IO,AUDIO_R);
