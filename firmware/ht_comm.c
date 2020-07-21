@@ -191,11 +191,11 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
     uint8_t lrc = 0;
     uint16_t sing_durr = 500;
 
-    if(argc!=3){chprintf(chp,"usage: sing <freq> <0/1>\r\n");return;}
+    if(argc!=3){chprintf(chp,"usage: tone <0/1> <freq> <ampl>\r\n");return;}
 
-    vfreq = atof(argv[0]);
-    vampl = atof(argv[1]);
-    lrc = atoi(argv[2]);
+    lrc = atoi(argv[0]);
+    vfreq = atof(argv[1]);
+    vampl = atof(argv[2]);
 
     switch(lrc){
         case OUT_LEFT:
@@ -240,8 +240,8 @@ static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
         chprintf(chp,"Right Channel on\r\n");
     }
     else if(argc == 2){
-        vfreq = atof(argv[0]);
-        lrc = atoi(argv[1]);
+        lrc = atoi(argv[0]);
+        vfreq = atof(argv[1]);
 
         switch(lrc){
             case OUT_LEFT:
@@ -256,7 +256,7 @@ static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
         }
     }
     else{
-        chprintf(chp,"usage: sing <freq> <0/1>\r\n");return;
+        chprintf(chp,"usage: sing <0/1> <freq>\r\n");return;
     }
 
 
