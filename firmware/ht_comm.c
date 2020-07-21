@@ -182,10 +182,49 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
 }
 
 /**
- * @brief Audio Play at a frequency and down from highest to lowest amplitude
+ * @brief Audio Play at a frequency and amplitude at left/right channel
  * @details Enumerated and not called directly by any normal thread
  */
 static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
+    double vampl;
+    double vfreq;
+    uint8_t lrc = 0;
+    uint16_t sing_durr = 500;
+
+    if(argc!=3){chprintf(chp,"usage: sing <freq> <0/1>\r\n");return;}
+
+    vfreq = atof(argv[0]);
+    vampl = atof(argv[1]);
+    lrc = atoi(argv[2]);
+
+    switch(lrc){
+        case OUT_LEFT:
+            ht_audio_LeftCh();
+            chprintf(chp,"Left Channel on\r\n");
+            break;
+
+        case OUT_RIGHT:
+            ht_audio_RightCh();
+            chprintf(chp,"Right Channel on\r\n");
+            break;
+    }
+
+    if(vampl<SMALLEST_DB){
+        chprintf(chp,"Warning: Amplitude bellow smallest set\r\n");
+    }
+
+    chprintf(chp,"Tone: Freq:%5.3f Ampl:%6.4f\r\n",vfreq,vampl);
+    ht_audio_Tone(vfreq,vampl);
+    ht_audio_Play(sing_durr);
+    chprintf(chp,"Finished\r\n");
+    ht_audio_DisableCh();
+}
+
+/**
+ * @brief Audio Play at a frequency and down from highest to lowest amplitude
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
     double vampl = 1;
     double vfreq = 1.25;
     uint8_t lrc = 0;
@@ -347,6 +386,7 @@ static const ShellCommand commands[] = {
     {"test",cmd_test},
 #if USER_AUDIO
     {"zero",cmd_zero},
+    {"sing",cmd_sing},
     {"tone",cmd_tone},
     {"max",cmd_max},
     {"min",cmd_min},
