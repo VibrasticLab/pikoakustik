@@ -191,11 +191,20 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
     uint8_t lrc = 0;
     uint16_t sing_durr = 500;
 
-    if(argc!=3){chprintf(chp,"usage: tone <0/1> <freq> <ampl>\r\n");return;}
-
-    lrc = atoi(argv[0]);
-    vfreq = atof(argv[1]);
-    vampl = atof(argv[2]);
+    if(argc==2){
+        lrc = 0;
+        vfreq = atof(argv[0]);
+        vampl = atof(argv[1]);
+    }
+    else if(argc==3){
+        lrc = atoi(argv[0]);
+        vfreq = atof(argv[1]);
+        vampl = atof(argv[2]);
+    }
+    else{
+        chprintf(chp,"usage: tone <0/1> <freq> <ampl>\r\n");
+        return;
+    }
 
     switch(lrc){
         case OUT_LEFT:
@@ -231,34 +240,32 @@ static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
     uint16_t sing_durr = 500;
 
     if(argc == 0){
-        ht_audio_RightCh();
-        chprintf(chp,"Right Channel on\r\n");
+        lrc = 0;
+        vfreq = 1.25;
     }
     else if(argc == 1){
+        lrc = 0;
         vfreq = atof(argv[0]);
-        ht_audio_RightCh();
-        chprintf(chp,"Right Channel on\r\n");
     }
     else if(argc == 2){
         lrc = atoi(argv[0]);
         vfreq = atof(argv[1]);
-
-        switch(lrc){
-            case OUT_LEFT:
-                ht_audio_LeftCh();
-                chprintf(chp,"Left Channel on\r\n");
-                break;
-
-            case OUT_RIGHT:
-                ht_audio_RightCh();
-                chprintf(chp,"Right Channel on\r\n");
-                break;
-        }
     }
     else{
         chprintf(chp,"usage: sing <0/1> <freq>\r\n");return;
     }
 
+    switch(lrc){
+        case OUT_LEFT:
+            ht_audio_LeftCh();
+            chprintf(chp,"Left Channel on\r\n");
+            break;
+
+        case OUT_RIGHT:
+            ht_audio_RightCh();
+            chprintf(chp,"Right Channel on\r\n");
+            break;
+    }
 
     while(1){
         chprintf(chp,"Sing: Freq:%5.3f Ampl:%6.4f\r\n",vfreq,vampl);
