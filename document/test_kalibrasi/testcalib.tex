@@ -54,6 +54,8 @@
 
 \definecolor{LightGray}{gray}{0.9}
 
+\hypersetup{citecolor=black}
+
 \begin{document}
 	\maketitle
 	\thispagestyle{empty}
@@ -240,18 +242,115 @@ tone 0 1.25 1
 	kemudian mendapat sinyal array I2S yang sama pula,
 	maka pengujian ini dilakukan hanya pada Left Channel saja.
 	
-	Berikutnya akan dijabarkan hasil uji setiap headphone.
+	Seluruh grafik di-\textit{generate} menggunakan skrip Python yang dapat ditemukan di:\\
+	\url{https://github.com/VibrasticLab/pikoakustik/tree/stm32f401re_3pin/document/test_kalibrasi/hasil/python/graphplot.py}
 	
   	\subsubsection{Miniso}
+  	
+  	Kumpulan data hasil uji headphone ini (format CSV) dapat ditemukan di sini:\\
+  	\url{https://github.com/VibrasticLab/pikoakustik/tree/stm32f401re_3pin/document/test_kalibrasi/hasil/miniso}
+  	
+  	\begin{figure}[!ht]
+  		\centering
+  		\includegraphics[width=200pt]{hasil/miniso/miniso}
+  		\caption{headphone miniso dengan resistansi tiap channel 34 $\Omega$}
+  	\end{figure}
 	
-	Hasil pengujian amplitudo
+	\newpage
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=400pt]{hasil/miniso/allfreq/max_freq}
+		\caption{amplitudo maksimal setiap frekuensi}
+	\end{figure}
+
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=400pt]{hasil/miniso/allfreq/each_freq}
+		\caption{amplitudo maksimal di setiap skala frekuensi}
+	\end{figure}
+
+	\subsubsection{Kenion}
+	\subsection{Senheiser}
+	\subsection{Cheap Earphone}
+
+	\newpage
+	\section{Development}
+	
+	Berikut beberapa poin masalah maupun langkah pengembangan selanjutnya
+	
+	\subsection{Left-Right Isolation}
+	
+	Struktur jack audio 3.5mm secara umum untuk headphone diilustrasikan sebagai berikut:
 	
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=250pt]{hasil/miniso/max_freq}
-		\includegraphics[width=250pt]{hasil/miniso/each_freq}
-		\caption{amplitudo maksimal setiap frekuensi (kiri) dan di setiap skala frekuensi (kanan)}
+		\includegraphics[width=150pt]{images/ohmhp}
+		\caption{Ilustrasi koneksi speaker ke jack audio 3.5mm}
 	\end{figure}
+
+	dan implementasi secara elektronik:
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=250pt]{images/skema_lrc}
+		\caption{skema koneksi speaker ke chip codec}
+	\end{figure}
+
+	Chip MAX98357A pada dasarnya adalah audio codec \textbf{mono} namun mampu menerima stereo PCM.
+	Sementara untuk penggunaan stereo yang direkomendasikan datasheet MAX98357A adalah \cite{Maxim}: 
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=250pt]{images/stereo}
+		\caption{skema untuk PCM stereo}
+	\end{figure}
+
+	Implimentasi untuk skema pada datasheet tidak memungkinkan mengingat pin output negatif (OUTN) pada headphone konvensional menyatu untuk channel Left dan Right.
+	
+	\newpage
+	Dengan menyatunya output, maka terjadi fenomena "bocor" daya di-channel yang tidak diaktifkan:
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=250pt]{hasil/test/left_miniso}
+		\caption{bocor daya pada channel Right saat channel Left digunakan}
+	\end{figure}
+
+	Menurut datasheet MAX98357A, disediakan pin SD\_MODE untuk men-\textit{shutdown} chip yang digunakan tanpa perlu memutus daya.
+	Saat kondisi shutdown, output chip codec di-set ke kondisi \textit{high-impedance} \cite{Maxim}.
+	Namun dengan terdeteksi nya "bocor" daya ini maka sepertinya impedansi chip saat shutdown tidak cukup besar untuk mem-\textit{block} daya
+	dari chip lain yang sedang memberi daya ke speaker.
+	
+	Solusi yang memungkinkan:
+	\begin{itemize}
+		\item Mencari dan Mengganti induktor output (L-Left dan L-Right sebagaimana pada gambar 8) ke nilai yang lebih tinggi untuk menambah impedansi chip saat shutdown.\\
+		Drawbacks:
+		\begin{itemize}
+			\item Jika nilai terlalu tinggi, daya Pulse-Width Modulation (PWM) sebagai carrier dikhawatirkan turun drastis
+			
+			\item Dikhawatirkan lebih \textit{susceptible} terhadap interference dan menyebabkan noise lain.
+		\end{itemize}
+		Kedua drawback di atas belum teruji dan juga tidak mengacu ke referensi dokumen tertentu. Solusi ini yang saat ini sedang diusahakan.
+		
+		\item Mengganti chip audio codec ke stereo yang lebih advance dan digunakan secara populer di perangkat \textit{mobile}.
+		Kandidat yang dipilih saat ini adalah chip MAX98090\cite{max98090} dan ADAU1373\cite{adau1373}.\\
+		Drawbacks:
+		\begin{itemize}
+			\item Mengganti chip audio codec akan menyebabkan development mundur beberapa langkah (terutama durasi impor).
+			
+			\item Walaupun standar PCM I2S yang digunakan sama, namum tetap diperlukan pengujian untuk memastikan kompatibilitas (terutama pengaturan clock).
+			
+			\item Baik MAX98090 dan ADAU1373 tidak hanya menyediakan output PCM/I2S codec, melainkan juga input codec disertai ADC dan DAC yang bisa dikonfigurasi.
+			Kedua chip ini lebih mirip seperti "sound-card on chip" dibandingkan seperti "simple output codec chip" yang saat ini telah digunakan.
+			
+			\item Chip ADAU1373 hanya tersedia dalam paket BGA (Ball Grid Array) dimana sepertinya manufaktur PCB lokal maupun kemampuan assembly lokal saat ini
+			masih terbatas sampai QFP (TQFP/LQGP/PLCC).
+			
+			\item Pengujian pada laptop dan handphone yang tersedia juga tetap menunjukkan fenomena bocor serupa dengan berbeda nilai amplitudo.
+		\end{itemize}
+		
+			
+	\end{itemize}
 	
 	\newpage
 	\section{Referensi}
