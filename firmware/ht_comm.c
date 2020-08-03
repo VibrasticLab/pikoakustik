@@ -218,7 +218,7 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
             break;
     }
 
-    if(vampl<SMALLEST_DB){
+    if(vampl<=SMALLEST_DB){
         chprintf(chp,"Warning: Amplitude bellow smallest set\r\n");
     }
 
