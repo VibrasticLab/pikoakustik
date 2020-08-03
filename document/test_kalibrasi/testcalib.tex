@@ -52,9 +52,10 @@
 
 \date{}
 
-\definecolor{LightGray}{gray}{0.9}
-
 \hypersetup{citecolor=black}
+
+%\pagecolor[rgb]{0.1,0.1,0.1}
+%\color[rgb]{1,1,1}
 
 \begin{document}
 	\maketitle
@@ -92,7 +93,7 @@
 	\end{itemize}
 	
 	atau dalam format bahasa C:
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{c}
 #define DEFAULT_ATTEN 0.01
 #define I2S_BUFF_SIZE 512
 
@@ -150,13 +151,13 @@ uint16_t sine_gen(double freq,double ampl){
 			\hline
 			Merek & Resistansi & Keterangan \\ 
 			\hline
-			Earphone & 20 $\Omega$ & \\ 
-			\hline
 			Kennion & 520 $\Omega$ & Volume Max \\ 
 			\hline
 			Miniso & 34 $\Omega$ & \\ 
 			\hline
 			Sanheiser & 320 $\Omega$ & Tercantum 300 $\Omega$ \\ 
+			\hline
+			Bose & Non-Direct Speaker & \\ 
 			\hline
 		\end{tabular}\\
 		\hfill \break
@@ -206,8 +207,8 @@ uint16_t sine_gen(double freq,double ampl){
 		\item Jalankan serial terminal untuk berkomunikasi antara laptop dan unit Audiometri.
 		Software serial terminal yang digunakan adalah \textbf{minicom} pada port \textit{/dev/ttyACM0} atau \textit{/dev/ttyACM1}.
 		
-		\item Perintah yang dikirim ke unit Audiometri untuk menjalankan fungsi \textit{tone generator}.
-\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+		\item Perintah yang dikirim ke unit Audiometri untuk menjalankan fungsi \textit{tone generator}:
+\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{bash}
 tone <0/1> <frequency> <amplitude>
 \end{minted}
 		dengan:
@@ -223,15 +224,15 @@ tone <0/1> <frequency> <amplitude>
 			Nilai skala \textbf{0.0031} adalah batas minimum dimana dibawah skala itu hanya akan terdengar noise tanpa tone.
 		\end{itemize}
 		
-		sehingga contoh perintahnya untuk tone frekuensi 500Hz dan skala amplitudo 1 di \textit{Left channel}.
-\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+		sehingga contoh perintahnya untuk tone frekuensi 500Hz dan skala amplitudo 1 di \textit{Left channel}:
+\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{bash}
 tone 0 1.25 1
 \end{minted}
 
 		\begin{figure}[!ht]
 			\centering
-			\includegraphics[width=200pt]{hasil/test/cmdtest}
-			\includegraphics[width=200pt]{hasil/test/test}
+			\includegraphics[width=250pt]{hasil/test/cmdtest}
+			\includegraphics[width=250pt]{hasil/test/test}
 			\caption{Contoh perintah dan hasil pada analyzer}
 		\end{figure}
 	\end{enumerate}
@@ -253,26 +254,99 @@ tone 0 1.25 1
   	\begin{figure}[!ht]
   		\centering
   		\includegraphics[width=200pt]{hasil/miniso/miniso}
-  		\caption{headphone miniso dengan resistansi tiap channel 34 $\Omega$}
+  		\includegraphics[width=200pt]{hasil/miniso/miniso_setup}
+  		\caption{headphone Miniso dengan resistansi tiap channel 34 $\Omega$}
   	\end{figure}
 	
 	\newpage
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=400pt]{hasil/miniso/allfreq/max_freq}
+		\includegraphics[width=500pt]{hasil/miniso/maxallfreq/max_freq}
 		\caption{amplitudo maksimal setiap frekuensi}
 	\end{figure}
 
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=400pt]{hasil/miniso/allfreq/each_freq}
-		\caption{amplitudo maksimal di setiap skala frekuensi}
+		\includegraphics[width=500pt]{hasil/miniso/maxallfreq/each_freq}
+		\caption{nilai SPL tiap skala amplitudo di setiap skala frekuensi}
 	\end{figure}
 
 	\subsubsection{Kenion}
+	
+	Headphone merek Kenion yang digunakan disini memiliki pengaturan volume dan diatur maksimum
+	
+	Kumpulan data hasil uji headphone ini (format CSV) dapat ditemukan di sini:\\
+	\url{https://github.com/VibrasticLab/pikoakustik/tree/stm32f401re_3pin/document/test_kalibrasi/hasil/kenion}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=200pt]{hasil/kenion/kenion}
+		\includegraphics[width=200pt]{hasil/kenion/kenion_setup}
+		\caption{headphone Kenion dengan resistansi tiap channel 520 $\Omega$ (minimum)}
+	\end{figure}
+	
+	\newpage
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=500pt]{hasil/kenion/maxallfreq/max_freq}
+		\caption{amplitudo maksimal setiap frekuensi}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=500pt]{hasil/kenion/maxallfreq/each_freq}
+		\caption{nilai SPL tiap skala amplitudo di setiap skala frekuensi}
+	\end{figure}
+
 	\subsubsection{Senheiser}
-	\subsubsection{Cheap Earphone}
+	
+	Kumpulan data hasil uji headphone ini (format CSV) dapat ditemukan di sini:\\
+	\url{https://github.com/VibrasticLab/pikoakustik/tree/stm32f401re_3pin/document/test_kalibrasi/hasil/senheiser}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=200pt]{hasil/senheiser/senheiser}
+		\includegraphics[width=200pt]{hasil/senheiser/senheiser_setup}
+		\caption{headphone Senheiser dengan resistansi tiap channel 520 $\Omega$ (minimum)}
+	\end{figure}
+	
+	\newpage
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=500pt]{hasil/senheiser/maxallfreq/max_freq}
+		\caption{amplitudo maksimal setiap frekuensi}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=500pt]{hasil/senheiser/maxallfreq/each_freq}
+		\caption{nilai SPL tiap skala amplitudo di setiap skala frekuensi}
+	\end{figure}
+	
 	\subsubsection{Bose}
+	
+	Kumpulan data hasil uji headphone ini (format CSV) dapat ditemukan di sini:\\
+	\url{https://github.com/VibrasticLab/pikoakustik/tree/stm32f401re_3pin/document/test_kalibrasi/hasil/bose}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=200pt]{hasil/bose/bose}
+		\includegraphics[width=200pt]{hasil/bose/bose_setup}
+		\caption{headphone Bose}
+	\end{figure}
+
+	\newpage
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=500pt]{hasil/bose/maxallfreq/max_freq}
+		\caption{amplitudo maksimal setiap frekuensi}
+	\end{figure}
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=500pt]{hasil/bose/maxallfreq/each_freq}
+		\caption{nilai SPL tiap skala amplitudo di setiap skala frekuensi}
+	\end{figure}
 
 	\newpage
 	\section{Development}
@@ -313,7 +387,7 @@ tone 0 1.25 1
 	
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=250pt]{hasil/test/left_miniso}
+		\includegraphics[width=300pt]{hasil/test/left_miniso}
 		\caption{bocor daya pada channel Right saat channel Left digunakan}
 	\end{figure}
 
@@ -342,7 +416,7 @@ tone 0 1.25 1
 			\item Walaupun standar PCM I2S yang digunakan sama, namum tetap diperlukan pengujian untuk memastikan kompatibilitas (terutama pengaturan clock).
 			
 			\item Baik MAX98090 dan ADAU1373 tidak hanya menyediakan output PCM/I2S codec, melainkan juga input codec disertai ADC dan DAC yang bisa dikonfigurasi.
-			Kedua chip ini lebih mirip seperti "sound-card on chip" dibandingkan seperti "simple output codec chip" yang saat ini telah digunakan.
+			Kedua chip ini lebih mirip seperti \textit{sound-card on chip} dibandingkan seperti \textit{simple output codec} yang saat ini telah digunakan.
 			
 			\item Chip ADAU1373 hanya tersedia dalam paket BGA (Ball Grid Array) dimana sepertinya manufaktur PCB lokal maupun kemampuan assembly lokal saat ini
 			masih terbatas sampai QFP (TQFP/LQGP/PLCC).
@@ -352,12 +426,71 @@ tone 0 1.25 1
 		
 			
 	\end{itemize}
+
+	\subsection{Amplitude Variance}
+	
+	Berdasarkan grafik pada gambar 6, 9, dan 12, dapat diketahui bahwa penurunan (atenuasi) SPL memiliki pola grafik yang sama di setiap frekuensi.
+	Namun berdasarkan grafik 5, 8, dan 11, dapat diketahui bahwa rentang dan maksimum SPL berbeda-beda di setiap frekuensi dan berbeda setiap merek headphone.
+	
+	Sehingga masalah yang perlu diperhatikan adalah:
+	\begin{itemize}
+		\item Apakah diperlukan rentang dan maksimum SPL sama (datar) untuk semua frekuensi?
+		\item Jika benar, maka diperlukan attenuasi programmatical untuk setiap skala frekuensi (?)
+		\item Jika demikian, maka nilai attenuasi yang diterapkan mengikuti grafik headphone yang mana?
+	\end{itemize}
+	
+	\newpage
+	\subsection{Lowest Amplitude}
+	
+	Kondisi lingkungan pengukuran yang saat ini digunakan memiliki bising setidaknya hingga 20 dB pada frekuensi 250 Hz:
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=300pt]{hasil/ground}
+		\caption{Bising dasar pengukuran lingkungan (Weighting Flat)}
+	\end{figure}
+
+	Maka pada kondisi ini, semua hasil pengukuran dengan output (atau hasil grafik skrip python) pada nilai 20dB ke bawah, 
+	menjadi cenderung meragukan.
+	
+	Sehingga masalah yang perlu diperhatikan:
+	\begin{itemize}
+		\item Berapa nilai standar SPL untuk audiometri di setiap frekuensi nya?
+		\item Jika bernilai 20dB atau kurang, maka lingkungan pengukuran yang digunakan saat ini tidak mencukupi (?)
+	\end{itemize}
+	
+	\subsection{Bose Compatibility}
+	
+	Headphone merek Bose yang tersedia saat ini memiliki perbedaan hasil ukur dibandingkan headphone lain yang telah diuji disini.
+	Berikut beberapa perbedaan yang telah diketahui:
+	
+	\begin{enumerate}
+		\item Speaker headphone tidak terhubung langsung ke jack Audio, melainkan telah melalui elektronik tambahan.
+		Hal ini diketahui dari pengukuran resistansi antara pin Ground-Left menunjukkan nilai berbeda jika probe ditukar (Left-Ground),
+		dimana ini menunjukkan bahwa terdapat diode atau semikonduktor sirkuit yang terukur oleh probe.
+		
+		\item Muncul tone frekuensi tinggi tambahan pada SPL rendah:
+		\begin{figure}[!ht]
+			\centering
+			\includegraphics[width=300pt]{hasil/bose/maxallfreq/low_noise}
+			\caption{Tone pada 16kHz}
+		\end{figure}
+		
+		\newpage
+		\item Headphone ini satu-satunya yang mampu menghasilkan tone hingga 16kHz.
+		\begin{figure}[!ht]
+			\centering
+			\includegraphics[width=300pt]{hasil/bose/maxallfreq/16000}
+			\caption{Tone pada 16kHz}
+		\end{figure}
+	\end{enumerate}
 	
 	\newpage
 	\section{Referensi}
 	\label{}
 	
 	\bibliographystyle{IEEEtran}
-	\bibliography{/home/achmaday/Documents/BibTex/library.bib}
+%	\bibliography{/home/achmaday/Documents/BibTex/library.bib}
+	\bibliography{/home/viblab/Documents/BibTex/library.bib}	
 		
 \end{document}
