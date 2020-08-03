@@ -4,7 +4,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-outFolder = 'miniso'
+outFolder = 'kenion'
 outFreq = [250,500,1000,2000,4000,8000]
 outAmpl = [0.0039,0.0078,0.0156,0.0312,0.0625,0.125,0.25,0.5,1]
 
@@ -13,7 +13,7 @@ def getMax(fileName,inFreq,rangeFreq=1000):
     fileBuff = fileRead.readlines()
     fileLen  = len(fileBuff)
     fileData = fileBuff[2:fileLen-1]
-    
+
     buffData = np.array([0,0,0])
     for line in fileData:
         oneData = np.fromstring(line,sep=',')
@@ -22,20 +22,20 @@ def getMax(fileName,inFreq,rangeFreq=1000):
     allData_F = allData[:,0]
     allData_L = allData[:,1]
     #allData_R = allData[:,2]
-        
+
     low_F = inFreq-rangeFreq
     hi_F = inFreq+rangeFreq
-    
-    arrLow_F = allData_F>=low_F 
+
+    arrLow_F = allData_F>=low_F
     arrHi_F = allData_F<hi_F
     range_F = allData_F[np.logical_and(arrLow_F,arrHi_F)]
-    
+
     arrResult = np.array([0])
     for i in range_F:
         idx = np.where(allData_F==i)
         oneResult = allData_L[idx]
         arrResult = np.vstack((arrResult,oneResult))
-    
+
     lenResult=len(arrResult)
     arrResult=arrResult[1:lenResult]
     return np.amax(arrResult)
@@ -44,7 +44,7 @@ freqMax = np.array([])
 for freq in outFreq:
     arrTemp = np.array([])
     currentPath='../' + outFolder + '/' + str(freq)
-    print('freq: '+ str(freq))    
+    print('freq: '+ str(freq))
     for root, dirs, files in os.walk(currentPath):
         for file in files:
             if file.endswith(".csv"):
@@ -54,22 +54,22 @@ for freq in outFreq:
 
     globals()['f_' + str(freq)] = np.sort(arrTemp)
     print(globals()['f_' + str(freq)])
-    
+
     freqMax = np.append(freqMax,np.amax(globals()['f_' + str(freq)]))
     plt.plot(outAmpl,globals()['f_' + str(freq)],'-o',label='f_' + str(freq),)
 
 plt.figure(1)
 plt.xticks(outAmpl)
 plt.xlabel('amplitude scale')
-plt.ylabel('SPL (dB)')   
-plt.ylim(-10,100) 
+plt.ylabel('SPL (dB)')
+plt.ylim(-10,100)
 plt.legend()
 
 plt.figure(2)
 plt.plot(outFreq,freqMax,'-o')
 plt.xticks(outFreq)
 plt.xlabel('frequency (Hz)')
-plt.ylabel('SPL Max (dB)') 
+plt.ylabel('SPL Max (dB)')
 plt.ylim(-10,100)
 
 plt.show()
