@@ -120,7 +120,7 @@ CSRC =  $(STARTUPSRC) \
         $(CHIBIOS)/os/hal/lib/streams/nullstreams.c \
         $(CHIBIOS)/os/hal/lib/streams/memstreams.c \
         $(CHIBIOS)/os/hal/lib/streams/chprintf.c \
-        main.c \
+        main.c stubs.c \
         ht_audio.c ht_exti.c ht_console.c \
         ht_comm.c ht_mmc.c ht_iot.c \
         ht_led.c ht_usb.c ht_metri.c
