@@ -119,7 +119,6 @@ static void cmd_zero(BaseSequentialStream *chp, int argc, char *argv[]) {
 
     chprintf(chp,"Test Audio: Sine Zero\r\n");
     ht_audio_Tone(1.25,0);
-    ht_audio_LeftCh();
     ht_audio_Play(TEST_DURATION);
     ht_audio_DisableCh();
     chprintf(chp,"Finished\r\n");
@@ -147,7 +146,6 @@ static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
 
     chprintf(chp,"Test Audio: Sine Maximum\r\n");
     ht_audio_Tone(1.25,1);
-    ht_audio_LeftCh();
     ht_audio_Play(TEST_DURATION);
     ht_audio_DisableCh();
     chprintf(chp,"Finished\r\n");
@@ -175,7 +173,6 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
 
     chprintf(chp,"Test Audio: Sine Minimum\r\n");
     ht_audio_Tone(1.25,SMALLEST_DB);
-    ht_audio_LeftCh();
     ht_audio_Play(TEST_DURATION);
     ht_audio_DisableCh();
     chprintf(chp,"Finished\r\n");
@@ -222,7 +219,7 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
         chprintf(chp,"Warning: Amplitude bellow smallest set\r\n");
     }
 
-    chprintf(chp,"Tone: Freq:%5.3f Ampl:%6.4f\r\n",vfreq,vampl);
+    chprintf(chp,"Tone: Freq:%6.4f Ampl:%6.4f\r\n",vfreq,vampl);
     ht_audio_Tone(vfreq,vampl);
     ht_audio_Play(sing_durr);
     chprintf(chp,"Finished\r\n");
@@ -268,7 +265,7 @@ static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
     }
 
     while(1){
-        chprintf(chp,"Sing: Freq:%5.3f Ampl:%6.4f\r\n",vfreq,vampl);
+        chprintf(chp,"Sing: Freq:%6.4f Ampl:%6.4f\r\n",vfreq,vampl);
         ht_audio_Tone(vfreq,vampl);
         ht_audio_Play(sing_durr);
         chThdSleepMilliseconds(500);
@@ -280,6 +277,24 @@ static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
         }
     }
     ht_audio_DisableCh();
+}
+
+/**
+ * @brief Speaker test using twice tone
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_sptest(BaseSequentialStream *chp, int argc, char *argv[]) {
+    uint8_t lrc;
+
+    if(argc != 1){chprintf(chp,"usage: sptest <0/1/2>\r\n");return;}
+
+    lrc = atoi(argv[0]);
+
+    switch(lrc){
+        case 0: chprintf(chp,"Testing Left Channel\r\n"); ht_audio_TestLeft();break;
+        case 1: chprintf(chp,"Testing Right Channel\r\n"); ht_audio_TestRight();break;
+        case 2: chprintf(chp,"Testing Both Channel\r\n"); ht_audio_TestBoth();break;
+    }
 }
 
 /*******************************************/
@@ -383,6 +398,24 @@ static void cmd_iotsend(BaseSequentialStream *chp, int argc, char *argv[]) {
     ht_comm_IoT("send\r\n");
 }
 
+/**
+ * @brief IoT Publish record each result
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_iotlog(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argc;
+    (void) argv;
+    double testFreq = 1;
+    double testAmpl = 1;
+    char strlog[IFACE_BUFF_SIZE];
+
+    if(argc != 0){chprintf(chp,"usage: log\r\n");return;}
+
+    ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f TRULSE\r\n",testFreq,testAmpl);
+    ht_comm_IoT(strlog);
+}
+
+
 /*******************************************/
 
 /**
@@ -397,6 +430,7 @@ static const ShellCommand commands[] = {
     {"tone",cmd_tone},
     {"max",cmd_max},
     {"min",cmd_min},
+    {"sptest",cmd_sptest},
 #endif
 #if USER_MMC
     {"ls",cmd_lsfile},
@@ -408,6 +442,7 @@ static const ShellCommand commands[] = {
 #if USER_IOT
     {"sub",cmd_iotsub},
     {"pub",cmd_iotpub},
+    {"log",cmd_iotlog},
     {"send",cmd_iotsend},
 #endif
     {NULL, NULL}

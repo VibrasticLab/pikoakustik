@@ -143,6 +143,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
     uint8_t freq_max = sizeof(freq_test)/sizeof(freq_test[0]);
     char strbuff[IFACE_BUFF_SIZE];
+    char strlog[IFACE_BUFF_SIZE];
 
     srand(3);
     chRegSetThreadName("run led");
@@ -213,7 +214,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
                 mode_step=STEP_WAIT;
                 test_count++;
-                ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %5.2f, %5.4f\r\n",freq_test[freq_idx],ampl_test);
+                ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %6.4f, %6.4f\r\n",freq_test[freq_idx],ampl_test);
                 ht_comm_Msg(strbuff);
 #endif
             }
@@ -229,6 +230,11 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
                     ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,channel_stt,1);
 #endif
+
+#if defined(USER_IOT_MQTTLOG)
+                    ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f TRUE\r\n",freq_test[freq_idx],ampl_test);
+                    ht_comm_IoT(strlog);
+#endif
                 }
                 else{
                     led_result_off();
@@ -238,6 +244,11 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
                     ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,channel_stt,0);
+#endif
+
+#if defined(USER_IOT_MQTTLOG)
+                    ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f FALSE\r\n",freq_test[freq_idx],ampl_test);
+                    ht_comm_IoT(strlog);
 #endif
                 }
 

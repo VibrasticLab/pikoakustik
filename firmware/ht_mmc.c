@@ -621,13 +621,13 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t re
 
 #if USER_MMC_JSON
         if(result==1){
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"frequency\":%5.2f,\"amplitudo\":%5.4f,\"value\":true},",freq,ample);
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"frequency\":%6.4f,\"amplitudo\":%6.4f,\"value\":true},",freq,ample);
         }
         else{
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"frequency\":%5.2f,\"amplitudo\":%5.4f,\"value\":false},",freq,ample);
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"frequency\":%6.4f,\"amplitudo\":%6.4f,\"value\":false},",freq,ample);
         }
 #else
-        ht_comm_Buff(buffer,sizeof(buffer),"%5.2f, %5.4f, %1i, %1i\n",freq,ample,lr_ch,result);
+        ht_comm_Buff(buffer,sizeof(buffer),"%6.4f, %6.4f, %1i, %1i\n",freq,ample,lr_ch,result);
 #endif
 
         if(lastnum < 255){
