@@ -21,7 +21,8 @@
 #define WIFI_STA_H
 
 #define WIFI_WAHYU  FALSE
-#define WIFI_LAB    TRUE
+#define WIFI_LAB    FALSE
+#define WIFI_DOCOMO TRUE
 
 /**
  * @brief Wifi Station Initialization

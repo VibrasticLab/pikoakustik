@@ -224,9 +224,9 @@ uart0_rx_intr_handler(void *para)
  * @param[out] Desired part string output
  * @param[in] Position of desired string
  */
-LOCAL void ICACHE_FLASH_ATTR uart_conf_parse(char *strIN, char *strOUT, uint8 num){
-    char strInput[90];
-    char strSplit[3][30];
+LOCAL uint8 ICACHE_FLASH_ATTR uart_conf_parse(char *strIN, char *strOUT, uint8 num){
+    char strInput[120];
+    char strSplit[4][30];
     uint8 i,j,cnt;
 
     os_strcpy(strInput,strIN);
@@ -244,6 +244,7 @@ LOCAL void ICACHE_FLASH_ATTR uart_conf_parse(char *strIN, char *strOUT, uint8 nu
     }
 
     os_strcpy(strOUT,strSplit[num]);
+    return cnt;
 }
 
 /**
@@ -255,6 +256,7 @@ LOCAL void ICACHE_FLASH_ATTR
 uart_response(uint8 inChar){
     uint8 i;
     uint8 bootmode;
+    uint8 str_argc;
     char strReq[32];
 
     const char cmdlist[]= "commands: "\
@@ -269,6 +271,8 @@ uart_response(uint8 inChar){
             "sysinfo "\
             "sub " \
             "pub " \
+            "send " \
+            "log " \
             "help";
 
     if(inChar == '\n' || inChar == '\r'){
@@ -277,7 +281,7 @@ uart_response(uint8 inChar){
         if(uart_rx_send == 0){
             uart0_sendStr("\r\n");
 
-            uart_conf_parse(uart_rx_buffer,strReq,0);
+            str_argc = uart_conf_parse(uart_rx_buffer,strReq,0);
 
             if(os_strcmp(strReq,"test")==0){
                 uart0_sendStr("What to test?\r\n");
@@ -335,6 +339,28 @@ uart_response(uint8 inChar){
                 os_printf("%s\r\n",jsonData);
                 os_printf("strlen=%d\r\n",jsonSize);
                 MQTT_Publish(&mqttClient, "device/audiometri", jsonData, jsonSize, 0, 0);
+            }
+            else if(os_strcmp("log",strReq)==0){
+                if(str_argc==4){
+                    char log_msg[64];
+                    char log_freq[12];
+                    char log_ampl[12];
+                    char log_answ[12];
+
+                    uint8_t log_msg_len;
+
+                    uart_conf_parse(uart_rx_buffer,log_freq,1);
+                    uart_conf_parse(uart_rx_buffer,log_ampl,2);
+                    uart_conf_parse(uart_rx_buffer,log_answ,3);
+
+                    os_sprintf(log_msg,"F:%s A:%s %s",log_freq,log_ampl,log_answ);
+                    log_msg_len = os_strlen(log_msg);
+
+                    MQTT_Publish(&mqttClient, "metri/audio", log_msg, log_msg_len, 0, 0);
+                }
+                else{
+                    os_printf("Log arguments incomplete (argc = %d)\r\n",str_argc);
+                }
             }
             else if(os_strcmp("help",strReq)==0){
                 os_printf("%s\r\n",cmdlist);

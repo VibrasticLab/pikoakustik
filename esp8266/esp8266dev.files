@@ -22,5 +22,7 @@ user/user_config.h
 user/mqtt_config.h
 user/user_config.h
 
+user/wifi_sap.c
+user/wifi_sap.h
 user/wifi_sta.c
 user/wifi_sta.h

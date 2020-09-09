@@ -21,6 +21,12 @@
 #define _USER_CONF_
 
 /**
+ * @brief Choose as Station or not (Access Point)
+ * @details Currently failed connect to broker if using AP Mode
+ */
+#define USED_AS_STATION TRUE
+
+/**
  * @brief Default UART BaudRate
  */
 #define SERIALBAUD 9600

@@ -111,6 +111,11 @@ LOCAL void ICACHE_FLASH_ATTR user_wifi_station_conf(void){
     os_strcpy(password,"gh0stpr0t0c0l");
 #endif
 
+#if WIFI_DOCOMO
+    os_strcpy(ssid,"CobaMQTT");
+    os_strcpy(password,"cobamqtt");
+#endif
+
     os_memcpy(&stationConf.ssid, ssid, 32);
     os_memcpy(&stationConf.password, password, 64);
 

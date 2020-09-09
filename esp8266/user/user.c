@@ -31,6 +31,7 @@
 #include "driver/gpio16.h"
 
 #include "wifi_sta.h"
+#include "wifi_sap.h"
 #include "user_config.h"
 #include "mqtt_client.h"
 
@@ -91,13 +92,18 @@ void ICACHE_FLASH_ATTR user_init(){
     uart_rx_intr_enable(UART0);
     print_os_info();
 
-    mqttClientInit();
+#if USED_AS_STATION
     user_wifi_station_init();
+#else
+    user_wifi_softap_init();
+#endif
 
     PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO2_U, FUNC_GPIO2);
     PIN_PULLUP_DIS(PERIPHS_IO_MUX_GPIO2_U);
     
     os_timer_setfn(&blinky_timer, (os_timer_func_t *)blinky_timer_handler, NULL);
     os_timer_arm(&blinky_timer, 1000, 1);
+
+    mqttClientInit();
 }
 /** @} */
