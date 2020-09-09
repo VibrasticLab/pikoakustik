@@ -24,7 +24,7 @@
 #ifndef USER_CONF_H
 #define USER_CONF_H
 
-#define USER_TEST_STATE     TRUE
+#define USER_TEST_STATE     FALSE
  #define USER_TEST_RNG      FALSE
 
 #define USER_SERIAL         TRUE
@@ -43,7 +43,7 @@
 
 #define USER_LED_BUTTON     TRUE
 
-#define USER_METRI          FALSE
+#define USER_METRI          TRUE
  #define USER_METRI_RECORD  TRUE
  #define USER_METRI_CONVLV  FALSE
  #define USER_METRI_1FREQ   TRUE
