@@ -3,7 +3,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 
 ### Implemented Features:
 
-##### User Interaction:
+#### User Interaction:
 
 - [X] LED Run Mode Indicator
 	- [x] Measurement Mode: Blink fast
@@ -20,7 +20,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 - [ ] User-Friendlyness Interface Test (**September 2020**)
 - [ ] Build New PCB as Latest Revision  (**October 2020**)
 
-###### Packaging
+#### Packaging
 
 - [x] Acrilic Protector
 - [ ] Box Design
@@ -32,7 +32,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] Main Power Button
 	- [ ] Charge/Discharge Test (**September 2020**)
 
-###### Data Communication:
+#### Data Communication:
 
 - [X] Serial Data
 	- [x] ACM USB-CDC Protocol
@@ -59,7 +59,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [ ] HTTP Data exchange (**September 2020**)
 	- [ ] Standard Data Format (**September 2020**)
 
-###### Audiometri:
+#### Audiometri:
 
 - [x] Tone Generator
 	- [x] Generic I2S Protocol
