@@ -54,7 +54,6 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] MQTT Protocol
 	- [ ] HTTP Data exchange
 	- [ ] Standard Data Format
-	- [ ] Database Server
 
 ###### Audiometri:
 
