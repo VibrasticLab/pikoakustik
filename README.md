@@ -39,6 +39,8 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] Basic Serial commands
 	- [x] Media handling commands
 	- [x] Audiometri control commands
+	- [x] MQTT Data control commands
+	- [ ] HTTP Data control commands
 
 - [x] Media Storage
 	- [x] MMC Connector Slot
@@ -61,6 +63,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] Generic I2S Protocol
 	- [x] Pure Single Tone
 	- [x] Calibrated Frequency array
+	- [x] Pop-Click Suppression
 	- [ ] Calibrated SPL range
 	- [ ] Calibrated SPL scaling
 	- [ ] Left/Right Isolation (**September 2020**) 
