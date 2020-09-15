@@ -6,51 +6,78 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 ##### User Interaction:
 
 - [X] LED Run Mode Indicator
-	+ [x] Measurement Mode: Blink fast
-	+ [x] Idle Mode: Blink slower
-	+ [x] No Media Mode: Blink every 2s
+	- [x] Measurement Mode: Blink fast
+	- [x] Idle Mode: Blink slow
+	- [x] No Media Mode: Blink fast every 2s
 - [X] LED TRUE/FALSE
-- [X] LED Play Choices
+- [X] LED Play/MMC
+- [x] LED 3 Choices
 - [X] Button Choices
-	+ [x] 3 Button Choices
-	+ [x] 3 Choices Random Generator
-	+ [x] 3 Choice Answer Placement
+	- [x] 3 Button Choices
+	- [x] 3 Choices Random Generator
+	- [x] 3 Choice Answer Placement
+- [x] Reset Button
+- [ ] User-Friendlyness Interface Test (**September 2020**)
+- [ ] Build New PCB as Latest Revision  (**October 2020**)
+
+###### Packaging
+
+- [x] Acrilic Protector
+- [ ] Box Design
+	- [ ] Print 3D (**September 2020**)
+	- [ ] Plastic Molding
+- [ ] Battery
+	- [x] Regulator TP4056
+	- [x] LiPo Battery
+	- [x] Main Power Button
+	- [ ] Charge/Discharge Test (**September 2020**)
 
 ###### Data Communication:
 
 - [X] Serial Data
-	+ [x] ACM USB-CDC Protocol
-	+ [x] Basic Serial commands
-	+ [ ] Media handling commands
-	+ [ ] Audiometri control commands
+	- [x] ACM USB-CDC Protocol
+	- [x] Basic Serial commands
+	- [x] Media handling commands
+	- [x] Audiometri control commands
 
 - [x] Media Storage
-	+ [x] MMC Connector Slot
-	+ [x] MMC readyness checking
-	+ [x] FATFS as FAT32 handler
-	+ [x] Via SPI protocol
-	+ [ ] Via SDIO protocol
+	- [x] MMC Connector Slot
+	- [x] MMC readyness checking
+	- [x] FATFS as FAT32 handler
+	- [x] Via SPI protocol
+	- [ ] Via SDIO protocol
 
 - [x] IoT Exchanges
-	+ [x] ESP-12E slot on PCB
-	+ [ ] WiFi handling
-	+ [ ] TCP Data exchange
-	+ [ ] MQTT Protocol
-	+ [ ] Standard Data Format
-	+ [ ] Data Identification
-	+ [ ] Database Server
+	- [x] ESP-12E slot on PCB
+	- [x] ESP-12E power jumper
+	- [x] WiFi handling
+	- [x] MQTT Protocol
+	- [ ] HTTP Data exchange
+	- [ ] Standard Data Format
+	- [ ] Database Server
 
 ###### Audiometri:
 
 - [x] Tone Generator
-	+ [x] Generic I2S Protocol
-	+ [x] Pure Single Tone
-	+ [ ] Calibrated Frequency array
-	+ [ ] Calibrated SPL range
-	+ [ ] Calibrated SPL scaling
+	- [x] Generic I2S Protocol
+	- [x] Pure Single Tone
+	- [x] Calibrated Frequency array
+	- [ ] Calibrated SPL range
+	- [ ] Calibrated SPL scaling
+	- [ ] Left/Right Isolation (**September 2020**) 
+	
+- [ ] Microphone Input (**September 2020**)
+	- [ ] Environment Noise Capture (**September 2020**)
+	- [ ] Environment Noise Compensation
 
 - [x] Hearing Test
-	+ [x] User Test Flow
-	+ [ ] Convinient Level at 75%
-	+ [ ] Random starting SPL
-	+ [ ] Up/Down SPL scaling
+	- [x] User Test Flow
+	- [ ] Convinient Level Test (**September 2020**)
+	- [ ] Random starting SPL
+	- [x] Up/Down SPL scaling
+	
+- [ ] Mass Production
+	- [ ] PCB Electronic (**October 2020**)
+		- [ ] Seeed Studio
+		- [ ] DigiKey
+	- [ ] Packaging
