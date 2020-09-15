@@ -16,7 +16,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] 3 Button Choices
 	- [x] 3 Choices Random Generator
 	- [x] 3 Choice Answer Placement
-- [x] Reset Button
+- [x] Button Reset
 - [ ] User-Friendlyness Interface Test (**September 2020**)
 - [ ] Build New PCB as Latest Revision  (**October 2020**)
 
@@ -40,7 +40,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] Media handling commands
 	- [x] Audiometri control commands
 	- [x] MQTT Data control commands
-	- [ ] HTTP Data control commands
+	- [ ] HTTP Data control commands (**September 2020**)
 
 - [x] Media Storage
 	- [x] MMC Connector Slot
@@ -54,8 +54,8 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] ESP-12E power jumper
 	- [x] WiFi handling
 	- [x] MQTT Protocol
-	- [ ] HTTP Data exchange
-	- [ ] Standard Data Format
+	- [ ] HTTP Data exchange (**September 2020**)
+	- [ ] Standard Data Format (**September 2020**)
 
 ###### Audiometri:
 
