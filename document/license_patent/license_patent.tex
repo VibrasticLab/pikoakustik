@@ -1,0 +1,223 @@
+\documentclass[12pt,]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage{geometry}
+\usepackage{mathtools}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{stackengine}
+\usepackage[os=win]{menukeys}
+\usepackage{hyperref}
+\usepackage{minted}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage[yyyymmdd,hhmmss]{datetime}
+\usepackage{etoolbox}
+
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{}
+
+\newcommand{\ShowOsVersion}{
+	\immediate\write18{\unexpanded{foo=`uname -sro` && echo "${foo}" > tmp.tex}}
+	\input{tmp}\immediate\write18{rm tmp.tex}
+}
+
+\newcommand{\ShowTexVersion}{
+	\immediate\write18{\unexpanded{foo=`pdflatex -version | head -n1 | cut -d' ' -f1,2` && echo "${foo}" > tmp.tex}}
+	\input{tmp}\immediate\write18{rm tmp.tex}
+}
+
+\addto\captionsenglish{\renewcommand{\contentsname}{Daftar Isi}}
+
+\hypersetup{
+	colorlinks=true, %set true if you want colored links
+	linktoc=all,     %set to all if you want both sections and subsections linked
+	linkcolor=blue,  %choose some color if you want links to stand out
+}
+
+\geometry{
+	legalpaper,
+	left=15mm,
+	right=10mm,
+	top=10mm,
+	bottom=15mm,
+}
+
+\title{\Large \bf
+	License and Patent Claim Draft\\
+	\small{(Mid-Testing Stage)}
+}
+
+\author{Achmadi ST MT}
+
+\date{}
+
+\hypersetup{citecolor=black}
+
+%\pagecolor[rgb]{0.1,0.1,0.1}
+%\color[rgb]{1,1,1}
+
+\begin{document}
+	\maketitle
+	\thispagestyle{empty}
+	
+	\vspace*{600pt}
+	\noindent Seluruh konten dalam dokumen ini mengacu kepada pengembangan unit Audiometri di \textit{commit} terakhir:\\
+	\url{https://github.com/VibrasticLab/pikoakustik/commit/fa1db9a040644eab3fd033c1f8c43e28af1f0ebf}.\\
+	
+	\noindent This report written using: \\
+	OS : \ShowOsVersion \\
+	TeX : \ShowTexVersion \\
+	Update: {\today} at \currenttime \\
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\newpage
+	\tableofcontents
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\newpage
+	\section{Software/Firmware}
+	
+	Berikut akan dijabarkan beberapa aspek dari sisi software/firmware yang dijalankan di hardware.
+	Seluruh klaim pada aspek ini dalam bentuk klaim kode sumber (\textit{source-code}) dan tidak terbatas hanya \textit{binary} akhir.
+	
+	\subsection{Libraries}
+	Disini akan dijabarkan pengunaan pustaka (libraries) yang digunakan dalam pengembangan.
+	Seluruh pustaka disini berupa kode sumber implementasi dan API (\textit{Application Programming Interface})
+	di luar implementasi dan perbaikan (\textit{patch}) yang dilakukan oleh pihak peneliti disini.
+	
+	Penjabaran ini perlu mengingat pustaka tersebut dikembangankan oleh pihak lain dan telah memiliki klaim lisensi sendiri.
+	Sehingga secara otomatis pihak peneliti disini \textbf{tidak bisa mengklaim} pustaka tersebut.
+	
+	\begin{itemize}
+		\item \textbf{GNU GCC ARM}. Merupakan sekumpulan \textit{toolchain} dan pustaka untuk kompilasi source-code ke binary untuk chip ARM.
+		Dikembangan oleh ARM Limited dengan lisensi yang digunakan adalah GPL versi 3.0\\
+		\url{https://developer.arm.com/open-source/gnu-toolchain/gnu-rm}
+		
+		\item \textbf{ChibiOS/RT}. Merupakan sekumpulan pustaka yang berisi implementasi dan API abstraksi untuk chip ARM seri Cortex-M.
+		Dikembangkan oleh Giovanni Di Sirio dengan lisensi yang digunakan adalah GPL versi 3.0 dan Apache versi 2.0\\
+		\url{https://www.chibios.org/dokuwiki/doku.php}
+		
+		\item \textbf{FatFS}. Merupakan sekumpulan pustaka yang berisi implementasi dan API abstraksi untuk FAT16/FAT32 \textit{filesystem}.
+		Pustaka ini digunakan untuk menangani berkas-berkas teks yang disimpan di \textit{memory-card}.
+		Dikembangkan oleh Elm ChanN dengan lisensi yang digunakan adalah BSD license.\\
+		\url{http://elm-chan.org/fsw/ff/00index_e.html}
+		
+		\item \textbf{ESP-Open-SDK}. Merupakan sekumpulan \textit{toolchain} dan pustaka untuk kompilasi source-code ke binary untuk platform ESP8266/EX.
+		Dikembangan oleh Tensilica Inc. dan Espressif Inc. dengan lisensi yang digunakan adalah GPL versi 2.0\\
+		\url{https://github.com/pfalcon/esp-open-sdk}
+		
+		\item \textbf{esp\_mqtt}. Merupakan sekumpulan pustaka yang berisi implementasi protocol MQTT Client untuk ESP8266/EX.
+		Dikembangkan oleh Tuan PM dengan lisensi yang digunakan adalah MIT License.\\
+		\url{https://github.com/tuanpmt/esp_mqtt}
+	\end{itemize}
+
+	\subsection{Audio}
+	
+	Berikut dijabarkan beberapa klaim terhadap metode/algoritma terkait fitur Audio/Tone.
+	
+	\subsubsection{Tone Generation}
+	
+	Referensi persamaan untuk \textit{tone generation}, tersedia \textbf{ht\_audio.c}.
+	Aspek klaim adalah pola persamaan dan seluruh definisi konstanta yang digunakan,
+	terkecuali objek struktur konfigurasi I2S.
+	
+\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{c}
+#define USE_STEREO_ARRAY TRUE
+
+#define I2S_BUFF_SIZE 512
+#define DEFAULT_ATTEN 0.01
+#define DEFAULT_AMPL_THD 1
+
+#define TOTAL_BUFF_SIZE I2S_BUFF_SIZE*16
+
+void ht_audio_Zero(void){
+	uint16_t i;
+	for(i=0;i<TOTAL_BUFF_SIZE;i++){
+		i2s_tx_buf[i] = 0;
+	}
+}
+
+void ht_audio_Tone(double freq, double ampl){
+	uint16_t i;
+	uint16_t buffsize;
+	double ysin;
+	double ampl_act;
+	
+	buffsize = (uint16_t) I2S_BUFF_SIZE/freq;
+	
+	ampl_act = DEFAULT_ATTEN*ampl*32767;
+	if(ampl_act<=DEFAULT_AMPL_THD){ampl = 0;}
+	
+	ht_audio_Zero();
+	
+	for(i=0;i<buffsize;i++){
+		ysin = DEFAULT_ATTEN*ampl*32767*sin(2*3.141592653589793*((double)i/(double)buffsize));
+	
+		if(ysin >= 0){
+			i2s_tx_buf[i]=ysin;
+#if USE_STEREO_ARRAY
+			i2s_tx_buf[i+1]=ysin;
+#endif
+	}
+		if(ysin < 0){
+			i2s_tx_buf[i]=ysin+65535;
+#if USE_STEREO_ARRAY
+			i2s_tx_buf[i+1]=ysin+65535;
+#endif
+		}
+	}
+	
+	i2scfg.size = buffsize; //Can't claimed
+}
+\end{minted}
+
+	\subsubsection{Tone Play}
+	
+	Referensi metode untuk \textit{tone playing}, tersedia \textbf{ht\_audio.c}.
+	Aspek klaim adalah durasi dan flow metode, terkecuali objek struktur konfigurasi I2S.
+
+\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{c}
+void ht_audio_Play(uint16_t duration){
+	i2sStart(&I2SD2, &i2scfg);
+	i2sStartExchange(&I2SD2);
+	
+	chThdSleepMilliseconds(duration*10);
+	
+	i2sStopExchange(&I2SD2);
+	i2sStop(&I2SD2);
+}
+\end{minted}
+
+	\subsubsection{L/R Control}
+	
+	Referensi metode untuk kendali channel kiri-kanan, tersedia \textbf{ht\_audio.c}.
+	Aspek klaim adalah flow metode, terkecuali nomor pin pada chip STM32.
+	
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{c}
+void ht_audio_Init(void){
+	palSetPadMode(AUDIO_IO,AUDIO_L,PAL_MODE_OUTPUT_PUSHPULL);
+	palSetPadMode(AUDIO_IO,AUDIO_R,PAL_MODE_OUTPUT_PUSHPULL);
+}
+	
+void ht_audio_DisableCh(void){
+	palClearPad(AUDIO_IO,AUDIO_L);
+	palClearPad(AUDIO_IO,AUDIO_R);
+}
+
+void ht_audio_LeftCh(void){
+	ht_audio_DisableCh();
+	palSetPad(AUDIO_IO,AUDIO_L);
+}
+
+void ht_audio_RightCh(void){
+	ht_audio_DisableCh();
+	palSetPad(AUDIO_IO,AUDIO_R);
+}
+	\end{minted}
+
+	\newpage
+	\section{Hardware}
+\end{document}
