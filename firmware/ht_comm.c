@@ -409,7 +409,7 @@ static void cmd_iotlog(BaseSequentialStream *chp, int argc, char *argv[]) {
     double testAmpl = 1;
     char strlog[IFACE_BUFF_SIZE];
 
-    if(argc != 0){chprintf(chp,"usage: log\r\n");return;}
+    if(argc != 0){chprintf(chp,"usage: log <freq> <ampl> [TRUE/FALSE]\r\n");return;}
 
     ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f TRULSE\r\n",testFreq,testAmpl);
     ht_comm_IoT(strlog);

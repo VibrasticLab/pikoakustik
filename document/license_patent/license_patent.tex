@@ -596,6 +596,80 @@ static void cmd_mmchk(BaseSequentialStream *chp, int argc, char *argv[]) {
 	chprintf(chp,"MMC Checking Finished\r\n\r\n");
 }
 	\end{minted}
+	
+	\subsubsection{IOT: MQTT Subscribe}
+	Perintah untuk menjalankan rutin test subscribe via MQTT.
+	Referensi metode MMC di \textit{source-tree} proyek \textbf{esp8266dev}.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> sub
+	\end{minted}
+	
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_iotsub(BaseSequentialStream *chp, int argc, char *argv[]) {
+	(void) argv;
+	if(argc != 0){chprintf(chp,"usage: sub\r\n");return;}
+	
+	ht_comm_IoT("sub\r\n");
+	chprintf(chp,"IoT subscribe hello/world Finished\r\n\r\n");
+}
+	\end{minted}
+	
+	\subsubsection{IOT: MQTT Publish}
+	Perintah untuk menjalankan rutin test Publish via MQTT.
+	Referensi metode MMC di \textit{source-tree} proyek \textbf{esp8266dev}.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> pub
+	\end{minted}
+	
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_iotpub(BaseSequentialStream *chp, int argc, char *argv[]) {
+	(void) argv;
+	if(argc != 0){chprintf(chp,"usage: pub\r\n");return;}
+	
+	ht_comm_IoT("pub\r\n");
+	chprintf(chp,"IoT publish hello/world Finished\r\n\r\n");
+}
+	\end{minted}
+	
+	\subsubsection{IOT: MQTT Send HTTP JSON}
+	Perintah untuk menjalankan rutin test kirim JSON hasil ke server via HTTPS.
+	Referensi metode MMC di \textit{source-tree} proyek \textbf{esp8266dev}.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> send
+	\end{minted}
+	
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_iotsend(BaseSequentialStream *chp, int argc, char *argv[]) {
+	(void) argv;
+	if(argc != 0){chprintf(chp,"usage: send\r\n");return;}
+	
+	ht_mmc_lsFiles();
+	ht_mmc_sendFiles(lastnum);
+	ht_comm_IoT("send\r\n");
+}
+	\end{minted}
+	
+	\subsubsection{IOT: MQTT Send MQTT Result Log}
+	Perintah untuk menjalankan rutin test kirim JSON hasil ke server via HTTPS.
+	Referensi metode MMC di \textit{source-tree} proyek \textbf{esp8266dev}.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> log <freq> <ampl> [TRUE/FALSE]
+	\end{minted}
+	
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_iotlog(BaseSequentialStream *chp, int argc, char *argv[]) {
+	(void) argc;
+	(void) argv;
+	double testFreq = 1;
+	double testAmpl = 1;
+	char strlog[IFACE_BUFF_SIZE];
+	
+	if(argc != 0){chprintf(chp,"usage: log <freq> <ampl> [TRUE/FALSE]\r\n");return;}
+	
+	ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f TRULSE\r\n",testFreq,testAmpl);
+	ht_comm_IoT(strlog);
+}
+	\end{minted}
 
 	\newpage
 	\section{Hardware}
