@@ -54,6 +54,8 @@
 
 \hypersetup{citecolor=black}
 
+\definecolor{LightGray}{gray}{0.95}
+
 %\pagecolor[rgb]{0.1,0.1,0.1}
 %\color[rgb]{1,1,1}
 
@@ -116,15 +118,16 @@
 
 	\subsection{Audio}
 	
-	Berikut dijabarkan beberapa klaim terhadap metode/algoritma terkait fitur Audio/Tone.
+	Berikut dijabarkan beberapa klaim terhadap referensi metode/algoritma terkait fitur Audio/Tone.
+	eluruh referensi dapat ditemukan pada berkas sumber \textbf{ht\_audio.c}.
 	
 	\subsubsection{Tone Generation}
 	
-	Referensi persamaan untuk \textit{tone generation}, tersedia \textbf{ht\_audio.c}.
+	Referensi persamaan untuk \textit{tone generation}.
 	Aspek klaim adalah pola persamaan dan seluruh definisi konstanta yang digunakan,
 	terkecuali objek struktur konfigurasi I2S.
 	
-\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{c}
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
 #define USE_STEREO_ARRAY TRUE
 
 #define I2S_BUFF_SIZE 512
@@ -172,14 +175,14 @@ void ht_audio_Tone(double freq, double ampl){
 	
 	i2scfg.size = buffsize; //Can't claimed
 }
-\end{minted}
+	\end{minted}
 
 	\subsubsection{Tone Play}
 	
-	Referensi metode untuk \textit{tone playing}, tersedia \textbf{ht\_audio.c}.
+	Referensi metode untuk \textit{tone playing}.
 	Aspek klaim adalah durasi dan flow metode, terkecuali objek struktur konfigurasi I2S.
 
-\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{c}
+\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
 void ht_audio_Play(uint16_t duration){
 	i2sStart(&I2SD2, &i2scfg);
 	i2sStartExchange(&I2SD2);
@@ -193,10 +196,10 @@ void ht_audio_Play(uint16_t duration){
 
 	\subsubsection{L/R Control}
 	
-	Referensi metode untuk kendali channel kiri-kanan, tersedia \textbf{ht\_audio.c}.
+	Referensi metode untuk kendali channel kiri-kanan.
 	Aspek klaim adalah flow metode, terkecuali nomor pin pada chip STM32.
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{c}
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
 void ht_audio_Init(void){
 	palSetPadMode(AUDIO_IO,AUDIO_L,PAL_MODE_OUTPUT_PUSHPULL);
 	palSetPadMode(AUDIO_IO,AUDIO_R,PAL_MODE_OUTPUT_PUSHPULL);
@@ -215,6 +218,382 @@ void ht_audio_LeftCh(void){
 void ht_audio_RightCh(void){
 	ht_audio_DisableCh();
 	palSetPad(AUDIO_IO,AUDIO_R);
+}
+	\end{minted}
+	
+	\newpage
+	\subsection{Serial Commands}
+	
+	Berikut dijabarkan beberapa klaim terhadap referensi metode/algoritma terkait fitur Serial Commands yang dapat diakses melalu jalur USB-CDC.
+	Seluruh referensi dapat ditemukan pada berkas sumber \textbf{ht\_comm.c}
+	
+	\subsubsection{Testing}
+	Perintah untuk menjalankan rutin testing baik untuk komunikasi serial dan audio
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> test [0|1]
+	\end{minted}
+
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
+	uint8_t lrc;
+	
+	chprintf(chp,"Serial Console at %d & buffer size %d bit\r\n",SERIAL_DEFAULT_BITRATE,SERIAL_BUFFERS_SIZE);
+	chprintf(chp,"Playing Audio Test\r\n");
+	
+	if(argc==0){
+#if USER_AUDIO
+		chprintf(chp,"Test on both Channel\r\n");
+		ht_audio_TestBoth();
+#else
+	chprintf(chp,"Audio features disabled\r\n");
+#endif
+	}
+	else if(argc == 1){
+#if USER_AUDIO
+		lrc = atoi(argv[0]);
+		ht_audio_Tone(1.25,1);
+	
+		if(lrc==OUT_LEFT){
+			ht_audio_LeftCh();
+			chprintf(chp,"Test on Left Channel\r\n");
+			ht_audio_Play(TEST_DURATION);
+			chThdSleepMilliseconds(200);
+			ht_audio_Play(TEST_DURATION);
+		}
+		else if(lrc==OUT_RIGHT){
+			ht_audio_RightCh();
+			chprintf(chp,"Test on Right Channel\r\n");
+			ht_audio_Play(TEST_DURATION);
+			chThdSleepMilliseconds(200);
+			ht_audio_Play(TEST_DURATION);
+		}
+		else{
+			chprintf(chp,"Channel option incorrect \r\n");
+		}
+		ht_audio_DisableCh();
+#else
+		chprintf(chp,"Audio features disabled\r\n");
+#endif
+	}
+	else{
+		chprintf(chp,"usage: test [0|1] \r\n");
+		chprintf(chp,"0 -> Left Channel \r\n");
+		chprintf(chp,"1 -> Righ Channel \r\n");
+		return;
+	}
+}
+	\end{minted}
+
+	\newpage
+	\subsubsection{Audio: Zero}
+	Perintah untuk menjalankan rutin testing tone pada 0 dBV.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> zero [0/1]
+	\end{minted}
+
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_zero(BaseSequentialStream *chp, int argc, char *argv[]) {
+	if(argc != 1){chprintf(chp,"usage: zero <0/1>\r\n");return;}
+	
+	uint8_t lrc = atoi(argv[0]);
+	switch(lrc){
+	case OUT_LEFT:
+		ht_audio_LeftCh();
+		chprintf(chp,"Left Channel on\r\n");
+		break;
+	
+	case OUT_RIGHT:
+		ht_audio_RightCh();
+		chprintf(chp,"Right Channel on\r\n");
+		break;
+	}
+	
+	chprintf(chp,"Test Audio: Sine Zero\r\n");
+	ht_audio_Tone(1.25,0);
+	ht_audio_Play(TEST_DURATION);
+	ht_audio_DisableCh();
+	chprintf(chp,"Finished\r\n");
+}
+	\end{minted}
+
+	\subsubsection{Audio: Max}
+	Perintah untuk menjalankan rutin testing tone pada dBV maximum.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> max [0/1]
+	\end{minted}
+
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
+	if(argc != 1){chprintf(chp,"usage: max <0/1>\r\n");return;}
+	
+	uint8_t lrc = atoi(argv[0]);
+	switch(lrc){
+		case OUT_LEFT:
+			ht_audio_LeftCh();
+			chprintf(chp,"Left Channel on\r\n");
+			break;
+		
+		case OUT_RIGHT:
+			ht_audio_RightCh();
+			chprintf(chp,"Right Channel on\r\n");
+			break;
+	}
+	
+	chprintf(chp,"Test Audio: Sine Maximum\r\n");
+	ht_audio_Tone(1.25,1);
+	ht_audio_Play(TEST_DURATION);
+	ht_audio_DisableCh();
+	chprintf(chp,"Finished\r\n");
+}
+	\end{minted}
+	
+	\subsubsection{Audio: Min}
+	Perintah untuk menjalankan rutin testing tone pada dBV minimum.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> min [0/1]
+	\end{minted}
+
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
+	if(argc != 1){chprintf(chp,"usage: min <0/1>\r\n");return;}
+	
+	uint8_t lrc = atoi(argv[0]);
+	switch(lrc){
+		case OUT_LEFT:
+			ht_audio_LeftCh();
+			chprintf(chp,"Left Channel on\r\n");
+			break;
+		
+		case OUT_RIGHT:
+			ht_audio_RightCh();
+			chprintf(chp,"Right Channel on\r\n");
+			break;
+	}
+	
+	chprintf(chp,"Test Audio: Sine Minimum\r\n");
+	ht_audio_Tone(1.25,SMALLEST_DB);
+	ht_audio_Play(TEST_DURATION);
+	ht_audio_DisableCh();
+	chprintf(chp,"Finished\r\n");
+}
+	\end{minted}
+
+	\subsubsection{Audio: Tone}
+	Perintah untuk menjalankan rutin testing tone pada skala frekuensi dan amplitud tertentu.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> tone <0/1> <freq> <ampl>
+	\end{minted}
+
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
+	double vampl;
+	double vfreq;
+	uint8_t lrc = 0;
+	uint16_t sing_durr = 500;
+	
+	if(argc==2){
+		lrc = 0;
+		vfreq = atof(argv[0]);
+		vampl = atof(argv[1]);
+	}
+	else if(argc==3){
+		lrc = atoi(argv[0]);
+		vfreq = atof(argv[1]);
+		vampl = atof(argv[2]);
+	}
+	else{
+		chprintf(chp,"usage: tone <0/1> <freq> <ampl>\r\n");
+		return;
+	}
+	
+	switch(lrc){
+		case OUT_LEFT:
+			ht_audio_LeftCh();
+			chprintf(chp,"Left Channel on\r\n");
+			break;
+		
+		case OUT_RIGHT:
+			ht_audio_RightCh();
+			chprintf(chp,"Right Channel on\r\n");
+			break;
+	}
+	
+	if(vampl<=SMALLEST_DB){
+		chprintf(chp,"Warning: Amplitude bellow smallest set\r\n");
+	}
+	
+	chprintf(chp,"Tone: Freq:%6.4f Ampl:%6.4f\r\n",vfreq,vampl);
+	ht_audio_Tone(vfreq,vampl);
+	ht_audio_Play(sing_durr);
+	chprintf(chp,"Finished\r\n");
+	ht_audio_DisableCh();
+}
+	\end{minted}
+	
+	\subsubsection{Audio: Sing}
+	Perintah untuk menjalankan rutin testing tone skala tertinggi hingga terendah pada skala frekuensi tertentu.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> sing <0/1> <freq>
+	\end{minted}
+	
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
+	double vampl = 1;
+	double vfreq = 1.25;
+	uint8_t lrc = 0;
+	uint16_t sing_durr = 500;
+	
+	if(argc == 0){
+		lrc = 0;
+		vfreq = 1.25;
+	}
+	else if(argc == 1){
+		lrc = 0;
+		vfreq = atof(argv[0]);
+	}
+	else if(argc == 2){
+		lrc = atoi(argv[0]);
+		vfreq = atof(argv[1]);
+	}
+	else{
+		chprintf(chp,"usage: sing <0/1> <freq>\r\n");return;
+	}
+	
+	switch(lrc){
+		case OUT_LEFT:
+			ht_audio_LeftCh();
+			chprintf(chp,"Left Channel on\r\n");
+			break;
+			
+		case OUT_RIGHT:
+			ht_audio_RightCh();
+			chprintf(chp,"Right Channel on\r\n");
+			break;
+	}
+	
+	while(1){
+		chprintf(chp,"Sing: Freq:%6.4f Ampl:%6.4f\r\n",vfreq,vampl);
+		ht_audio_Tone(vfreq,vampl);
+		ht_audio_Play(sing_durr);
+		chThdSleepMilliseconds(500);
+		
+		vampl = vampl/2;
+		if(vampl<SMALLEST_DB){
+			chprintf(chp,"Finished\r\n");
+			break;
+		}
+	}
+	ht_audio_DisableCh();
+}
+	\end{minted}
+	
+	\newpage
+	\subsubsection{Audio: Speaker Test}
+	Perintah untuk menjalankan rutin testing speaker dengan dua tone berurutan.
+	Referensi tone di berkas \textbf{ht\_audio.c}.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> sptest <0/1/2>
+	\end{minted}
+	
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_sptest(BaseSequentialStream *chp, int argc, char *argv[]) {
+	uint8_t lrc;
+	
+	if(argc != 1){chprintf(chp,"usage: sptest <0/1/2>\r\n");return;}
+	
+	lrc = atoi(argv[0]);
+	
+	switch(lrc){
+		case 0: chprintf(chp,"Testing Left Channel\r\n"); ht_audio_TestLeft();break;
+		case 1: chprintf(chp,"Testing Right Channel\r\n"); ht_audio_TestRight();break;
+		case 2: chprintf(chp,"Testing Both Channel\r\n"); ht_audio_TestBoth();break;
+	}
+}
+	\end{minted}
+	
+	\subsubsection{MMC: List Files}
+	Perintah untuk menjalankan menampilkan daftar file yang tersimpan di MMC.
+	Referensi metode MMC di berkas \textbf{ht\_mmc.c}.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> ls
+	\end{minted}
+	
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_lsfile(BaseSequentialStream *chp, int argc, char *argv[]) {
+	(void) argv;
+	if(argc != 0){chprintf(chp,"usage: ls\r\n");return;}
+	
+	ht_mmc_lsFiles();
+}
+	}
+	\end{minted}
+	
+	\subsubsection{MMC: Show File}
+	Perintah untuk menjalankan menampilkan isi file yang tersimpan di MMC pada nomer tertentu.
+	Referensi metode MMC di berkas \textbf{ht\_mmc.c}.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> cat [N]
+	\end{minted}
+	
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_catfile(BaseSequentialStream *chp, int argc, char *argv[]) {
+	(void) argv;
+	uint8_t fnum;
+	
+	if(argc==0 || argc>1){chprintf(chp,"usage: cat file_number\r\n");return;}
+		fnum = atoi(argv[0]);
+		ht_mmc_catFiles(fnum);
+}
+	\end{minted}
+	
+	\subsubsection{MMC: Test Write}
+	Perintah untuk menjalankan rutin test Read/Write di MMC.
+	Referensi metode MMC di berkas \textbf{ht\_mmc.c}.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> mmc
+	\end{minted}
+	
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_mmcwrt(BaseSequentialStream *chp, int argc, char *argv[]) {
+	(void) argv;
+	if(argc != 0){chprintf(chp,"usage: mmcwr\r\n");return;}
+	
+	ht_mmc_Test();
+	chprintf(chp,"MMC R/W Test Finished\r\n\r\n");
+}
+	\end{minted}
+	
+	\subsubsection{MMC: Show Contents}
+	Perintah untuk menjalankan rutin test File Read di MMC.
+	Referensi metode MMC di berkas \textbf{ht\_mmc.c}.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> mmcat
+	\end{minted}
+	
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_mmcat(BaseSequentialStream *chp, int argc, char *argv[]) {
+	(void) argv;
+	if(argc != 0){chprintf(chp,"usage: mmcat\r\n");return;}
+	
+	ht_mmc_catTest();
+	chprintf(chp,"MMC R/W Content look Finished\r\n\r\n");
+}
+	\end{minted}
+	
+	\subsubsection{MMC: Check MMC}
+	Perintah untuk menjalankan rutin test \textit{filesystem} di MMC.
+	Referensi metode MMC di berkas \textbf{ht\_mmc.c}.
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
+ch> mmcat
+	\end{minted}
+	
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
+static void cmd_mmchk(BaseSequentialStream *chp, int argc, char *argv[]) {
+	(void) argv;
+	if(argc != 0){chprintf(chp,"usage: mmchk\r\n");return;}
+	
+	ht_mmc_initCheck();
+	chprintf(chp,"MMC Checking Finished\r\n\r\n");
 }
 	\end{minted}
 

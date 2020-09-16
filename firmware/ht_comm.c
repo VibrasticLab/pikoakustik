@@ -329,7 +329,7 @@ static void cmd_catfile(BaseSequentialStream *chp, int argc, char *argv[]) {
  */
 static void cmd_mmcwrt(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
-    if(argc != 0){chprintf(chp,"usage: mmc\r\n");return;}
+    if(argc != 0){chprintf(chp,"usage: mmcwr\r\n");return;}
 
     ht_mmc_Test();
     chprintf(chp,"MMC R/W Test Finished\r\n\r\n");
@@ -353,7 +353,7 @@ static void cmd_mmcat(BaseSequentialStream *chp, int argc, char *argv[]) {
  */
 static void cmd_mmchk(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
-    if(argc != 0){chprintf(chp,"usage: mmc\r\n");return;}
+    if(argc != 0){chprintf(chp,"usage: mmchk\r\n");return;}
 
     ht_mmc_initCheck();
     chprintf(chp,"MMC Checking Finished\r\n\r\n");
