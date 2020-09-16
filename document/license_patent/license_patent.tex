@@ -670,6 +670,49 @@ static void cmd_iotlog(BaseSequentialStream *chp, int argc, char *argv[]) {
 	ht_comm_IoT(strlog);
 }
 	\end{minted}
+	
+	\newpage
+	\subsection{Button dan LED}
+	
+	Berikut dijabarkan beberapa klaim terhadap referensi metode/algoritma terkait fitur antar muka tombol.
+	Seluruh referensi dapat ditemukan pada berkas sumber \textbf{ht\_exti.c} dan \textbf{ht\_metri.c}.
+	
+	\subsubsection{Startup}
+	
+	Untuk memulai proses pengukuran Audiometri, pengguna melakukan tekan tombol dengan suatu urutan.
+	Aspek klaim disini adalah flow urutan tombol dan LED untuk memulai proses pengukuran audiometri.
+	Urutan tombol dan led:
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=400pt]{images/ledbutton_step}
+		\caption{Urutan tombol dan LED untuk memulai}
+	\end{figure}
+
+	Urutan untuk memulai proses audiometri adalah:
+	
+	\begin{enumerate}
+		\item Saat kondisi \textit{idle}, LED pada posisi ini akan berkedip lambat.
+		
+		\item Tekan salah satu dari 3 tombol yang sebaris (anggap tombol A).
+		
+		\item LED terdekat dengan tombol menyala
+		
+		\item Tekan tombol lain selain tombol sebelumnya.
+		
+		\item LED sebelum nya akan mati dan LED hijau menyala.
+		Ini adalah kondisi standby/siap
+		
+		\item Tekan tombol lain selain dua tombol sebelumnya.
+		
+		\item LED pada posisi ini akan berkedip cepat dan LED lainnya akan mati.
+		Proses Audiometri sudah dimulai.
+		
+		
+	\end{enumerate}
+	
+	\newpage
+	\subsection{Summary}
 
 	\newpage
 	\section{Hardware}
