@@ -33,6 +33,7 @@
 	colorlinks=true, %set true if you want colored links
 	linktoc=all,     %set to all if you want both sections and subsections linked
 	linkcolor=blue,  %choose some color if you want links to stand out
+	urlcolor=blue,	 %url color
 }
 
 \geometry{
@@ -84,6 +85,11 @@
 	
 	Berikut akan dijabarkan beberapa aspek dari sisi software/firmware yang dijalankan di hardware.
 	Seluruh klaim pada aspek ini dalam bentuk klaim kode sumber (\textit{source-code}) dan tidak terbatas hanya \textit{binary} akhir.
+	Referensi untuk fungsi-fungsi implementasi dapat ditemukan di source-tree di alamat:
+	\begin{itemize}
+		\item (STM32) \url{https://github.com/VibrasticLab/pikoakustik/tree/stm32f401re_3pin/firmware}
+		\item (ESP8266) \url{https://github.com/VibrasticLab/pikoakustik/tree/stm32f401re_3pin/esp8266}
+	\end{itemize}
 	
 	\subsection{Libraries}
 	Disini akan dijabarkan pengunaan pustaka (libraries) yang digunakan dalam pengembangan.
@@ -119,7 +125,6 @@
 	\subsection{Audio}
 	
 	Berikut dijabarkan beberapa klaim terhadap referensi metode/algoritma terkait fitur Audio/Tone.
-	eluruh referensi dapat ditemukan pada berkas sumber \textbf{ht\_audio.c}.
 	
 	\subsubsection{Tone Generation}
 	
@@ -127,105 +132,33 @@
 	Aspek klaim adalah pola persamaan dan seluruh definisi konstanta yang digunakan,
 	terkecuali objek struktur konfigurasi I2S.
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-#define USE_STEREO_ARRAY TRUE
-
-#define I2S_BUFF_SIZE 512
-#define DEFAULT_ATTEN 0.01
-#define DEFAULT_AMPL_THD 1
-
-#define TOTAL_BUFF_SIZE I2S_BUFF_SIZE*16
-
-void ht_audio_Zero(void){
-	uint16_t i;
-	for(i=0;i<TOTAL_BUFF_SIZE;i++){
-		i2s_tx_buf[i] = 0;
-	}
-}
-
-void ht_audio_Tone(double freq, double ampl){
-	uint16_t i;
-	uint16_t buffsize;
-	double ysin;
-	double ampl_act;
-	
-	buffsize = (uint16_t) I2S_BUFF_SIZE/freq;
-	
-	ampl_act = DEFAULT_ATTEN*ampl*32767;
-	if(ampl_act<=DEFAULT_AMPL_THD){ampl = 0;}
-	
-	ht_audio_Zero();
-	
-	for(i=0;i<buffsize;i++){
-		ysin = DEFAULT_ATTEN*ampl*32767*sin(2*3.141592653589793*((double)i/(double)buffsize));
-	
-		if(ysin >= 0){
-			i2s_tx_buf[i]=ysin;
-#if USE_STEREO_ARRAY
-			i2s_tx_buf[i+1]=ysin;
-#endif
-	}
-		if(ysin < 0){
-			i2s_tx_buf[i]=ysin+65535;
-#if USE_STEREO_ARRAY
-			i2s_tx_buf[i+1]=ysin+65535;
-#endif
-		}
-	}
-	
-	i2scfg.size = buffsize; //Can't claimed
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_audio.c#L69-L100}{firmware/ht\_audio.c:69-100}
 
 	\subsubsection{Tone Play}
 	
 	Referensi metode untuk \textit{tone playing}.
 	Aspek klaim adalah durasi dan flow metode, terkecuali objek struktur konfigurasi I2S.
 
-\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-void ht_audio_Play(uint16_t duration){
-	i2sStart(&I2SD2, &i2scfg);
-	i2sStartExchange(&I2SD2);
-	
-	chThdSleepMilliseconds(duration*10);
-	
-	i2sStopExchange(&I2SD2);
-	i2sStop(&I2SD2);
-}
-\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_audio.c#L102-L110}{firmware/ht\_audio.c:102-110}
 
 	\subsubsection{L/R Control}
 	
 	Referensi metode untuk kendali channel kiri-kanan.
 	Aspek klaim adalah flow metode, terkecuali nomor pin pada chip STM32.
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-void ht_audio_Init(void){
-	palSetPadMode(AUDIO_IO,AUDIO_L,PAL_MODE_OUTPUT_PUSHPULL);
-	palSetPadMode(AUDIO_IO,AUDIO_R,PAL_MODE_OUTPUT_PUSHPULL);
-}
-	
-void ht_audio_DisableCh(void){
-	palClearPad(AUDIO_IO,AUDIO_L);
-	palClearPad(AUDIO_IO,AUDIO_R);
-}
-
-void ht_audio_LeftCh(void){
-	ht_audio_DisableCh();
-	palSetPad(AUDIO_IO,AUDIO_L);
-}
-
-void ht_audio_RightCh(void){
-	ht_audio_DisableCh();
-	palSetPad(AUDIO_IO,AUDIO_R);
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas:
+	\begin{itemize}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_audio.c#L112-L115}{firmware/ht\_audio.c:112-115}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_audio.c#L117-L120}{firmware/ht\_audio.c:117-120}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_audio.c#L122-L125}{firmware/ht\_audio.c:122-125}
+	\end{itemize}
 	
 	\newpage
 	\subsection{Serial Commands}
 	
 	Berikut dijabarkan beberapa klaim terhadap referensi metode/algoritma terkait fitur Serial Commands yang dapat diakses melalu jalur USB-CDC.
-	Seluruh referensi dapat ditemukan pada berkas sumber \textbf{ht\_comm.c}
 	
 	\subsubsection{Testing}
 	Perintah untuk menjalankan rutin testing baik untuk komunikasi serial dan audio
@@ -233,88 +166,17 @@ void ht_audio_RightCh(void){
 ch> test [0|1]
 	\end{minted}
 
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
-	uint8_t lrc;
-	
-	chprintf(chp,"Serial Console at %d & buffer size %d bit\r\n",SERIAL_DEFAULT_BITRATE,SERIAL_BUFFERS_SIZE);
-	chprintf(chp,"Playing Audio Test\r\n");
-	
-	if(argc==0){
-#if USER_AUDIO
-		chprintf(chp,"Test on both Channel\r\n");
-		ht_audio_TestBoth();
-#else
-	chprintf(chp,"Audio features disabled\r\n");
-#endif
-	}
-	else if(argc == 1){
-#if USER_AUDIO
-		lrc = atoi(argv[0]);
-		ht_audio_Tone(1.25,1);
-	
-		if(lrc==OUT_LEFT){
-			ht_audio_LeftCh();
-			chprintf(chp,"Test on Left Channel\r\n");
-			ht_audio_Play(TEST_DURATION);
-			chThdSleepMilliseconds(200);
-			ht_audio_Play(TEST_DURATION);
-		}
-		else if(lrc==OUT_RIGHT){
-			ht_audio_RightCh();
-			chprintf(chp,"Test on Right Channel\r\n");
-			ht_audio_Play(TEST_DURATION);
-			chThdSleepMilliseconds(200);
-			ht_audio_Play(TEST_DURATION);
-		}
-		else{
-			chprintf(chp,"Channel option incorrect \r\n");
-		}
-		ht_audio_DisableCh();
-#else
-		chprintf(chp,"Audio features disabled\r\n");
-#endif
-	}
-	else{
-		chprintf(chp,"usage: test [0|1] \r\n");
-		chprintf(chp,"0 -> Left Channel \r\n");
-		chprintf(chp,"1 -> Righ Channel \r\n");
-		return;
-	}
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L49-L96}{firmware/ht\_comm.c:49-96}
 
-	\newpage
 	\subsubsection{Audio: Zero}
 	Perintah untuk menjalankan rutin testing tone pada 0 dBV.
 	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{bash}
 ch> zero [0/1]
 	\end{minted}
 
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_zero(BaseSequentialStream *chp, int argc, char *argv[]) {
-	if(argc != 1){chprintf(chp,"usage: zero <0/1>\r\n");return;}
-	
-	uint8_t lrc = atoi(argv[0]);
-	switch(lrc){
-	case OUT_LEFT:
-		ht_audio_LeftCh();
-		chprintf(chp,"Left Channel on\r\n");
-		break;
-	
-	case OUT_RIGHT:
-		ht_audio_RightCh();
-		chprintf(chp,"Right Channel on\r\n");
-		break;
-	}
-	
-	chprintf(chp,"Test Audio: Sine Zero\r\n");
-	ht_audio_Tone(1.25,0);
-	ht_audio_Play(TEST_DURATION);
-	ht_audio_DisableCh();
-	chprintf(chp,"Finished\r\n");
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L104-L125}{firmware/ht\_comm.c:104-125}
 
 	\subsubsection{Audio: Max}
 	Perintah untuk menjalankan rutin testing tone pada dBV maximum.
@@ -322,30 +184,8 @@ static void cmd_zero(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> max [0/1]
 	\end{minted}
 
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
-	if(argc != 1){chprintf(chp,"usage: max <0/1>\r\n");return;}
-	
-	uint8_t lrc = atoi(argv[0]);
-	switch(lrc){
-		case OUT_LEFT:
-			ht_audio_LeftCh();
-			chprintf(chp,"Left Channel on\r\n");
-			break;
-		
-		case OUT_RIGHT:
-			ht_audio_RightCh();
-			chprintf(chp,"Right Channel on\r\n");
-			break;
-	}
-	
-	chprintf(chp,"Test Audio: Sine Maximum\r\n");
-	ht_audio_Tone(1.25,1);
-	ht_audio_Play(TEST_DURATION);
-	ht_audio_DisableCh();
-	chprintf(chp,"Finished\r\n");
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L131-L152}{firmware/ht\_comm.c:131-152}
 	
 	\subsubsection{Audio: Min}
 	Perintah untuk menjalankan rutin testing tone pada dBV minimum.
@@ -353,30 +193,8 @@ static void cmd_max(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> min [0/1]
 	\end{minted}
 
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
-	if(argc != 1){chprintf(chp,"usage: min <0/1>\r\n");return;}
-	
-	uint8_t lrc = atoi(argv[0]);
-	switch(lrc){
-		case OUT_LEFT:
-			ht_audio_LeftCh();
-			chprintf(chp,"Left Channel on\r\n");
-			break;
-		
-		case OUT_RIGHT:
-			ht_audio_RightCh();
-			chprintf(chp,"Right Channel on\r\n");
-			break;
-	}
-	
-	chprintf(chp,"Test Audio: Sine Minimum\r\n");
-	ht_audio_Tone(1.25,SMALLEST_DB);
-	ht_audio_Play(TEST_DURATION);
-	ht_audio_DisableCh();
-	chprintf(chp,"Finished\r\n");
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L158-L179}{firmware/ht\_comm.c:158-179}
 
 	\subsubsection{Audio: Tone}
 	Perintah untuk menjalankan rutin testing tone pada skala frekuensi dan amplitud tertentu.
@@ -384,51 +202,8 @@ static void cmd_min(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> tone <0/1> <freq> <ampl>
 	\end{minted}
 
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
-	double vampl;
-	double vfreq;
-	uint8_t lrc = 0;
-	uint16_t sing_durr = 500;
-	
-	if(argc==2){
-		lrc = 0;
-		vfreq = atof(argv[0]);
-		vampl = atof(argv[1]);
-	}
-	else if(argc==3){
-		lrc = atoi(argv[0]);
-		vfreq = atof(argv[1]);
-		vampl = atof(argv[2]);
-	}
-	else{
-		chprintf(chp,"usage: tone <0/1> <freq> <ampl>\r\n");
-		return;
-	}
-	
-	switch(lrc){
-		case OUT_LEFT:
-			ht_audio_LeftCh();
-			chprintf(chp,"Left Channel on\r\n");
-			break;
-		
-		case OUT_RIGHT:
-			ht_audio_RightCh();
-			chprintf(chp,"Right Channel on\r\n");
-			break;
-	}
-	
-	if(vampl<=SMALLEST_DB){
-		chprintf(chp,"Warning: Amplitude bellow smallest set\r\n");
-	}
-	
-	chprintf(chp,"Tone: Freq:%6.4f Ampl:%6.4f\r\n",vfreq,vampl);
-	ht_audio_Tone(vfreq,vampl);
-	ht_audio_Play(sing_durr);
-	chprintf(chp,"Finished\r\n");
-	ht_audio_DisableCh();
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L185-L277}{firmware/ht\_comm.c:185-277}
 	
 	\subsubsection{Audio: Sing}
 	Perintah untuk menjalankan rutin testing tone skala tertinggi hingga terendah pada skala frekuensi tertentu.
@@ -436,58 +211,9 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> sing <0/1> <freq>
 	\end{minted}
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
-	double vampl = 1;
-	double vfreq = 1.25;
-	uint8_t lrc = 0;
-	uint16_t sing_durr = 500;
-	
-	if(argc == 0){
-		lrc = 0;
-		vfreq = 1.25;
-	}
-	else if(argc == 1){
-		lrc = 0;
-		vfreq = atof(argv[0]);
-	}
-	else if(argc == 2){
-		lrc = atoi(argv[0]);
-		vfreq = atof(argv[1]);
-	}
-	else{
-		chprintf(chp,"usage: sing <0/1> <freq>\r\n");return;
-	}
-	
-	switch(lrc){
-		case OUT_LEFT:
-			ht_audio_LeftCh();
-			chprintf(chp,"Left Channel on\r\n");
-			break;
-			
-		case OUT_RIGHT:
-			ht_audio_RightCh();
-			chprintf(chp,"Right Channel on\r\n");
-			break;
-	}
-	
-	while(1){
-		chprintf(chp,"Sing: Freq:%6.4f Ampl:%6.4f\r\n",vfreq,vampl);
-		ht_audio_Tone(vfreq,vampl);
-		ht_audio_Play(sing_durr);
-		chThdSleepMilliseconds(500);
-		
-		vampl = vampl/2;
-		if(vampl<SMALLEST_DB){
-			chprintf(chp,"Finished\r\n");
-			break;
-		}
-	}
-	ht_audio_DisableCh();
-}
-	\end{minted}
-	
-	\newpage
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L233-L280}{firmware/ht\_comm.c:233-280}
+
 	\subsubsection{Audio: Speaker Test}
 	Perintah untuk menjalankan rutin testing speaker dengan dua tone berurutan.
 	Referensi tone di berkas \textbf{ht\_audio.c}.
@@ -495,21 +221,8 @@ static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> sptest <0/1/2>
 	\end{minted}
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_sptest(BaseSequentialStream *chp, int argc, char *argv[]) {
-	uint8_t lrc;
-	
-	if(argc != 1){chprintf(chp,"usage: sptest <0/1/2>\r\n");return;}
-	
-	lrc = atoi(argv[0]);
-	
-	switch(lrc){
-		case 0: chprintf(chp,"Testing Left Channel\r\n"); ht_audio_TestLeft();break;
-		case 1: chprintf(chp,"Testing Right Channel\r\n"); ht_audio_TestRight();break;
-		case 2: chprintf(chp,"Testing Both Channel\r\n"); ht_audio_TestBoth();break;
-	}
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L286-L298}{firmware/ht\_comm.c:286-298}
 	
 	\subsubsection{MMC: List Files}
 	Perintah untuk menjalankan menampilkan daftar file yang tersimpan di MMC.
@@ -518,15 +231,8 @@ static void cmd_sptest(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> ls
 	\end{minted}
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_lsfile(BaseSequentialStream *chp, int argc, char *argv[]) {
-	(void) argv;
-	if(argc != 0){chprintf(chp,"usage: ls\r\n");return;}
-	
-	ht_mmc_lsFiles();
-}
-	}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L306-L311}{firmware/ht\_comm.c:306-311}
 	
 	\subsubsection{MMC: Show File}
 	Perintah untuk menjalankan menampilkan isi file yang tersimpan di MMC pada nomer tertentu.
@@ -535,16 +241,8 @@ static void cmd_lsfile(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> cat [N]
 	\end{minted}
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_catfile(BaseSequentialStream *chp, int argc, char *argv[]) {
-	(void) argv;
-	uint8_t fnum;
-	
-	if(argc==0 || argc>1){chprintf(chp,"usage: cat file_number\r\n");return;}
-		fnum = atoi(argv[0]);
-		ht_mmc_catFiles(fnum);
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L317-L324}{firmware/ht\_comm.c:317-324}
 	
 	\subsubsection{MMC: Test Write}
 	Perintah untuk menjalankan rutin test Read/Write di MMC.
@@ -553,15 +251,8 @@ static void cmd_catfile(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> mmc
 	\end{minted}
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_mmcwrt(BaseSequentialStream *chp, int argc, char *argv[]) {
-	(void) argv;
-	if(argc != 0){chprintf(chp,"usage: mmcwr\r\n");return;}
-	
-	ht_mmc_Test();
-	chprintf(chp,"MMC R/W Test Finished\r\n\r\n");
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L330-L336}{firmware/ht\_comm.c:330-336}
 	
 	\subsubsection{MMC: Show Contents}
 	Perintah untuk menjalankan rutin test File Read di MMC.
@@ -570,15 +261,8 @@ static void cmd_mmcwrt(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> mmcat
 	\end{minted}
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_mmcat(BaseSequentialStream *chp, int argc, char *argv[]) {
-	(void) argv;
-	if(argc != 0){chprintf(chp,"usage: mmcat\r\n");return;}
-	
-	ht_mmc_catTest();
-	chprintf(chp,"MMC R/W Content look Finished\r\n\r\n");
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L342-L348}{firmware/ht\_comm.c:342-348}
 	
 	\subsubsection{MMC: Check MMC}
 	Perintah untuk menjalankan rutin test \textit{filesystem} di MMC.
@@ -587,15 +271,8 @@ static void cmd_mmcat(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> mmcat
 	\end{minted}
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_mmchk(BaseSequentialStream *chp, int argc, char *argv[]) {
-	(void) argv;
-	if(argc != 0){chprintf(chp,"usage: mmchk\r\n");return;}
-	
-	ht_mmc_initCheck();
-	chprintf(chp,"MMC Checking Finished\r\n\r\n");
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L354-L360}{firmware/ht\_comm.c:354-360}
 	
 	\subsubsection{IOT: MQTT Subscribe}
 	Perintah untuk menjalankan rutin test subscribe via MQTT.
@@ -604,15 +281,8 @@ static void cmd_mmchk(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> sub
 	\end{minted}
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_iotsub(BaseSequentialStream *chp, int argc, char *argv[]) {
-	(void) argv;
-	if(argc != 0){chprintf(chp,"usage: sub\r\n");return;}
-	
-	ht_comm_IoT("sub\r\n");
-	chprintf(chp,"IoT subscribe hello/world Finished\r\n\r\n");
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L368-L374}{firmware/ht\_comm.c:368-374}
 	
 	\subsubsection{IOT: MQTT Publish}
 	Perintah untuk menjalankan rutin test Publish via MQTT.
@@ -621,16 +291,10 @@ static void cmd_iotsub(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> pub
 	\end{minted}
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_iotpub(BaseSequentialStream *chp, int argc, char *argv[]) {
-	(void) argv;
-	if(argc != 0){chprintf(chp,"usage: pub\r\n");return;}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L380-L386}{firmware/ht\_comm.c:380-386}
 	
-	ht_comm_IoT("pub\r\n");
-	chprintf(chp,"IoT publish hello/world Finished\r\n\r\n");
-}
-	\end{minted}
-	
+	\newpage
 	\subsubsection{IOT: MQTT Send HTTP JSON}
 	Perintah untuk menjalankan rutin test kirim JSON hasil ke server via HTTPS.
 	Referensi metode MMC di \textit{source-tree} proyek \textbf{esp8266dev}.
@@ -638,16 +302,8 @@ static void cmd_iotpub(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> send
 	\end{minted}
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_iotsend(BaseSequentialStream *chp, int argc, char *argv[]) {
-	(void) argv;
-	if(argc != 0){chprintf(chp,"usage: send\r\n");return;}
-	
-	ht_mmc_lsFiles();
-	ht_mmc_sendFiles(lastnum);
-	ht_comm_IoT("send\r\n");
-}
-	\end{minted}
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L392-L399}{firmware/ht\_comm.c:392-399}
 	
 	\subsubsection{IOT: MQTT Send MQTT Result Log}
 	Perintah untuk menjalankan rutin test kirim JSON hasil ke server via HTTPS.
@@ -656,28 +312,14 @@ static void cmd_iotsend(BaseSequentialStream *chp, int argc, char *argv[]) {
 ch> log <freq> <ampl> [TRUE/FALSE]
 	\end{minted}
 	
-	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small,bgcolor=LightGray]{c}
-static void cmd_iotlog(BaseSequentialStream *chp, int argc, char *argv[]) {
-	(void) argc;
-	(void) argv;
-	double testFreq = 1;
-	double testAmpl = 1;
-	char strlog[IFACE_BUFF_SIZE];
-	
-	if(argc != 0){chprintf(chp,"usage: log <freq> <ampl> [TRUE/FALSE]\r\n");return;}
-	
-	ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f TRULSE\r\n",testFreq,testAmpl);
-	ht_comm_IoT(strlog);
-}
-	\end{minted}
-	
-	\newpage
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_comm.c#L405-L416}{firmware/ht\_comm.c:405-416}
+
 	\subsection{Button dan LED}
 	
-	Berikut dijabarkan beberapa klaim terhadap referensi metode/algoritma terkait fitur antar muka tombol.
-	Seluruh referensi dapat ditemukan pada berkas sumber \textbf{ht\_exti.c} dan \textbf{ht\_metri.c}.
+	Berikut dijabarkan beberapa klaim terhadap referensi metode/algoritma terkait fitur antar muka tombol dan indikator LED.
 	
-	\subsubsection{Startup}
+	\subsubsection{Start Audiometri}
 	
 	Untuk memulai proses pengukuran Audiometri, pengguna melakukan tekan tombol dengan suatu urutan.
 	Aspek klaim disini adalah flow urutan tombol dan LED untuk memulai proses pengukuran audiometri.
@@ -685,7 +327,7 @@ static void cmd_iotlog(BaseSequentialStream *chp, int argc, char *argv[]) {
 	
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=400pt]{images/ledbutton_step}
+		\includegraphics[width=350pt]{images/ledbutton_step}
 		\caption{Urutan tombol dan LED untuk memulai}
 	\end{figure}
 
@@ -694,25 +336,194 @@ static void cmd_iotlog(BaseSequentialStream *chp, int argc, char *argv[]) {
 	\begin{enumerate}
 		\item Saat kondisi \textit{idle}, LED pada posisi ini akan berkedip lambat.
 		
-		\item Tekan salah satu dari 3 tombol yang sebaris (anggap tombol A).
+		\item Tekan salah satu dari 3 tombol yang sebaris.
 		
 		\item LED terdekat dengan tombol menyala
 		
 		\item Tekan tombol lain selain tombol sebelumnya.
 		
-		\item LED sebelum nya akan mati dan LED hijau menyala.
+		\item LED sebelum nya akan mati dan LED Hijau menyala.
 		Ini adalah kondisi standby/siap
 		
 		\item Tekan tombol lain selain dua tombol sebelumnya.
 		
 		\item LED pada posisi ini akan berkedip cepat dan LED lainnya akan mati.
-		Proses Audiometri sudah dimulai.
-		
+		Proses Audiometri dimulai.
 		
 	\end{enumerate}
+
+	Proses Audiometri akan selesai ditandai dengan LED pada langkah 1 atau 7 kembali berkedip lambat.
+	
+	\newpage
+	Referensi untuk proses ini tersedia di berkas:
+	\begin{itemize}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_exti.c#L75-L82}{firmware/ht\_exti.c:75-82}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_exti.c#L87-L95}{firmware/ht\_exti.c:87-95}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_exti.c#L102-L139}{firmware/ht\_exti.c:102-139}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_exti.c#L145-L182}{firmware/ht\_exti.c:145-182}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_exti.c#L188-L225}{firmware/ht\_exti.c:188-225}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_metri.c#L136-L307}{firmware/ht\_metri.c:136-307}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/main.c#L48-L126}{firmware/main.c:48-126}
+	\end{itemize}
+
+	\subsubsection{Input Audiometri}
+	
+	Referensi untuk interaksi pengguna saat proses audiometri berjalan.
+	Aspek klaim disini adalah flow proses tombol dan respon LED saat.
+	Urutan tombol dan led:
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=350pt]{images/ledbutton_input}
+		\caption{Urutan tombol dan LED untuk memulai}
+	\end{figure}
+
+	Flow yg dimaksud adalah:
+	\begin{enumerate}
+		\item Pastikan LED berkedip cepat sebagai indikator proses Audiometri sedang berjalan.
+		
+		\item Setiap LED pada grup ini akan berkedip satu kali secara berurutan.
+		Salah satu diantara nya akan memberikan bunyi Tone
+		
+		\item Tekan satu Tombol pada grup ini sesuai LED yang menyala bersamaan dengan bunyi Tone terdengar.
+		
+		\item LED pada grup ini menyala salah satu. Hijau jika benar (LED, Tombol, dan Tone sesuai) dan Merah jika salah.
+	\end{enumerate}
+
+	Pengguna akan mengulangi aksi serupa hingga proses Audiometri selesai dan unit kembali \textit{idle} ditandai LED pada poin satu berkedip lambat
+	
+	Referensi untuk proses ini tersedia di berkas:
+	\begin{itemize}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_exti.c#L102-L139}{firmware/ht\_exti.c:102-139}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_exti.c#L145-L182}{firmware/ht\_exti.c:145-182}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_exti.c#L188-L225}{firmware/ht\_exti.c:188-225}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_metri.c#L136-L307}{firmware/ht\_metri.c:136-307}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_metri.c#L309-L337}{firmware/ht\_metri.c:309-337}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/main.c#L48-L126}{firmware/main.c:48-126}
+	\end{itemize}
+
+	\newpage
+	\subsection{Memory Card Saving}
+	
+	Berikut dijabarkan beberapa klaim terhadap referensi metode/algoritma terkait fitur \textit{file-saving} di memory card.
+	
+	\subsubsection{MMC LED Indicator}
+	
+	Metode ini digunakan menunjukkan Memory Card (MMC) tersedia dan siap digunakan menggunakan LED indikator utama.
+	Jika LED berkedip lambat, maka MMC siap dan unit idle.
+	Jika LED berkedip cepat 2 kali setiap 2 detik, maka unit idle dengan tanpa MMC atau MMC tidak siap.
+	
+	Referensi untuk proses ini tersedia di berkas:
+	\begin{itemize}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_mmc.c#L168-L214}{firmware/ht\_mmc.c:168-214}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_mmc.c#L216-L279}{firmware/ht\_mmc.c:216-279}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/main.c#L48-L126}{firmware/main.c:48-126}
+	\end{itemize}
+	
+	\subsubsection{String Parser}
+	
+	Metode ini digunakan memisahkan string atau array karakter dengan pemisah berupa spasi, karakter NULL, atau karakter \textit{non-alphanumeric}.
+	
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_mmc.c#L74-L94}{firmware/ht\_mmc.c:74-94}
+	
+	\subsubsection{File Format}
+	
+	Metode ini digunakan menulis hasil record pengukuran Audiometri di setiap jawaban pada setiap frekuensi dan amplitudo.
+	Termasuk aspek klaim adalah penamaan pola nama file dan format konten file teks yang disimpan.
+	
+	Referensi untuk proses ini tersedia di berkas:
+	\begin{itemize}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_mmc.c#L522-L601}{firmware/ht\_mmc.c:552-601}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_mmc.c#L603-L653}{firmware/ht\_mmc.c:603-653}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/firmware/ht_mmc.c#L655-L695}{firmware/ht\_mmc.c:655-695}
+	\end{itemize}
+
+	\subsection{Wifi Module}
+	
+	\subsubsection{Wifi Mode}
+	
+	Metode ini menyediakan mode Wifi sebagai Access Point untuk pengaturan secara wireless
+	dan sebagai Wifi Station/Bridge untuk komunikasi antara unit dan server data.
+	Pengaturan mode dengan \textit{slide-switch}.
+	
+	Referensi untuk proses ini tersedia di berkas:
+	\begin{itemize}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/esp8266/user/wifi_sap.c}{esp8266/wifi\_sap.c}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/esp8266/user/wifi_sta.c}{esp8266/wifi\_sta.c}
+		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/esp8266/user/wifi_sta.c}{esp8266/user.c}
+	\end{itemize}
+
+	\subsubsection{MQTT Data Format/JSON}
+	
+	Standar format field dan array JSON untuk pertukaran data via TCP/IP dengan protokol MQTT.
+	
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/esp8266/user/mqtt\_client.c}{esp8266/mqtt\_client.c}
+	
+	\subsubsection{HTTP Data Format/JSON}
+	
+	Standar format field dan array JSON untuk pertukaran data via TCP/IP dengan protokol HTTP.
+	
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/esp8266/user/drv\_uart.c}{esp8266/drv\_uart.c}
 	
 	\newpage
 	\subsection{Summary}
+	
+	Berikut rangkuman aspek teknis yang dapat diajukan untuk klaim paten dan lisensi:
+	
+	\begin{itemize}
+		\item Audio
+		\begin{enumerate}
+			\item Tone Generation
+			\item Tone Playing
+			\item Left/Right Control
+		\end{enumerate}
+	
+		\item Serial Commands/Interface
+		\begin{enumerate}
+			\item Testing
+			\item Tone Zero
+			\item Tone Maximum
+			\item Tone Minimum
+			\item Tone Play 
+			\item Tone Sing
+			\item Tone Speaker Test
+			\item File List
+			\item File Show Content
+			\item File Show Content Test
+			\item File Read/Write Test
+			\item File Read Test
+			\item File Check Memory
+			\item MQTT Subscribe
+			\item MQTT Publish
+			\item MQTT Send HTTP
+			\item MQTT Log Result
+		\end{enumerate}
+	
+		\item Button-LED Interface
+		\begin{enumerate}
+			\item Start Audiometri
+			\item User input Audiometri
+		\end{enumerate}
+	
+		\item Memory Card
+		\begin{enumerate}
+			\item MMC Readyness Indicator
+			\item Filename String Parser
+			\item Text Saving Format
+		\end{enumerate}
+	
+		\item Wifi Module
+		\begin{enumerate}
+			\item Wifi Mode Switching
+			\item MQTT JSON Format
+			\item HTTP JSON Format
+		\end{enumerate}
+	\end{itemize}
+
+	Total untuk saat ini tersedia 28 aspek.
 
 	\newpage
 	\section{Hardware}
