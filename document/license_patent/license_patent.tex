@@ -441,7 +441,7 @@ ch> log <freq> <ampl> [TRUE/FALSE]
 
 	\subsection{Wifi Module}
 	
-	\subsubsection{Wifi Mode}
+	\subsubsection{Wifi Mode Switching}
 	
 	Metode ini menyediakan mode Wifi sebagai Access Point untuk pengaturan secara wireless
 	dan sebagai Wifi Station/Bridge untuk komunikasi antara unit dan server data.
@@ -453,6 +453,13 @@ ch> log <freq> <ampl> [TRUE/FALSE]
 		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/esp8266/user/wifi_sta.c}{esp8266/wifi\_sta.c}
 		\item \href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/esp8266/user/wifi_sta.c}{esp8266/user.c}
 	\end{itemize}
+
+	\subsubsection{Serial Input MQTT Transfer}
+	
+	Metode untuk merespon perintah serial untuk pengiriman data via protokol MQTT.
+	
+	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
+	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/esp8266/user/drv_uart.c#L343-L364}{esp8266/mqtt\_client.c:343-364}
 
 	\subsubsection{MQTT Data Format/JSON}
 	
@@ -518,12 +525,13 @@ ch> log <freq> <ampl> [TRUE/FALSE]
 		\item Wifi Module
 		\begin{enumerate}
 			\item Wifi Mode Switching
+			\item Serial Input MQTT
 			\item MQTT JSON Format
 			\item HTTP JSON Format
 		\end{enumerate}
 	\end{itemize}
 
-	Total untuk saat ini tersedia 28 aspek.
+	Total untuk saat ini tersedia 29 aspek teknis di sisi software/firmware yang bisa diajukan klaim.
 
 	\newpage
 	\section{Hardware}
