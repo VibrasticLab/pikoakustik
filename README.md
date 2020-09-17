@@ -53,11 +53,12 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] ESP-12E slot on PCB
 	- [x] ESP-12E power jumper
 	- [x] WiFi handling
-	- [ ] Access Point handling
+	- [x] Access Point handling
 	- [ ] Wifi/AP button switch
 	- [x] MQTT Protocol
 	- [ ] HTTP Data exchange (**September 2020**)
-	- [ ] Standard Data Format (**September 2020**)
+	- [ ] MQTT Data JSON/Format (**September 2020**)
+	- [ ] HTTP Data JSON/Format (**September 2020**)
 
 #### Audiometri:
 
