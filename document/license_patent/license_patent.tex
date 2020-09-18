@@ -328,7 +328,7 @@ ch> log <freq> <ampl> [TRUE/FALSE]
 	\begin{figure}[!ht]
 		\centering
 		\includegraphics[width=350pt]{images/ledbutton_step}
-		\caption{Urutan tombol dan LED untuk memulai}
+		\caption{Urutan tombol dan LED interaksi proses Audiometri}
 	\end{figure}
 
 	Urutan untuk memulai proses audiometri adalah:
@@ -461,14 +461,14 @@ ch> log <freq> <ampl> [TRUE/FALSE]
 	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
 	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/esp8266/user/drv_uart.c#L343-L364}{esp8266/mqtt\_client.c:343-364}
 
-	\subsubsection{MQTT Data Format/JSON}
+	\subsubsection{MQTT JSON Data}
 	
 	Standar format field dan array JSON untuk pertukaran data via TCP/IP dengan protokol MQTT.
 	
 	Referensi fungsi/implementasi ini ini dapat dilihat di berkas
 	\href{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/esp8266/user/mqtt\_client.c}{esp8266/mqtt\_client.c}
 	
-	\subsubsection{HTTP Data Format/JSON}
+	\subsubsection{HTTP JSON Data}
 	
 	Standar format field dan array JSON untuk pertukaran data via TCP/IP dengan protokol HTTP.
 	
@@ -526,8 +526,8 @@ ch> log <freq> <ampl> [TRUE/FALSE]
 		\begin{enumerate}
 			\item Wifi Mode Switching
 			\item Serial Input MQTT
-			\item MQTT JSON Format
-			\item HTTP JSON Format
+			\item MQTT JSON Data
+			\item HTTP JSON Data
 		\end{enumerate}
 	\end{itemize}
 
@@ -535,4 +535,57 @@ ch> log <freq> <ampl> [TRUE/FALSE]
 
 	\newpage
 	\section{Hardware}
+	Berikut akan dijabarkan beberapa aspek dari sisi desain hardware,
+	terutama desain layout dari papan sirkuit (PCB).
+	
+	\subsection{Overall Layout}
+	
+	Klaim pada aspek ini adalah rancangan/desain terkait pola penempatan 
+	(layout) komponen untuk interaksi dengan pengguna.
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=400pt]{images/layout}
+		\caption{Layout penempatan LED/Tombol untuk interaksi dengan pengguna}
+	\end{figure}
+
+	Keterangan layout komponen:
+	\begin{enumerate}
+		\item Tombol untuk proses audiometri
+		
+		\item LED untuk proses Audiometri
+		
+		\item LED untuk Benar-Salah di proses Audiometri
+		
+		\item Tombol reset unit
+		
+		\item LED indikator mode
+		
+		\item Slot Memory Card untuk penyimpanan hasil
+		
+		\item USB untuk antar-muka ke Android/Windows/Linux
+		
+		\item Jack Audio T-R-S ukuran 3.5mm
+	\end{enumerate}
+
+	\newpage	
+	\subsection{Handheld Usage}
+	
+	Klaim pada aspek ini terkait penggunaan unit produk yang \textit{portable}
+	dan \textit{handheld} yang ditandai dengan:
+	
+	\begin{itemize}
+		\item Ukuran unit yang secara relatif sama dengan ukuran genggaman 
+		tangan (90mm x 60mm)
+		
+		\item Ditenagai dengan battery Li-Ion yang portabel dan dapat diisi 
+		ulang
+	\end{itemize}
+
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=350pt]{images/size}
+		\caption{ukuran relatif unit}
+	\end{figure}
+	
 \end{document}
