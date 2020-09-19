@@ -538,7 +538,9 @@ ch> log <freq> <ampl> [TRUE/FALSE]
 	Berikut akan dijabarkan beberapa aspek dari sisi desain hardware,
 	terutama desain layout dari papan sirkuit (PCB).
 	
-	\subsection{Overall Layout}
+	\subsection{Circuit Layout}
+	
+	\subsubsection{User Interface Layout}
 	
 	Klaim pada aspek ini adalah rancangan/desain terkait pola penempatan 
 	(layout) komponen untuk interaksi dengan pengguna.
@@ -568,8 +570,30 @@ ch> log <freq> <ampl> [TRUE/FALSE]
 		\item Jack Audio T-R-S ukuran 3.5mm
 	\end{enumerate}
 
-	\newpage	
-	\subsection{Handheld Usage}
+	\subsubsection{Dual DAC Chip}
+	
+	Klaim pada aspek ini terkait penggunaan 2 unit Mono DAC Chip untuk dua channnel (Left/Right).
+	Kedua chip terpisah pada jalur sinyal positif namun menyatu di jalur sinyal negatif.
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=350pt]{images/dac}
+		\caption{dual DAC chip}
+	\end{figure}
+	
+	\newpage
+	\subsubsection{MCU Pin Number}
+	
+	Klaim pada aspek ini terkait nomor pin yang digunakan pada chip \textit{controller} utama,
+	yaitu chip STM32F01RET6.
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=350pt]{images/chip}
+		\caption{nomor pin pada chip }
+	\end{figure}
+	
+	\subsubsection{Handheld Size}
 	
 	Klaim pada aspek ini terkait penggunaan unit produk yang \textit{portable}
 	dan \textit{handheld} yang ditandai dengan:
@@ -584,8 +608,25 @@ ch> log <freq> <ampl> [TRUE/FALSE]
 
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=350pt]{images/size}
+		\includegraphics[width=300pt]{images/size}
 		\caption{ukuran relatif unit}
 	\end{figure}
+
+	\newpage
+	\subsection{Summary}
+	
+	\begin{itemize}
+		\item PCB Layout
+		\begin{enumerate}
+			\item User Interface Layout
+			\item Dual DAC Chip
+			\item MCU Pin Number
+			\item Handheld Size
+		\end{enumerate}
+	\end{itemize}
+
+	Total untuk saat ini tersedia 4 aspek teknis di sisi hardware (PCB) yang bisa diajukan klaim.
+	Untuk aspek ini memang tidak banyak yang dapat diklaim mengingat semua desain/layout ini merupakan implementasi
+	dari referensi skematik yang disediakan oleh setiap vendor.
 	
 \end{document}
