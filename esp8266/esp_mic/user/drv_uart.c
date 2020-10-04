@@ -39,8 +39,12 @@
 #include "user_interface.h"
 
 #include "user_config.h"
+#include "i2s.h"
 
 extern UartDevice UartDev;
+
+extern uint32_t *i2s_slc_buf_pntr[SLC_BUF_CNT];
+extern uint32_t rx_buf_idx;
 
 /**
  * @brief UART receive buffer size
@@ -266,13 +270,16 @@ uart_response(uint8 inChar){
             "sleep "\
             "restart "\
             "sysinfo "\
+            "snd "\
             "help";
 
     if(inChar == '\n' || inChar == '\r'){
 
         // Here are request string responses
         if(uart_rx_send == 0){
-            uart0_sendStr("\r\n");
+            
+            // Not use new line at start response
+            //uart0_sendStr("\r\n");
 
             str_argc = uart_conf_parse(uart_rx_buffer,strReq,0);
 
@@ -322,6 +329,19 @@ uart_response(uint8 inChar){
                 os_printf("[INFO] -------------------------------------------\r\n");
                 os_printf("\r\n\r\n");
             }
+            else if(os_strcmp("snd",strReq)==0){
+                int x;
+                int32_t value;
+                
+                os_printf("snd ");
+                for (x = 0; x < 10; x++) {
+                    if (i2s_slc_buf_pntr[rx_buf_idx][x] > 0) {
+                        value = convert(i2s_slc_buf_pntr[rx_buf_idx][x]);
+                        os_printf("%d ", -((value/4960)+50));
+                    }
+                }
+                os_printf("\r\n");
+            }
             else if(os_strcmp("help",strReq)==0){
                 os_printf("%s\r\n",cmdlist);
             }
@@ -355,7 +375,10 @@ uart_recvTask(os_event_t *events)
             d_tmp = READ_PERI_REG(UART_FIFO(UART0)) & 0xFF;
 
             if(d_tmp == '\r' || d_tmp == '\n'){}
-            else{ uart_tx_one_char(UART0, d_tmp); }
+            else{
+                // echo character
+                //uart_tx_one_char(UART0, d_tmp);
+            }
 
             uart_response(d_tmp);
         }

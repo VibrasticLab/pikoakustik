@@ -30,6 +30,11 @@
  */
 #define UART_SEND_NACK  FALSE
 
+/**
+ * @brief Microphone burst o
+ */
+#define MIC_OUT FALSE
+
 #endif
 
 /** @} */

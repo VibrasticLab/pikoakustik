@@ -21,10 +21,11 @@
 #include "i2s.h"
 
 LOCAL sdio_queue_t i2s_slc_items[SLC_BUF_CNT];  // I2S DMA buffer descriptors
-LOCAL uint32_t *i2s_slc_buf_pntr[SLC_BUF_CNT];  // Pointer to the I2S DMA buffer data
 LOCAL uint32_t rx_buf_cnt = 0;
-LOCAL uint32_t rx_buf_idx = 0;
 LOCAL bool rx_buf_flag = false;
+
+uint32_t rx_buf_idx = 0;
+uint32_t *i2s_slc_buf_pntr[SLC_BUF_CNT];  // Pointer to the I2S DMA buffer data
 
 /**
  * @brief microphone timer
@@ -193,6 +194,9 @@ void mic_init(void){
     slc_init();
     i2s_init();
 
+#if MIC_OUT
     os_timer_setfn(&mic_timer, (os_timer_func_t *)mic_timer_handler, NULL);
     os_timer_arm(&mic_timer, 100, 1);
+#endif
+
 }
