@@ -271,6 +271,7 @@ uart_response(uint8 inChar){
             "restart "\
             "sysinfo "\
             "snd "\
+            "mic "\
             "help";
 
     if(inChar == '\n' || inChar == '\r'){
@@ -328,6 +329,9 @@ uart_response(uint8 inChar){
 
                 os_printf("[INFO] -------------------------------------------\r\n");
                 os_printf("\r\n\r\n");
+            }
+            else if(os_strcmp("mic",strReq)==0){
+                mic_loop();
             }
             else if(os_strcmp("snd",strReq)==0){
                 int x;

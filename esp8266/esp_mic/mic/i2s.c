@@ -182,7 +182,7 @@ void mic_print(void){
         for (x = 0; x < SLC_BUF_LEN; x++) {
           if (i2s_slc_buf_pntr[rx_buf_idx][x] > 0) {
                 value = convert(i2s_slc_buf_pntr[rx_buf_idx][x]);
-                os_printf("%d\r\n", -((value/4960)+50));
+                os_printf("5 %d -2.5\r\n", -((value/4960)+50));
           }
         }
         rx_buf_flag = false;
@@ -199,4 +199,9 @@ void mic_init(void){
     os_timer_arm(&mic_timer, 100, 1);
 #endif
 
+}
+
+void mic_loop(void){
+    os_timer_setfn(&mic_timer, (os_timer_func_t *)mic_timer_handler, NULL);
+    os_timer_arm(&mic_timer, 100, 1);
 }

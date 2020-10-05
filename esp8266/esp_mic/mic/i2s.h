@@ -40,5 +40,6 @@ typedef struct{
 
 void mic_init(void);
 void mic_print(void);
+void mic_loop(void);
 
 #endif
