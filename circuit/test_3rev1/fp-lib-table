@@ -7,4 +7,5 @@
   (lib (name Adafruit)(type KiCad)(uri /usr/share/kicad/footprints/adafruit.pretty)(options "")(descr ""))
   (lib (name OPL_Connector)(type KiCad)(uri /usr/share/kicad/userlib/footprints/seeedopl/OPL_Connector.pretty/)(options "")(descr ""))
   (lib (name vpin)(type KiCad)(uri ${KIPRJMOD}/lib/vpin.pretty)(options "")(descr ""))
+  (lib (name mic)(type KiCad)(uri ${KIPRJMOD}/lib/mic/mic.pretty)(options "")(descr ""))
 )
