@@ -1,4 +1,5 @@
 (sym_lib_table
   (lib (name codec)(type Legacy)(uri ${KIPRJMOD}/lib/codec/codec.lib)(options "")(descr ""))
   (lib (name OPL_Connector)(type Legacy)(uri /usr/share/kicad/userlib/symbols/seeedopl/OPL_Connector.lib)(options "")(descr ""))
+  (lib (name sph0645)(type Legacy)(uri ${KIPRJMOD}/lib/mic/sph0645.lib)(options "")(descr ""))
 )
