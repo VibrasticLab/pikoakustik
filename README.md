@@ -17,8 +17,8 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] 3 Choices Random Generator
 	- [x] 3 Choice Answer Placement
 - [x] Button Reset
-- [ ] User-Friendlyness Interface Test (**September 2020**)
-- [ ] Build New PCB as Latest Revision  (**October 2020**)
+- [x] User-Friendlyness Interface Test (**September 2020**)
+- [x] Build New PCB as Latest Revision  (**October 2020**)
 
 #### Packaging
 
@@ -71,7 +71,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [ ] Calibrated SPL scaling
 	- [ ] Left/Right Isolation (**September 2020**) 
 	
-- [ ] Microphone Input (**September 2020**)
+- [x] Microphone Input (**September 2020**)
 	- [ ] Environment Noise Capture (**September 2020**)
 	- [ ] Environment Noise Compensation
 
