@@ -10,3 +10,7 @@
 - ESP8266 Wifi-LED (DONE)
 - LRC must exist or too loud
 - Teardrop on all Vias (DONE)
+
+Tips:
+- Soldering MAX98357A: Apply solder-paste first on PCB
+- Audio Output too loud: Check LRC connection
