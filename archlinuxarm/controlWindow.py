@@ -24,18 +24,19 @@ from PyQt5.QtGui import QDesktopServices, QDoubleValidator, QIcon, QIntValidator
 QtCore.Signal = QtCore.pyqtSignal
 QtCore.Slot = QtCore.pyqtSlot
 
-try:
-    import matplotlib
-    matplotlib_available = True
-    matplotlib.rcParams['backend'] = "Qt5Agg"
-except:
-    matplotlib_available = False
-
-try:
-    from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-    matplotlib_available = True
-except:
-    matplotlib_available = False
+# try without any plotlib
+#try:
+#    import matplotlib
+#    matplotlib_available = True
+#    matplotlib.rcParams['backend'] = "Qt5Agg"
+#except:
+#    matplotlib_available = False
+#
+#try:
+#    from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+#    matplotlib_available = True
+#except:
+#    matplotlib_available = False
     
 from .audio_manager import*
 from .global_parameters import*
@@ -4058,7 +4059,8 @@ class pychControlWin(QMainWindow):
                         flag = 1
                 self.instructionsAtTF.setText(', '.join(map(str, newChars)))#tmp[2:len(tmp)-2])
                 if flag == 1:
-                    ret = QMessageBox.warning(self, self.tr("Warning"),
+                    #ret = QMessageBox.warning(self, self.tr("Warning"),
+                    QMessageBox.warning(self, self.tr("Warning"),
                                               self.tr("Invalid character removed from 'Show Instructions At' text field."),
                                               QMessageBox.Ok)
             
@@ -4848,12 +4850,14 @@ class pychControlWin(QMainWindow):
     def onClickNewBlockButton(self):
         if self.prm["storedBlocks"] >= self.prm["currentBlock"]:
             self.compareGuiStoredParameters()
-            block =  currBlock = 'b' + str(self.prm["currentBlock"])
+            #block =  currBlock = 'b' + str(self.prm["currentBlock"])
+            block = 'b' + str(self.prm["currentBlock"])
             self.prm["currentBlock"] = self.prm["storedBlocks"] + 1
             self.prm["tmpBlockPosition"] = self.prm["storedBlocks"] + 1
             self.setNewBlock(block)
         else:
-            ret = QMessageBox.warning(self, self.tr("Warning"),
+            #ret = QMessageBox.warning(self, self.tr("Warning"),
+            QMessageBox.warning(self, self.tr("Warning"),
                                             self.tr("You need to store the current block before adding a new one."),
                                             QMessageBox.Ok)
           
@@ -5004,9 +5008,9 @@ class pychControlWin(QMainWindow):
                 else:
                     self.pdfPlotCheckBox.setChecked(False)
             if allLines[i] == '*******************************************************\n':
-                startBlock = True
+                #startBlock = True
                 blockNumber = blockNumber + 1
-                currBlock = 'b'+str(blockNumber)
+                #currBlock = 'b'+str(blockNumber)
                 tmp['b'+str(blockNumber)] = {}
                 foo['b'+str(blockNumber)] = {}
 
@@ -5216,7 +5220,8 @@ class pychControlWin(QMainWindow):
       
     def onClickSaveParametersButton(self):
         if self.prm["storedBlocks"] < 1:
-            ret = QMessageBox.warning(self, self.tr("Warning"),
+            #ret = QMessageBox.warning(self, self.tr("Warning"),
+            QMessageBox.warning(self, self.tr("Warning"),
                                       self.tr("There are no stored parameters to save."),
                                       QMessageBox.Ok)
         else:
@@ -5253,7 +5258,8 @@ class pychControlWin(QMainWindow):
         for i in range(self.prm["storedBlocks"]):
             currBlock = 'b'+str(i+1)
             currExp = self.tr(self.prm[currBlock]['experiment'])
-            currParadigm = self.tr(self.prm[currBlock]['paradigm'])
+            #currParadigm = self.tr(self.prm[currBlock]['paradigm'])
+            self.tr(self.prm[currBlock]['paradigm'])
             fName.write('*******************************************************\n')
             fName.write(self.tr('Block Position: ') + self.prm[currBlock]['blockPosition']+ '\n')
             fName.write(self.tr('Condition Label: ') + self.prm[currBlock]['conditionLabel']+ '\n')
@@ -5321,14 +5327,14 @@ class pychControlWin(QMainWindow):
     def onClickPrevBlockButton(self):
         self.compareGuiStoredParameters()
         if self.prm["storedBlocks"] > 0:
-            lastBlock = 'b' + str(self.prm["currentBlock"])
+            #lastBlock = 'b' + str(self.prm["currentBlock"])
             if self.prm["currentBlock"] < 2 and self.prm["storedBlocks"] > 0:
                 self.prm["currentBlock"] = self.prm["storedBlocks"]
             elif self.prm["currentBlock"] < 2 and self.prm["storedBlocks"] == 0:
                 self.prm["currentBlock"] = 1
             else:
-                if self.prm["currentBlock"] > self.prm["storedBlocks"]:
-                    lastBlock = 'b' + str(self.prm["currentBlock"]-1)
+                #if self.prm["currentBlock"] > self.prm["storedBlocks"]:
+                    #lastBlock = 'b' + str(self.prm["currentBlock"]-1)
                 self.prm["currentBlock"] = self.prm["currentBlock"] -1
                 
             if self.prm["storedBlocks"] > 0:
@@ -5343,10 +5349,10 @@ class pychControlWin(QMainWindow):
         
     def moveNextBlock(self):
         if self.prm["storedBlocks"] > 0:
-            lastBlock = 'b' + str(self.prm["currentBlock"])
+            #lastBlock = 'b' + str(self.prm["currentBlock"])
             if self.prm["currentBlock"] >= self.prm["storedBlocks"]:
                 self.prm["currentBlock"] = 1
-                lastBlock = 'b' + str(self.prm["storedBlocks"])
+                #lastBlock = 'b' + str(self.prm["storedBlocks"])
             else:
                 self.prm["currentBlock"] = self.prm["currentBlock"] +1
             if self.prm["storedBlocks"] > 0:
@@ -5421,12 +5427,14 @@ class pychControlWin(QMainWindow):
                     shuffledSeq = self.advanced_shuffle(self.shufflingSchemeTF.text())
                     blockPositions = self.unpack_seq(shuffledSeq)
                 except:
-                    ret = QMessageBox.warning(self, self.tr("Warning"),
+                    #ret = QMessageBox.warning(self, self.tr("Warning"),
+                    QMessageBox.warning(self, self.tr("Warning"),
                                                     self.tr("Shuffling failed :-( Something may be wrong with your shuffling scheme."),
                                                     QMessageBox.Ok | QMessageBox.Cancel)
                     return
                 if len(numpy.unique(blockPositions)) != self.prm['storedBlocks']:
-                    ret = QMessageBox.warning(self, self.tr("Warning"),
+                    #ret = QMessageBox.warning(self, self.tr("Warning"),
+                    QMessageBox.warning(self, self.tr("Warning"),
                                                     self.tr("Shuffling failed :-( The length of the shuffling sequence seems to be different than the number of stored blocks. Maybe you recently added of deleted a block."),
                                                     QMessageBox.Ok | QMessageBox.Cancel)
                     return
@@ -5459,7 +5467,8 @@ class pychControlWin(QMainWindow):
         if self.prm["storedBlocks"] < 1:
             return
         if b1 > self.prm["storedBlocks"] or b2 > self.prm["storedBlocks"]:
-            ret = QMessageBox.warning(self, self.tr("Warning"),
+            #ret = QMessageBox.warning(self, self.tr("Warning"),
+            QMessageBox.warning(self, self.tr("Warning"),
                                             self.tr("You're trying to swap the position of a block that has not been stored yet. Please, store the block first."),
                                             QMessageBox.Ok | QMessageBox.Cancel)
             return
@@ -5496,7 +5505,8 @@ class pychControlWin(QMainWindow):
         
         thisDoc = eval(self.prm[self.currExp]['execString']+".__doc__")
         winTitle = self.currExp
-        dialog = showExpDocDialog(self, thisDoc, winTitle)
+        #dialog = showExpDocDialog(self, thisDoc, winTitle)
+        showExpDocDialog(self, thisDoc, winTitle)
 
     def onChangeNDifferences(self):
         nDifferences = self.currLocale.toInt(self.nDifferencesChooser.currentText())[0]
@@ -5643,7 +5653,8 @@ class pychControlWin(QMainWindow):
 
         if hasattr(methodToCall1, 'get_fields_to_hide_'+ execString):
             methodToCall2 = getattr(methodToCall1, 'get_fields_to_hide_'+ execString)
-            tmp = methodToCall2(self)
+            #tmp = methodToCall2(self)
+            methodToCall2(self)
 
             for i in range(len(self.fieldsToHide)):
                 self.field[self.fieldsToHide[i]].hide()
@@ -5734,8 +5745,9 @@ class pychControlWin(QMainWindow):
                     paradigm = allLines[lineNum].split(':')[1].strip()
                     paradigmFound = True
                 lineNum = lineNum+1
-                
-            dialog = processResultsDialog(self, fList, resformat, paradigm, sep)
+            
+            processResultsDialog(self, fList, resformat, paradigm, sep)    
+            #dialog = processResultsDialog(self, fList, resformat, paradigm, sep)
             
 
     def processResultsTableDialog(self):
@@ -5765,7 +5777,8 @@ class pychControlWin(QMainWindow):
 
             paradigm = thisLines[1].split(sep)[prdgCol]
                 
-            dialog = processResultsDialog(self, fList, resformat, paradigm, sep)
+            #dialog = processResultsDialog(self, fList, resformat, paradigm, sep)
+            processResultsDialog(self, fList, resformat, paradigm, sep)
    
 
     def onClickOpenResultsButton(self):
@@ -5773,7 +5786,8 @@ class pychControlWin(QMainWindow):
             fileToOpen = self.prm["resultsFile"]
             QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(fileToOpen))
         else:
-            ret = QMessageBox.information(self, self.tr("message"),
+            #ret = QMessageBox.information(self, self.tr("message"),
+            QMessageBox.information(self, self.tr("message"),
                                                 self.tr("No results file has been selected"),
                                                 QMessageBox.Ok | QMessageBox.Cancel)
             
@@ -5853,7 +5867,8 @@ class pychControlWin(QMainWindow):
             QWhatsThis.enterWhatsThisMode()
 
     def onShowFortune(self):
-        dialog = showFortuneDialog(self)
+        #dialog = showFortuneDialog(self)
+        showFortuneDialog(self)
         
     def onShowManualPdf(self):
         fileToOpen = os.path.abspath(os.path.dirname(__file__)) + '/doc/_build/latex/pychoacoustics.pdf'
@@ -5869,12 +5884,14 @@ class pychControlWin(QMainWindow):
             blockA = self.currLocale.toInt(dialog.blockAWidget.text())[0]
             blockB = self.currLocale.toInt(dialog.blockBWidget.text())[0]
             if self.prm['storedBlocks'] < 1:
-                ret = QMessageBox.warning(self, self.tr("Warning"),
+                #ret = QMessageBox.warning(self, self.tr("Warning"),
+                QMessageBox.warning(self, self.tr("Warning"),
                                                 self.tr("There are no stored blocks to swap."),
                                                 QMessageBox.Ok | QMessageBox.Cancel)
                 return
             if blockA < 1 or blockB < 1 or blockA > self.prm['storedBlocks'] or blockB > self.prm['storedBlocks']:
-                ret = QMessageBox.warning(self, self.tr("Warning"),
+                #ret = QMessageBox.warning(self, self.tr("Warning"),
+                QMessageBox.warning(self, self.tr("Warning"),
                                                 self.tr("Block numbers specified out of range."),
                                                 QMessageBox.Ok | QMessageBox.Cancel)
                 return
@@ -5884,13 +5901,14 @@ class pychControlWin(QMainWindow):
 
     def parseShuffleSeq(self, seq):
         seq = seq.replace(' ', '') #remove white space
-        seqLen = len(seq)
+        #seqLen = len(seq)
         allowedChars = list(string.digits)
         allowedChars.extend([',', '-', '(', ')', '[', ']'])
         outSeq = ''
         for i in range(len(seq)):
             if seq[i] not in allowedChars:
-                ret = QMessageBox.warning(self, self.tr("Warning"),
+                #ret = QMessageBox.warning(self, self.tr("Warning"),
+                QMessageBox.warning(self, self.tr("Warning"),
                                                 self.tr("Shuffling scheme contains non-allowed characters."),
                                                 QMessageBox.Ok | QMessageBox.Cancel)
                 return
@@ -5919,7 +5937,7 @@ class pychControlWin(QMainWindow):
                         n = n+1
                     else:
                         delimiterFound = True
-                nextDigitLength = n-1
+                #nextDigitLength = n-1
                 prevDig = int(prevDig)
                 nextDig = int(nextDig)
                 for j in range(prevDig+1, nextDig+1):
