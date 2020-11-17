@@ -17,57 +17,31 @@
 
 
 from __future__ import nested_scopes, generators, division, absolute_import, with_statement, print_function, unicode_literals
-from .pyqtver import*
-if pyqtversion == 4:
-    from PyQt4 import QtGui, QtCore
-    from PyQt4.QtCore import Qt, QEvent, QThread, QDate, QRegExp, QTime, QDateTime, QRect
-    from PyQt4.QtGui import QAction, QApplication, QComboBox, QDesktopWidget, QDoubleValidator, QFileDialog, QFrame, QGridLayout, QIcon, QInputDialog, QIntValidator, QLabel, QLineEdit, QMainWindow, QMessageBox, QPainter, QProgressBar, QPushButton, QScrollArea, QShortcut, QSizePolicy, QSpacerItem, QValidator, QVBoxLayout, QWidget, QWidgetItem
-    QFileDialog.getOpenFileName = QFileDialog.getOpenFileNameAndFilter
-    QFileDialog.getOpenFileNames = QFileDialog.getOpenFileNamesAndFilter
-    QFileDialog.getSaveFileName = QFileDialog.getSaveFileNameAndFilter
-    try:
-        import matplotlib
-        matplotlib_available = True
-        matplotlib.rcParams['backend'] = "Qt4Agg"
-        matplotlib.rcParams['backend.qt4'] = "PyQt4"
-    except:
-        matplotlib_available = False
-elif pyqtversion == -4:
-    from PySide import QtGui, QtCore
-    from PySide.QtCore import Qt, QEvent, QThread, QDate, QRegExp, QTime, QDateTime, QRect
-    from PySide.QtGui import QAction, QApplication, QComboBox, QDesktopWidget, QDoubleValidator, QFileDialog, QFrame, QGridLayout, QIcon, QInputDialog, QIntValidator, QLabel, QLineEdit, QMainWindow, QMessageBox, QPainter, QProgressBar, QPushButton, QScrollArea, QShortcut, QSizePolicy, QSpacerItem, QValidator, QVBoxLayout, QWidget, QWidgetItem
-    try:
-        import matplotlib
-        matplotlib_available = True
-        matplotlib.rcParams['backend'] = "Qt4Agg"
-        matplotlib.rcParams['backend.qt4'] = "PySide"
-    except:
-        matplotlib_available = False
-elif pyqtversion == 5:
-    from PyQt5 import QtGui, QtCore
-    from PyQt5.QtCore import Qt, QEvent, QThread, QDate, QRegExp, QTime, QDateTime, QRect
-    from PyQt5.QtWidgets import QAction, QApplication, QComboBox, QDesktopWidget, QFileDialog, QFrame, QGridLayout, QInputDialog, QLabel, QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QScrollArea, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QWidgetItem
-    from PyQt5.QtGui import QDoubleValidator, QIcon, QIntValidator, QPainter, QValidator
-    try:
-        import matplotlib
-        matplotlib_available = True
-        matplotlib.rcParams['backend'] = "Qt5Agg"
-    except:
-        matplotlib_available = False
-    try:
-        from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-        matplotlib_available = True
-    except:
-        matplotlib_available = False
 
-    
-from numpy.fft import rfft, irfft, fft, ifft
-import base64, fnmatch, copy, numpy, os, platform, random, string, smtplib, sys, time     
-from numpy import abs, array, concatenate, exp, float64, log, log10, nan, mean, repeat, std
+from PyQt5 import QtCore
+from PyQt5.QtCore import Qt, QEvent, QThread, QDate, QRegExp, QTime, QDateTime, QRect
+from PyQt5.QtWidgets import QAction, QApplication, QDesktopWidget, QFileDialog, QFrame, QGridLayout, QInputDialog, QLabel, QLineEdit, QMainWindow, QMessageBox, QProgressBar, QPushButton, QShortcut, QSizePolicy, QSpacerItem, QVBoxLayout, QWidget
+from PyQt5.QtGui import QIcon, QIntValidator, QPainter, QValidator
+
+# try without any plotlib
+#try:
+#    import matplotlib
+#    matplotlib_available = True
+#    matplotlib.rcParams['backend'] = "Qt5Agg"
+#except:
+#    matplotlib_available = False
+#
+#try:
+#    from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+#    matplotlib_available = True
+#except:
+#    matplotlib_available = False
+
+import base64, fnmatch, copy, numpy, os, random,  smtplib, sys, time
+from numpy import abs, array, exp, float64, log,  nan, mean, std
 from .utils_general import*
 from .stats_utils import*
 from .pysdt import*
-from scipy.stats.distributions import norm
 
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
@@ -76,24 +50,22 @@ from email import encoders
 
 from .audio_manager import*
 from .dialog_show_instructions import*
-from .stats_utils import*
 from .sndlib import*
-from .utils_general import*
 from .utils_process_results import*
 from .PSI_method import*
 from .PSI_method_est_guess import setupPSIEstGuessRate, PSIEstGuessRate_update
 from .UML_method import*
 from .UML_method_est_guess import setupUMLEstGuessRate, UMLEstGuessRate_update
 
-
-try:
-    import pandas
-    pandas_available = True
-except:
-    pandas_available = False
-    
-if matplotlib_available and pandas_available:
-    from .win_categorical_plot import*
+# try without any plotlib
+#try:
+#    import pandas
+#    pandas_available = True
+#except:
+#    pandas_available = False
+#
+#if matplotlib_available and pandas_available:
+#    from .win_categorical_plot import*
 
 
 from . import default_experiments
@@ -132,10 +104,14 @@ class responseBox(QMainWindow):
         self.fileMenu = self.menubar.addMenu(self.tr('-'))
 
         ## for some reason couldn't get these into translation files in any other way
-        foo = self.prm['rbTrans'].translate('rb', "CORRECT")
-        foo = self.prm['rbTrans'].translate('rb', "INCORRECT")
-        foo = self.prm['rbTrans'].translate('rb', "DONE")
-        foo = self.prm['rbTrans'].translate('rb', "")
+#        foo = self.prm['rbTrans'].translate('rb', "CORRECT")
+#        foo = self.prm['rbTrans'].translate('rb', "INCORRECT")
+#        foo = self.prm['rbTrans'].translate('rb', "DONE")
+#        foo = self.prm['rbTrans'].translate('rb', "")
+        self.prm['rbTrans'].translate('rb', "CORRECT")
+        self.prm['rbTrans'].translate('rb', "INCORRECT")
+        self.prm['rbTrans'].translate('rb', "DONE")
+        self.prm['rbTrans'].translate('rb', "")
         ##
        
         self.toggleControlWin = QAction(self.tr('Show/Hide Control Window'), self)
@@ -265,7 +241,7 @@ class responseBox(QMainWindow):
              
     def setupLights(self):
         nIntervals = self.prm['nIntervals']
-        nResponseIntervals = nIntervals
+        #nResponseIntervals = nIntervals
         #remove previous lights and buttons
     
         self.clearLayout(self.intervalSizer)
@@ -537,7 +513,8 @@ class responseBox(QMainWindow):
                     self.onAskSaveResultsButton()
 
     def onClickShowInstructions(self):
-        dialog = showInstructionsDialog(self)
+        #dialog = showInstructionsDialog(self)
+        showInstructionsDialog(self)
 
     def onAskSaveResultsButton(self):
         ftow = QFileDialog.getSaveFileName(self, self.tr('Choose file to write results'), "", self.tr('All Files (*)'), "", QFileDialog.DontConfirmOverwrite)[0]
@@ -714,7 +691,7 @@ class responseBox(QMainWindow):
         return
 
     def playSequentialIntervalsNoLights(self, sndList, ISIList=[], trigNum=None):
-        currBlock = 'b'+ str(self.prm['currentBlock'])
+        #currBlock = 'b'+ str(self.prm['currentBlock'])
         #self.dialerResponseField.setReadOnly(True)
         
         for i in range(len(sndList)):
@@ -1159,7 +1136,8 @@ class responseBox(QMainWindow):
             pass
         
         methodToCall2 = getattr(methodToCall1, 'doTrial_'+ execString)
-        result = methodToCall2(self)
+        #result = methodToCall2(self)
+        methodToCall2(self)
         QApplication.processEvents()
         self.prm['trialRunning'] = False
         if self.prm['allBlocks']['responseMode'] == self.tr("Automatic"):
@@ -1183,7 +1161,8 @@ class responseBox(QMainWindow):
                                             self.tr("UML"),
                                             self.tr("UML - Est. Guess Rate"),
                                             self.tr("PSI - Est. Guess Rate")]:
-                ret = QMessageBox.warning(self, self.tr("Warning"),
+                #ret = QMessageBox.warning(self, self.tr("Warning"),
+                QMessageBox.warning(self, self.tr("Warning"),
                                           self.tr("Sorry, psychometric listener not supported by current paradigm. Please, choose another response mode."),
                                           QMessageBox.Ok)
                 return
@@ -1259,14 +1238,16 @@ class responseBox(QMainWindow):
                 return
             else:
                 if currText[0] == currText[1] or currText[0] == currText[2] or currText[1] == currText[2]:
-                    ret = QMessageBox.warning(self, self.tr("Warning"),
+                    #ret = QMessageBox.warning(self, self.tr("Warning"),
+                    QMessageBox.warning(self, self.tr("Warning"),
                                               self.tr("Repeated digits are not allowed. Please, edit your response."),
                                               QMessageBox.Ok)
                     return
 
         if self.parent().currExp == self.tr("Digit Span"):
             if len(currText) < len(str(self.correctButton)):
-                ret = QMessageBox.warning(self, self.tr("Warning"),
+                #ret = QMessageBox.warning(self, self.tr("Warning"),
+                QMessageBox.warning(self, self.tr("Warning"),
                                           self.tr("Input sequence is shorter than correct sequence."),
                                           QMessageBox.Ok)
                 return
@@ -1312,7 +1293,7 @@ class responseBox(QMainWindow):
         return 
        
     def sortResponse(self, buttonClicked):
-        currBlock = 'b'+ str(self.prm['currentBlock'])
+        #currBlock = 'b'+ str(self.prm['currentBlock'])
         if buttonClicked == 0: #0 is not a response option
             return
         if self.parent().currExp == self.tr("Digit Triplets Test"):
@@ -6028,7 +6009,7 @@ class responseBox(QMainWindow):
         return resLineToWrite
 
     def sendEndNotification(self):
-        currBlock = 'b'+ str(self.prm['currentBlock'])
+        #currBlock = 'b'+ str(self.prm['currentBlock'])
         subject = self.tr("Pychoacoustics Notification: Listener ") + self.prm['listener'] + self.tr(" has ") \
                + str(self.prm['pref']['email']['nBlocksNotify']) + self.tr(" block(s) to go")
         body = subject + "\n" + self.tr("Experiment: ") + self.parent().currExp + \
@@ -6036,7 +6017,7 @@ class responseBox(QMainWindow):
         self.emailThread.sendEmail(subject, body)
 
     def sendData(self):
-        currBlock = 'b'+ str(self.prm['currentBlock'])
+        #currBlock = 'b'+ str(self.prm['currentBlock'])
         subject = 'Pychoacoustics Data, Listener: ' + self.prm['listener'] +  ', Experiment: ' + \
                self.parent().currExp
         body = ''
