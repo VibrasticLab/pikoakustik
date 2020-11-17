@@ -4,21 +4,21 @@
 from __future__ import nested_scopes, generators, division, absolute_import, with_statement, print_function, unicode_literals
 
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QDialog, QDialogButtonBox, QFileDialog, QPushButton, QScrollArea, QVBoxLayout
+from PyQt5.QtWidgets import QApplication
 import argparse, fnmatch, numpy, os, random, signal, sys, time, traceback
 from pychoacoustics import global_parameters
-from pychoacoustics.control_window import*
+from pychoacoustics.controlWindow import*
 
 #allows to close the app with CTRL-C from the console
 signal.signal(signal.SIGINT, signal.SIG_DFL)
-#
+
 import logging
 local_dir = os.path.expanduser("~") +'/.local/share/data/pychoacoustics/'
 if os.path.exists(local_dir) == False:
     os.makedirs(local_dir)
 stderrFile = os.path.expanduser("~") +'/.local/share/data/pychoacoustics/pychoacoustics_stderr_log.txt'
 
-logging.basicConfig(filename=stderrFile,level=logging.DEBUG,)
+logging.basicConfig(filename=stderrFile,level=logging.DEBUG)
 
 #the except hook allows to see most startup errors in a window
 #rather than the console
@@ -92,9 +92,9 @@ def main(argv):
     parser.add_argument("-z", "--seed", help="Set random seed")
     parser.add_argument("-g", "-graphicssystem", "--graphicssystem", help="Sets the backend to be used for on-screen widgets and QPixmaps. Available options are native (default) raster and opengl (experimental)")#, choices=['raster', 'opengl', 'native'])
     parser.add_argument("-d", "--display", help="This option is only valid for X11 and sets the X display (default is $DISPLAY)")
-    
+
     args = parser.parse_args()
-    
+
     if len(args.file) > 0:
         prm['calledWithPrm'] = True
         prm['prmFile'] = args.file
@@ -130,7 +130,7 @@ def main(argv):
         prm['graphicssystem'] = args.graphicssystem
     if args.display:
         prm['display'] = args.display
-        
+  
     prm = global_parameters.get_prefs(prm)
     callArgs = sys.argv
     if 'display' in prm:
@@ -138,6 +138,8 @@ def main(argv):
     if 'graphicssystem' in prm:
         callArgs = callArgs + ['-graphicssystem', prm['graphicssystem']]
     app = QApplication(callArgs)
+     
+    sys.excepthook = excepthook
 
     #LOCALE LOADING
     # qtTranslator is the translator for default qt component labels (OK, cancel button dialogs etc...)
@@ -145,6 +147,7 @@ def main(argv):
     qtTranslator = QtCore.QTranslator()
     if qtTranslator.load("qt_" + locale, ":/translations/"):
         app.installTranslator(qtTranslator)
+        
     # appTranslator is the translator for labels created for the program
     appTranslator = QtCore.QTranslator()
     if appTranslator.load("pychoacoustics_" + locale, ":/translations/"):
@@ -176,6 +179,7 @@ def main(argv):
     app.setWindowIcon(QtGui.QIcon("/usr/share/icons/Machovka_Headphones.svg"))
     app.setStyle("Fusion")
     pychControlWin(parent=None, prm=prm)
+    
     sys.exit(app.exec_())
 
 if __name__ == "__main__":

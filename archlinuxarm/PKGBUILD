@@ -1,0 +1,23 @@
+pkgname=pychotouch
+pkgver=0.1
+pkgrel=1
+pkgdesc="Touch Interface for pychoacoustics software"
+arch=('any')
+url="http://samcarcagno.altervista.org/pychoacoustics/pychoacoustics.html"
+license=('GPL-3.0')
+depends=('libpulse' 'pychoacoustics')
+source=('pychotouch.py' 'controlWindow.py' 'pychorun.sh')
+install=pkg.install
+sha256sums=('SKIP' 'SKIP' 'SKIP')
+
+package() {
+  cd "${srcdir}/"
+
+  mkdir -p $pkgdir/usr/bin/
+  cp -f pychorun.sh $pkgdir/usr/bin/
+  cp -f pychotouch.py $pkgdir/usr/bin/
+
+  export SITEPATH=$(python -c 'import site; print(site.getsitepackages())' | tr -d \[ | tr -d \] | tr -d \')
+  mkdir -p $pkgdir/$SITEPATH/
+  cp -f controlWindow.py $pkgdir/$SITEPATH/
+}

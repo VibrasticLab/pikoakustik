@@ -1,0 +1,16 @@
+msg() {
+echo '
+***********************************
+* Please check pactl arguments at *
+* /usr/bin/pychorun.sh            *
+***********************************
+}
+
+post_install() {
+	msg
+}
+
+post_upgrade() {
+	msg
+}
+
