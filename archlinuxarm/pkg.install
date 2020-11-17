@@ -1,9 +1,9 @@
 msg() {
-echo '
+echo "
 ***********************************
 * Please check pactl arguments at *
 * /usr/bin/pychorun.sh            *
-***********************************
+***********************************"
 }
 
 post_install() {

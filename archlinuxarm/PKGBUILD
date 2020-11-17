@@ -14,10 +14,10 @@ package() {
   cd "${srcdir}/"
 
   mkdir -p $pkgdir/usr/bin/
-  cp -f pychorun.sh $pkgdir/usr/bin/
-  cp -f pychotouch.py $pkgdir/usr/bin/
+  install -Dm755 pychorun.sh $pkgdir/usr/bin/pychorun.sh
+  install -Dm755 pychotouch.py $pkgdir/usr/bin/pychotouch.py
 
   export SITEPATH=$(python -c 'import site; print(site.getsitepackages())' | tr -d \[ | tr -d \] | tr -d \')
-  mkdir -p $pkgdir/$SITEPATH/
-  cp -f controlWindow.py $pkgdir/$SITEPATH/
+  mkdir -p $pkgdir/$SITEPATH/pychoacoustics/
+  cp -f controlWindow.py $pkgdir/$SITEPATH/pychoacoustics/
 }
