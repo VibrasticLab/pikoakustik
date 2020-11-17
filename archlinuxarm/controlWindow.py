@@ -40,7 +40,7 @@ QtCore.Slot = QtCore.pyqtSlot
     
 from .audio_manager import*
 from .global_parameters import*
-from .response_box import*
+from .responseBox import*
 from .dialog_edit_preferences import*
 from .dialog_edit_phones import*
 from .dialog_edit_experimenters import*

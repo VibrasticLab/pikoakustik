@@ -1,8 +1,8 @@
 msg() {
 echo "
 ***********************************
-* Please check pactl arguments at *
-* /usr/bin/pychorun.sh            *
+* Please check pactl arguments at:*
+* /usr/bin/pychorun               *
 ***********************************"
 }
 
