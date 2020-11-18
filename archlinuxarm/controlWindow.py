@@ -333,6 +333,8 @@ class pychControlWin(QMainWindow):
         self.experimentChooser = QComboBox()
         self.experimentChooser.setWhatsThis(self.tr("Choose the experiment for the current block."))
         self.experimentChooser.addItems(self.prm["experimentsChoices"])
+        self.experimentChooser.setItemText(0, 'F0DL')
+        self.experimentChooser.setItemText(6, 'Audiogram')
         self.def_widg_sizer.addWidget(self.experimentChooser, n, 1)
         self.experimentChooser.activated[str].connect(self.onExperimentChange)
         #PARADIGM
@@ -783,7 +785,7 @@ class pychControlWin(QMainWindow):
         self.cw.setLayout(self.cw_sizer)
 
         #self.pw.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        self.setDefaultParameters(self.tr("Audiogram"), self.tr("Transformed Up-Down"), self.par)
+        self.setDefaultParameters(self.tr("F0DL"), self.tr("Transformed Up-Down"), self.par)
         self.cw_scrollarea = QScrollArea()
         self.cw_scrollarea.setWidget(self.cw)
         self.splitter.addWidget(self.cw_scrollarea)
@@ -873,10 +875,11 @@ class pychControlWin(QMainWindow):
             self.add_widg_sizer.addWidget(self.nIntervalsLabel, n, 1)
             self.nIntervalsChooser = QComboBox()
             self.nIntervalsChooser.addItems(self.prm['nIntervalsChoices'])
-            if 'nIntervals' in self.prm:
-                self.nIntervalsChooser.setCurrentIndex(self.prm['nIntervalsChoices'].index(str(self.prm['nIntervals'])))
-            else:
-                self.nIntervalsChooser.setCurrentIndex(0)
+            self.nIntervalsChooser.setCurrentIndex(1)
+#            if 'nIntervals' in self.prm:
+#                self.nIntervalsChooser.setCurrentIndex(self.prm['nIntervalsChoices'].index(str(self.prm['nIntervals'])))
+#            else:
+#                self.nIntervalsChooser.setCurrentIndex(0)
             self.add_widg_sizer.addWidget(self.nIntervalsChooser, n, 2)
             self.nIntervalsChooser.activated[str].connect(self.onNIntervalsChange)
             self.nIntervalsCheckBox = QCheckBox()
@@ -889,7 +892,7 @@ class pychControlWin(QMainWindow):
             self.add_widg_sizer.addWidget(self.nAlternativesLabel, n, 1)
             self.nAlternativesChooser = QComboBox()
             self.nAlternativesChooser.addItems([str(self.currLocale.toInt(self.nIntervalsChooser.currentText())[0]-1), self.nIntervalsChooser.currentText()])
-            self.nAlternativesChooser.setCurrentIndex(self.nAlternativesChooser.findText(str(self.prm['nAlternatives'])))
+            self.nAlternativesChooser.setCurrentIndex(1)
             self.add_widg_sizer.addWidget(self.nAlternativesChooser, n, 2)
             self.nAlternativesChooser.activated[str].connect(self.onNAlternativesChange)
             self.nAlternativesCheckBox = QCheckBox()
@@ -1153,9 +1156,9 @@ class pychControlWin(QMainWindow):
             self.adaptiveTypeChooser = QComboBox()
             self.adaptiveTypeChooser.addItems(self.prm["adaptiveTypeChoices"])
             try:
-                self.adaptiveTypeChooser.setCurrentIndex(self.prm["adaptiveTypeChoices"].index(self.prm[self.currExp]['defaultAdaptiveType']))
+               self.adaptiveTypeChooser.setCurrentIndex(self.prm["adaptiveTypeChoices"].index(self.prm[self.currExp]['defaultAdaptiveType']))
             except:
-                self.adaptiveTypeChooser.setCurrentIndex(0)
+               self.adaptiveTypeChooser.setCurrentIndex(0)
             self.paradigm_widg_sizer.addWidget(self.adaptiveTypeChooser, n, 2)
             self.adaptiveTypeCheckBox = QCheckBox()
             self.paradigm_widg_sizer.addWidget(self.adaptiveTypeCheckBox, n, 0)
@@ -4216,8 +4219,8 @@ class pychControlWin(QMainWindow):
             except:
                 self.adaptiveTypeChooser.setCurrentIndex(0)
 
-        self.prm['nIntervals'] = self.prm[self.currExp]['defaultNIntervals']  
-        self.prm['nAlternatives'] = self.prm[self.currExp]['defaultNAlternatives']
+        self.prm['nIntervals'] = 3
+        self.prm['nAlternatives'] = 3
         self.setAdditionalWidgets(self.currExp, self.prevExp)
         
         self.onChooserChange(None)
