@@ -215,6 +215,8 @@ class pychControlWin(QMainWindow):
         self.listenerTF = QLineEdit("")
         if 'listener' in self.prm:
             self.listenerTF.setText(self.prm['listener'])
+        else:
+            self.listenerTF.setText("Pasien THT")
         self.listenerTF.editingFinished.connect(self.onListenerChange)
         self.listenerTF.setWhatsThis(self.tr("Set a label (e.g. initials, or full name) for the listener being tested."))
         self.def_widg_sizer.addWidget(self.listenerTF, n, 1)
@@ -235,6 +237,7 @@ class pychControlWin(QMainWindow):
         self.experimentLabelLabel = QLabel(self.tr('Experiment Label:'), self)
         self.def_widg_sizer.addWidget(self.experimentLabelLabel, n, 0)
         self.experimentLabelTF = QLineEdit("")
+        self.experimentLabelTF.setText("Audiometri")
         self.experimentLabelTF.setWhatsThis(self.tr("Set a label for the current experiment."))
         self.def_widg_sizer.addWidget(self.experimentLabelTF, n, 1)
         #SESSION LABEL
