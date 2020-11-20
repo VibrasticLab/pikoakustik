@@ -538,7 +538,7 @@ void ht_mmcMetri_chkFile(void){
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
 #if USER_MMC_JSON
-        ht_comm_Buff(buffer,sizeof(buffer),"[");
+        ht_comm_Buff(buffer,sizeof(buffer),"[\n");
 #else
         ht_comm_Buff(buffer,sizeof(buffer),"START\n");
 #endif
@@ -621,10 +621,10 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t re
 
 #if USER_MMC_JSON
         if(result==1){
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"frequency\":%6.4f,\"amplitudo\":%6.4f,\"value\":true},",freq,ample);
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"frequency\":%6.4f,\"amplitudo\":%6.4f,\"value\":true},\n",freq,ample);
         }
         else{
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"frequency\":%6.4f,\"amplitudo\":%6.4f,\"value\":false},",freq,ample);
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"frequency\":%6.4f,\"amplitudo\":%6.4f,\"value\":false},\n",freq,ample);
         }
 #else
         ht_comm_Buff(buffer,sizeof(buffer),"%6.4f, %6.4f, %1i, %1i\n",freq,ample,lr_ch,result);
