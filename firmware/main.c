@@ -49,9 +49,6 @@ static ThdFunc_RunLED(thdRunLed, arg) {
   (void)arg;
   chRegSetThreadName("run led");
 
-  palSetPadMode(GPIOA,LED_RUN,PAL_MODE_OUTPUT_PUSHPULL);
-  palClearPad(GPIOA,LED_READY);
-
   while (true) {
 
 #if USER_TEST_STATE
@@ -132,6 +129,9 @@ static ThdFunc_RunLED(thdRunLed, arg) {
 int main(void){
     halInit();
     chSysInit();
+
+    palSetPadMode(GPIOA,LED_RUN,PAL_MODE_OUTPUT_PUSHPULL);
+    palClearPad(GPIOA,LED_RUN);
 
 #if USER_LED_BUTTON
     ht_led_Init();
