@@ -13,4 +13,5 @@
 
 Tips:
 - Soldering MAX98357A: Apply solder-paste first on PCB
+- Programming Wire: directly solder without any jumper
 - Audio Output too loud: Check LRC connection
