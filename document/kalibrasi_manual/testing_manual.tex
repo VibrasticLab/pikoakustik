@@ -292,53 +292,23 @@ info
 		\end{itemize}
 	\end{enumerate}
 
-	\subsubsection{Software: Linux}
+	\subsubsection{Audio Analyzer}
 	
-	Berikut adalah perangkat lunak yang perlu disiapkan untuk pengujian ini
-	(panduan ini menggunakan Ubuntu sebagai contoh alternatif):
+	Untuk perangkat lunak Audio Analyzer, digunakan program \textit{Real-Time Analyzer} 
+	yang merupakan bagian dari paket software DSFF3 buatan Yoshimasha.
+	Jika membutuhkan versi trial dapat didownload di \url{http://intip.in/stm32tools}.
 	
+	Antar-muka Real-Time Analyzer yang digunakan adalah \textit{FFT-Analyzer} pada tab \textit{Octave band}.
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=250pt]{images/kemar/fft}
+		\caption{Octave band pada FFT analyzer}
+	\end{figure}
+
+	Berikut adalah prosedur untuk \textit{tone-generation}:
 	\begin{enumerate}
-		\item Instalasi Driver.\\
-		Untuk driver sudah terintegrasi dengan kernel Linux 5.0 ke atas.
-		Untuk mengetahui versi kernel dapat menggunakan perintah pada terminal Ubuntu:
-		\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{bash}
-uname -a
-		\end{minted}
-		
-		\item Nyalakan dan hubungkan unit ke komputer.\\
-		Prosedurnya sama dengan panduan untuk Windows.
-		
-		\item Serial Port
-		\begin{itemize}
-			\item Untuk mengecek USB telah terdaftar atau belum,
-			dapat digunakan perintah berikut pada terminal Ubuntu:
-			\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{bash}
-lsusb
-			\end{minted}
-			Hasilnya akan menampilkan daftar USB yang terpasang.
-			Pastikan ada \textit{STMicroelectronics Virtual COM Port}.
-			\begin{figure}[!ht]
-				\centering
-				\includegraphics[width=300pt]{images/terminal/ubu_usbport}
-				\caption{Daftar USB terpasang}
-			\end{figure}
-			
-			\newpage
-			\item Untuk mendapatkan nomor serial port
-			dapat digunakan perintah berikut pada terminal Ubuntu:
-			\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{bash}
-ls /dev/ttyACM*
-			\end{minted}
-			Hasilnya akan menampilkan port USB standar ACM-CDC.
-			\begin{figure}[!ht]
-				\centering
-				\includegraphics[width=300pt]{images/terminal/ubu_acmport}
-				\caption{nomor Serial Port}
-			\end{figure}
-		\end{itemize}
-		
-		
+		\item 
 	\end{enumerate}
-	
 	
 \end{document}
