@@ -88,9 +88,15 @@
 	
 	\subsection{Tujuan}
 	
-	\section{Metode}
+	Tujuan dari kegiatan pengujian adalah mendapatkan nilai aktual SPL (dalam dB) yang dapat dibangkitan
+	oleh unit protoype audiometri yang dibangun pada setiap kombinasi frekuensi dan skala amplitudo yang disiapkan.
+	Pengujian ini membutuhkan \textit{un-echoic} untuk bisa mendapatkan nilai aktual pada SPL rendah tanpa tercampur gangguan lingkungan
+	
+	Hasil pengujian ini diharapkan dapat menjadi acuan dalam pengembangan prototype dan standarisasi sebelum digunakan massal.
 	
 	\newpage
+	\section{Panduan}
+	
 	\subsection{Persiapan}
 	
 	\subsubsection{Hardware}
@@ -273,14 +279,14 @@
 			\end{figure}
 			
 			\item Kolom terminal akan menampilkan pesan:
-			\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{bash}
+			\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
 Serial port COM3 opened
 			\end{minted}
 			
 			\newpage
 			\item Selanjutnya, pada kolom terminal,
 			masukkan perintah berikut dan diakhiri dengan (\keys{\return})
-			\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{bash}
+			\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
 info
 			\end{minted}
 			Serial akan menampilkan informasi kernel dan platform
@@ -302,13 +308,174 @@ info
 	
 	\begin{figure}[!ht]
 		\centering
-		\includegraphics[width=250pt]{images/kemar/fft}
+		\includegraphics[width=300pt]{images/kemar/fft}
 		\caption{Octave band pada FFT analyzer}
 	\end{figure}
 
-	Berikut adalah prosedur untuk \textit{tone-generation}:
+	Pada tampilan Octave-Band, klik satu bar frekuensi untuk mengetahui nilai SPL (dB)
+	yang terisolasi dengan frekuensi lain.
+	
+	\newpage
+	\subsubsection{Test Tone-Generation}
+	Berikut adalah prosedur untuk mencoba \textit{tone-generation}:
 	\begin{enumerate}
-		\item 
+		\item Nyalakan unit prototype dan tunggu standby.
+		Pastikan USB belum terhubung ke komputer.
+		\item Sambungkan unit dengan headphone yang disiapkan
+		\item Sambungkan USB ke komputer
+		\item Cek nomor COM port pada Device manager
+		\item Jalankan Hercules terminal
+		\item Atur nama port sesuai COM port
+		\item Klik \textbf{Open} pada Hercules terminal
+		\item Masukkan perintah berikut:
+		\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
+out 500 5
+		\end{minted}
+		\item Setelah tekan (\keys{\return}), maka pada salah satu headphone
+		akan membangkitkan tone selama kurang lebih 500ms.
+		\item Jika setelah selesai, tekan \textbf{Close} pada terminal,
+		lepas USB, dan matikan unit prototype.
+
+	\end{enumerate}
+
+	\subsubsection{Perintah yang Tersedia}
+	
+	Berikut beberapa perintah yang dapat diinputkan ke unit prototype:
+	
+	\begin{itemize}
+		\item \textbf{test}.
+		Perintah ini untuk mencoba headphone dengan mengeluakan tone singkat kanan-kiri bergantian.
+		Perintahnya adalah (diakhiri (\keys{\return})):
+		\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
+test
+		\end{minted}
+		
+		\item \textbf{info}.
+		Perintah ini untuk menampilkan informasi platform.
+		Dapat digunakan sebagai perintah uji untuk melihat serial dan chip sudah berkerja atau tidak.
+		Perintahnya adalah (diakhiri (\keys{\return})):
+		\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
+info
+		\end{minted}
+		
+		\item \textbf{out}.
+		Perintah untuk membangkitkan tone dengan frekuensi dan skala yang diinginkan selama 500ms.
+		Perintah adalah perintah utama dalam proses pengujian ini.
+		Pola perintahnya adalah (diakhiri (\keys{\return})):
+		\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
+out <frekuensi> <amplitudo>
+		\end{minted}
+		dengan:
+		\begin{itemize}
+			\item frekuensi adalah nilai frekuensi (dalam Hz) antara 250 sampai 8000.
+			\item amplitudo adalah skala amplitudo antara 1 sampai 9
+		\end{itemize}
+		Contoh untuk tone 500Hz pada skala amplitudo 6 (diakhiri (\keys{\return})):
+		\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
+out 500 6
+		\end{minted}
+	\end{itemize}
+
+	\newpage
+	\subsubsection{Troubleshoot}
+	
+	Berikut beberapa masalah yang terkadang sering muncul:
+	\begin{enumerate}
+		\item Serial USB tidak terdaftar pada \textit{Device-Manager}.\\
+		Kemungkinan sumber masalah:
+		\begin{itemize}
+			\item Kabel USB tidak tersambung baik atau tidak menyediakan jalur data D+/D-.\\
+			\textbf{Solusi}: ganti kabel USB
+			
+			\item Kabel USB terhubung ke komputer sebelum unit nyala dan standby.\\
+			\textbf{Solusi}: lepas kabel USB dari komputer kemudian matikan dan nyalakan ulang unit.
+			Setelah standby maka baru disambungkan ke komputer.
+		\end{itemize}
+	
+		\item Unit prototype frezze atau hank.\\
+		Ditandai dengan LED yang tidak lagi berkedip bergantian atau perintah serial tidak lagi merespon.\\
+		Kemungkinan sumber masalah adalah kondisi \textit{race} pada threading dan interrupt.\\
+		\textbf{Solusi}: lepas kabel USB dari komputer kemudian matikan dan nyalakan ulang unit.
+		Setelah standby maka baru disambungkan ke komputer.
+	\end{enumerate}
+
+	\newpage
+	\subsection{Pengujian}
+	
+	\subsubsection{Hasil}
+	
+	Hasil yang diharapkan adalah tabel SPL (dB) untuk setiap matrik frekuensi dan skala amplitudo.
+	Dengan hasil tabel ini maka diharapkan ada acuan untuk pengaturan unit prototype sesuai standar yang digunakan pada nantinya.
+	
+	Berikut contoh tabel yang diharapkan:
+	
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|} 
+			\hline
+			Fq/Ap & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1\\ [0.5ex] 
+			\hline\hline
+			250Hz & X db & X db & X db & X db & X db & X db & X db & X db & X db\\
+			\hline
+			500Hz & X db & X db & X db & X db & X db & X db & X db & X db & X db\\
+			\hline
+			1000Hz & X db & X db & X db & X db & X db & X db & X db & X db & X db\\
+			\hline
+			2000Hz & X db & X db & X db & X db & X db & X db & X db & X db & X db\\
+			\hline
+			4000Hz & X db & X db & X db & X db & X db & X db & X db & X db & X db\\
+			\hline
+			8000Hz & X db & X db & X db & X db & X db & X db & X db & X db & X db\\
+			\hline
+		\end{tabular}
+	\end{center}
+	
+	Tabel dalam format Excel 2003 (xls) dapat didownload di \url{https://intip.in/UjiAudiometri}
+	
+	\subsubsection{Perintah Serial}
+	
+	Perintah serial yang digunakan sebagaimana telah dijelaskan pada bab sebelumnya adalah perintah \textbf{out},
+	dengan pola perintah:
+	\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
+out <frekuensi> <amplitudo>
+	\end{minted}
+	dengan:
+	\begin{itemize}
+		\item frekuensi adalah nilai frekuensi (dalam Hz) antara 250 sampai 8000.
+		\item amplitudo adalah skala amplitudo antara 1 sampai 9
+	\end{itemize}
+
+	\subsubsection{Contoh Prosedur}
+	
+	Berikut adalah contoh prosedur untuk satu nilai uji pada satu frekuensi dan satu skala amplitudo.
+	Sebagai contoh adalah frekuensi 1000Hz pada skala amplitudo 6.
+	
+	Sebelum pengujian, kembali cek ulang persiapan meliputi:
+	\begin{itemize}
+		\item Unit prototype telah standby dan terhubung laptop via USB.
+		\item Serial terminal telah bisa mengirim perintah dan mendapat respon.
+		\item Headphone telah terpasang ke unit uji KEMAR dan terhubung unit prototype.
+		\item Komputer dan unit KEMAR sudah terhubung dengan Audio Capture Device.
+		\item Real-Time Analyzer pada window FFT Octave-band telah terkalibrasi dan sudah start.
+	\end{itemize}
+
+	\newpage
+	Berikut contoh prosedur satu nilai:
+	\begin{enumerate}
+		\item masukkan perintah tone untuk nilai frekuensi dan skala amplitudo yang ditentukan.
+		Contoh (1000Hz skala 6):
+		\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
+out 1000 6
+		\end{minted}
+		
+		\item Tone akan dibangkitkan selama 500ms.
+		
+		\item Pada window Octave-band, klik bar pada frekuensi 1000Hz.
+		
+		\item Catat nilai SPL pada tabel Hasil
+		
+		\item Setelah 500ms, tone akan berhenti.
+		
+		\item Pengujian dapat dilanjutkan pada kombinasi frekuensi dan skala amplitudo lainnya.
 	\end{enumerate}
 	
 \end{document}
