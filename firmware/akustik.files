@@ -1,3 +1,4 @@
+LICENSE
 Makefile
 board/board.c
 board/board.h
