@@ -16,8 +16,8 @@
 \usepackage{etoolbox}
 \usepackage[inline]{enumitem}
 
-\newcommand{\WindowsLogo}{\raisebox{-0.1em}{\includegraphics[height=0.8em]{images/winlogo/Windows_3_logo_simplified}}}
-\newcommand{\PowerLogo}{\raisebox{-0.1em}{\includegraphics[height=0.8em]{images/winlogo/power}}}
+\newcommand{\WindowsLogo}{\raisebox{-0.1em}{\includegraphics[height=0.8em]{images/logo/Windows_3_logo_simplified}}}
+%\newcommand{\PowerLogo}{\raisebox{-0.1em}{\includegraphics[height=0.8em]{images/logo/power}}}
 \newcommand{\WinKey}{\keys{\WindowsLogo}}	
 \newcommand{\PowerKey}{\keys{\PowerLogo}}	
 
@@ -34,6 +34,7 @@
 }
 
 \addto\captionsenglish{\renewcommand{\contentsname}{Daftar Isi}}
+\addto\captionsenglish{\renewcommand{\figurename}{Gambar}}
 
 \hypersetup{
 	colorlinks=true, %set true if you want colored links
@@ -50,8 +51,9 @@
 	bottom=15mm,
 }
 
-\title{\Large \bf
-	Testing Manual\\
+\title{\LARGE \bf
+	Panduan Ringkas Pengujian\\
+	\small{(Handheld Audiometri Prototype)}
 }
 
 \author{Achmadi ST MT}
@@ -66,15 +68,19 @@
 %\color[rgb]{1,1,1}
 
 \begin{document}
-	\maketitle
 	\thispagestyle{empty}
 	
-	\vspace*{300pt}
-	
-	%\noindent This manual written using: \\
-	%OS : \ShowOsVersion \\
-	%TeX : \ShowTexVersion \\
-	%Update: {\today} at \currenttime \\
+	\begin{titlepage}
+		\centering
+		\vfill
+		\vfill
+		\maketitle
+		\vfill
+		\includegraphics[width=200pt]{images/logo/logoviblab}
+		\vfill
+		\vfill
+		Update: {\today} \currenttime \\
+	\end{titlepage}
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
@@ -121,7 +127,7 @@
 		\begin{figure}[!ht]
 			\centering
 			\includegraphics[width=150pt]{images/foto/phone}
-			\caption{Kabel USB}
+			\caption{Wired Headphone}
 		\end{figure}
 	
 		\newpage
@@ -444,11 +450,11 @@ out <frekuensi> <amplitudo>
 		\item amplitudo adalah skala amplitudo antara 1 sampai 9
 	\end{itemize}
 
+	\newpage
 	\subsubsection{Contoh Prosedur}
 	
 	Berikut adalah contoh prosedur untuk satu nilai uji pada satu frekuensi dan satu skala amplitudo.
 	Sebagai contoh adalah frekuensi 1000Hz pada skala amplitudo 6.
-	
 	Sebelum pengujian, kembali cek ulang persiapan meliputi:
 	\begin{itemize}
 		\item Unit prototype telah standby dan terhubung laptop via USB.
@@ -458,7 +464,6 @@ out <frekuensi> <amplitudo>
 		\item Real-Time Analyzer pada window FFT Octave-band telah terkalibrasi dan sudah start.
 	\end{itemize}
 
-	\newpage
 	Berikut contoh prosedur satu nilai:
 	\begin{enumerate}
 		\item masukkan perintah tone untuk nilai frekuensi dan skala amplitudo yang ditentukan.
@@ -471,7 +476,16 @@ out 1000 6
 		
 		\item Pada window Octave-band, klik bar pada frekuensi 1000Hz.
 		
-		\item Catat nilai SPL pada tabel Hasil
+			\begin{figure}[!ht]
+			\centering
+			\includegraphics[width=300pt]{images/terminal/contoh}
+			\caption{Contoh Nilai Uji}
+		\end{figure}
+	
+		Terlihat bahwa nilai hasil uji adalah 49.95 dB (atau 50dB).\\
+		\textbf{Catatan}: Contoh gambar di atas dilakukan pada ruangan biasa dengan penuh gangguan.
+		
+		\item Catat nilai SPL tersebut pada tabel Hasil sesuai frekuensi dan skala amplitudo
 		
 		\item Setelah 500ms, tone akan berhenti.
 		
