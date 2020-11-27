@@ -115,7 +115,7 @@ void ht_audio_Tone(double freq, double ampl);
 /**
  * @brief Play Audio via I2S
  * @details Play I2S Transmit buffer in loop
- * @param[in] uint8_t Duration to play loop
+ * @param[in] uint8_t Duration to play loop (milliseconds)
  */
 void ht_audio_Play(uint16_t duration);
 

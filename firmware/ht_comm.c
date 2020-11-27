@@ -227,6 +227,84 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
 }
 
 /**
+ * @brief Audio Play at a frequency and amplitude at left/right channel
+ * @details Same as cmd_tone except using some real value and scaling
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_toneout(BaseSequentialStream *chp, int argc, char *argv[]) {
+    uint8_t in_ampl;
+    uint16_t in_freq;
+    double vampl;
+    double vfreq;
+    uint8_t lrc = 0;
+    uint16_t sing_durr = 500;
+
+    if(argc==2){
+        lrc = 0;
+        in_freq = atoi(argv[0]);
+        in_ampl = atoi(argv[1]);
+    }
+    else if(argc==3){
+        lrc = atoi(argv[0]);
+        in_freq = atoi(argv[1]);
+        in_ampl = atoi(argv[2]);
+    }
+    else if(argc==3){
+        lrc = atoi(argv[0]);
+        in_freq = atoi(argv[1]);
+        in_ampl = atoi(argv[2]);
+        sing_durr = atoi(argv[3]);
+    }
+    else{
+        chprintf(chp,"usage: tone <0/1> <freq> <ampl> <duration_ms>\r\n");
+        return;
+    }
+
+    switch(lrc){
+        case OUT_LEFT:
+            ht_audio_LeftCh();
+            chprintf(chp,"Left Channel on\r\n");
+            break;
+
+        case OUT_RIGHT:
+            ht_audio_RightCh();
+            chprintf(chp,"Right Channel on\r\n");
+            break;
+    }
+
+    if(in_freq>=250 && in_freq<=8000){
+        vfreq = (double) in_freq/400;
+    }
+    else{
+        chprintf(chp,"frequency only between 250 and 8000\r\n");
+        return;
+    }
+
+    if(!(in_ampl>0 && in_ampl<10)){
+        chprintf(chp,"amplitudo scaling only between 1 and 9\r\n");
+        return;
+    }
+
+    switch(in_ampl){
+        case 9: vampl=1;break;
+        case 8: vampl=0.5;break;
+        case 7: vampl=0.25;break;
+        case 6: vampl=0.125;break;
+        case 5: vampl=0.0625;break;
+        case 4: vampl=0.0312;break;
+        case 3: vampl=0.0156;break;
+        case 2: vampl=0.0078;break;
+        case 1: vampl=0.0039;break;
+    }
+
+    chprintf(chp,"Tone: Freq:%6.4f Ampl:%6.4f\r\n",vfreq,vampl);
+    ht_audio_Tone(vfreq,vampl);
+    ht_audio_Play(sing_durr);
+    chprintf(chp,"Finished\r\n");
+    ht_audio_DisableCh();
+}
+
+/**
  * @brief Audio Play at a frequency and down from highest to lowest amplitude
  * @details Enumerated and not called directly by any normal thread
  */
@@ -430,6 +508,7 @@ static const ShellCommand commands[] = {
     {"tone",cmd_tone},
     {"max",cmd_max},
     {"min",cmd_min},
+    {"out",cmd_toneout},
     {"sptest",cmd_sptest},
 #endif
 #if USER_MMC
