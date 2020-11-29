@@ -12,6 +12,7 @@
 - Teardrop on all Vias (DONE)
 
 Tips:
-- Soldering MAX98357A: Apply solder-paste first on PCB
+- Soldering QFP components: Apply solder-paste first on PCB
+- Other SMD components: Regular solder-wire at minimum
 - Programming Wire: directly solder without any jumper
 - Audio Output too loud: Check LRC connection

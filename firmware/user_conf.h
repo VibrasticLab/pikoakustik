@@ -33,7 +33,7 @@
  #define USER_SERMSG_USB    TRUE
  #define USER_SERCONSOLE    TRUE
 
-#define USER_MMC            FALSE
+#define USER_MMC            TRUE
  #define USER_MMC_JSON      TRUE
 
 #define USER_IOT            TRUE
