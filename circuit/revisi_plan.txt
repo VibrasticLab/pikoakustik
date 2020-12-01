@@ -8,11 +8,13 @@
 - R-Gain 100K in 2 position (DONE)
 - Add R 0ohm VDD ESP8266 (DONE)
 - ESP8266 Wifi-LED (DONE)
-- LRC must exist or too loud
+- LRC must exist or too loud (DONE)
 - Teardrop on all Vias (DONE)
 
 Tips:
-- Soldering QFP components: Apply solder-paste first on PCB
+- Soldering STM32-MAX98: Apply solder-paste first on PCB
+- Solder-wire on STM32-MAX98 at minimum as last option
 - Other SMD components: Regular solder-wire at minimum
 - Programming Wire: directly solder without any jumper
 - Audio Output too loud: Check LRC connection
+- MMC should exist to make tone stabilized (only if using 5v USB)
