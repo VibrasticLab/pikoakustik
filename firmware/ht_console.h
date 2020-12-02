@@ -46,8 +46,11 @@
  * @brief Shell thread working area size
  * @details Set to bigger size if necessary
  */
-#define SHELL_WA_SIZE THD_WORKING_AREA_SIZE(2048)
+#define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(2048)
 
+/**
+ * @brief Benchmark working area size
+ */
 #define TEST_WA_SIZE    THD_WORKING_AREA_SIZE(256)
 
 /**

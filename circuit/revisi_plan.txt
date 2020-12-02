@@ -17,4 +17,5 @@ Tips:
 - Other SMD components: Regular solder-wire at minimum
 - Programming Wire: directly solder without any jumper
 - Audio Output too loud: Check LRC connection
-- MMC should exist to make tone stabilized (only if using 5v USB)
+- USB 5v from laptop not really clean enough
+- Apply glue-gun as minimum possible
