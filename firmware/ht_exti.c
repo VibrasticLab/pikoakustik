@@ -57,11 +57,10 @@ static uint8_t mode_btnB;
 static uint8_t mode_btnC;
 
 #if USER_TEST_STATE
-
 /**
- * @brief Global test button variable
+ * @brief Test button status variable
  */
-static uint8_t test_button;
+static uint8_t test_button = 0;
 #endif
 
 #if !(USER_TEST_STATE)
@@ -111,9 +110,11 @@ static void extiAnsA(EXTDriver *extp, expchannel_t channel) {
     (void)channel;
 
 #if USER_TEST_STATE
-    led_answer_off();
-    led_answerA();
-    test_button = BTN_ANS_A;
+    if(test_button==0){
+        led_answer_off();
+        led_answerA();
+        test_button = BTN_ANS_A;
+    }
 #else
     if(mode_status==STT_IDLE){
         led_answer_off();
@@ -154,9 +155,11 @@ static void extiAnsB(EXTDriver *extp, expchannel_t channel) {
     (void)channel;
 
 #if USER_TEST_STATE
-    led_answer_off();
-    led_answerB();
-    test_button = BTN_ANS_B;
+    if(test_button==0){
+        led_answer_off();
+        led_answerB();
+        test_button = BTN_ANS_B;
+    }
 #else
     if(mode_status==STT_IDLE){
         led_answer_off();
@@ -197,9 +200,11 @@ static void extiAnsC(EXTDriver *extp, expchannel_t channel) {
     (void)channel;
 
 #if USER_TEST_STATE
-    led_answer_off();
-    led_answerC();
-    test_button = BTN_ANS_C;
+    if(test_button==0){
+        led_answer_off();
+        led_answerC();
+        test_button = BTN_ANS_C;
+    }
 #else
     if(mode_status==STT_IDLE){
         led_answer_off();
@@ -263,13 +268,7 @@ static const EXTConfig extcfg = {
 };
 
 #if USER_TEST_STATE
-/**
- * @brief Test button status variable
- */
-static uint8_t test_button = 0;
-
-
-static THD_WORKING_AREA(waAudioTest, 512);
+static THD_WORKING_AREA(waAudioTest, 1024);
 #define ThdFunc_AudioTest THD_FUNCTION
 
 /**
