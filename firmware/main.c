@@ -40,6 +40,11 @@
 extern uint8_t mode_status;
 extern uint8_t mode_led;
 
+/**
+ * @brief status to control LED thread start
+ */
+static uint8_t stt_readyAll = FALSE;
+
 static THD_WORKING_AREA(waRunLed, 128);
 #define ThdFunc_RunLED THD_FUNCTION
 
@@ -163,8 +168,6 @@ int main(void){
     ht_metri_Init();
 #endif
 
-    chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
-
     while(1){
 
 #if USER_SERIAL
@@ -175,6 +178,12 @@ int main(void){
  #endif
         ht_commUSB_shInit();
 #endif
+        if(stt_readyAll==FALSE){
+            chThdSleepMilliseconds(500);
+            chThdCreateStatic(waRunLed, sizeof(waRunLed),	NORMALPRIO, thdRunLed, NULL);
+            ht_comm_Msg("All System Ready\r\n");
+            stt_readyAll = TRUE;
+        }
 
         chThdSleepMilliseconds(500);
     }
