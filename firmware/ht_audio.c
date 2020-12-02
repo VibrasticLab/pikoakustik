@@ -35,6 +35,8 @@
 
 #include "ht_audio.h"
 
+uint8_t stt_inPlay = FALSE;
+
 /**
  * @brief I2S Transmit buffer
  */
@@ -107,6 +109,9 @@ void ht_audio_Tone(double freq, double ampl){
 }
 
 void ht_audio_Play(uint16_t duration){
+    if(stt_inPlay==TRUE){return;}
+    else{stt_inPlay=TRUE;}
+
     i2sStart(&I2SD2, &i2scfg);
     i2sStartExchange(&I2SD2);
 
@@ -114,6 +119,8 @@ void ht_audio_Play(uint16_t duration){
 
     i2sStopExchange(&I2SD2);
     i2sStop(&I2SD2);
+
+    stt_inPlay=FALSE;
 }
 
 void ht_audio_DisableCh(void){
