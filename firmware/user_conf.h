@@ -28,6 +28,7 @@
 
 #define USER_TEST_STATE     TRUE
  #define USER_TEST_RNG      FALSE
+ #define USER_TEST_THD      TRUE
 
 #define USER_SERIAL         TRUE
  #define USER_SERMSG_USB    TRUE

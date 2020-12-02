@@ -37,6 +37,8 @@
 #include "ht_audio.h"
 #include "ht_mmc.h"
 
+#include "test.h"
+
 /* USB-CDC pointer object */
 extern SerialUSBDriver SDU1;
 extern const USBConfig usbcfg;
@@ -505,6 +507,80 @@ static void cmd_iotlog(BaseSequentialStream *chp, int argc, char *argv[]) {
 /*******************************************/
 
 /**
+ * @brief Memory check function
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_chmem(BaseSequentialStream *chp, int argc, char *argv[]) {
+  size_t n, size;
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: mem\r\n");
+    return;
+  }
+  n = chHeapStatus(NULL, &size);
+  chprintf(chp, "core free memory : %u bytes\r\n", chCoreGetStatusX());
+  chprintf(chp, "heap fragments   : %u\r\n", n);
+  chprintf(chp, "heap free total  : %u bytes\r\n", size);
+}
+
+/**
+ * @brief Thread check function
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_chthds(BaseSequentialStream *chp, int argc, char *argv[]) {
+  static const char *states[] = {CH_STATE_NAMES};
+  thread_t *tp;
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: threads\r\n");
+    return;
+  }
+  chprintf(chp, "    addr    stack prio refs     state time\r\n");
+  tp = chRegFirstThread();
+  do {
+    chprintf(chp, "%08lx %08lx %4lu %4lu %9s\r\n",
+            (uint32_t)tp, (uint32_t)tp->p_ctx.r13,
+            (uint32_t)tp->p_prio, (uint32_t)(tp->p_refs - 1),
+            states[tp->p_state]);
+    tp = chRegNextThread(tp);
+  } while (tp != NULL);
+}
+
+
+/**
+ * @brief Benchmark check function
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_chbench(BaseSequentialStream *chp, int argc, char *argv[]) {
+#if USER_TEST_THD
+  thread_t *tp;
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: test\r\n");
+    return;
+  }
+  tp = chThdCreateFromHeap(NULL, TEST_WA_SIZE, chThdGetPriorityX(),
+                           TestThread, chp);
+  if (tp == NULL) {
+    chprintf(chp, "out of memory\r\n");
+    return;
+  }
+  chThdWait(tp);
+#else
+  (void) argc;
+  (void) argv;
+
+  chprintf(chp, "Benchmark function disabled\r\n");
+#endif
+}
+
+
+/*******************************************/
+
+/**
  * @brief Shell command and it's callback enumeration
  * @details Extending from internal shell's callback
  */
@@ -532,6 +608,9 @@ static const ShellCommand commands[] = {
     {"log",cmd_iotlog},
     {"send",cmd_iotsend},
 #endif
+    {"chmem",cmd_chmem},
+    {"chthds",cmd_chthds},
+    {"chbenc",cmd_chbench},
     {NULL, NULL}
 };
 
