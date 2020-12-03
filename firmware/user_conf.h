@@ -48,7 +48,6 @@
 
 #define USER_METRI          TRUE
  #define USER_METRI_RECORD  FALSE
- #define USER_METRI_CONVLV  FALSE
  #define USER_METRI_1FREQ   TRUE
 
 #endif // USER_CONF_H
