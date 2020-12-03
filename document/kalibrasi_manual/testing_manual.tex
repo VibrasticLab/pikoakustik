@@ -387,6 +387,13 @@ out 500 6
 	
 	Berikut beberapa masalah yang terkadang sering muncul:
 	\begin{enumerate}
+		\item Perintah serial tidak merespon apapun kecuali hanya menampilkan prompt seperti:
+		\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
+ch>
+		\end{minted}
+		Ini bukanlah masalah melainkan hanya respon saat baru selesai startup.
+		Solusinya cukup masukkan perintah yang diinginkan sekali lagi.
+		
 		\item Serial USB tidak terdaftar pada \textit{Device-Manager}.\\
 		Kemungkinan sumber masalah:
 		\begin{itemize}
@@ -403,6 +410,24 @@ out 500 6
 		Kemungkinan sumber masalah adalah kondisi \textit{race} pada threading dan interrupt.\\
 		\textbf{Solusi}: lepas kabel USB dari komputer kemudian matikan dan nyalakan ulang unit.
 		Setelah standby maka baru disambungkan ke komputer.
+	\end{enumerate}
+
+	\subsubsection{Charging}
+	
+	Tersedia fitur battery \textit{charging} pada unit prototype.
+	Untuk \textit{charging}, cukup dibutuhkan charger android 5volt dan kabel microUSB ke USB.
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=150pt]{images/foto/charging}
+		\caption{Port untuk charging}
+	\end{figure}
+
+	Berikut prosedur charging:
+	\begin{enumerate}
+		\item Pastikan unit dalam kondisi mati
+		\item Hubungkan USB dengan charger 5 volt yang telah terhubung sumber AC
+		\item LED merah dekat port charger akan menyala sebagai tanda proses charging berjalan
+		\item Tunggu LED merah berganti biru sebagai tanda charging selesai
 	\end{enumerate}
 
 	\newpage
