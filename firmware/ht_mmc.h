@@ -52,6 +52,11 @@
 #define FILE_BUFF_LEN 4096
 
 /**
+ * @brief Maximum Last Number to be saved
+ */
+#define FILE_MAX_NUM  500
+
+/**
  * @brief rename to match name f_write()
  */
 #define f_readline    f_gets

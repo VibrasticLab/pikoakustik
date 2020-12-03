@@ -51,7 +51,7 @@ MMCDriver MMCD1;
 /**
  * @brief Save file last number variable
  */
-uint8_t lastnum=0;
+uint16_t lastnum=0;
 
 /**
  * @brief FatFS ready status flag
@@ -408,7 +408,7 @@ void ht_mmc_lsFiles(void){
                 ht_comm_Buff(strbuff,sizeof(strbuff),"Last File: TEST_%i.TXT\r\n",lastnum);
                 ht_comm_Msg(strbuff);
 
-                if(lastnum < 255){
+                if(lastnum < FILE_MAX_NUM){
                     ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
 
                     err = f_open(Fil, fname, FA_READ | FA_OPEN_EXISTING);
@@ -555,7 +555,7 @@ void ht_mmcMetri_chkFile(void){
             strcpy(buff,"/");
             err = scanFile(buff,&lastnum,0);
 
-            if(lastnum < 255){
+            if(lastnum < FILE_MAX_NUM){
                 ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
 
                 err = f_open(Fil_last, fname, FA_READ | FA_OPEN_EXISTING);
@@ -637,7 +637,7 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t re
         ht_comm_Buff(buffer,sizeof(buffer),"%6.4f, %6.4f, %1i, %1i\n",freq,ample,lr_ch,result);
 #endif
 
-        if(lastnum < 255){
+        if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
 
             ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
@@ -679,7 +679,7 @@ void ht_mmcMetri_endResult(void){
         ht_comm_Buff(buffer,sizeof(buffer),"END\n");
 #endif
 
-        if(lastnum < 255){
+        if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
 
             ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);

@@ -42,8 +42,15 @@
 #define OPT_ASK_B   1
 #define OPT_ASK_C   2
 
-#define TEST_SPEED_DELAY 300 // Delay each event on metri loop
-#define TEST_MAX_COUNT   15  // Maximum number for each frequency test
+/**
+ * @brief Delay each event on metri loop
+ */
+#define TEST_SPEED_DELAY 300
+
+/**
+ * @brief Maximum number for each frequency test
+ */
+#define TEST_MAX_COUNT   15
 
 /**
  * @brief Random number to choose answer position
