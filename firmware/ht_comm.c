@@ -404,7 +404,7 @@ static void cmd_lsfile(BaseSequentialStream *chp, int argc, char *argv[]) {
  */
 static void cmd_catfile(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void) argv;
-    uint8_t fnum;
+    uint16_t fnum;
 
     if(argc==0 || argc>1){chprintf(chp,"usage: cat file_number\r\n");return;}
     fnum = atoi(argv[0]);

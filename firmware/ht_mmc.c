@@ -100,10 +100,10 @@ static void string_parse(char *strIn, char *strOut, uint8_t pos, char sep){
     strcpy(strOut,strSplit[pos]);
 }
 
-static uint8_t get_fnum(char *strIn){
+static uint16_t get_fnum(char *strIn){
     char buffer[64];
     char filenum[16];
-    uint8_t numOut;
+    uint16_t numOut;
 
     string_parse(strIn,buffer,1,'_');
     string_parse(buffer,filenum,0,'.');
@@ -112,12 +112,12 @@ static uint8_t get_fnum(char *strIn){
     return numOut;
 }
 
-static FRESULT scanFile(char *path, uint8_t *lastfnum, uint8_t stt_print){
+static FRESULT scanFile(char *path, uint16_t *lastfnum, uint8_t stt_print){
     char strbuff[IFACE_BUFF_SIZE];
     FRESULT err;
     DIR Dir;
     FILINFO Fno;
-    uint8_t fnum;
+    uint16_t fnum;
 
 #if USE_SCAN_DIR
     UINT num;
@@ -437,7 +437,7 @@ void ht_mmc_lsFiles(void){
     free(Fil);
 }
 
-void ht_mmc_catFiles(uint8_t fnum){
+void ht_mmc_catFiles(uint16_t fnum){
     char strbuff[STR_BUFF_SIZE];
     char fname[STR_BUFF_SIZE];
     FATFS FatFs;
@@ -481,7 +481,7 @@ void ht_mmc_catFiles(uint8_t fnum){
     free(Fil);
 }
 
-void ht_mmc_sendFiles(uint8_t fnum){
+void ht_mmc_sendFiles(uint16_t fnum){
     char filebuff[FILE_BUFF_LEN+10];
     char strbuff[STR_BUFF_SIZE];
     char fname[STR_BUFF_SIZE];

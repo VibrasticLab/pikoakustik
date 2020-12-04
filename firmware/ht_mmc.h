@@ -88,15 +88,15 @@ void ht_mmc_lsFiles(void);
 
 /**
  * @brief Read a file on directory and print
- * @param[in] uint8_t Last number of Save file
+ * @param[in] uint16_t Last number of Save file
  */
-void ht_mmc_catFiles(uint8_t fnum);
+void ht_mmc_catFiles(uint16_t fnum);
 
 /**
  * @brief Read a file on directory and send to IoT
- * @param[in] uint8_t Last number of Save file
+ * @param[in] uint16_t Last number of Save file
  */
-void ht_mmc_sendFiles(uint8_t fnum);
+void ht_mmc_sendFiles(uint16_t fnum);
 
 /**
  * @brief Check save file existence before audiometri
