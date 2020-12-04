@@ -24,65 +24,64 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 
 - [x] Acrilic Protector
 - [ ] Box Design
-	- [ ] Print 3D (**September 2020**)
+	- [x] Print 3D (**September 2020**)
 	- [ ] Plastic Molding
 - [ ] Battery
 	- [x] Regulator TP4056
 	- [x] LiPo Battery
 	- [x] Main Power Button
-	- [ ] Charge/Discharge Test (**September 2020**)
+	- [ ] Charge/Discharge Test
 
 #### Data Communication:
 
-- [X] Serial Data
+- [ ] Serial Data
 	- [x] ACM USB-CDC Protocol
 	- [x] Basic Serial commands
 	- [x] Media handling commands
 	- [x] Audiometri control commands
 	- [x] MQTT Data control commands
-	- [ ] HTTP Data control commands (**September 2020**)
+	- [ ] HTTP Data control commands
 
 - [x] Media Storage
 	- [x] MMC Connector Slot
 	- [x] MMC readyness checking
 	- [x] FATFS as FAT32 handler
 	- [x] Via SPI protocol
-	- [ ] Via SDIO protocol
 
-- [x] IoT Exchanges
+- [ ] IoT Exchanges
 	- [x] ESP-12E slot on PCB
 	- [x] ESP-12E power jumper
 	- [x] WiFi handling
 	- [x] Access Point handling
-	- [ ] Wifi/AP button switch
+	- [ ] Wifi/AP switch command
 	- [x] MQTT Protocol
-	- [ ] HTTP Data exchange (**September 2020**)
-	- [ ] MQTT Data JSON/Format (**September 2020**)
-	- [ ] HTTP Data JSON/Format (**September 2020**)
+	- [ ] HTTP Data exchange
+	- [ ] MQTT Data JSON/Format
+	- [ ] HTTP Data JSON/Format
 
 #### Audiometri:
 
-- [x] Tone Generator
+- [ ] Tone Generator
 	- [x] Generic I2S Protocol
 	- [x] Pure Single Tone
 	- [x] Calibrated Frequency array
 	- [x] Pop-Click Suppression
 	- [ ] Calibrated SPL range
 	- [ ] Calibrated SPL scaling
-	- [ ] Left/Right Isolation (**September 2020**) 
+	- [ ] Left/Right Isolation
 	
-- [x] Microphone Input (**September 2020**)
-	- [ ] Environment Noise Capture (**September 2020**)
+- [ ] Microphone Input
+	- [ ] Environment Noise Capture
 	- [ ] Environment Noise Compensation
 
-- [x] Hearing Test
+- [ ] Hearing Test
 	- [x] User Test Flow
-	- [ ] Convinient Level Test (**September 2020**)
+	- [ ] Convinient Level Test
 	- [ ] Random starting SPL
 	- [x] Up/Down SPL scaling
 	
 - [ ] Mass Production
-	- [ ] PCB Electronic (**October 2020**)
+	- [ ] PCB Electronic
 		- [ ] Seeed Studio
 		- [ ] DigiKey
 	- [ ] Packaging
