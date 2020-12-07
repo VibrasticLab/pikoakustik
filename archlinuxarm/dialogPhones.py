@@ -54,29 +54,6 @@ class dialogPhones(QDialog):
         self.phonesTableWidget.hideColumn(3)
         self.phonesTableWidget.cellDoubleClicked[int,int].connect(self.onCellDoubleClicked)
         
-        #RENAME Phones BUTTON
-        self.renamePhonesButton = QPushButton(self.tr("Rename Phones"), self)
-        self.renamePhonesButton.clicked.connect(self.onEditLabel)
-        #Change Level Phones BUTTON
-        self.changeLevelPhonesButton = QPushButton(self.tr("Change Max Level"), self)
-        self.changeLevelPhonesButton.clicked.connect(self.onEditMaxLevel)
-        
-        #ADD Phones BUTTON
-        self.addPhonesButton = QPushButton(self.tr("Add Phones"), self)
-        self.addPhonesButton.clicked.connect(self.onClickAddPhonesButton)
-        #REMOVE Phones BUTTON
-        self.removePhonesButton = QPushButton(self.tr("Remove Phones"), self)
-        self.removePhonesButton.clicked.connect(self.onClickRemovePhonesButton)
-        #Set Default Phones BUTTON
-        self.setDefaultPhonesButton = QPushButton(self.tr("Set Default"), self)
-        self.setDefaultPhonesButton.clicked.connect(self.onEditDefault)
-        
-#        self.v1Sizer.addWidget(self.renamePhonesButton)
-#        self.v1Sizer.addWidget(self.changeLevelPhonesButton)
-#        self.v1Sizer.addWidget(self.addPhonesButton)
-#        self.v1Sizer.addWidget(self.removePhonesButton)
-#        self.v1Sizer.addWidget(self.setDefaultPhonesButton)
-#        self.v1Sizer.addStretch()
         self.phonesList = {}
         
         for i in range(len(self.prm['phones']['phonesChoices'])):
@@ -147,7 +124,7 @@ class dialogPhones(QDialog):
         else:
             self.stopCalibButton.hide()
             
-        self.sizer.addLayout(self.v1Sizer, 0, 0)
+        #self.sizer.addLayout(self.v1Sizer, 0, 0)
         self.v2Sizer.addLayout(self.calibSizer)
         self.v2Sizer.addStretch()
         self.sizer.addWidget(self.phonesTableWidget, 0, 1)
@@ -207,46 +184,6 @@ class dialogPhones(QDialog):
             self.phonesTableWidget.item(self.phonesList[selectedSound]['qid'].row(), 2).setText("\u2713")
             self.phonesList[selectedSound]['default'] = "\u2713"
             
-    def onClickAddPhonesButton(self):
-        keys = sorted(self.phonesList.keys())
-        thisID = str(int(keys[-1])+1)
-        currCount = self.phonesTableWidget.rowCount() + 1
-
-        self.phonesList[thisID] = {}
-        self.phonesList[thisID]['label'] = 'Phones' + ' ' + str(currCount)
-        self.phonesList[thisID]['maxLevel'] = 100
-        self.phonesList[thisID]['default'] = "\u2012"
-        self.phonesTableWidget.setRowCount(currCount)
-        newItem = QTableWidgetItem(self.phonesList[thisID]['label'])
-        newItem.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
-        self.phonesTableWidget.setItem(currCount-1, 0, newItem)
-        newItem = QTableWidgetItem(self.currLocale.toString(self.phonesList[thisID]['maxLevel']))
-        newItem.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
-        self.phonesTableWidget.setItem(currCount-1, 1, newItem)
-        newItem = QTableWidgetItem(self.phonesList[thisID]['default'])
-        newItem.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
-        self.phonesTableWidget.setItem(currCount-1, 2, newItem)
-        self.phonesList[thisID]['qid'] = QTableWidgetItem(thisID)
-        self.phonesTableWidget.setItem(currCount-1, 3, self.phonesList[thisID]['qid'])
-        
-    def onClickRemovePhonesButton(self):
-        if self.phonesTableWidget.rowCount() == 1:
-            QMessageBox.warning(self, self.tr("Warning"),
-                                            self.tr("Only one phone left. Cannot remove!"),
-                                            QMessageBox.Ok)
-        else:
-            ids = self.findSelectedItemIds()
-            wasDefault = False
-            for i in range(len(ids)):
-                selectedPhones = ids[i]
-                if self.phonesTableWidget.item(self.phonesList[selectedPhones]['qid'].row(), 2).text() == "\u2713":
-                    wasDefault = True 
-                self.phonesTableWidget.removeRow(self.phonesList[selectedPhones]['qid'].row())
-                del self.phonesList[selectedPhones]
-            if wasDefault == True:
-                self.phonesTableWidget.item(0, 2).setText("\u2713")
-                self.phonesList[str(self.phonesTableWidget.item(0, 3).text())]['default'] = "\u2713"
-                
     def onClickPlayCalibButton(self):
         ids = self.findSelectedItemIds()
         if len(ids) > 1:
