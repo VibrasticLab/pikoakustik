@@ -6,9 +6,10 @@ arch=('any')
 url="http://samcarcagno.altervista.org/pychoacoustics/pychoacoustics.html"
 license=('GPL-3.0')
 depends=('libpulse' 'pychoacoustics')
-source=('pychotouch.py' 'pychorun.sh' 'controlWindow.py' 'responseBox.py')
+source=('pychotouch.py' 'pychorun.sh' 'controlWindow.py' 'responseBox.py'
+	'pychophone.py' 'pychophone.sh' 'dialogPhones.py')
 install=pkg.install
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 package() {
   cd "${srcdir}/"
@@ -16,9 +17,12 @@ package() {
   mkdir -p $pkgdir/usr/bin/
   install -Dm755 pychorun.sh $pkgdir/usr/bin/pychorun
   install -Dm755 pychotouch.py $pkgdir/usr/bin/pychotouch.py
+  install -Dm755 pychophone.sh $pkgdir/usr/bin/pychophone
+  install -Dm755 pychophone.py $pkgdir/usr/bin/pychophone.py
 
   export SITEPATH=$(python -c 'import site; print(site.getsitepackages())' | tr -d \[ | tr -d \] | tr -d \')
   mkdir -p $pkgdir/$SITEPATH/pychoacoustics/
   cp -f controlWindow.py $pkgdir/$SITEPATH/pychoacoustics/
+  cp -f dialogPhones.py $pkgdir/$SITEPATH/pychoacoustics/
   cp -f responseBox.py $pkgdir/$SITEPATH/pychoacoustics/
 }

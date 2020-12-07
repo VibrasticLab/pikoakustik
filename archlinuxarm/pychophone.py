@@ -19,16 +19,19 @@
 
 from __future__ import nested_scopes, generators, division, absolute_import, with_statement, print_function, unicode_literals
 
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication
-import argparse, fnmatch, numpy, os, random, signal, sys, time, traceback
+import os, sys, argparse, random, logging, signal, traceback, fnmatch, time
+import numpy
+
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QDialog, QVBoxLayout, QLabel, QPushButton, QScrollArea, QDialogButtonBox
+
 from pychoacoustics import global_parameters
-from pychoacoustics.controlWindow import*
+from pychoacoustics.dialogPhones import dialogPhones
 
 #allows to close the app with CTRL-C from the console
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-import logging
 local_dir = os.path.expanduser("~") +'/.local/share/data/pychoacoustics/'
 if os.path.exists(local_dir) == False:
     os.makedirs(local_dir)
@@ -36,8 +39,14 @@ stderrFile = os.path.expanduser("~") +'/.local/share/data/pychoacoustics/pychoac
 
 logging.basicConfig(filename=stderrFile,level=logging.DEBUG)
 
-#the except hook allows to see most startup errors in a window
-#rather than the console
+class PhoneTest(QMainWindow):
+    def __init__(self, parent=None, prm=None):
+        QMainWindow.__init__(self, parent)
+        self.prm = prm
+        dialog = dialogPhones(self)
+        if dialog.exec_():
+            dialog.permanentApply()
+
 def excepthook(except_type, except_val, tbck):
     """ Show errors in message box"""
     # recover traceback
@@ -148,30 +157,29 @@ def main(argv):
         prm['display'] = args.display
   
     prm = global_parameters.get_prefs(prm)
+    
     callArgs = sys.argv
     if 'display' in prm:
         callArgs = callArgs + ['-display', prm['display']]
     if 'graphicssystem' in prm:
         callArgs = callArgs + ['-graphicssystem', prm['graphicssystem']]
+    
     app = QApplication(callArgs)
-     
+    
     sys.excepthook = excepthook
-
-    #LOCALE LOADING
-    # qtTranslator is the translator for default qt component labels (OK, cancel button dialogs etc...)
-    locale = QtCore.QLocale().system().name() #returns a string such as en_US
+    
+    locale = QtCore.QLocale().system().name()
     qtTranslator = QtCore.QTranslator()
     if qtTranslator.load("qt_" + locale, ":/translations/"):
         app.installTranslator(qtTranslator)
-        
-    # appTranslator is the translator for labels created for the program
+
     appTranslator = QtCore.QTranslator()
     if appTranslator.load("pychoacoustics_" + locale, ":/translations/"):
         app.installTranslator(appTranslator)
     prm['currentLocale'] = QtCore.QLocale(locale)
     QtCore.QLocale.setDefault(prm['currentLocale'])
     prm['currentLocale'].setNumberOptions(prm['currentLocale'].OmitGroupSeparator | prm['currentLocale'].RejectGroupSeparator)
-    
+
     if prm['pref']['country'] != "System Settings":
         locale =  prm['pref']['language']  + '_' + prm['pref']['country']#returns a string such as en_US
         qtTranslator = QtCore.QTranslator()
@@ -190,13 +198,15 @@ def main(argv):
 
     prm['rbTrans'] = responseBoxTranslator
     prm['buttonTranslator'] = respButtTranslator
-
+         
     prm = global_parameters.set_global_parameters(prm)
     app.setWindowIcon(QtGui.QIcon("/usr/share/icons/Machovka_Headphones.svg"))
     app.setStyle("Fusion")
-    pychControlWin(parent=None, prm=prm)
-        
+    
+    pt = PhoneTest(parent=None, prm=prm)
+    pt.show
+
     sys.exit(app.exec_())
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main(sys.argv)
