@@ -44,8 +44,7 @@ class PhoneTest(QMainWindow):
         QMainWindow.__init__(self, parent)
         self.prm = prm
         dialog = dialogPhones(self)
-        if dialog.exec_():
-            dialog.permanentApply()
+        dialog.show()
 
 def excepthook(except_type, except_val, tbck):
     """ Show errors in message box"""

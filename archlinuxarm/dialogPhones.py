@@ -16,11 +16,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pychoacoustics.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+
 from numpy import unique
 
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QDialog, QDesktopWidget, QGridLayout, QVBoxLayout, QTableWidget, QAbstractItemView, QMessageBox
-from PyQt5.QtWidgets import QLabel, QLineEdit, QComboBox, QInputDialog, QPushButton,  QTableWidgetItem, QDialogButtonBox
+from PyQt5.QtWidgets import QLabel, QLineEdit, QComboBox, QInputDialog, QPushButton,  QTableWidgetItem
 from PyQt5.QtGui import QDoubleValidator, QIcon
 
 from .audio_manager import*
@@ -69,12 +71,12 @@ class dialogPhones(QDialog):
         self.setDefaultPhonesButton = QPushButton(self.tr("Set Default"), self)
         self.setDefaultPhonesButton.clicked.connect(self.onEditDefault)
         
-        self.v1Sizer.addWidget(self.renamePhonesButton)
-        self.v1Sizer.addWidget(self.changeLevelPhonesButton)
-        self.v1Sizer.addWidget(self.addPhonesButton)
-        self.v1Sizer.addWidget(self.removePhonesButton)
-        self.v1Sizer.addWidget(self.setDefaultPhonesButton)
-        self.v1Sizer.addStretch()
+#        self.v1Sizer.addWidget(self.renamePhonesButton)
+#        self.v1Sizer.addWidget(self.changeLevelPhonesButton)
+#        self.v1Sizer.addWidget(self.addPhonesButton)
+#        self.v1Sizer.addWidget(self.removePhonesButton)
+#        self.v1Sizer.addWidget(self.setDefaultPhonesButton)
+#        self.v1Sizer.addStretch()
         self.phonesList = {}
         
         for i in range(len(self.prm['phones']['phonesChoices'])):
@@ -145,22 +147,15 @@ class dialogPhones(QDialog):
         else:
             self.stopCalibButton.hide()
             
-        buttonBox = QDialogButtonBox(QDialogButtonBox.Apply|QDialogButtonBox.Ok|QDialogButtonBox.Cancel)
-        buttonBox.accepted.connect(self.accept)
-        buttonBox.rejected.connect(self.reject)
-        buttonBox.button(QDialogButtonBox.Apply).clicked.connect(self.permanentApply)
-
         self.sizer.addLayout(self.v1Sizer, 0, 0)
         self.v2Sizer.addLayout(self.calibSizer)
         self.v2Sizer.addStretch()
         self.sizer.addWidget(self.phonesTableWidget, 0, 1)
         self.sizer.addLayout(self.v2Sizer, 0, 2)
-        self.sizer.addWidget(buttonBox, 1,1,1,2)
         self.sizer.setColumnStretch(1,2)
         self.setLayout(self.sizer)
         
         self.setWindowTitle(self.tr("Testing Phones"))
-        self.show()
 
     def onCellDoubleClicked(self, row, col):
         if col == 0:
@@ -301,18 +296,4 @@ class dialogPhones(QDialog):
             #self.playThread.__del__()
             self.playThread.terminate()
         event.accept()
-        
-    def permanentApply(self):
-        QMessageBox.warning(self, self.tr('Nothing'), self.tr('Nothing to Apply Now'))
-        
-    def accept(self): #reimplement accept (i.e. ok button)
-        if self.isPlaying == True:
-            #self.playThread.__del__()
-            self.playThread.terminate()
-        QDialog.accept(self)
-        
-    def reject(self): #reimplement reject
-        if self.isPlaying == True:
-            #self.playThread.__del__()
-            self.playThread.terminate()
-        QDialog.reject(self)
+        sys.exit()
