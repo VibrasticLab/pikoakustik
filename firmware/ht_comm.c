@@ -282,11 +282,19 @@ static void cmd_toneout(BaseSequentialStream *chp, int argc, char *argv[]) {
             break;
     }
 
+#if USER_METRI_16KHZ
+    if(in_freq>=250 && in_freq<=16000){
+#else
     if(in_freq>=250 && in_freq<=8000){
-        vfreq = (double) in_freq/400;
+#endif
+        vfreq = (double) in_freq/400; // Known array length as default frequency
     }
     else{
+#if USER_METRI_16KHZ
+        chprintf(chp,"frequency only between 250 and 16000\r\n");
+#else
         chprintf(chp,"frequency only between 250 and 8000\r\n");
+#endif
         return;
     }
 

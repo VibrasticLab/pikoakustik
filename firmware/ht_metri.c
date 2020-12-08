@@ -92,7 +92,11 @@ static uint8_t channel_stt=OUT_LEFT;
 #if USER_METRI_1FREQ
 static double freq_test[] = {1.25};
 #else
+ #if USER_METRI_16KHZ
+static double freq_test[] = {0.625,1.25,2.5,5,10,20,40};
+ #else
 static double freq_test[] = {0.625,1.25,2.5,5,10,20};
+ #endif
 #endif
 
 /**
