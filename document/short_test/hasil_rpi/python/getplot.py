@@ -4,7 +4,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-fileName = '../../hasil/bose/1000/0.0039.csv'
+fileName = '../../hasil_rpi/bose/1000/90.csv'
 fileRead = open(fileName,'rt')
 fileBuff = fileRead.readlines()
 fileLen  = len(fileBuff)
