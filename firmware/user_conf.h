@@ -26,13 +26,14 @@
 #ifndef USER_CONF_H
 #define USER_CONF_H
 
+#define USER_BAUD           9600
+
 #define USER_TEST_STATE     TRUE
  #define USER_TEST_RNG      FALSE
  #define USER_TEST_THD      FALSE
 
 #define USER_SERIAL         TRUE
- #define USER_SERMSG_USB    TRUE
- #define USER_SERCONSOLE    TRUE
+ #define USER_SERCONSOLE    FALSE
  #define USER_USB_DESC      TRUE
 
 #define USER_MMC            TRUE

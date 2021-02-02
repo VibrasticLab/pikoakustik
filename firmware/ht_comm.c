@@ -700,13 +700,9 @@ void ht_commUSB_shInit(void){
 }
 
 void ht_comm_Msg(char *string){
-#if USER_SERMSG_USB
     if(SDU1.config->usbp->state == USB_ACTIVE){
         chprintf((BaseSequentialStream *)&SDU1,string);
     }
-#else
-    chprintf((BaseSequentialStream *)&SD1,string);
-#endif
 }
 
 void ht_comm_IoT(char *string){

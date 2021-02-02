@@ -173,7 +173,8 @@ ASMSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
 INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
          $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
          $(FATFSINC) $(CHIBIOS)/os/various \
-         $(CHIBIOS)/os/hal/lib/streams
+         $(CHIBIOS)/os/hal/lib/streams \
+	 /usr/arm-none-eabi/include
 
 #
 # Project, sources and paths
