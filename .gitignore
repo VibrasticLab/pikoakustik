@@ -6,4 +6,4 @@
 /esp8266/esp8266dev.creator.user
 /esp8266/build
 /esp8266/.dep
-
+/firmware/compile_commands.json
