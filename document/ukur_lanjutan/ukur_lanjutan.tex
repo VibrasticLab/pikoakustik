@@ -197,10 +197,6 @@
 		Sebagai salah satu poin penting dalam pengembangan prototype adalah konsistensi unit.
 		Ketidak-konsistensi yang dapat timbul antara lain disebabkan oleh daya baterai yang turun sepanjang waktu
 		atau pemasangan headphone.
-		
-		\item \textbf{Frekuensi 16kHz}.\\
-		Pada unit prototype telah tersedia output nada murni pada frekuensi 16kHz.
-		Frekuensi perlu diukur pula sebagai ambang tertinggi frekuensi audible yang dapat di-\textit{generate} oleh unit.
 	\end{enumerate}
 
 	\newpage
@@ -501,7 +497,7 @@ out <frekuensi> <amplitudo>
 		\end{minted}
 		dengan:
 		\begin{itemize}
-			\item frekuensi adalah nilai frekuensi (dalam Hz) antara 250 sampai 16000.
+			\item frekuensi adalah nilai frekuensi (dalam Hz) antara 250 sampai 8000.
 			\item amplitudo adalah skala amplitudo antara 1 sampai 9
 		\end{itemize}
 		Contoh untuk tone 500Hz pada skala amplitudo 6 (diakhiri (\keys{\return})):
@@ -573,12 +569,11 @@ ch>
 			\hline
 			8000Hz & X dB & X dB & X dB & X dB & X dB & X dB & X dB & X dB & X dB\\
 			\hline
-			16000Hz & X dB & X dB & X dB & X dB & X dB & X dB & X dB & X dB & X dB\\
-			\hline
 		\end{tabular}
 	\end{center}
 	
-	Tabel dalam format Excel 2003 (xls) dapat didownload di \url{https://intip.in/UjiAudiometri}
+	Tabel dalam format Excel 2003 (xls) dapat didownload di \url{https://intip.in/UjiAudiometri}.
+	Untuk saat ini abaikan frekuensi 16kHz.
 	
 	\subsubsection{Perintah Serial}
 	
@@ -589,7 +584,7 @@ out <frekuensi> <amplitudo>
 	\end{minted}
 	dengan:
 	\begin{itemize}
-		\item frekuensi adalah nilai frekuensi (dalam Hz) mulai 250, 500, 1000, 2000, 4000, 8000, dan 16000.
+		\item frekuensi adalah nilai frekuensi (dalam Hz) mulai 250, 500, 1000, 2000, 4000, dan 8000.
 		\item amplitudo adalah skala amplitudo pada nilai 1, 2, 3, 4, 5, 6, 7, 8, dan 9.
 	\end{itemize}
 	

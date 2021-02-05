@@ -50,7 +50,7 @@
 
 #define USER_METRI          TRUE
  #define USER_METRI_RECORD  FALSE
- #define USER_METRI_1FREQ   TRUE
+ #define USER_METRI_1FREQ   FALSE
  #define USER_METRI_16KHZ   TRUE
 
 #endif // USER_CONF_H
