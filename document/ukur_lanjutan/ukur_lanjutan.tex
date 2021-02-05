@@ -195,8 +195,13 @@
 		
 		\item \textbf{Konsistensi}.\\
 		Sebagai salah satu poin penting dalam pengembangan prototype adalah konsistensi unit.
-		Ketidak-konsistensi yang dapat timbul antara lain disebabkan oleh daya baterai yang turun sepanjang waktu
-		atau pemasangan headphone.
+		Ketidak-konsistensi yang dapat timbul antara lain:
+		\begin{itemize}
+			\item Pemasangan Headphone yang berubah.
+			\item Daya baterai yang berubah sehingga suplay arus berubah.
+			\item Efek histeresis akibat induktor filter output atau impedansi headphone.
+		\end{itemize}
+		
 	\end{enumerate}
 
 	\newpage
@@ -631,4 +636,43 @@ out 1000 6
 		
 		\item Pengujian dapat dilanjutkan pada kombinasi frekuensi dan skala amplitudo lainnya.
 	\end{enumerate}
+
+	\newpage
+	\subsubsection{Uji Konsistensi: Histeresis}
+	
+	Untuk uji histeresis, pada dasarnya adalah mengulang pengujian dengan membalik urutan skala output.
+	Sebagai contoh:
+	\begin{itemize}
+		\item Pengujian telah dilakukan dengan skala output naik mulai dari 1 hingga 9 di setiap frekuensi.
+		\item Pengujian selanjutanya dilakukan skala output turun mulai dari 9 hingga 1 di setiap frekuensi.
+	\end{itemize}
+	
+	Dengan kedua proses di hari atau jam yang sama, maka disini diasumsikan daya baterai belum berubah signifikan.
+	
+	\subsubsection{Uji Konsistensi: Daya Baterai}
+	
+	Untuk uji baterai, maka dilakukan pengulangan uji seperti sebelumnya namun dengan hari yang berbeda.
+	Selama unit tidak di-recharge, maka dengan memperhatikan:
+	\begin{itemize}
+		\item arus kerja chip STM32F401RE
+		\item arus kerja chip MAX98357A
+		\item arus kerja regulator TP0645
+	\end{itemize}
+	maka dapat diasumsikan bahwa daya baterai telah berkurang saat pengujian dibandingkan 1x24 jam sebelumnya.
+	Selanjutnya dapat dilakukan pengujian ulang sebagaimana panduan sebelumnya.
+	
+	\subsubsection{Jumlah Hasil}
+	Jumlah hasil tabel yang diharapkan dengan memperhatikan
+	\begin{itemize}
+		\item Headphone 2 unit (Bose dan Miniso)
+		\item Unit prototype 2 unit (telah diberi Label A dan B)
+		\item Pengujian histeris 2 kali (skala amplitudo naik dan turun)
+		\item Pengujian 2 kali dengan perbedaan daya baterai (selisih setidaknya 1 hari)
+	\end{itemize}
+	
+	maka diharapkan akan ada 16 tabel hasil di akhir pengujian.
+	
+	\vspace{30pt}\centering \textbf{--- Selesai ---}
+	
+	
 \end{document}
