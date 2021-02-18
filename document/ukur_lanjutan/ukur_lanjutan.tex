@@ -184,25 +184,15 @@
 	\end{figure}
 
 	\newpage
-	\subsection{Belum Terukur}
-	
-	Berikut adalah poin yang belum terukur sehingga diperlukan pengukuran lanjut:
-	\begin{enumerate}
-		\item \textbf{Background}.\\
-		Untuk mendapatkan hasil ukur yang dipercaya, maka perlu diukur kondisi lingkungan pengukuran.
-		Dalam hal ini adalah pengukuran bising ruang pengukuran.
-		Hasil ukur bising ini akan jadi acuan pembanding hasil ukur akhir pada nantinya.
-		
-		\item \textbf{Konsistensi}.\\
-		Sebagai salah satu poin penting dalam pengembangan prototype adalah konsistensi unit.
-		Ketidak-konsistensi yang dapat timbul antara lain:
-		\begin{itemize}
-			\item Pemasangan Headphone yang berubah.
-			\item Daya baterai yang berubah sehingga suplay arus berubah.
-			\item Efek histeresis akibat induktor filter output atau impedansi headphone.
-		\end{itemize}
-		
-	\end{enumerate}
+	\subsection{Pengukuran Lanjutan}
+	Sebagai salah satu poin penting dalam pengembangan prototype adalah konsistensi unit.
+	Pengukuran lanjutan ini dimaksudkan untuk menguji konsistensi prototype saat menghasilkan nada murni:
+	Ketidak-konsistensi yang dapat timbul antara lain:
+	\begin{itemize}
+		\item Pemasangan Headphone yang berubah.
+		\item Daya baterai yang berubah sehingga suplay arus berubah.
+		\item Efek histeresis pada komponen semisal induktor filter output atau impedansi headphone.
+	\end{itemize}
 
 	\newpage
 	\section{Pengecekan}
@@ -229,7 +219,7 @@
 	\section{Panduan}
 	
 	Berikut adalah panduan ringkas pengukuran.
-	Panduan sama dengan dokumen panduan sebelumnya namun tanpa \textit{charging} dan beberapa tambahan terkait poin yang belum terukur.
+	Panduan ini pada dasarnya sama dengan dokumen panduan sebelumnya namun tanpa \textit{charging} dan beberapa tambahan terkait pengukuran lanjutan.
 	
 	\subsection{Persiapan}
 	
@@ -464,7 +454,7 @@
 		\item Klik \textbf{Open} pada Hercules terminal
 		\item Masukkan perintah berikut:
 		\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
-		out 500 5
+out 500 5
 		\end{minted}
 		\item Setelah tekan (\keys{\return}), maka pada salah satu headphone
 		akan membangkitkan tone selama kurang lebih 5detik.
@@ -544,12 +534,6 @@ ch>
 	\newpage
 	\subsection{Pengujian}
 	
-	\subsubsection{Background}
-	
-	Sebelum melakukan sesi pengukuran, maka diperlukan mengambil profil bising ruangan.
-	Dalam pengukuran ini, headphone telah terpasang pada KEMAR namun unit prototype dalam kondisi tidak menyala.
-	Hasil pengukuran ini akan digunakan sebagai acuan pembanding hasil pengukuran.
-	
 	\subsubsection{Hasil}
 	
 	Hasil yang diharapkan adalah tabel SPL (dB) untuk setiap matrik frekuensi dan skala amplitudo.
@@ -578,7 +562,6 @@ ch>
 	\end{center}
 	
 	Tabel dalam format Excel 2003 (xls) dapat didownload di \url{https://intip.in/UjiAudiometri}.
-	Untuk saat ini abaikan frekuensi 16kHz.
 	
 	\subsubsection{Perintah Serial}
 	
@@ -597,10 +580,9 @@ out <frekuensi> <amplitudo>
 	\subsubsection{Contoh Prosedur}
 	
 	Berikut adalah contoh prosedur untuk satu nilai uji pada satu frekuensi dan satu skala amplitudo.
-	Sebagai contoh adalah frekuensi 1000Hz pada skala amplitudo 6.
+	Sebagai contoh disini pada frekuensi 1000Hz pada skala amplitudo 6.
 	Sebelum pengujian, kembali cek ulang persiapan meliputi:
 	\begin{itemize}
-		\item Lakukan Pengukuran bising ruangan sebagai acuan pembanding.
 		\item Nyalakan unit prototype. Pastikan LED biru menyala dan berkedip.
 		\item Unit prototype telah standby dan terhubung laptop via USB.
 		\item Serial terminal telah bisa mengirim perintah dan mendapat respon.
@@ -647,8 +629,6 @@ out 1000 6
 		\item Pengujian selanjutanya dilakukan skala output turun mulai dari 9 hingga 1 di setiap frekuensi.
 	\end{itemize}
 	
-	Dengan kedua proses di hari atau jam yang sama, maka disini diasumsikan daya baterai belum berubah signifikan.
-	
 	\subsubsection{Uji Konsistensi: Daya Baterai}
 	
 	Untuk uji baterai, maka dilakukan pengulangan uji seperti sebelumnya namun dengan hari yang berbeda.
@@ -658,7 +638,7 @@ out 1000 6
 		\item arus kerja chip MAX98357A
 		\item arus kerja regulator TP0645
 	\end{itemize}
-	maka dapat diasumsikan bahwa daya baterai telah berkurang saat pengujian dibandingkan 1x24 jam sebelumnya.
+	maka dapat diasumsikan bahwa daya baterai telah berkurang saat pengujian dibandingkan hari sebelumnya.
 	Selanjutnya dapat dilakukan pengujian ulang sebagaimana panduan sebelumnya.
 	
 	\subsubsection{Jumlah Hasil}
@@ -666,11 +646,16 @@ out 1000 6
 	\begin{itemize}
 		\item Headphone 2 unit (Bose dan Miniso)
 		\item Unit prototype 2 unit (telah diberi Label A dan B)
-		\item Pengujian histeris 2 kali (skala amplitudo naik dan turun)
-		\item Pengujian 2 kali dengan perbedaan daya baterai (selisih setidaknya 1 hari)
+		\item Pengujian histeris 6 kali, dengan rincian:
+		\begin{itemize}
+			\item skala yang semakin naik sebanyak 3 kali
+			\item skala yang semakin turun sebanyak 3 kali
+			\item naik dan turun dilakukan bergantian
+		\end{itemize}
+		\item Semua di atas pengujian 3 kali dengan perbedaan daya baterai (diukur pada hari yang berbeda)
 	\end{itemize}
 	
-	maka diharapkan akan ada 16 tabel hasil di akhir pengujian.
+	maka diharapkan akan ada 72 tabel hasil di akhir pengujian.
 	
 	\vspace{30pt}\centering \textbf{--- Selesai ---}
 	
