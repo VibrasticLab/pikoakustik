@@ -5,15 +5,15 @@ import 'package:usb_serial/usb_serial.dart';
 import 'package:usb_serial/transaction.dart';
 
 void main() {
-  runApp(myApp());
+  runApp(MyApp());
 }
 
-class myApp extends StatefulWidget {
+class MyApp extends StatefulWidget {
   @override
-  _myAppState createState() => _myAppState();
+  _MyAppState createState() => _MyAppState();
 }
 
-class _myAppState extends State<myApp> {
+class _MyAppState extends State<MyApp> {
   UsbPort _port;
   String _status = "Idle";
   List<Widget> _ports = [];
