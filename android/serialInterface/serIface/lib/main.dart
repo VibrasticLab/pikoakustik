@@ -110,6 +110,17 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void _sendText(String strReq) async {
+    if (_port == null) {
+      return;
+    }
+
+    String strData = strReq + "\r\n";
+    await _port.write(Uint8List.fromList(strData.codeUnits));
+
+    _textController.text = "";
+  }
+
   @override
   void initState() {
     super.initState();
@@ -155,14 +166,34 @@ class _MyAppState extends State<MyApp> {
                   child: Text("Send"),
                   onPressed: _port == null
                       ? null
-                      : () async {
-                          if (_port == null) {
-                            return;
-                          }
-
-                          String data = _textController.text + "\r\n";
-                          await _port.write(Uint8List.fromList(data.codeUnits));
-                          _textController.text = "";
+                      : () {
+                          _sendText(_textController.text);
+                        },
+                ),
+              ),
+              ListTile(
+                leading: RaisedButton(
+                  child: Text("Info"),
+                  onPressed: _port == null
+                      ? null
+                      : () {
+                          _sendText("info");
+                        },
+                ),
+                title: RaisedButton(
+                  child: Text("Threads"),
+                  onPressed: _port == null
+                      ? null
+                      : () {
+                          _sendText("chthds");
+                        },
+                ),
+                trailing: RaisedButton(
+                  child: Text("Benchmark"),
+                  onPressed: _port == null
+                      ? null
+                      : () {
+                          _sendText("chbenc");
                         },
                 ),
               ),
