@@ -542,7 +542,7 @@ static void cmd_chthds(BaseSequentialStream *chp, int argc, char *argv[]) {
 
   (void)argv;
   if (argc > 0) {
-    chprintf(chp, "Usage: threads\r\n");
+    chprintf(chp, "Usage: chthds\r\n");
     return;
   }
   chprintf(chp, "    addr    stack prio refs     state time\r\n");
@@ -567,7 +567,7 @@ static void cmd_chbench(BaseSequentialStream *chp, int argc, char *argv[]) {
 
   (void)argv;
   if (argc > 0) {
-    chprintf(chp, "Usage: test\r\n");
+    chprintf(chp, "Usage: chbenc\r\n");
     return;
   }
   tp = chThdCreateFromHeap(NULL, TEST_WA_SIZE, chThdGetPriorityX(),
