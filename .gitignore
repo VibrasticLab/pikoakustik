@@ -9,3 +9,6 @@
 /firmware/compile_commands.json
 *__pycache__
 *-checkpoint.ipynb
+/circuit/test_3rev1/fp-info-cache
+/firmware/akustik.cflags
+/firmware/akustik.cxxflags
