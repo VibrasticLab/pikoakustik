@@ -65,6 +65,11 @@
 #define led_resultNO() palClearPad(GPIOA,LED_FALSE)
 
 /**
+ * @brief LED Test delay in milliseconds
+ */
+#define LED_TEST    200
+
+/**
  * @brief Turn LED answer off
  */
 void led_answer_off(void);
@@ -78,6 +83,11 @@ void led_result_off(void);
  * @brief LED indicator initialization
  */
 void ht_led_Init(void);
+
+/**
+ * @brief LED indicator test function
+ */
+void ht_led_Test(void);
 
 #endif // HT_LED_H
 /** @} */

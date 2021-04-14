@@ -56,4 +56,27 @@ void ht_led_Init(void){
     led_answer_off();
     led_result_off();
 }
+
+void ht_led_Test(void){
+
+    palClearPad(GPIOA,LED_TRUE);
+    chThdSleepMilliseconds(LED_TEST);
+    led_result_off();
+
+    palClearPad(GPIOA,LED_FALSE);
+    chThdSleepMilliseconds(LED_TEST);
+    led_result_off();
+
+    palClearPad(GPIOB,LED_ANSC);
+    chThdSleepMilliseconds(LED_TEST);
+    led_answer_off();
+
+    palClearPad(GPIOB,LED_ANSB);
+    chThdSleepMilliseconds(LED_TEST);
+    led_answer_off();
+
+    palClearPad(GPIOA,LED_ANSA);
+    chThdSleepMilliseconds(LED_TEST);
+    led_answer_off();
+}
 /** @} */

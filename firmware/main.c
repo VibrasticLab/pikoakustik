@@ -142,6 +142,7 @@ int main(void){
 
 #if USER_LED_BUTTON
     ht_led_Init();
+    ht_led_Test();
     ht_exti_Init();
 #endif
 
