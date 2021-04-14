@@ -28,9 +28,9 @@
 
 #define USER_BAUD           9600
 
-#define USER_TEST_STATE     TRUE
+#define USER_TEST_STATE     FALSE
  #define USER_TEST_RNG      FALSE
- #define USER_TEST_THD      TRUE
+ #define USER_TEST_THD      FALSE
 
 #define USER_SERIAL         TRUE
  #define USER_SERCONSOLE    FALSE
@@ -49,9 +49,10 @@
 #define USER_LED_BUTTON     TRUE
 
 #define USER_METRI          TRUE
- #define USER_METRI_RECORD  FALSE
- #define USER_METRI_1FREQ   FALSE
- #define USER_METRI_16KHZ   TRUE
+ #define USER_METRI_RECORD  TRUE
+ #define USER_METRI_ALLFREQ FALSE
+ #define USER_METRI_2EARS   FALSE
+ #define USER_METRI_16KHZ   FALSE
 
 #endif // USER_CONF_H
 /** @} */

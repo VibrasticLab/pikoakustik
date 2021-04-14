@@ -58,6 +58,9 @@ void ht_led_Init(void){
 }
 
 void ht_led_Test(void){
+    led_answer_off();
+    led_result_off();
+    chThdSleepMilliseconds(LED_TEST);
 
     palClearPad(GPIOA,LED_TRUE);
     chThdSleepMilliseconds(LED_TEST);

@@ -67,7 +67,7 @@
 /**
  * @brief LED Test delay in milliseconds
  */
-#define LED_TEST    200
+#define LED_TEST    500
 
 /**
  * @brief Turn LED answer off

@@ -89,14 +89,14 @@ static uint8_t channel_stt=OUT_LEFT;
  * @details Last Calibrated: 1.25 = 500 Hz
  * @details Requirement: 250,500,1000,2000,4000,8000
  */
-#if USER_METRI_1FREQ
-static double freq_test[] = {1.25};
-#else
+#if USER_METRI_ALLFREQ
  #if USER_METRI_16KHZ
 static double freq_test[] = {0.625,1.25,2.5,5,10,20,40};
  #else
 static double freq_test[] = {0.625,1.25,2.5,5,10,20};
  #endif
+#else
+static double freq_test[] = {1.25};
 #endif
 
 /**
