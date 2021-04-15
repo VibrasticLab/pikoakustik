@@ -268,7 +268,7 @@ static const EXTConfig extcfg = {
 };
 
 #if USER_TEST_STATE
-static THD_WORKING_AREA(waAudioTest, 1024);
+static THD_WORKING_AREA(waAudioTest, 512);
 #define ThdFunc_AudioTest THD_FUNCTION
 
 /**

@@ -28,7 +28,7 @@
 
 #define USER_BAUD           9600    /* Default Baudrate */
 
-#define USER_TEST_STATE     FALSE   /* Whether run as test or metri mode */
+#define USER_TEST_STATE     TRUE   /* Whether run as test or metri mode */
  #define USER_TEST_RNG      FALSE   /* Whether run test for RNG */
  #define USER_TEST_THD      FALSE   /* Whether enable thread test or not */
 
