@@ -26,33 +26,33 @@
 #ifndef USER_CONF_H
 #define USER_CONF_H
 
-#define USER_BAUD           9600
+#define USER_BAUD           9600    /* Default Baudrate */
 
-#define USER_TEST_STATE     FALSE
- #define USER_TEST_RNG      FALSE
- #define USER_TEST_THD      FALSE
+#define USER_TEST_STATE     FALSE   /* Whether run as test or metri mode */
+ #define USER_TEST_RNG      FALSE   /* Whether run test for RNG */
+ #define USER_TEST_THD      FALSE   /* Whether enable thread test or not */
 
-#define USER_SERIAL         TRUE
- #define USER_SERCONSOLE    FALSE
- #define USER_USB_DESC      TRUE
+#define USER_SERIAL         TRUE   /* Whether enable serial interface or not */
+ #define USER_SERCONSOLE    FALSE   /* Whether user serial echo and prompt */
+ #define USER_USB_DESC      TRUE   /* Whether use custom USB description or not */
 
-#define USER_MMC            TRUE
- #define USER_MMC_JSON      TRUE
+#define USER_MMC            TRUE   /* Whether use memory card or not */
+ #define USER_MMC_JSON      TRUE   /* Whether use JSON format or not */
 
-#define USER_IOT            TRUE
- #define USER_IOTSEND_ONLY  TRUE
- #define USER_IOT_MQTTLOG   TRUE
+#define USER_IOT            FALSE   /* Whether use IOT module or not */
+ #define USER_IOTSEND_ONLY  TRUE   /* Whether use IOT in one or two direction */
+ #define USER_IOT_MQTTLOG   TRUE   /* Whether use MQTT Logging */
 
-#define USER_AUDIO          TRUE
- #define USER_AUDIO_STARTUP TRUE
+#define USER_AUDIO          TRUE   /* Whether use Audio module or not */
+ #define USER_AUDIO_STARTUP TRUE   /* Whether use Audio test at startup */
 
-#define USER_LED_BUTTON     TRUE
+#define USER_LED_BUTTON     TRUE   /* Whether use LED and Button modules */
 
-#define USER_METRI          TRUE
- #define USER_METRI_RECORD  TRUE
- #define USER_METRI_ALLFREQ FALSE
- #define USER_METRI_2EARS   FALSE
- #define USER_METRI_16KHZ   FALSE
+#define USER_METRI          TRUE   /* Whether use Audiometri routine or not */
+ #define USER_METRI_RECORD  TRUE   /* Whether record Audiometri session */
+ #define USER_METRI_ALLFREQ FALSE   /* Whether Audiometri in all frequency or selection */
+ #define USER_METRI_2EARS   FALSE   /* Whether Audiometri in Left only or also Right */
+ #define USER_METRI_16KHZ   FALSE   /* Whether Audiometri use 16kHz or not */
 
 #endif // USER_CONF_H
 /** @} */
