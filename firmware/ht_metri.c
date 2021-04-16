@@ -278,17 +278,28 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     ampl_test = FIRSTTEST_DB;
                     test_count = 0;
 
-                    if(freq_idx == freq_max){
-
-#if defined(USER_METRI_RECORD) && defined(USER_MMC)
-                        ht_mmcMetri_endResult();
-#endif
-                        ht_comm_Msg("Testing Finish\r\n");
-                        mode_status = STT_IDLE;
-                        mode_led = LED_READY;
+                    if(freq_idx != freq_max){
+                        ht_comm_Msg("Continue next Frequency\r\n");
                     }
                     else{
-                        ht_comm_Msg("Continue next Frequency\r\n");
+#if USER_METRI_2EARS
+                        if(channel_stt!=OUT_RIGHT){
+                            channel_stt = OUT_RIGHT;
+                            freq_idx = 0;
+                            ht_comm_Msg("Continue next Channel\r\n");
+                        }
+                        else{
+#endif
+  #if defined(USER_METRI_RECORD) && defined(USER_MMC)
+                            ht_mmcMetri_endResult();
+  #endif
+                            ht_comm_Msg("Testing Finish\r\n");
+                            mode_status = STT_IDLE;
+                            mode_led = LED_READY;
+                            channel_stt = OUT_LEFT;
+#if USER_METRI_2EARS
+                        }
+#endif
                     }
                 }
             }

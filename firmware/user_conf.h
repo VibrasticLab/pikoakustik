@@ -49,8 +49,8 @@
 
 #define USER_METRI          TRUE   /* Whether use Audiometri routine or not */
  #define USER_METRI_RECORD  TRUE   /* Whether record Audiometri session */
+ #define USER_METRI_2EARS   TRUE   /* Whether Audiometri in Left only or also Right */
  #define USER_METRI_ALLFREQ FALSE   /* Whether Audiometri in all frequency or selection */
- #define USER_METRI_2EARS   FALSE   /* Whether Audiometri in Left only or also Right */
  #define USER_METRI_16KHZ   FALSE   /* Whether Audiometri use 16kHz or not */
 
 #endif // USER_CONF_H

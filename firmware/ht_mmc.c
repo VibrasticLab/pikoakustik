@@ -609,10 +609,6 @@ void ht_mmcMetri_chkFile(void){
 
 void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t result){
 
-#if USER_MMC_JSON
-    (void) lr_ch;
-#endif
-
     char buffer[STR_BUFF_SIZE];
     char fname[STR_BUFF_SIZE];
     FATFS FatFs;
@@ -628,10 +624,10 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t re
 
 #if USER_MMC_JSON
         if(result==1){
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"freq\":%6.4f,\"scale\":%6.4f,\"val\":true},\n",freq,ample);
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"scale\":%6.4f,\"val\":true},\n",lr_ch, freq, ample);
         }
         else{
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"freq\":%6.4f,\"scale\":%6.4f,\"val\":false},\n",freq,ample);
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"scale\":%6.4f,\"val\":false},\n",lr_ch, freq, ample);
         }
 #else
         ht_comm_Buff(buffer,sizeof(buffer),"%6.4f, %6.4f, %1i, %1i\n",freq,ample,lr_ch,result);
