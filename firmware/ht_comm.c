@@ -37,8 +37,6 @@
 #include "ht_audio.h"
 #include "ht_mmc.h"
 
-#include "test.h"
-
 /* USB-CDC pointer object */
 extern SerialUSBDriver SDU1;
 extern const USBConfig usbcfg;
@@ -556,36 +554,6 @@ static void cmd_chthds(BaseSequentialStream *chp, int argc, char *argv[]) {
   } while (tp != NULL);
 }
 
-
-/**
- * @brief Benchmark check function
- * @details Enumerated and not called directly by any normal thread
- */
-static void cmd_chbench(BaseSequentialStream *chp, int argc, char *argv[]) {
-#if USER_TEST_THD
-  thread_t *tp;
-
-  (void)argv;
-  if (argc > 0) {
-    chprintf(chp, "Usage: chbenc\r\n");
-    return;
-  }
-  tp = chThdCreateFromHeap(NULL, TEST_WA_SIZE, chThdGetPriorityX(),
-                           TestThread, chp);
-  if (tp == NULL) {
-    chprintf(chp, "out of memory\r\n");
-    return;
-  }
-  chThdWait(tp);
-#else
-  (void) argc;
-  (void) argv;
-
-  chprintf(chp, "Benchmark function disabled\r\n");
-#endif
-}
-
-
 /*******************************************/
 
 /**
@@ -618,7 +586,6 @@ static const ShellCommand commands[] = {
 #endif
     {"chmem",cmd_chmem},
     {"chthds",cmd_chthds},
-    {"chbenc",cmd_chbench},
     {NULL, NULL}
 };
 

@@ -49,11 +49,6 @@
 #define SHELL_WA_SIZE   THD_WORKING_AREA_SIZE(2048)
 
 /**
- * @brief Benchmark working area size
- */
-#define TEST_WA_SIZE    THD_WORKING_AREA_SIZE(256)
-
-/**
  * @brief   Shell maximum input line length.
  */
 #if !defined(SHELL_MAX_LINE_LENGTH) || defined(__DOXYGEN__)
