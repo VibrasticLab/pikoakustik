@@ -91,9 +91,9 @@ static uint8_t channel_stt=OUT_LEFT;
  */
 #if USER_METRI_ALLFREQ
  #if USER_METRI_16KHZ
-static double freq_test[] = {0.625,1.25,2.5,5,10,20,40};
+static double freq_test[] = {0.625, 1.25, 2.5, 5, 10, 20, 40};
  #else
-static double freq_test[] = {0.625,1.25,2.5,5,10,20};
+static double freq_test[] = {0.625, 1.25, 2.5, 5, 10, 20};
  #endif
 #else
 static double freq_test[] = {1.25};
@@ -128,8 +128,8 @@ static THD_WORKING_AREA(waRunMetri, 4096);
 #define ThdFunc_RunMetri THD_FUNCTION
 
 /**
- * @brief Thread for System Running Indicator
- * @details Smallest Thread to check either system in Run or Freeze
+ * @brief Thread for Audiometri process
+ * @details Main thread that run Audiometri process
  */
 static ThdFunc_RunMetri(thdRunMetri, arg) {
     (void)arg;
@@ -138,7 +138,9 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
     uint8_t freq_max = sizeof(freq_test)/sizeof(freq_test[0]);
     char strbuff[IFACE_BUFF_SIZE];
+#if USER_IOT_MQTTLOG
     char strlog[IFACE_BUFF_SIZE];
+#endif
 
     srand(3);
     chRegSetThreadName("run led");
@@ -219,13 +221,16 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     led_result_off();
                     led_resultYES();
                     test_answer = 1;
-                    ht_comm_Msg("Answer is True\r\n");
+                    ht_comm_Msg("Answer is True. ");
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
                     ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,channel_stt,1);
+                    ht_comm_Msg("Saved\r\n");
+#else
+                    ht_comm_Msg("UnSaved\r\n");
 #endif
 
-#if defined(USER_IOT_MQTTLOG)
+#if USER_IOT_MQTTLOG
                     ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f TRUE\r\n",freq_test[freq_idx],ampl_test);
                     ht_comm_IoT(strlog);
 #endif
@@ -234,13 +239,16 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     led_result_off();
                     led_resultNO();
                     test_answer = 0;
-                    ht_comm_Msg("Answer is False\r\n");
+                    ht_comm_Msg("Answer is False. ");
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
                     ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,channel_stt,0);
+                    ht_comm_Msg("Saved\r\n");
+#else
+                    ht_comm_Msg("UnSaved\r\n");
 #endif
 
-#if defined(USER_IOT_MQTTLOG)
+#if USER_IOT_MQTTLOG
                     ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f FALSE\r\n",freq_test[freq_idx],ampl_test);
                     ht_comm_IoT(strlog);
 #endif
@@ -248,7 +256,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
                 numask = 0;
                 numresp = 0;
-                chThdSleepMilliseconds(1000);
+                chThdSleepMilliseconds(500);
 
                 led_answer_off();
                 led_result_off();
@@ -261,8 +269,11 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 else{
                     ampl_test = ampl_test * 2;
                 }
+                ht_comm_Msg("Next Amplitude Scale\r\n");
+
 
                 if(ampl_test <= SMALLEST_DB || test_count==TEST_MAX_COUNT){
+                    ht_comm_Msg("A Frequency Finish\r\n");
                     freq_idx++;
                     ampl_test = FIRSTTEST_DB;
                     test_count = 0;

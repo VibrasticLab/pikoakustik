@@ -28,9 +28,8 @@
 
 #define USER_BAUD           9600    /* Default Baudrate */
 
-#define USER_TEST_STATE     TRUE   /* Whether run as test or metri mode */
+#define USER_TEST_STATE     FALSE   /* Whether run as test or metri mode */
  #define USER_TEST_RNG      FALSE   /* Whether run test for RNG */
- #define USER_TEST_THD      FALSE   /* Whether enable thread test or not */
 
 #define USER_SERIAL         TRUE   /* Whether enable serial interface or not */
  #define USER_SERCONSOLE    FALSE   /* Whether user serial echo and prompt */
@@ -40,8 +39,8 @@
  #define USER_MMC_JSON      TRUE   /* Whether use JSON format or not */
 
 #define USER_IOT            FALSE   /* Whether use IOT module or not */
- #define USER_IOTSEND_ONLY  TRUE   /* Whether use IOT in one or two direction */
- #define USER_IOT_MQTTLOG   TRUE   /* Whether use MQTT Logging */
+ #define USER_IOTSEND_ONLY  FALSE   /* Whether use IOT in one or two direction */
+ #define USER_IOT_MQTTLOG   FALSE   /* Whether use MQTT Logging */
 
 #define USER_AUDIO          TRUE   /* Whether use Audio module or not */
  #define USER_AUDIO_STARTUP TRUE   /* Whether use Audio test at startup */
