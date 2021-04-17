@@ -50,7 +50,7 @@
 /**
  * @brief Maximum number for each frequency test
  */
-#define TEST_MAX_COUNT   15
+#define TEST_MAX_COUNT   12
 
 /**
  * @brief Random number to choose answer position

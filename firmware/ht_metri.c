@@ -96,7 +96,7 @@ static double freq_test[] = {0.625, 1.25, 2.5, 5, 10, 20, 40};
 static double freq_test[] = {0.625, 1.25, 2.5, 5, 10, 20};
  #endif
 #else
-static double freq_test[] = {1.25};
+static double freq_test[] = {1.25,2.5};
 #endif
 
 /**
@@ -124,7 +124,7 @@ static void ht_metri_AudioPlay(uint8_t lr_stt){
 }
 
 /* More action/statement need more allocated memory space */
-static THD_WORKING_AREA(waRunMetri, 4096);
+static THD_WORKING_AREA(waRunMetri, 2048);
 #define ThdFunc_RunMetri THD_FUNCTION
 
 /**
