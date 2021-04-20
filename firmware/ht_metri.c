@@ -105,6 +105,11 @@ static double freq_test[] = {1.25,2.5};
 static double ampl_test = FIRSTTEST_DB;
 
 /**
+ * @brief Amplification number status
+ */
+static uint8_t ampl_num = 9;
+
+/**
  * @brief Frequency array ID
  */
 static uint8_t freq_idx = 0;
@@ -224,7 +229,11 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     ht_comm_Msg("Answer is True. ");
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
+ #if USER_MMC_AMPSC
+                    ht_mmcMetri_lineResult2(freq_test[freq_idx],ampl_num,channel_stt,1);
+ #else
                     ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,channel_stt,1);
+ #endif
                     ht_comm_Msg("Saved\r\n");
 #else
                     ht_comm_Msg("UnSaved\r\n");
@@ -242,7 +251,11 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     ht_comm_Msg("Answer is False. ");
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
+ #if USER_MMC_AMPSC
+                    ht_mmcMetri_lineResult2(freq_test[freq_idx],ampl_num,channel_stt,0);
+ #else
                     ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,channel_stt,0);
+ #endif
                     ht_comm_Msg("Saved\r\n");
 #else
                     ht_comm_Msg("UnSaved\r\n");
@@ -264,18 +277,25 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
                 // TODO: redefined on amplitude scaling method
                 if(test_answer==1){
-                    ampl_test = ampl_test / 2;
+                    if(ampl_num>0){
+                        ampl_test = ampl_test / 2;
+                        ampl_num--;
+                    }
                 }
                 else{
-                    ampl_test = ampl_test * 2;
+                    if(ampl_num<9){
+                        ampl_test = ampl_test * 2;
+                        ampl_num++;
+                    }
                 }
                 ht_comm_Msg("Next Amplitude Scale\r\n");
 
 
-                if(ampl_test <= SMALLEST_DB || test_count==TEST_MAX_COUNT){
+                if(ampl_test <= SMALLEST_DB || test_count==TEST_MAX_COUNT || ampl_num==0){
                     ht_comm_Msg("A Frequency Finish\r\n");
                     freq_idx++;
                     ampl_test = FIRSTTEST_DB;
+                    ampl_num = 9;
                     test_count = 0;
 
                     if(freq_idx != freq_max){
@@ -294,6 +314,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                             ht_mmcMetri_endResult();
   #endif
                             ht_comm_Msg("Testing Finish\r\n");
+                            freq_idx = 0;
                             mode_status = STT_IDLE;
                             mode_led = LED_READY;
                             channel_stt = OUT_LEFT;

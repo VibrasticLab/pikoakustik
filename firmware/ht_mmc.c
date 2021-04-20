@@ -655,6 +655,54 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t re
     free(Fil);
 }
 
+void ht_mmcMetri_lineResult2(double freq, uint8_t ample, uint8_t lr_ch, uint8_t result){
+
+    char buffer[STR_BUFF_SIZE];
+    char fname[STR_BUFF_SIZE];
+    FATFS FatFs;
+    FIL *Fil;
+    UINT bw;
+    FRESULT err;
+
+    Fil = (FIL*)malloc(sizeof(FIL));
+
+    if(mmc_check()!=FR_OK){return;}
+
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+
+#if USER_MMC_JSON
+        if(result==1){
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"scale\":%1i,\"val\":true},\n", lr_ch, freq, ample);
+        }
+        else{
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"scale\":%1i,\"val\":false},\n", lr_ch, freq, ample);
+        }
+#else
+        ht_comm_Buff(buffer,sizeof(buffer),"%6.4f, %1i, %1i, %1i\n",freq,ample,lr_ch,result);
+#endif
+
+        if(lastnum < FILE_MAX_NUM){
+            f_mount(&FatFs, "", 0);
+
+            ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+            err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+            if(err==FR_OK){
+                f_lseek(Fil, f_size(Fil));
+                f_write(Fil, buffer, strlen(buffer), &bw);
+                f_close(Fil);
+            }
+
+            f_mount(0, "", 0);
+        }
+        else{
+            mode_status = STT_IDLE;
+            mode_led = LED_READY;
+            ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
+        }
+    }
+    free(Fil);
+}
+
 void ht_mmcMetri_endResult(void){
     char buffer[STR_BUFF_SIZE];
     char fname[STR_BUFF_SIZE];

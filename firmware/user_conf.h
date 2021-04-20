@@ -37,6 +37,7 @@
 
 #define USER_MMC            TRUE   /* Whether use memory card or not */
  #define USER_MMC_JSON      TRUE   /* Whether use JSON format or not */
+ #define USER_MMC_AMPSC     TRUE   /* Whether use JSON in Amplification Scale or not */
 
 #define USER_IOT            FALSE   /* Whether use IOT module or not */
  #define USER_IOTSEND_ONLY  FALSE   /* Whether use IOT in one or two direction */

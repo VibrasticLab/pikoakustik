@@ -116,6 +116,15 @@ void ht_mmcMetri_chkFile(void);
 void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t result);
 
 /**
+ * @brief Save each line for every result
+ * @param[in] double Frequency scaling
+ * @param[in] uint8 Amplitude scaling number
+ * @param[in] uint8 Channel Left (0) or Right (1)
+ * @param[in] double Result True of False
+ */
+void ht_mmcMetri_lineResult2(double freq, uint8_t ample, uint8_t lr_ch, uint8_t result);
+
+/**
  * @brief Save word END on save files
  */
 void ht_mmcMetri_endResult(void);
