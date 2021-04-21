@@ -36,6 +36,7 @@
  #define USER_USB_DESC      TRUE   /* Whether use custom USB description or not */
 
 #define USER_MMC            TRUE   /* Whether use memory card or not */
+ #define USER_MMC_DBG       FALSE  /* Whether show MMC debug or not */
  #define USER_MMC_JSON      TRUE   /* Whether use JSON format or not */
  #define USER_MMC_AMPSC     TRUE   /* Whether use JSON in Amplification Scale or not */
 

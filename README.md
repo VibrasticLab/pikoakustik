@@ -31,6 +31,8 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] LiPo Battery
 	- [x] Main Power Button
 	- [ ] Charge/Discharge Test
+	- [ ] Battery Manager
+	- [ ] No Cap except Elco
 
 #### Data Communication:
 

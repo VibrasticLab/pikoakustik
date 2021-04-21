@@ -46,6 +46,7 @@ ifeq ($(USE_LDOPT),)
 endif
 
 # Enable this if you want link time optimizations (LTO)
+# Warning: DO NOT ENABLED or system crash at big memory usage
 ifeq ($(USE_LTO),)
   USE_LTO = no
 endif

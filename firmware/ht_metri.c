@@ -96,7 +96,7 @@ static double freq_test[] = {0.625, 1.25, 2.5, 5, 10, 20, 40};
 static double freq_test[] = {0.625, 1.25, 2.5, 5, 10, 20};
  #endif
 #else
-static double freq_test[] = {1.25,2.5};
+static double freq_test[] = {1.25, 2.5, 5};
 #endif
 
 /**

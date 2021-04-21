@@ -126,7 +126,9 @@ static FRESULT scanFile(char *path, uint16_t *lastfnum, uint8_t stt_print){
     *lastfnum=0;
     err = f_opendir(&Dir,path);
     if(err==FR_OK){
+#if USER_MMC_DBG
         ht_comm_Msg("------------\r\n");
+#endif
         while(1){
             err=f_readdir(&Dir,&Fno);
             if(err!=FR_OK || Fno.fname[0]==0)break;
@@ -345,8 +347,10 @@ void ht_mmc_catTest(void){
         return;
     }
 
+#if USER_MMC_DBG
     ht_comm_Msg("\r\nFiles Content\r\n");
     ht_comm_Msg("------------\r\n");
+#endif
 
     strcpy(buffer,"");
     ht_comm_Buff(fname,sizeof(fname),"/TEST.TXT");
@@ -368,7 +372,9 @@ void ht_mmc_catTest(void){
             }
             f_close(Fil);
 
+#if USER_MMC_DBG
             ht_comm_Msg("------------\r\n\r\n");
+#endif
         }
         else{
             ht_comm_Buff(strbuff,sizeof(strbuff),"Open Error:%d\r\n",err);
@@ -381,7 +387,11 @@ void ht_mmc_catTest(void){
 }
 
 void ht_mmc_lsFiles(void){
+
+#if USER_MMC_DBG
     char strbuff[IFACE_BUFF_SIZE];
+#endif
+
     FATFS FatFs;
     FIL *Fil;
     FRESULT err;
@@ -398,15 +408,19 @@ void ht_mmc_lsFiles(void){
 
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
+#if USER_MMC_DBG
             ht_comm_Msg("\r\nFiles on MMC\r\n");
+#endif
             strcpy(buff,"/");
             err = scanFile(buff,&lastnum,1);
             if(err==FR_OK){
+#if USER_MMC_DBG
                 ht_comm_Msg("------------\r\n");
                 ht_comm_Buff(strbuff,sizeof(strbuff),"Last Num: %i\r\n",lastnum);
                 ht_comm_Msg(strbuff);
                 ht_comm_Buff(strbuff,sizeof(strbuff),"Last File: TEST_%i.TXT\r\n",lastnum);
                 ht_comm_Msg(strbuff);
+#endif
 
                 if(lastnum < FILE_MAX_NUM){
                     ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
@@ -414,22 +428,26 @@ void ht_mmc_lsFiles(void){
                     err = f_open(Fil, fname, FA_READ | FA_OPEN_EXISTING);
                     if(err==FR_OK){
                         f_close(Fil);
+#if USER_MMC_DBG
                         ht_comm_Buff(strbuff,sizeof(strbuff),"File %s exist\r\n",fname);
-                        ht_comm_Msg(strbuff);                      
+                        ht_comm_Msg(strbuff);
                     }
                     else if(err==FR_NO_FILE){
                         ht_comm_Buff(strbuff,sizeof(strbuff),"File %s not exist\r\n",fname);
-                        ht_comm_Msg(strbuff);                        
+                        ht_comm_Msg(strbuff);
                     }
                     else{
                         ht_comm_Buff(strbuff,sizeof(strbuff),"File %s error code = %i\r\n",fname,err);
                         ht_comm_Msg(strbuff);
+#endif
                     }
                 }
                 else{
-                    ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
+                    ht_comm_Msg("Warning: Maximum save number\r\n");
                 }
+#if USER_MMC_DBG
                 ht_comm_Msg("------------\r\n\r\n");
+#endif
             }
         }
         f_mount(0, "", 0);
@@ -446,8 +464,10 @@ void ht_mmc_catFiles(uint16_t fnum){
 
     Fil = (FIL*)malloc(sizeof(FIL));
 
+#if USER_MMC_DBG
     ht_comm_Msg("\r\nFiles Content\r\n");
     ht_comm_Msg("------------\r\n");
+#endif
 
     if(mmc_check()!=FR_OK){return;}
 
@@ -469,7 +489,9 @@ void ht_mmc_catFiles(uint16_t fnum){
             }
             f_close(Fil);
 
+#if USER_MMC_DBG
             ht_comm_Msg("------------\r\n\r\n");
+#endif
         }
         else{
             ht_comm_Buff(strbuff,sizeof(strbuff),"Open Error:%d\r\n",err);
@@ -599,7 +621,7 @@ void ht_mmcMetri_chkFile(void){
             else{
                 mode_status = STT_IDLE;
                 mode_led = LED_READY;
-                ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
+                ht_comm_Msg("Warning: Maximum save number\r\n");
             }
         }
     }
@@ -649,7 +671,7 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t re
         else{
             mode_status = STT_IDLE;
             mode_led = LED_READY;
-            ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
+            ht_comm_Msg("Warning: Maximum save number\r\n");
         }
     }
     free(Fil);
@@ -697,7 +719,7 @@ void ht_mmcMetri_lineResult2(double freq, uint8_t ample, uint8_t lr_ch, uint8_t 
         else{
             mode_status = STT_IDLE;
             mode_led = LED_READY;
-            ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
+            ht_comm_Msg("Warning: Maximum save number\r\n");
         }
     }
     free(Fil);
@@ -739,7 +761,7 @@ void ht_mmcMetri_endResult(void){
         else{
             mode_status = STT_IDLE;
             mode_led = LED_READY;
-            ht_comm_Msg("Maximum saves number, please back-up and clear before continue\r\n");
+            ht_comm_Msg("Warning: Maximum save number\r\n");
         }
     }
     free(Fil);
