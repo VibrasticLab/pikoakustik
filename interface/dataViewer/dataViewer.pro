@@ -25,11 +25,15 @@ HEADERS += \
 FORMS += \
     wndmain.ui
 
-INCLUDEPATH += \
-    /usr/include/qwt
+linux {
+    INCLUDEPATH += /usr/include/qwt
+    LIBS += -lqwt
+}
 
-LIBS += \
-    -lqwt
+win32 {
+    INCLUDEPATH += C:\Qwt-6.1.6\include
+    LIBS += -LC:\Qwt-6.1.6\lib -lqwt
+}
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

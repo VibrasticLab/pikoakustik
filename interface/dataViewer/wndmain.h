@@ -17,5 +17,7 @@ public:
 
 private:
     Ui::wndMain *ui;
+
+    void addSerialPort(void);
 };
 #endif // WNDMAIN_H
