@@ -17,14 +17,14 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] 3 Choices Random Generator
 	- [x] 3 Choice Answer Placement
 - [x] Button Reset
-- [x] User-Friendlyness Interface Test (**September 2020**)
-- [x] Build New PCB as Latest Revision  (**October 2020**)
+- [x] User-Friendlyness Interface Test
+- [x] Build New PCB as Latest Revision
 
 #### Packaging
 
 - [x] Acrilic Protector
 - [ ] Box Design
-	- [x] Print 3D (**September 2020**)
+	- [x] Print 3D
 	- [ ] Plastic Molding
 - [ ] Battery
 	- [x] Regulator TP4056
@@ -69,7 +69,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] Calibrated Frequency array
 	- [x] Pop-Click Suppression
 	- [ ] Calibrated SPL range
-	- [ ] Calibrated SPL scaling
+	- [x] Calibrated SPL scaling
 	- [ ] Left/Right Isolation
 	
 - [ ] Microphone Input
