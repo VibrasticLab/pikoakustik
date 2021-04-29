@@ -2,7 +2,6 @@
 /firmware/akustik.cflags
 /firmware/akustik.cxxflags
 /firmware/akustik_doc
-/firmware/akustik.creator.user
 /firmware/build
 /firmware/.dep
 /esp8266/esp8266dev.creator.user
@@ -11,4 +10,5 @@
 *clangd
 *__pycache__
 *-checkpoint.ipynb
+*.creator.user*
 *compile_commands.json
