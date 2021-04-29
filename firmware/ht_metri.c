@@ -177,7 +177,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 ht_comm_Msg(strbuff);
                 chThdSleepMilliseconds(1000);
 #else
-                chThdSleepMilliseconds(1000);
+                chThdSleepMilliseconds(2*TEST_SPEED_DELAY);
                 led_answer_off();
 
                 /*************************************/

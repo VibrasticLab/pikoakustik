@@ -45,7 +45,7 @@
 /**
  * @brief Delay each event on metri loop
  */
-#define TEST_SPEED_DELAY 300
+#define TEST_SPEED_DELAY 500
 
 /**
  * @brief Maximum number for each frequency test
