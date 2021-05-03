@@ -68,7 +68,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] Pure Single Tone
 	- [x] Calibrated Frequency array
 	- [x] Pop-Click Suppression
-	- [ ] Calibrated SPL range
+	- [x] Calibrated SPL range
 	- [x] Calibrated SPL scaling
 	- [ ] Left/Right Isolation
 	
@@ -78,9 +78,10 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 
 - [ ] Hearing Test
 	- [x] User Test Flow
-	- [ ] Convinient Level Test
+	- [ ] **Convinient Level Test**
 	- [ ] Random starting SPL
 	- [x] Up/Down SPL scaling
+	- [ ] Lowest Tone still too loud
 	
 - [ ] Mass Production
 	- [ ] PCB Electronic
