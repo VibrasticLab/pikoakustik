@@ -771,3 +771,48 @@ class ITBDataPool():
             [74.4, 68.4, 62.4, 56.4, 50.9, 46.1, 42.9, 41.7, 41.1],
             ]
         ])
+        
+        self.All_Vars = [
+            f'{self.NoUnitNoHP_Second=}'.split('=')[0],
+            f'{self.NoUnitNoHP_Data=}'.split('=')[0],
+            
+            f'{self.NoUnitMiniso_Second=}'.split('=')[0],
+            f'{self.NoUnitMiniso_Data=}'.split('=')[0],
+            
+            f'{self.NoUnitBose_Second=}'.split('=')[0],
+            f'{self.NoUnitBose_Data=}'.split('=')[0],
+            
+            f'{self.Ukur_Freq=}'.split('=')[0],
+            f'{self.Ukur_OutUp=}'.split('=')[0],
+            f'{self.Ukur_OutDown=}'.split('=')[0],
+            
+            f'{self.Day1_Bose1_Up=}'.split('=')[0],
+            f'{self.Day1_Bose1_Down=}'.split('=')[0],
+            f'{self.Day1_Bose2_Up=}'.split('=')[0],
+            f'{self.Day1_Bose2_Down=}'.split('=')[0],
+            
+            f'{self.Day1_Miniso1_Up=}'.split('=')[0],
+            f'{self.Day1_Miniso1_Down=}'.split('=')[0],
+            f'{self.Day1_Miniso2_Up=}'.split('=')[0],
+            f'{self.Day1_Miniso2_Down=}'.split('=')[0],
+            
+            f'{self.Day2_Bose1_Up=}'.split('=')[0],
+            f'{self.Day2_Bose1_Down=}'.split('=')[0],
+            f'{self.Day2_Bose2_Up=}'.split('=')[0],
+            f'{self.Day2_Bose2_Down=}'.split('=')[0],
+            
+            f'{self.Day2_Miniso1_Up=}'.split('=')[0],
+            f'{self.Day2_Miniso1_Down=}'.split('=')[0],
+            f'{self.Day2_Miniso2_Up=}'.split('=')[0],
+            f'{self.Day2_Miniso2_Down=}'.split('=')[0],
+            
+            f'{self.Day3_Bose1_Up=}'.split('=')[0],
+            f'{self.Day3_Bose1_Down=}'.split('=')[0],
+            f'{self.Day3_Bose2_Up=}'.split('=')[0],
+            f'{self.Day3_Bose2_Down=}'.split('=')[0],
+            
+            f'{self.Day3_Miniso1_Up=}'.split('=')[0],
+            f'{self.Day3_Miniso1_Down=}'.split('=')[0],
+            f'{self.Day3_Miniso2_Up=}'.split('=')[0],
+            f'{self.Day3_Miniso2_Down=}'.split('=')[0],
+        ]
