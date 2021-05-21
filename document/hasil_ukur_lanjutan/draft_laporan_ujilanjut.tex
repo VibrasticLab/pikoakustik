@@ -1,0 +1,270 @@
+\documentclass[12pt,]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage{geometry}
+\usepackage{mathtools}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{stackengine}
+\usepackage[os=win]{menukeys}
+\usepackage{hyperref}
+\usepackage{minted}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage[yyyymmdd,hhmmss]{datetime}
+\usepackage{etoolbox}
+\usepackage[inline]{enumitem}
+
+\newcommand{\WindowsLogo}{\raisebox{-0.1em}{\includegraphics[height=0.8em]{images/logo/Windows_3_logo_simplified}}}
+%\newcommand{\PowerLogo}{\raisebox{-0.1em}{\includegraphics[height=0.8em]{images/logo/power}}}
+\newcommand{\WinKey}{\keys{\WindowsLogo}}       
+\newcommand{\PowerKey}{\keys{\PowerLogo}}       
+
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{}
+
+\newcommand{\ShowOsVersion}{
+	\immediate\write18{\unexpanded{foo=`uname -sro` && echo "${foo}" > tmp.tex}}
+	\input{tmp}\immediate\write18{rm tmp.tex}
+}
+
+\newcommand{\ShowTexVersion}{
+	\immediate\write18{\unexpanded{foo=`pdflatex -version | head -n1 | cut -d' ' -f1,2` && echo "${foo}" > tmp.tex}}
+	\input{tmp}\immediate\write18{rm tmp.tex}
+}
+
+\addto\captionsenglish{\renewcommand{\contentsname}{Daftar Isi}}
+\addto\captionsenglish{\renewcommand{\figurename}{Gambar}}
+
+\hypersetup{
+	colorlinks=true, %set true if you want colored links
+	linktoc=all,     %set to all if you want both sections and subsections linked
+	linkcolor=blue,  %choose some color if you want links to stand out
+	urlcolor=blue,   %url color
+}
+
+\geometry{
+	a4paper,
+	left=15mm,
+	right=10mm,
+	top=10mm,
+	bottom=15mm,
+}
+
+\title{\LARGE \bf
+	Laporan Pengujian Unit Prototype Portable/Handheld Audiometri\\
+}
+
+\author{Achmadi ST MT}
+
+\date{}
+
+\hypersetup{citecolor=black}
+
+\definecolor{LightGray}{gray}{0.95}
+
+%\pagecolor[rgb]{0.1,0.1,0.1}
+%\color[rgb]{1,1,1}
+
+\begin{document}
+	\thispagestyle{empty}
+	
+	\begin{titlepage}
+		\centering
+		\vfill
+		\vfill
+		\maketitle
+		\vfill
+		\includegraphics[width=200pt]{images/logo/logoviblab}
+		\vfill
+		\vfill
+		Update: {\today} \currenttime \\
+	\end{titlepage}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\newpage
+	\tableofcontents
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\newpage
+	\section{Pendahuluan}
+	
+	\subsection{Tujuan Pengujian}
+	
+	Tujuan Pengujian disini adalah untuk mendapatkan parameter berikut:
+	\begin{enumerate}
+		\item Mengetahui nilai aktual \textit{loudness} output dalam dB (SPL).
+		\item Mengetahui efek histeresis terhadap konsistensi output \textit{loudness}.
+		\item Mengetahui efek pengurangan daya baterai terhadap konsistensi output \textit{loudness}.
+	\end{enumerate}
+
+	\subsection{Waktu dan Tempat Pengujian}
+	
+	Seluruh pengujian di lakukan di Ruang Un-Echoic Chamber Laboratorium Fisika Bangunan Teknik Fisika 
+	Institut Teknologi Bandung. Waktu pengujian terbagi dalam 2 periode, pertama pada bulan Desember 2020 dan Februari 2021.
+	
+	\subsection{Batasan Pengujian}
+	
+	Batasan pengujian adalah sebagai berikut:
+	
+	\begin{enumerate}
+		\item Nilai frekuensi dan konsistensi frekuensi tidak diukur di ruang Unechoic chamber tersebut di atas 
+		karena telah diuji selama proses pengembangan dan perakitan unit prototype dan telah terbukti konsisten pada nilai yang diinginkan.
+		
+		\item Pengujian tidak dilakukan pada tubuh manusia sebenarnya melainkan menggunakan manekin yang diproduksi oleh GRASS KEMAR.
+	\end{enumerate}
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\newpage
+	\section{Metode Pengujian}
+	
+	\subsection{Persiapan}
+	
+	Berikut adalah perangkat keras yang perlu disiapkan untuk pengujian ini:
+
+	\begin{itemize}
+
+		\item Unit Prototype Audiometri yang akan diuji.
+
+		Pastikan unit prototype masih normal sebagaimana pada bab sebelumnya.
+
+		\begin{figure}[!ht]
+			\centering
+			\begin{subfigure}[b]{0.3\textwidth}
+				\includegraphics[width=\textwidth]{images/foto/unit}
+				\caption{Unit Prototype}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.3\textwidth}
+				\includegraphics[width=\textwidth]{images/foto/kabel}
+				\caption{Kabel USB}
+			\end{subfigure}
+			\caption{Prototype}
+		\end{figure}
+
+		
+		\item Wired-Headphone dengan impedansi tiap channel antara $32\Omega$ hingga $300\Omega$
+
+		Headphone yang digunakan disini adalah: 
+		\begin{itemize}
+			\item Headphone Miniso (tanpa active noise cancelling)
+			\item Headphone BOSE (dilengkapi active noise cancelling)
+		\end{itemize}
+		\begin{figure}[!ht]
+			\centering
+			\includegraphics[width=200pt]{images/foto/phone}
+			\caption{Wired Headphone}
+		\end{figure}
+	
+		\newpage
+		\item Kalibrasi Mikrofon pada manekin KEMAR menggunakan \textit{tone generator} yang tersedia pada paket GRASS KEMAR.
+		Kemudian pasang Headphone pada manekin.
+		\begin{figure}[!ht]
+			\centering
+			\begin{subfigure}[b]{0.3\textwidth}
+				\includegraphics[width=\textwidth]{images/foto/calib}
+				\caption{Kalibrasi Mikrofon}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.3\textwidth}
+				\includegraphics[width=\textwidth]{images/foto/kemar}
+				\caption{Headphone Terpasang}
+			\end{subfigure}
+			\caption{GRASS KEMAR}
+		\end{figure}
+
+	\end{itemize}
+
+	\subsection{Audio Analyzer}
+	
+	Mikrofon GRASS KEMAR dihubungkan dengan Audio-Box dan data Audio digital dikumpulkan dengan perangkat lunak Real-Time Analyzer via USB.
+	Perangkat lunak ini merupakan bagian dari paket software DSFF3 buatan Yoshimasha.
+	
+	\begin{figure}[!ht]
+		\centering
+		\includegraphics[width=300pt]{images/kemar/fft}
+		\caption{Tampilan Audio Analyzer}
+	\end{figure}
+	
+	\newpage
+	\subsection{Teknis Pengujian}
+	
+	Berikut langkah proses pengujian
+	
+	\begin{itemize}
+		\item Nyalakan unit prototype dan sambungkan USB protype ke komputer.
+		\begin{figure}[!ht]
+			\centering
+			\begin{subfigure}[b]{0.3\textwidth}
+				\includegraphics[width=\textwidth]{images/foto/standby}
+				\caption{Prototype Standby}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.3\textwidth}
+				\includegraphics[width=\textwidth]{images/foto/konek}
+				\caption{USB Terpasang}
+			\end{subfigure}
+			\caption{Menyalakan Unit Prototype}
+		\end{figure}
+
+	
+		\item Akses prototype menggunakan serial port (semisal Hercules.exe) pada komputer.
+		\begin{figure}[!ht]
+			\centering
+			\includegraphics[width=300pt]{images/terminal/hercules_text}
+			\caption{Contoh respon serial port}
+		\end{figure}
+		
+		\item Perintah Serial untuk membangkitkan tone
+		Perintah untuk membangkitkan tone dengan frekuensi dan skala yang diinginkan selama 5detik.
+
+		Pola perintah serialnya adalah:
+		\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
+out <frekuensi> <amplitudo>
+		\end{minted}
+
+		dengan:
+		\begin{itemize}
+			\item frekuensi adalah nilai frekuensi (dalam Hz) mulai 250, 500, 1000, 2000, 4000, dan 8000.
+			\item amplitudo adalah skala amplitudo pada nilai 1, 2, 3, 4, 5, 6, 7, 8, dan 9.
+		\end{itemize}
+
+		Contoh untuk tone 500Hz pada skala amplitudo 6 (diakhiri (\keys{\return})):
+		\begin{minted}[frame=lines,framesep=2mm,fontsize=\small]{text}
+out 500 6
+		\end{minted}
+	
+		\newpage
+		Maka salah satu channel headphone yang terhubung prototype akan membangkitkan tone selama 5 detik.		
+		
+		\begin{figure}[!ht]
+			\centering
+			\includegraphics[width=300pt]{images/terminal/contoh}
+			\caption{Contoh Nilai Uji}
+		\end{figure}
+
+		\item Hasil yang diinginkan adalah tabel dengan spesifikasi berikut:
+		\begin{itemize}
+			\item tabel background noise terhadap waktu dengan KEMAR tanpa headphone (1 tabel).
+			\item tabel background noise terhadap waktu dengan KEMAR menggunakan kedua headphone, yaitu BOSE dan Miniso (2 tabel).
+			\item tabel loudness output di setiap frekuensi untuk setiap kenaikan skala amplitudo, untuk 2 prototype dengan 2 headphone, masing 3 tabel per hari.
+			\item tabel loudness output di setiap frekuensi untuk setiap penurunan skala amplitudo, untuk 2 prototype dengan 2 headphone, masing 3 tabel per hari.
+			\item pengukuran loudness output dilakukan di 3 hari berbeda.
+		\end{itemize}
+	
+		sehingga diharapkan total 75 tabel hasil pengukuran.
+	\end{itemize}
+
+	\newpage
+	\section{Hasil Pengujian}
+	
+	\subsection{Tabel Hasil}
+	
+	Tabel hasil pengujian dianggap terlalu banyak dan akan memakan tempat disini sehingga disediakan di tautan berikut:\\
+	
+	
+	
+	
+	
+\end{document}
