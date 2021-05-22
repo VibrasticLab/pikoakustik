@@ -46,10 +46,10 @@
 
 \geometry{
 	a4paper,
-	left=15mm,
+	left=10mm,
 	right=10mm,
 	top=10mm,
-	bottom=15mm,
+	bottom=10mm,
 }
 
 \title{\LARGE \bf
@@ -225,9 +225,12 @@ out <frekuensi> <amplitudo>
 		\end{minted}
 
 		dengan:
-		\begin{itemize}
-			\item frekuensi adalah nilai frekuensi (dalam Hz) mulai 250, 500, 1000, 2000, 4000, dan 8000.
-			\item amplitudo adalah skala amplitudo pada nilai 1, 2, 3, 4, 5, 6, 7, 8, dan 9.
+		\begin{itemize}
+
+			\item frekuensi adalah nilai frekuensi (dalam Hz) mulai 250, 500, 1000, 2000, 4000, dan 8000.
+
+			\item amplitudo adalah skala amplitudo pada nilai 1, 2, 3, 4, 5, 6, 7, 8, dan 9.
+
 		\end{itemize}
 
 		Contoh untuk tone 500Hz pada skala amplitudo 6 (diakhiri (\keys{\return})):
@@ -237,11 +240,11 @@ out 500 6
 	
 		\newpage
 		Maka salah satu channel headphone yang terhubung prototype akan membangkitkan tone selama 5 detik.		
-		
-		\begin{figure}[!ht]
-			\centering
-			\includegraphics[width=300pt]{images/terminal/contoh}
-			\caption{Contoh Nilai Uji}
+		
+		\begin{figure}[!ht]
+			\centering
+			\includegraphics[width=300pt]{images/terminal/contoh}
+			\caption{Contoh Nilai Uji}
 		\end{figure}
 
 		\item Hasil yang diinginkan adalah tabel dengan spesifikasi berikut:
@@ -262,9 +265,129 @@ out 500 6
 	\subsection{Tabel Hasil}
 	
 	Tabel hasil pengujian dianggap terlalu banyak dan akan memakan tempat disini sehingga disediakan di repository pemrograman Lab Vibrastic pada tautan berikut:\\
+	\url{https://github.com/VibrasticLab/pikoakustik/tree/stm32f401re_3pin/document/hasil_ukur_lanjutan/tabel_hasil_ukur}.\\
 	
+	Untuk kemudahan dalam pengolahan, tersedia pula tabel data tersebut dalam format Python Numpy array yang dapat diakses di tautan:\\
+	\url{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/document/hasil_ukur_lanjutan/python/itb_data_pool.py}\\
 	
+	Kemudian untuk memudahkan proses pengolahan data, digunakan pula perangkat lunak Jupyter Note yang berkasnya dapat diakses di tautan:\\
+	\url{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/document/hasil_ukur_lanjutan/python/itb_data_pool.py}\\
 	
+	\subsection{Pengolahan Data}
 	
+	Pengolahan data hasil pengujian dikelompokkan pada 3 topik, yaitu loudness, efek histeresis, dan efek perbedaan hari.
 	
+	\subsubsection{Loudness}
+	
+	Untuk pengolahan data terkait loudness, terbagi dalam dua topik, yaitu loudness terendah dan model matematis skala loudness
+	
+	\begin{itemize}
+		\item \textbf{Loudness Terendah.}\\
+		
+		Berikut adalah grafik \textit{surface} pengukuran bising lingkungan:
+		
+		\begin{figure}[!ht]
+			\centering
+			\begin{subfigure}[b]{0.3\textwidth}
+				\includegraphics[width=\textwidth]{images/graph/nounitnohp}
+				\caption{Tanpa Headphone}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.3\textwidth}
+				\includegraphics[width=\textwidth]{images/graph/nounitminiso}
+				\caption{Headphone Miniso}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.3\textwidth}
+				\includegraphics[width=\textwidth]{images/graph/nounitbose}
+				\caption{Headphone BOSE}
+			\end{subfigure}
+			\caption{Bising Lingkungan}
+		\end{figure}
+	
+		Dengan melihat skala \textit{colormap} grafik di atas terlihat bahwa headphone BOSE memiliki taraf bising paling rendah.
+		Hal ini dikarenakan selain memiliki peredam bising pasif dengan struktur headphone yang melingkupi telinga secara penuh,
+		juga tersedia fitur peredam bising aktif yang membatalkan bising lingkungan masuk ke mikrofon.
+		
+		\newpage
+		Selanjutnya berikut adalah grafik nada terendah di setiap frekuensi dibandingkan bising lingkungan 3 detik pertama pada setiap frekuensi:
+		
+		\begin{figure}[!ht]
+			\centering
+			\begin{subfigure}[b]{0.5\textwidth}
+				\includegraphics[width=\textwidth]{images/graph/boselowest_unit1}
+				\caption{Prototype A}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.5\textwidth}
+				\includegraphics[width=\textwidth]{images/graph/boselowest_unit1}
+				\caption{Prototype B}
+			\end{subfigure}
+			\caption{Nada terendah BOSE terhadap bising lingkungan}
+		\end{figure}
+	
+		\begin{figure}[!ht]
+			\centering
+			\begin{subfigure}[b]{0.5\textwidth}
+				\includegraphics[width=\textwidth]{images/graph/minisolowest_unit1}
+				\caption{Prototype A}
+			\end{subfigure}
+			\begin{subfigure}[b]{0.5\textwidth}
+				\includegraphics[width=\textwidth]{images/graph/minisolowest_unit1}
+				\caption{Prototype B}
+			\end{subfigure}
+			\caption{Nada terendah Miniso terhadap bising lingkungan}
+		\end{figure}
+	
+		\begin{figure}[!ht]
+			\centering
+			\includegraphics[width=300pt]{images/graph/lowestbosevsminiso}
+			\caption{Nada terendah BOSE vs Miniso}
+		\end{figure}
+		
+		\newpage
+		Berdasarkan grafik di atas, dapat disimpulkan bahwa penggunaan headphone BOSE dianggap lebih baik
+		dibandingkan Miniso dengan pertimbangan:
+		\begin{enumerate}
+			\item Loudness terendah BOSE cenderung lebih rendah dibandinhkan Miniso.
+			\item Loudness terendah Miniso cenderung tenggelam pada bising lingkungan.
+		\end{enumerate}
+		
+		Untuk selanjutnya, pengolahan data hanya difokuskan pada BOSE Headphone yang direncanakan akan
+		digunakan sebagai default headphone.
+		
+		\item \textbf{Model skala loudness.}
+		
+		Dengan merata-rata seluruh matrix tabel didapat matrix untuk Prototype Unit A sebagai berikut:
+		
+		\[\left[
+		\begin{matrix}
+			34.9 & 36.4 & 40. &  44.6 & 52. &  56.1 & 62.1 & 68.2 & 74.2\\
+			35.3 & 37.4 & 41.4 & 46.6 & 52.2 & 58.2 & 64.2 & 70.3 & 76.4\\
+			39.2 & 42.4 & 47. & 52.5 & 58.3 & 64.3 & 70.3 & 76.4 & 82.4\\
+			36.8 & 38.2 & 41.2 & 45.8 & 51.2 & 57.2 & 63.2 & 69.3 & 75.3\\
+			41.4 & 44. &  48.2 & 53.4 & 59.2 & 65.1 & 71.2 & 77.2 & 83.2\\
+			42. &  43.1 & 45.9 & 50.2 & 55.7 & 61.5 & 67.5 & 73.5 & 79.6\\
+		\end{matrix}
+		\right]\]
+	
+		Kemudian dengan memperhatikan pola grafik tiap frekuensi (baris) pada matrix unit A:
+		\begin{figure}[!ht]
+			\centering
+			\includegraphics[width=400pt]{images/graph/boseprotoA}
+			\caption{Grafik loudness setiap frekuensi}
+		\end{figure}
+	
+		Pendekatan model matematis untuk loudness terhadap skala input menggunakan polynomial:\\
+		\[f(x) = ax^3 + bx^2 + cx + d\]
+		
+		Estimasi model menggunakan perangkat lunak Numpy Polyfit yang tersedia di Python.
+		Hasil estimasi untuk prototype A pada setiap frekuensi.
+		
+		\[f_{250}(x) = -0.05x^3 + 1.03bx^2 - 0.59cx + 34.21\]
+		\[f_{500}(x) = -0.05x^3 + 0.93bx^2 + 0.09cx + 34.15\]
+		\[f_{1000}(x) = -0.04x^3 + 0.69bx^2 + 1.72cx + 36.69\]
+		\[f_{2000}(x) = -0.06x^3 + 1.15bx^2 - 1.58cx + 37.22\]
+		\[f_{4000}(x) = -0.04x^3 + 0.85bx^2 + 0.68cx + 39.78\]
+		\[f_{8000}(x) = -0.06x^3 + 1.2bx^2 - 1.99cx + 42.79\]
+		
+		Model matematis ini yang akan di implementasikan ke prototype.
+	\end{itemize}
 \end{document}
