@@ -108,6 +108,15 @@ void ht_audio_Tone(double freq, double ampl){
     i2scfg.size = buffsize;
 }
 
+void ht_audio_ToneScale(double freq, double scale){
+    double ampl_scale;
+
+    if(scale>0 && scale<=9){
+        ampl_scale = 2 / pow(2,10-scale);
+        ht_audio_Tone(freq,ampl_scale);
+    }
+}
+
 void ht_audio_Play(uint16_t duration){
     if(stt_inPlay==TRUE){return;}
     else{stt_inPlay=TRUE;}
