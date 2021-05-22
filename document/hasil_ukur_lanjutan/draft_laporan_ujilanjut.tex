@@ -16,6 +16,7 @@
 \usepackage[yyyymmdd,hhmmss]{datetime}
 \usepackage{etoolbox}
 \usepackage[inline]{enumitem}
+\usepackage{pdfpages}
 
 \newcommand{\WindowsLogo}{\raisebox{-0.1em}{\includegraphics[height=0.8em]{images/logo/Windows_3_logo_simplified}}}
 %\newcommand{\PowerLogo}{\raisebox{-0.1em}{\includegraphics[height=0.8em]{images/logo/power}}}
@@ -49,7 +50,7 @@
 	left=10mm,
 	right=10mm,
 	top=10mm,
-	bottom=10mm,
+	bottom=15mm,
 }
 
 \title{\LARGE \bf
@@ -98,7 +99,6 @@
 	\begin{enumerate}
 		\item Mengetahui nilai aktual \textit{loudness} output dalam dB (SPL).
 		\item Mengetahui efek histeresis terhadap konsistensi output \textit{loudness}.
-		\item Mengetahui efek pengurangan daya baterai terhadap konsistensi output \textit{loudness}.
 	\end{enumerate}
 
 	\subsection{Waktu dan Tempat Pengujian}
@@ -355,15 +355,15 @@ out 500 6
 		
 		\item \textbf{Model skala loudness.}
 		
-		Dengan merata-rata seluruh matrix tabel didapat matrix untuk Prototype Unit A sebagai berikut:
+		Dengan merata-rata seluruh matrix tabel didapat matrix untuk prototype Unit A sebagai berikut:
 		
 		\[\left[
 		\begin{matrix}
-			34.9 & 36.4 & 40. &  44.6 & 52. &  56.1 & 62.1 & 68.2 & 74.2\\
-			35.3 & 37.4 & 41.4 & 46.6 & 52.2 & 58.2 & 64.2 & 70.3 & 76.4\\
-			39.2 & 42.4 & 47. & 52.5 & 58.3 & 64.3 & 70.3 & 76.4 & 82.4\\
-			36.8 & 38.2 & 41.2 & 45.8 & 51.2 & 57.2 & 63.2 & 69.3 & 75.3\\
-			41.4 & 44. &  48.2 & 53.4 & 59.2 & 65.1 & 71.2 & 77.2 & 83.2\\
+			34.9 & 36.4 & 40. &  44.6 & 52. &  56.1 & 62.1 & 68.2 & 74.2\\
+			35.3 & 37.4 & 41.4 & 46.6 & 52.2 & 58.2 & 64.2 & 70.3 & 76.4\\
+			39.2 & 42.4 & 47. & 52.5 & 58.3 & 64.3 & 70.3 & 76.4 & 82.4\\
+			36.8 & 38.2 & 41.2 & 45.8 & 51.2 & 57.2 & 63.2 & 69.3 & 75.3\\
+			41.4 & 44. &  48.2 & 53.4 & 59.2 & 65.1 & 71.2 & 77.2 & 83.2\\
 			42. &  43.1 & 45.9 & 50.2 & 55.7 & 61.5 & 67.5 & 73.5 & 79.6\\
 		\end{matrix}
 		\right]\]
@@ -389,5 +389,132 @@ out 500 6
 		\[f_{8000}(x) = -0.06x^3 + 1.2bx^2 - 1.99cx + 42.79\]
 		
 		Model matematis ini yang akan di implementasikan ke prototype.
+		
+		\newpage 
+		Selanjutnya untuk prototype B, dilakukan metode perhitungan yang sama.
+		
+		Berikut matrix rata-rata loudness pengukuran:
+		
+		\[\left[
+		\begin{matrix}
+			34.8&36.&39.8&44.6&49.9&55.8&61.9&68.&74.&\\
+
+			35.2&37.2&41.2&46.4&52.&58.&64.1&70.2&76.2\\
+
+			38.9&42.1&46.8&52.2&58.&64.&70.1&76.1&82.1\\
+
+			36.7&38.&41.&45.5&51.&56.9&63.&69.&75.1\\
+
+			41.3&43.8&47.9&53.2&59.&64.9&70.9&77.&83.&\\
+
+			41.8&43.&45.6&49.8&55.2&61.&67.&73.&79.&\\
+		\end{matrix}
+		\right]\]
+		
+		Hasil estimasi untuk prototype B pada setiap frekuensi.
+		
+		\[f_{250}(x) = -0.05x^3 + 1.08bx^2 - 1cx + 34.56\]
+		\[f_{500}(x) = -0.05x^3 + 0.98bx^2 - 0.12cx + 34.21\]
+		\[f_{1000}(x) = -0.04x^3 + 0.69bx^2 + 1.74cx + 36.38\]
+		\[f_{2000}(x) = -0.06x^3 + 1.17bx^2 - 1.69cx + 37.21\]
+		\[f_{4000}(x) = -0.04x^3 + 0.87bx^2 + 0.55cx + 39.77\]
+		\[f_{8000}(x) = -0.06x^3 - 2.06bx^2 - 1.99cx + 42.73\]
+		
+		Terakhir, jika diselisih matrix koefisien didapat matrix bernilai kecil:
+		
+		\[\left[
+		\begin{matrix}
+			0.  & -0.05 &  0.41 & -0.35\\
+			0.  & -0.05 &  0.21 & -0.06\\
+			0.  &  0.   & -0.02 &  0.31\\
+			0.  & -0.02 &  0.11 &  0.01\\
+			0.  & -0.02 &  0.13 &  0.01\\
+			0.  &  0.01 &  0.07 &  0.06\\
+		\end{matrix}
+		\right]\]
+		
+		dimana ini menunjukkan bahwa kedua prototype yang diuji saling identik dan saling representatif.
 	\end{itemize}
+
+	\subsubsection{Efek Histeresis}
+	 
+	Selanjutnya, dengan menghitung standar deviasi di setiap elemen matrix hasil (setiap loudness dan frekuensi) sebagai array,
+	didapat matriks standar deviasi di setiap unit prototype di setiap hari untuk headphone BOSE sebagai berikut:
+	
+	\begin{enumerate}
+		\item Unit A. Diurut dari kiri atas, hari-1, hari-2, dan hari-3
+		\[ \left( \begin{matrix}
+			0.2&0.3&0.2&0.2&11.8&0.1&0.1&0.&0.1\\
+			0.2&0.&0.2&0.1&0.&0.&0.&0.1&0.&\\
+			0.1&0.1&0.&0.&0.&0.&0.&0.&0.&\\
+			0.&0.&0.1&0.1&0.1&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.&0.&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
+		\end{matrix} \right) 
+		%
+		\left( \begin{matrix}
+			0.1&0.1&0.2&0.1&0.1&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.1&0.1&0.&0.&0.&0.&\\
+			0.1&0.1&0.&0.&0.&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.&0.&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
+		\end{matrix} \right)
+		\]
+		
+		\[\left[
+		\begin{matrix}
+			0.1&0.2&0.2&0.1&0.2&0.&0.&0.&0.&\\
+			0.2&0.1&0.1&0.1&0.1&0.1&0.&0.&0.&\\
+			0.1&0.1&0.1&0.&0.&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
+			0.2&0.1&0.1&0.&0.&0.&0.&0.&0.&\\
+			0.1&0.&0.1&0.&0.1&0.&0.&0.&0.&\\
+		\end{matrix}
+		\right]\]
+		
+		\newpage
+		\item Unit B, Diurut dari kiri atas, hari-1, hari-2, dan hari-3
+		
+		\[ \left( \begin{matrix}
+			0.3&0.1&0.2&0.1&0.1&0.1&0.&0.&0.&\\
+			0.2&0.1&0.1&0.1&0.1&0.&0.&0.1&0.&\\
+			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.&0.1&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.&0.&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
+		\end{matrix} \right) 
+		%
+		\left( \begin{matrix}
+			0.1&0.2&0.2&0.2&0.1&0.1&0.&0.1&0.1\\
+			0.2&0.1&0.1&0.1&0.1&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.1&0.1&0.&1.1&0.&0.&\\
+			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
+		\end{matrix} \right)
+		\]
+		
+		\[\left[
+		\begin{matrix}
+			0.1&0.2&0.1&0.1&0.1&0.1&0.1&0.&0.&\\
+			0.&0.4&0.2&0.2&0.&0.&0.&0.&0.&\\
+			0.2&0.1&0.&0.&0.1&0.&0.&0.&0.&\\
+			0.1&0.1&0.&0.1&0.&0.&0.&0.&0.&\\
+			0.1&0.1&0.1&0.&0.&0.&0.&0.&0.&\\
+			0.1&0.1&0.&0.&0.&0.&0.&0.&0.&\\
+		\end{matrix}
+		\right]\]
+
+	\end{enumerate}
+
+	Dengan memperhatikan matrix standar deviasi di atas, dapat terlihat bahwa output loudness cenderung konsisten
+	baik terkait efek histeresis maupun perbedaan hari pengukuran.
+
+	\newpage
+	\section{Lampiran}
+	
+	\subsection{Notebook Olah Data}
+	\includepdf[pages=-]{python/ITBDataProcess.pdf}
+	
 \end{document}

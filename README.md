@@ -26,6 +26,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 - [ ] Box Design
 	- [x] Print 3D
 	- [ ] Plastic Molding
+	- [ ] Brosur Promo with Good Packaging
 - [ ] Battery
 	- [x] Regulator TP4056
 	- [x] LiPo Battery
