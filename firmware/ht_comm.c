@@ -303,6 +303,7 @@ static void cmd_toneout(BaseSequentialStream *chp, int argc, char *argv[]) {
 
 #if USER_SER_SCALE
     ht_audio_ToneScale(vfreq, in_ampl);
+    chprintf(chp,"Tone: Freq:%5i Ampl:%2i\r\n",in_freq,in_ampl);
 #else
     switch(in_ampl){
         case 9: vampl=1;break;
@@ -316,9 +317,9 @@ static void cmd_toneout(BaseSequentialStream *chp, int argc, char *argv[]) {
         case 1: vampl=0.0039;break;
     }
     ht_audio_Tone(vfreq,vampl);
+    chprintf(chp,"Tone: Freq:%6.4f Ampl:%6.4f\r\n",vfreq,vampl);
 #endif
 
-    chprintf(chp,"Tone: Freq:%6.4f Ampl:%6.4f\r\n",vfreq,vampl);
     ht_audio_Play(sing_durr);
     chprintf(chp,"Finished\r\n");
     ht_audio_DisableCh();
