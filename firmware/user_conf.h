@@ -34,6 +34,7 @@
 #define USER_SERIAL         TRUE   /* Whether enable serial interface or not */
  #define USER_SERCONSOLE    FALSE   /* Whether user serial echo and prompt */
  #define USER_USB_DESC      TRUE   /* Whether use custom USB description or not */
+ #define USER_SER_SCALE     TRUE   /* Whether use tone test out in scale or not */
 
 #define USER_MMC            TRUE   /* Whether use memory card or not */
  #define USER_MMC_DBG       FALSE  /* Whether show MMC debug or not */

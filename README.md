@@ -33,7 +33,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] Main Power Button
 	- [ ] Charge/Discharge Test
 	- [ ] Battery Manager
-	- [ ] No Cap except Elco
+	- [ ] No Cap except Run Elco
 
 #### Data Communication:
 
@@ -72,7 +72,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] Calibrated SPL range
 	- [x] Calibrated SPL scaling
 	- [ ] Left/Right Isolation
-	
+
 - [ ] Microphone Input
 	- [ ] Environment Noise Capture
 	- [ ] Environment Noise Compensation
@@ -83,7 +83,9 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [ ] Random starting SPL
 	- [x] Up/Down SPL scaling
 	- [ ] Lowest Tone still too loud
-	
+	- [ ] Suffle Block
+		- [ ] 1 Block is 1 Freq in 1 Channel
+
 - [ ] Mass Production
 	- [ ] PCB Electronic
 		- [ ] Seeed Studio
