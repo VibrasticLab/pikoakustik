@@ -77,7 +77,7 @@ class Actions(QDialog):
         self.spl.start()
 
     def onSPLchanged(self,value):
-        spl_avg = value;
+        spl_avg = value
         self.vbarL.setValue(self.spl.vol_normL)
         self.vbarR.setValue(self.spl.vol_normR)
 
