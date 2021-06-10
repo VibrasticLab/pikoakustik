@@ -23,7 +23,6 @@
 #
 
 import sys
-import time
 import numpy as np
 import sounddevice as sd
 
@@ -33,22 +32,22 @@ from PyQt5.QtWidgets import QApplication, QDialog, QProgressBar, QPushButton
 class Audio(QThread):
 
     dbSPL = pyqtSignal(int)
+    vol_normL = 0
+    vol_normR = 0
+    gain = 100
 
     def print_level(self,indata, frames, time, status):
-        vol_norm = np.linalg.norm(indata)*10
-        self.dbSPL.emit(int(vol_norm))
+        self.vol_normL = int(np.linalg.norm(indata[:,0])*self.gain)
+        self.vol_normR = int(np.linalg.norm(indata[:,1])*self.gain)
+        vol_norm = int(np.linalg.norm(indata)*self.gain)
+        self.dbSPL.emit(vol_norm)
 
     def run(self):
-        sd.default.device = 2, None
-        sd.default.channels = 2, None
-        print(sd.query_devices())
-
         with sd.InputStream(callback=self.print_level):
             print("input capture started")
             while True:
                 pass
             print("input capture finished")
-
 
 class Actions(QDialog):
     """docstring for Actions"""
@@ -57,18 +56,30 @@ class Actions(QDialog):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle('Tes Bar')
-        self.vbar = QProgressBar(self)
-        self.vbar.setGeometry(0,0,300,25)
-        self.vbar.setMaximum(200)
+        self.setWindowTitle('Audio Bar')
+        self.vbarL = QProgressBar(self)
+        self.vbarL.setGeometry(0,0,300,25)
+        self.vbarL.setMaximum(100)
+
+        self.vbarR = QProgressBar(self)
+        self.vbarR.setGeometry(0,0,300,25)
+        self.vbarR.setMaximum(100)
+        self.vbarR.move(0, 30)
+
         self.show()
 
-        self.hitung = Audio()
-        self.hitung.dbSPL.connect(self.onCountChanged)
-        self.hitung.start()
+        sd.default.device = 2, None
+        sd.default.channels = 2, None
+        print(sd.query_devices())
 
-    def onCountChanged(self,value):
-        self.vbar.setValue(value)
+        self.spl = Audio()
+        self.spl.dbSPL.connect(self.onSPLchanged)
+        self.spl.start()
+
+    def onSPLchanged(self,value):
+        spl_avg = value;
+        self.vbarL.setValue(self.spl.vol_normL)
+        self.vbarR.setValue(self.spl.vol_normR)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
