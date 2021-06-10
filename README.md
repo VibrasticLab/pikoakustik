@@ -85,6 +85,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [ ] Lowest Tone still too loud
 	- [ ] Suffle Block
 		- [ ] 1 Block is 1 Freq in 1 Channel
+		- [ ] Left/Right suffle
 
 - [ ] Mass Production
 	- [ ] PCB Electronic
