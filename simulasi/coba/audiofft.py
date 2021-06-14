@@ -9,7 +9,8 @@ from matplotlib.animation import FuncAnimation
 
 def update_data(i):
 	fs = 44100
-	duration = 0.1
+	#duration = 0.1
+	#mycapture = sd.rec(int(duration*fs),channels=2)
 
 	mycapture = sd.rec(1024,channels=2)
 	sd.wait()
