@@ -2,10 +2,33 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtWidgets, QtCore
+import sounddevice as sd
 import pyqtgraph as pg
+import numpy as np
 import sys
 
-from random import randint
+import warnings
+warnings.filterwarnings("ignore")
+
+class Audio(QtCore.QThread):
+
+    dbSPL = QtCore.pyqtSignal(int)
+    fs = 44100
+    fft_L = []
+    freqs = []
+
+    def get_fft(self,indata,frames,time,status):
+        self.fft_L = np.abs(np.fft.fft(indata[:,0]))
+        self.freqs = np.fft.fftfreq(len(indata[:,0])) * self.fs
+
+        volnorm = int(np.linalg.norm(indata))
+        self.dbSPL.emit(volnorm)
+
+    def run(self):
+        with sd.InputStream(callback=self.get_fft):
+            print("input capture started")
+            while True:
+                pass
 
 class MainUI(QtWidgets.QMainWindow):
     """description"""
@@ -16,27 +39,30 @@ class MainUI(QtWidgets.QMainWindow):
         self.graphWidget = pg.PlotWidget()
         self.setCentralWidget(self.graphWidget)
 
-        self.x = list(range(100))
-        self.y = [randint(0,100) for _ in range(100)]
-
         self.graphWidget.setBackground('w')
 
         pen = pg.mkPen(color=(0,0,0),width=2)
-        self.data_line = self.graphWidget.plot(self.x, self.y, pen=pen)
+        self.graphWidget.showGrid(x=True,y=True)
+        self.graphWidget.setLogMode(x=True)
+        self.graphWidget.enableAutoRange(axis='y')
+        self.graphWidget.setYRange(0,24)
+        self.graphWidget.setXRange(2,4)
+        self.data_line = self.graphWidget.plot(pen=pen)
 
-        self.tmr = QtCore.QTimer()
-        self.tmr.setInterval(50)
-        self.tmr.timeout.connect(self.update_plot)
-        self.tmr.start()
+        sd.default.device = 2, None
+        sd.default.channels = 2, None
+        #print(sd.query_devices())
 
-    def update_plot(self):
-        self.x = self.x[1:]
-        self.x.append(self.x[-1]+1)
+        self.spl = Audio()
+        self.spl.dbSPL.connect(self.update_plot)
+        self.spl.start()
 
-        self.y = self.y[1:]
-        self.y.append(randint(0,100))
-
-        self.data_line.setData(self.x, self.y)
+    def update_plot(self,value):
+        volnorm = value
+        try:
+            self.data_line.setData(self.spl.freqs, self.spl.fft_L)
+        except:
+            pass
 
 app = QtWidgets.QApplication(sys.argv)
 wn = MainUI()
