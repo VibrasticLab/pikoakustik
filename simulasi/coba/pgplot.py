@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+import pyfftw.interfaces.numpy_fft as fftw
 from PyQt5 import QtWidgets, QtCore
 import sounddevice as sd
 import pyqtgraph as pg
@@ -15,11 +16,13 @@ class Audio(QtCore.QThread):
     dbSPL = QtCore.pyqtSignal(int)
     fs = 44100
     fft_L = []
+    fft_R = []
     freqs = []
 
     def get_fft(self,indata,frames,time,status):
-        self.fft_L = np.abs(np.fft.fft(indata[:,0]))
-        self.freqs = np.fft.fftfreq(len(indata[:,0])) * self.fs
+        self.fft_L = np.abs(fftw.fft(indata[:,0]))
+        self.fft_R = np.abs(fftw.fft(indata[:,1]))
+        self.freqs = fftw.fftfreq(len(indata[:,0])) * self.fs
 
         volnorm = int(np.linalg.norm(indata))
         self.dbSPL.emit(volnorm)
@@ -36,18 +39,36 @@ class MainUI(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.graphWidget = pg.PlotWidget()
-        self.setCentralWidget(self.graphWidget)
+        win = QtWidgets.QWidget()
+        vBoxLayout = QtWidgets.QVBoxLayout()
+        vBoxLayout.addStretch(1)
 
-        self.graphWidget.setBackground('w')
+        graphWidgetL = pg.PlotWidget()
+        graphWidgetL.setGeometry(100, 100, 600, 300)
+        graphWidgetL.setBackground('w')
+        graphWidgetL.showGrid(x=True,y=True)
+        graphWidgetL.setLogMode(x=True,y=True)
+        graphWidgetL.setYRange(-2,3)
+        graphWidgetL.setXRange(2,4)
+        vBoxLayout.addWidget(graphWidgetL)
 
-        pen = pg.mkPen(color=(0,0,0),width=2)
-        self.graphWidget.showGrid(x=True,y=True)
-        self.graphWidget.setLogMode(x=True)
-        self.graphWidget.enableAutoRange(axis='y')
-        self.graphWidget.setYRange(0,24)
-        self.graphWidget.setXRange(2,4)
-        self.data_line = self.graphWidget.plot(pen=pen)
+        graphWidgetR = pg.PlotWidget()
+        graphWidgetR.setGeometry(100, 100, 600, 300)
+        graphWidgetR.setBackground('w')
+        graphWidgetR.showGrid(x=True,y=True)
+        graphWidgetR.setLogMode(x=True,y=True)
+        graphWidgetR.setYRange(-2,3)
+        graphWidgetR.setXRange(2,4)
+        vBoxLayout.addWidget(graphWidgetR)
+
+        win.setLayout(vBoxLayout)
+        self.setCentralWidget(win)
+
+        penL = pg.mkPen(color=(255,0,0),width=2)
+        self.data_lineL = graphWidgetL.plot(pen=penL)
+
+        penR = pg.mkPen(color=(0,0,255),width=2)
+        self.data_lineR = graphWidgetR.plot(pen=penR)
 
         sd.default.device = 2, None
         sd.default.channels = 2, None
@@ -60,7 +81,8 @@ class MainUI(QtWidgets.QMainWindow):
     def update_plot(self,value):
         volnorm = value
         try:
-            self.data_line.setData(self.spl.freqs, self.spl.fft_L)
+            self.data_lineL.setData(self.spl.freqs, self.spl.fft_L)
+            self.data_lineR.setData(self.spl.freqs, self.spl.fft_R)
         except:
             pass
 
