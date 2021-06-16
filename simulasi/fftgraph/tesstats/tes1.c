@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     while(1){
         printf("%1i\r\n",arrAmpl);
 
-        if(arrAmpl > 4){ //batas pendengaran
+        if(arrAmpl > 4){ //true sampe batas pendengaran
             curr_goDown = 1;
             arrAmpl--;
         }

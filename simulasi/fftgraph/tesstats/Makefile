@@ -6,5 +6,5 @@ all:
 	$(CC) -o $(OUT) $(SRC)
 
 clean:
-	rm ./tesstat
-	rm ./compile_commands.json
+	rm -f ./tesstat
+	rm -f ./compile_commands.json

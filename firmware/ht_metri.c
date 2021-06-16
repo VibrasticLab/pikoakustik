@@ -111,7 +111,7 @@ static double freq_test[] = {0.625, 1.25, 2.5, 5, 10, 20, 40};
 static double freq_test[] = {0.625, 1.25, 2.5, 5, 10, 20};
  #endif
 #else
-static double freq_test[] = {1.25, 2.5, 5, 10};
+ static double freq_test[] = {1.25};
 #endif
 
 /**
@@ -314,11 +314,13 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 prev_goDown = curr_goDown;
 
                 if(ampl_test <= SMALLEST_DB || test_count==TEST_MAX_COUNT || ampl_num==0 || upAfterDown==5){
+                    ht_comm_Buff(strlog,sizeof(strlog),"Last Amplitude Scale=%i",ampl_num);
+                    ht_comm_Msg(strlog);
                     ht_comm_Msg("A Frequency Finish\r\n");
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
  #if USER_MMC_AMPSC
-                    ht_mmcMetri_lineResult2(freq_test[freq_idx],ampl_num,channel_stt,1);
+                    ht_mmcMetri_hearingResult(freq_test[freq_idx],ampl_num,channel_stt);
  #endif
                     ht_comm_Msg("Saved\r\n");
 #else
