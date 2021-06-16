@@ -15,6 +15,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 class Audio(QThread):
 
@@ -48,14 +49,14 @@ class MplCanvas(FigureCanvasQTAgg):
 		self.axL.grid(True,which='both',ls='-')
 		self.axL.set_xlim([32,10000])
 		self.axL.set_ylim([0.1,1000])
-		self.lineL, = axL.loglog([1])
+		self.lineL, = self.axL.loglog([1])
 
 		self.axR = plt.subplot(212)
 		self.axR.set_facecolor('#DEDEDE')
 		self.axR.grid(True,which='both',ls='-')
 		self.axR.set_xlim([32,10000])
 		self.axR.set_ylim([0.1,1000])
-		self.lineR, = axR.loglog([1])
+		self.lineR, = self.axR.loglog([1])
 
 		ani = FuncAnimation(fig, None, interval=1)
 

@@ -244,7 +244,7 @@ static void cmd_toneout(BaseSequentialStream *chp, int argc, char *argv[]) {
     double vampl=1;
     double vfreq=1;
     uint8_t lrc = 0;
-    uint16_t sing_durr = 500;
+    uint16_t sing_durr = 1000;
 
     if(argc==2){
         lrc = 0;
@@ -252,10 +252,9 @@ static void cmd_toneout(BaseSequentialStream *chp, int argc, char *argv[]) {
         in_ampl = atoi(argv[1]);
     }
     else if(argc==3){
-        lrc = 0;
-        in_freq = atoi(argv[0]);
-        in_ampl = atoi(argv[1]);
-        sing_durr = atoi(argv[2]);
+        lrc = atoi(argv[0]);;
+        in_freq = atoi(argv[1]);
+        in_ampl = atoi(argv[2]);
     }
     else if(argc==4){
         lrc = atoi(argv[0]);

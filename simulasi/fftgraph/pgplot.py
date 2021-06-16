@@ -72,7 +72,7 @@ class MainUI(QtWidgets.QMainWindow):
 
         sd.default.device = 2, None
         sd.default.channels = 2, None
-        #print(sd.query_devices())
+        print(sd.query_devices())
 
         self.spl = Audio()
         self.spl.dbSPL.connect(self.update_plot)

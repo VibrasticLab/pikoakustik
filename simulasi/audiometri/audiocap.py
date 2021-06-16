@@ -9,7 +9,7 @@ class AudioCapture(QThread):
     dbSPL = pyqtSignal(int)
     vol_normL = 0
     vol_normR = 0
-    gain = 100
+    gain = 30
 
     def get_spl(self,indata,frames,time,status):
         self.vol_normL = int(np.linalg.norm(indata[:,0]) * self.gain)
@@ -20,6 +20,7 @@ class AudioCapture(QThread):
     def run(self):
         sd.default.device = 2, None
         sd.default.channels = 2, None
+        print(sd.query_devices())
 
         with sd.InputStream(callback=self.get_spl):
             print("Capture Started")

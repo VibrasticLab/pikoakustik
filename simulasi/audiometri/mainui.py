@@ -55,9 +55,9 @@ class MainUI(QDialog):
         self.setLayout(gridMain)
 
         # Run other threads
-        #self.splcap = AudioCapture()
-        #self.splcap.dbSPL.connect(self.onSPLchanged)
-        #self.splcap.start()
+        self.splcap = AudioCapture()
+        self.splcap.dbSPL.connect(self.onSPLchanged)
+        self.splcap.start()
 
         # last show
         self.resize(400,300)

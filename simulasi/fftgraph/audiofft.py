@@ -14,7 +14,7 @@ import threading
 def update_data(i):
 	fs = 44100
 
-	mycapture = sd.rec(1024,channels=2)
+	mycapture = sd.rec(4096,channels=2)
 	sd.wait()
 
 	spl_L = np.fft.rfft(mycapture[:,0])
