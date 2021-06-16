@@ -241,8 +241,10 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
 static void cmd_toneout(BaseSequentialStream *chp, int argc, char *argv[]) {
     uint8_t in_ampl;
     uint16_t in_freq;
-    double vampl=1;
+
+    //double vampl=1;
     double vfreq=1;
+
     uint8_t lrc = 0;
     uint16_t sing_durr = 1000;
 
@@ -460,63 +462,6 @@ static void cmd_mmchk(BaseSequentialStream *chp, int argc, char *argv[]) {
 /*******************************************/
 
 /**
- * @brief IoT Subscribe Test command callback
- * @details Enumerated and not called directly by any normal thread
- */
-static void cmd_iotsub(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
-    if(argc != 0){chprintf(chp,"usage: sub\r\n");return;}
-
-    ht_comm_IoT("sub\r\n");
-    chprintf(chp,"IoT subscribe hello/world Finished\r\n\r\n");
-}
-
-/**
- * @brief IoT Publish Test command callback
- * @details Enumerated and not called directly by any normal thread
- */
-static void cmd_iotpub(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
-    if(argc != 0){chprintf(chp,"usage: pub\r\n");return;}
-
-    ht_comm_IoT("pub\r\n");
-    chprintf(chp,"IoT publish hello/world Finished\r\n\r\n");
-}
-
-/**
- * @brief IoT Publish last saved
- * @details Enumerated and not called directly by any normal thread
- */
-static void cmd_iotsend(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argv;
-    if(argc != 0){chprintf(chp,"usage: send\r\n");return;}
-
-    ht_mmc_lsFiles();
-    ht_mmc_sendFiles(lastnum);
-    ht_comm_IoT("send\r\n");
-}
-
-/**
- * @brief IoT Publish record each result
- * @details Enumerated and not called directly by any normal thread
- */
-static void cmd_iotlog(BaseSequentialStream *chp, int argc, char *argv[]) {
-    (void) argc;
-    (void) argv;
-    double testFreq = 1;
-    double testAmpl = 1;
-    char strlog[IFACE_BUFF_SIZE];
-
-    if(argc != 0){chprintf(chp,"usage: log <freq> <ampl> [TRUE/FALSE]\r\n");return;}
-
-    ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f TRULSE\r\n",testFreq,testAmpl);
-    ht_comm_IoT(strlog);
-}
-
-
-/*******************************************/
-
-/**
  * @brief Memory check function
  * @details Enumerated and not called directly by any normal thread
  */
@@ -581,12 +526,6 @@ static const ShellCommand commands[] = {
     {"mmcwr",cmd_mmcwrt},
     {"mmcat",cmd_mmcat},
     {"mmchk",cmd_mmchk},
-#endif
-#if USER_IOT
-    {"sub",cmd_iotsub},
-    {"pub",cmd_iotpub},
-    {"log",cmd_iotlog},
-    {"send",cmd_iotsend},
 #endif
     {"chmem",cmd_chmem},
     {"chthds",cmd_chthds},

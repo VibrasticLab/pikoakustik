@@ -42,7 +42,6 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] Basic Serial commands
 	- [x] Media handling commands
 	- [x] Audiometri control commands
-	- [x] MQTT Data control commands
 	- [ ] HTTP Data control commands
 
 - [x] Media Storage
@@ -57,9 +56,7 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	- [x] WiFi handling
 	- [x] Access Point handling
 	- [ ] Wifi/AP switch command
-	- [x] MQTT Protocol
 	- [ ] HTTP Data exchange
-	- [ ] MQTT Data JSON/Format
 	- [ ] HTTP Data JSON/Format
 
 #### Audiometri:

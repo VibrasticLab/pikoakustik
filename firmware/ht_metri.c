@@ -158,9 +158,6 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
     uint8_t freq_max = sizeof(freq_test)/sizeof(freq_test[0]);
     char strbuff[IFACE_BUFF_SIZE];
-#if USER_IOT_MQTTLOG
-    char strlog[IFACE_BUFF_SIZE];
-#endif
 
     srand(3);
     chRegSetThreadName("audiometri");
@@ -253,11 +250,6 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 #else
                     ht_comm_Msg("UnSaved\r\n");
 #endif
-
-#if USER_IOT_MQTTLOG
-                    ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f TRUE\r\n",freq_test[freq_idx],ampl_test);
-                    ht_comm_IoT(strlog);
-#endif
                 }
                 else{
                     led_result_off();
@@ -274,11 +266,6 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     ht_comm_Msg("Saved\r\n");
 #else
                     ht_comm_Msg("UnSaved\r\n");
-#endif
-
-#if USER_IOT_MQTTLOG
-                    ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f FALSE\r\n",freq_test[freq_idx],ampl_test);
-                    ht_comm_IoT(strlog);
 #endif
                 }
 
@@ -314,8 +301,8 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 prev_goDown = curr_goDown;
 
                 if(ampl_test <= SMALLEST_DB || test_count==TEST_MAX_COUNT || ampl_num==0 || upAfterDown==5){
-                    ht_comm_Buff(strlog,sizeof(strlog),"Last Amplitude Scale=%i",ampl_num);
-                    ht_comm_Msg(strlog);
+                    ht_comm_Buff(strbuff,sizeof(strbuff),"Last Amplitude Scale=%i",ampl_num);
+                    ht_comm_Msg(strbuff);
                     ht_comm_Msg("A Frequency Finish\r\n");
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
@@ -326,12 +313,6 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 #else
                     ht_comm_Msg("UnSaved\r\n");
 #endif
-
-#if USER_IOT_MQTTLOG
-                    ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f TRUE\r\n",freq_test[freq_idx],ampl_test);
-                    ht_comm_IoT(strlog);
-#endif
-
                     freq_idx++;
                     ampl_test = FIRSTTEST_DB;
                     ampl_num = 9;

@@ -152,10 +152,11 @@ int main(void){
 #endif
 
 #if USER_SERIAL
+ ht_commUSB_Init();
+
  #if USER_IOT
    ht_commUART_Init();
  #endif
-   ht_commUSB_Init();
 #endif
 
 #if USER_AUDIO
@@ -172,12 +173,11 @@ int main(void){
     while(1){
 
 #if USER_SERIAL
+ ht_commUSB_shInit();
+
  #if USER_IOT
-  #if !(USER_IOTSEND_ONLY)
-        ht_commUART_shInit();
-  #endif
+    ht_commUART_shInit();
  #endif
-        ht_commUSB_shInit();
 #endif
         if(stt_readyAll==FALSE){
             chThdSleepMilliseconds(500);

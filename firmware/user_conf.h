@@ -41,9 +41,7 @@
  #define USER_MMC_JSON      TRUE   /* Whether use JSON format or not */
  #define USER_MMC_AMPSC     TRUE   /* Whether use JSON in Amplification Scale or not */
 
-#define USER_IOT            FALSE   /* Whether use IOT module or not */
- #define USER_IOTSEND_ONLY  FALSE   /* Whether use IOT in one or two direction */
- #define USER_IOT_MQTTLOG   FALSE   /* Whether use MQTT Logging */
+#define USER_IOT            FALSE   /* Whether use UART for IOT module or not */
 
 #define USER_AUDIO          TRUE   /* Whether use Audio module or not */
  #define USER_AUDIO_STARTUP TRUE   /* Whether use Audio test at startup */
