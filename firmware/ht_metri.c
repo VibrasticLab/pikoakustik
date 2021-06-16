@@ -159,7 +159,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
     uint8_t freq_max = sizeof(freq_test)/sizeof(freq_test[0]);
     char strbuff[IFACE_BUFF_SIZE];
 
-    srand(3);
+    srand((unsigned long)chVTGetSystemTime()); //is this really works?
     chRegSetThreadName("audiometri");
 
     while (true) {
@@ -178,7 +178,6 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
             ht_comm_Msg("------------\r\n");
             mode_led=LED_METRI;
             mode_status=STT_METRI;
-            srand((unsigned long)chVTGetSystemTime());
         }
 
         else if(mode_status==STT_METRI){
