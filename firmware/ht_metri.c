@@ -85,6 +85,21 @@ static uint8_t last_rnd;
 static uint8_t channel_stt=OUT_LEFT;
 
 /**
+ * @brief Variable indicate amplitude scale going down
+ */
+static uint8_t curr_goDown = 1;
+
+/**
+ * @brief Varable indicate amplitude previously going down
+ */
+static uint8_t prev_goDown = 1;
+
+/**
+ * @brief Variable counting how much amplitude going up after down
+ */
+static uint8_t upAfterDown = 0;
+
+/**
  * @brief calibrated array ratio for frequency
  * @details Last Calibrated: 1.25 = 500 Hz
  * @details Requirement: 250,500,1000,2000,4000,8000
@@ -148,7 +163,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 #endif
 
     srand(3);
-    chRegSetThreadName("run led");
+    chRegSetThreadName("audiometri");
 
     while (true) {
         if(mode_status==STT_SETUP){
@@ -280,23 +295,46 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     if(ampl_num>0){
                         ampl_test = ampl_test / 2;
                         ampl_num--;
+                        curr_goDown = 1;
                     }
                 }
                 else{
                     if(ampl_num<9){
                         ampl_test = ampl_test * 2;
                         ampl_num++;
+                        curr_goDown = 0;
                     }
                 }
                 ht_comm_Msg("Next Amplitude Scale\r\n");
 
+                if((prev_goDown==1)&&(curr_goDown==0)){
+                    upAfterDown++;
+                }
 
-                if(ampl_test <= SMALLEST_DB || test_count==TEST_MAX_COUNT || ampl_num==0){
+                prev_goDown = curr_goDown;
+
+                if(ampl_test <= SMALLEST_DB || test_count==TEST_MAX_COUNT || ampl_num==0 || upAfterDown==5){
                     ht_comm_Msg("A Frequency Finish\r\n");
+
+#if defined(USER_METRI_RECORD) && defined(USER_MMC)
+ #if USER_MMC_AMPSC
+                    ht_mmcMetri_lineResult2(freq_test[freq_idx],ampl_num,channel_stt,1);
+ #endif
+                    ht_comm_Msg("Saved\r\n");
+#else
+                    ht_comm_Msg("UnSaved\r\n");
+#endif
+
+#if USER_IOT_MQTTLOG
+                    ht_comm_Buff(strlog,sizeof(strlog),"log %6.4f %6.4f TRUE\r\n",freq_test[freq_idx],ampl_test);
+                    ht_comm_IoT(strlog);
+#endif
+
                     freq_idx++;
                     ampl_test = FIRSTTEST_DB;
                     ampl_num = 9;
                     test_count = 0;
+                    upAfterDown = 5;
 
                     if(freq_idx != freq_max){
                         ht_comm_Msg("Continue next Frequency\r\n");

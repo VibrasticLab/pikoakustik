@@ -125,6 +125,14 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t re
 void ht_mmcMetri_lineResult2(double freq, uint8_t ample, uint8_t lr_ch, uint8_t result);
 
 /**
+ * @brief Save last amplification scale for every frequency test
+ * @param[in] double Frequency scaling
+ * @param[in] uint8 Amplitude scaling number
+ * @param[in] uint8 Channel Left (0) or Right (1)
+ */
+void ht_mmcMetri_hearingResult(double freq, uint8_t ample, uint8_t lr_ch);
+
+/**
  * @brief Save word END on save files
  */
 void ht_mmcMetri_endResult(void);
