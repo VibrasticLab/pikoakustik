@@ -296,10 +296,9 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 if((prev_goDown==1)&&(curr_goDown==0)){
                     upAfterDown++;
                 }
-                else if((prev_goDown==1)&&(curr_goDown==0)){
+                else if((prev_goDown==1)&&(curr_goDown==1)){
                     if(upAfterDown > (TEST_FALSE_COUNT-2))upAfterDown--;
                 }
-
                 prev_goDown = curr_goDown;
                 /** end of some stupidity */
 
