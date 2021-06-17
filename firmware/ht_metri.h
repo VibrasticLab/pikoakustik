@@ -53,6 +53,11 @@
 #define TEST_MAX_COUNT   24
 
 /**
+ * @brief Maximum number of false counter
+ */
+#define TEST_FALSE_COUNT 5
+
+/**
  * @brief Random number to choose answer position
  * @return Answer number position
  */

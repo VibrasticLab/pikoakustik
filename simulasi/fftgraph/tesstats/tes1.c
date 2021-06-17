@@ -6,6 +6,8 @@
 
 #define MAX_COUNT 24
 
+#define FALSE_COUNT 5
+
 int main(int argc, char *argv[])
 {
     uint8_t arrAmpl = 9;
@@ -54,6 +56,9 @@ int main(int argc, char *argv[])
         if((prev_goDown==1) && (curr_goDown==0)){
             upAfterDown++;
         }
+        else if((prev_goDown==1) && (curr_goDown==1)){
+            if(upAfterDown>3)upAfterDown--;
+        }
 
         prev_goDown = curr_goDown;
         y[itrCount] = arrAmpl;
@@ -64,7 +69,7 @@ int main(int argc, char *argv[])
             break;
         }
 
-        if(upAfterDown==4)break;
+        if(upAfterDown==5)break;
     }
 
     for(i=itrCount;i<MAX_COUNT;i++){

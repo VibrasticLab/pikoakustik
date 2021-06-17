@@ -292,13 +292,18 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 }
                 ht_comm_Msg("Next Amplitude Scale\r\n");
 
+                /** Some blind statistic here */
                 if((prev_goDown==1)&&(curr_goDown==0)){
                     upAfterDown++;
                 }
+                else if((prev_goDown==1)&&(curr_goDown==0)){
+                    if(upAfterDown > (TEST_FALSE_COUNT-2))upAfterDown--;
+                }
 
                 prev_goDown = curr_goDown;
+                /** end of some stupidity */
 
-                if(ampl_test <= SMALLEST_DB || test_count==TEST_MAX_COUNT || ampl_num==0 || upAfterDown==5){
+                if(ampl_test <= SMALLEST_DB || test_count==TEST_MAX_COUNT || ampl_num==0 || upAfterDown==TEST_FALSE_COUNT){
                     ht_comm_Buff(strbuff,sizeof(strbuff),"Last Amplitude Scale=%i",ampl_num);
                     ht_comm_Msg(strbuff);
                     ht_comm_Msg("A Frequency Finish\r\n");
@@ -315,7 +320,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     ampl_test = FIRSTTEST_DB;
                     ampl_num = 9;
                     test_count = 0;
-                    upAfterDown = 5;
+                    upAfterDown = 0;
 
                     if(freq_idx != freq_max){
                         ht_comm_Msg("Continue next Frequency\r\n");
