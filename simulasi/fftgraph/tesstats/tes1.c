@@ -1,3 +1,4 @@
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -17,6 +18,8 @@ int main(int argc, char *argv[])
     uint8_t y[MAX_COUNT];
     uint8_t i;
 
+    uint8_t rnd_ask,rnd_resp;
+
     for(i=0;i<MAX_COUNT;i++){
         x[i] = i;
         y[i] = 0;
@@ -24,8 +27,11 @@ int main(int argc, char *argv[])
 
     y[0] = 9;
     itrCount++;
+    srand(time(NULL));
 
     while(1){
+        rnd_ask = rand() % 3;
+
         printf("%1i\r\n",arrAmpl);
 
         if(arrAmpl > 4){ //true sampe batas pendengaran
@@ -33,8 +39,16 @@ int main(int argc, char *argv[])
             arrAmpl--;
         }
         else{
-            curr_goDown = 0;
-            arrAmpl++;
+            rnd_resp = rand() % 3;
+
+            if(rnd_resp==rnd_ask){
+                curr_goDown = 1;
+                arrAmpl--;
+            }
+            else{
+                curr_goDown = 0;
+                arrAmpl++;
+            }
         }
 
         if((prev_goDown==1) && (curr_goDown==0)){
@@ -50,13 +64,14 @@ int main(int argc, char *argv[])
             break;
         }
 
-        if(upAfterDown==5)break;
+        if(upAfterDown==4)break;
     }
 
     for(i=itrCount;i<MAX_COUNT;i++){
         y[i] = arrAmpl;
     }
 
+    printf("\r\n");
     printf("last Ampl= %1i\r\n",arrAmpl);
 
     FILE *gnuplot = popen("gnuplot", "w");

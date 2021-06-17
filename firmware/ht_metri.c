@@ -159,7 +159,6 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
     uint8_t freq_max = sizeof(freq_test)/sizeof(freq_test[0]);
     char strbuff[IFACE_BUFF_SIZE];
 
-    srand((unsigned long)chVTGetSystemTime()); //is this really works?
     chRegSetThreadName("audiometri");
 
     while (true) {

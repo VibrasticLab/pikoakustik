@@ -3,7 +3,7 @@ OUT = tesstat
 CC = gcc
 
 all:
-	$(CC) -o $(OUT) $(SRC)
+	$(CC) -O3 -o $(OUT) $(SRC)
 
 clean:
 	rm -f ./tesstat
