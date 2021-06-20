@@ -93,7 +93,7 @@ class _MyAppState extends State<MyApp> {
         leading: Icon(Icons.usb),
         title: Text(device.productName),
         subtitle: Text(device.manufacturerName),
-        trailing: RaisedButton(
+        trailing: ElevatedButton(
           child: Text(_deviceId == device.deviceId ? "Disconnect" : "Connect"),
           onPressed: () {
             _connectTo(_deviceId == device.deviceId ? null : device)
@@ -115,6 +115,7 @@ class _MyAppState extends State<MyApp> {
       return;
     }
 
+    _serialData.clear();
     String strData = strReq + "\r\n";
     await _port.write(Uint8List.fromList(strData.codeUnits));
 
@@ -162,7 +163,7 @@ class _MyAppState extends State<MyApp> {
                     labelText: 'Text To Send',
                   ),
                 ),
-                trailing: RaisedButton(
+                trailing: ElevatedButton(
                   child: Text("Send"),
                   onPressed: _port == null
                       ? null
@@ -172,7 +173,7 @@ class _MyAppState extends State<MyApp> {
                 ),
               ),
               ListTile(
-                leading: RaisedButton(
+                leading: ElevatedButton(
                   child: Text("Info"),
                   onPressed: _port == null
                       ? null
@@ -180,20 +181,20 @@ class _MyAppState extends State<MyApp> {
                           _sendText("info");
                         },
                 ),
-                title: RaisedButton(
-                  child: Text("Threads"),
+                title: ElevatedButton(
+                  child: Text("List Files"),
                   onPressed: _port == null
                       ? null
                       : () {
-                          _sendText("chthds");
+                          _sendText("ls");
                         },
                 ),
-                trailing: RaisedButton(
-                  child: Text("Benchmark"),
+                trailing: ElevatedButton(
+                  child: Text("Test Audio"),
                   onPressed: _port == null
                       ? null
                       : () {
-                          _sendText("chbenc");
+                          _sendText("test");
                         },
                 ),
               ),
