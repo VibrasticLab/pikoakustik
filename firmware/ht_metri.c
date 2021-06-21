@@ -236,34 +236,24 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     led_result_off();
                     led_resultYES();
                     test_answer = 1;
-                    ht_comm_Msg("Answer is True. ");
+                    ht_comm_Msg("Answer is True\r\n");
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
- #if USER_MMC_AMPSC
-                    ht_mmcMetri_lineResult2(freq_test[freq_idx],ampl_num,channel_stt,1);
- #else
-                    ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,channel_stt,1);
+ #if USER_MMC_LINE
+                    ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_num,channel_stt,1);
  #endif
-                    ht_comm_Msg("Saved\r\n");
-#else
-                    ht_comm_Msg("UnSaved\r\n");
 #endif
                 }
                 else{
                     led_result_off();
                     led_resultNO();
                     test_answer = 0;
-                    ht_comm_Msg("Answer is False. ");
+                    ht_comm_Msg("Answer is False\r\n");
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
- #if USER_MMC_AMPSC
-                    ht_mmcMetri_lineResult2(freq_test[freq_idx],ampl_num,channel_stt,0);
- #else
-                    ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_test,channel_stt,0);
+ #if USER_MMC_LINE
+                    ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_num,channel_stt,0);
  #endif
-                    ht_comm_Msg("Saved\r\n");
-#else
-                    ht_comm_Msg("UnSaved\r\n");
 #endif
                 }
 
@@ -290,7 +280,6 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                         curr_goDown = 0;
                     }
                 }
-                ht_comm_Msg("Next Amplitude Scale\r\n");
 
                 /** Some blind statistic here */
                 if((prev_goDown==1)&&(curr_goDown==0)){
@@ -303,14 +292,15 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 /** end of some stupidity */
 
                 if(ampl_test <= SMALLEST_DB || test_count==TEST_MAX_COUNT || ampl_num==0 || upAfterDown==TEST_FALSE_COUNT){
-                    ht_comm_Buff(strbuff,sizeof(strbuff),"Last Amplitude Scale=%i",ampl_num);
+
+                    if(curr_goDown==1){ampl_num++;}
+
+                    ht_comm_Buff(strbuff,sizeof(strbuff),"Last Amplitude Scale=%i\r\n",ampl_num);
                     ht_comm_Msg(strbuff);
                     ht_comm_Msg("A Frequency Finish\r\n");
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
- #if USER_MMC_AMPSC
                     ht_mmcMetri_hearingResult(freq_test[freq_idx],ampl_num,channel_stt);
- #endif
                     ht_comm_Msg("Saved\r\n");
 #else
                     ht_comm_Msg("UnSaved\r\n");

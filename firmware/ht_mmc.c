@@ -566,11 +566,7 @@ void ht_mmcMetri_chkFile(void){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-#if USER_MMC_JSON
-        ht_comm_Buff(buffer,sizeof(buffer),"[\n");
-#else
-        ht_comm_Buff(buffer,sizeof(buffer),"START\n");
-#endif
+        ht_comm_Buff(buffer,sizeof(buffer),"{");
 
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
@@ -629,7 +625,7 @@ void ht_mmcMetri_chkFile(void){
     free(Fil_new);
 }
 
-void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t result){
+void ht_mmcMetri_lineResult(double freq, uint8_t ample, uint8_t lr_ch, uint8_t result){
 
     char buffer[STR_BUFF_SIZE];
     char fname[STR_BUFF_SIZE];
@@ -644,64 +640,12 @@ void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t re
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-#if USER_MMC_JSON
         if(result==1){
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"scale\":%6.4f,\"val\":true},\n",lr_ch, freq, ample);
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"scale\":%1i,\"val\":true},", lr_ch, freq, ample);
         }
         else{
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"scale\":%6.4f,\"val\":false},\n",lr_ch, freq, ample);
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"scale\":%1i,\"val\":false},", lr_ch, freq, ample);
         }
-#else
-        ht_comm_Buff(buffer,sizeof(buffer),"%6.4f, %6.4f, %1i, %1i\n",freq,ample,lr_ch,result);
-#endif
-
-        if(lastnum < FILE_MAX_NUM){
-            f_mount(&FatFs, "", 0);
-
-            ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
-            err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
-            if(err==FR_OK){
-                f_lseek(Fil, f_size(Fil));
-                f_write(Fil, buffer, strlen(buffer), &bw);
-                f_close(Fil);
-            }
-
-            f_mount(0, "", 0);
-        }
-        else{
-            mode_status = STT_IDLE;
-            mode_led = LED_READY;
-            ht_comm_Msg("Warning: Maximum save number\r\n");
-        }
-    }
-    free(Fil);
-}
-
-void ht_mmcMetri_lineResult2(double freq, uint8_t ample, uint8_t lr_ch, uint8_t result){
-
-    char buffer[STR_BUFF_SIZE];
-    char fname[STR_BUFF_SIZE];
-    FATFS FatFs;
-    FIL *Fil;
-    UINT bw;
-    FRESULT err;
-
-    Fil = (FIL*)malloc(sizeof(FIL));
-
-    if(mmc_check()!=FR_OK){return;}
-
-    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-
-#if USER_MMC_JSON
-        if(result==1){
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"scale\":%1i,\"val\":true},\n", lr_ch, freq, ample);
-        }
-        else{
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"scale\":%1i,\"val\":false},\n", lr_ch, freq, ample);
-        }
-#else
-        ht_comm_Buff(buffer,sizeof(buffer),"%6.4f, %1i, %1i, %1i\n",freq,ample,lr_ch,result);
-#endif
 
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
@@ -740,11 +684,7 @@ void ht_mmcMetri_hearingResult(double freq, uint8_t ample, uint8_t lr_ch){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-#if USER_MMC_JSON
-        ht_comm_Buff(buffer,sizeof(buffer),"{\"last_scale\":%1i,\"ch\":%1i,\"freq\":%6.4f}\n", ample, lr_ch, freq);
-#else
-        ht_comm_Buff(buffer,sizeof(buffer),"last_ampl= %1i, %1i, %6.4f\n", ample, lr_ch, freq);
-#endif
+        ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"last_scale\":%1i},", lr_ch, freq, ample);
 
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
@@ -782,11 +722,7 @@ void ht_mmcMetri_endResult(void){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-#if USER_MMC_JSON
-        ht_comm_Buff(buffer,sizeof(buffer),"]");
-#else
-        ht_comm_Buff(buffer,sizeof(buffer),"END\n");
-#endif
+        ht_comm_Buff(buffer,sizeof(buffer),"}\r\n");
 
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);

@@ -109,20 +109,11 @@ void ht_mmcMetri_chkFile(void);
 /**
  * @brief Save each line for every result
  * @param[in] double Frequency scaling
- * @param[in] double Amplitude scaling
- * @param[in] uint8  Channel Left (0) or Right (1)
- * @param[in] double Result True of False
- */
-void ht_mmcMetri_lineResult(double freq, double ample, uint8_t lr_ch, uint8_t result);
-
-/**
- * @brief Save each line for every result
- * @param[in] double Frequency scaling
  * @param[in] uint8 Amplitude scaling number
  * @param[in] uint8 Channel Left (0) or Right (1)
  * @param[in] double Result True of False
  */
-void ht_mmcMetri_lineResult2(double freq, uint8_t ample, uint8_t lr_ch, uint8_t result);
+void ht_mmcMetri_lineResult(double freq, uint8_t ample, uint8_t lr_ch, uint8_t result);
 
 /**
  * @brief Save last amplification scale for every frequency test

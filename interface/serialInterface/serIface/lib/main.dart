@@ -73,6 +73,7 @@ class _MyAppState extends State<MyApp> {
         if (_serialData.length > 20) {
           _serialData.removeAt(0);
         }
+        print(line);
       });
     });
 
