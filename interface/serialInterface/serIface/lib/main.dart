@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
+import 'dart:convert';
 import 'dart:async';
 import 'package:usb_serial/usb_serial.dart';
 import 'package:usb_serial/transaction.dart';
 
 void main() {
   runApp(MyApp());
+}
+
+class DataJSON {
+  String tester;
+
+  DataJSON(this.tester);
+
+  DataJSON.fromJson(Map<String, dynamic> json) : tester = json['tester'];
 }
 
 class MyApp extends StatefulWidget {
@@ -22,6 +31,9 @@ class _MyAppState extends State<MyApp> {
   Transaction<String> _transaction;
   int _deviceId;
   TextEditingController _textController = TextEditingController();
+
+  int isGetJSON = 0;
+  TextEditingController _textViewSaved = TextEditingController();
 
   Future<bool> _connectTo(device) async {
     _serialData.clear();
@@ -69,11 +81,20 @@ class _MyAppState extends State<MyApp> {
 
     _subscription = _transaction.stream.listen((String line) {
       setState(() {
-        _serialData.add(Text(line));
-        if (_serialData.length > 20) {
-          _serialData.removeAt(0);
-        }
         print(line);
+
+        if (isGetJSON == 1) {
+          Map<String, dynamic> dataMap = jsonDecode(line);
+          var dataJson = DataJSON.fromJson(dataMap);
+
+          _serialData.add(Text('${dataJson.tester}'));
+          isGetJSON = 0;
+        } else {
+          _serialData.add(Text(line));
+          if (_serialData.length > 20) {
+            _serialData.removeAt(0);
+          }
+        }
       });
     });
 
@@ -123,6 +144,20 @@ class _MyAppState extends State<MyApp> {
     _textController.text = "";
   }
 
+  void _getJSON(String strReq) async {
+    if (_port == null) {
+      return;
+    }
+    int numReq = int.parse(strReq);
+
+    _serialData.clear();
+    isGetJSON = 1;
+    String strData = "cat " + numReq.toString() + "\r\n";
+    await _port.write(Uint8List.fromList(strData.codeUnits));
+
+    _textViewSaved.text = "";
+  }
+
   @override
   void initState() {
     super.initState();
@@ -158,18 +193,31 @@ class _MyAppState extends State<MyApp> {
               Text('Status: $_status\n'),
               ListTile(
                 title: TextField(
-                  controller: _textController,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Text To Send',
-                  ),
-                ),
+                    controller: _textController,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Text To Send')),
                 trailing: ElevatedButton(
                   child: Text("Send"),
                   onPressed: _port == null
                       ? null
                       : () {
                           _sendText(_textController.text);
+                        },
+                ),
+              ),
+              ListTile(
+                title: TextField(
+                    controller: _textViewSaved,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Number to View')),
+                trailing: ElevatedButton(
+                  child: Text("GetJSON"),
+                  onPressed: _port == null
+                      ? null
+                      : () {
+                          _getJSON(_textViewSaved.text);
                         },
                 ),
               ),
