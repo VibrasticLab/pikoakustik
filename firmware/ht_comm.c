@@ -503,6 +503,22 @@ static void cmd_chthds(BaseSequentialStream *chp, int argc, char *argv[]) {
   } while (tp != NULL);
 }
 
+/**
+ * @brief Tester name check function
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_chwho(BaseSequentialStream *chp, int argc, char *argv[]) {
+
+  (void)argv;
+  if (argc > 0) {
+    chprintf(chp, "Usage: who\r\n");
+    return;
+  }
+
+  char tester[] = USER_TESTER;
+  chprintf(chp, "tester name: \"%s\"\r\n",tester);
+}
+
 /*******************************************/
 
 /**
@@ -529,6 +545,7 @@ static const ShellCommand commands[] = {
 #endif
     {"chmem",cmd_chmem},
     {"chthds",cmd_chthds},
+    {"who",cmd_chwho},
     {NULL, NULL}
 };
 

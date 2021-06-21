@@ -332,7 +332,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 }
 
 uint8_t ht_metri_RndOpt(void){
-    uint8_t rndnum, rndnumask;
+    uint8_t rndnum=0, rndnumask=0;
 
     //is this pseudorandom really works?
     srand((unsigned long)chVTGetSystemTime());
@@ -352,9 +352,6 @@ uint8_t ht_metri_RndOpt(void){
     else if(rndnum==2||rndnum==5||rndnum==8||rndnum==11||rndnum==14||rndnum==17||rndnum==20||rndnum==23||rndnum==26||rndnum==29||rndnum==32||rndnum==35){
         rndnumask = OPT_ASK_C;
         ht_comm_Msg("Option C\r\n");
-    }
-    else{
-        rndnumask = OPT_ASK_A;
     }
 
 #if USER_TEST_RNG

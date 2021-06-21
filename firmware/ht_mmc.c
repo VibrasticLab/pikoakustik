@@ -559,6 +559,7 @@ void ht_mmcMetri_chkFile(void){
     char buff[STR_BUFF_SIZE];
     char buffer[STR_BUFF_SIZE];
     char fname[STR_BUFF_SIZE];
+    char tester[] = USER_TESTER;
 
     Fil_last = (FIL*)malloc(sizeof(FIL));
     Fil_new = (FIL*)malloc(sizeof(FIL));
@@ -567,7 +568,7 @@ void ht_mmcMetri_chkFile(void){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-        ht_comm_Buff(buffer,sizeof(buffer)," ");
+        ht_comm_Buff(buffer,sizeof(buffer),"{\"tester\":\"%s\",",tester);
 
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
@@ -642,7 +643,7 @@ void ht_mmcMetri_jsonChStart(uint8_t lr_ch){
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
         if(lr_ch==OUT_LEFT){
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch_0\":{");
+            ht_comm_Buff(buffer,sizeof(buffer)," \"ch_0\":{");
         }
         else if(lr_ch==OUT_RIGHT){
             ht_comm_Buff(buffer,sizeof(buffer),",\"ch_1\":{");

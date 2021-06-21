@@ -26,6 +26,8 @@
 #ifndef USER_CONF_H
 #define USER_CONF_H
 
+#define USER_TESTER         "Fiqhiyah"
+
 #define USER_BAUD           9600    /* Default Baudrate */
 
 #define USER_TEST_STATE     FALSE   /* Whether run as test or metri mode */
