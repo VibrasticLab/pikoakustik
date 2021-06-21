@@ -11,10 +11,21 @@ void main() {
 
 class DataJSON {
   String tester;
+  double ch0F0f, ch0F1f, ch1F0f, ch1F1f;
+  int ch0F0a, ch0F1a, ch1F0a, ch1F1a;
 
-  DataJSON(this.tester);
+  DataJSON(this.tester, this.ch0F0a);
 
-  DataJSON.fromJson(Map<String, dynamic> json) : tester = json['tester'];
+  DataJSON.fromJson(Map<String, dynamic> jsonIN)
+      : tester = jsonIN['tester'],
+        ch0F0f = jsonIN['ch_0']['freq_0']['freq'],
+        ch0F0a = jsonIN['ch_0']['freq_0']['ampl'],
+        ch0F1f = jsonIN['ch_0']['freq_1']['freq'],
+        ch0F1a = jsonIN['ch_0']['freq_1']['ampl'],
+        ch1F0f = jsonIN['ch_1']['freq_0']['freq'],
+        ch1F0a = jsonIN['ch_1']['freq_0']['ampl'],
+        ch1F1f = jsonIN['ch_1']['freq_1']['freq'],
+        ch1F1a = jsonIN['ch_1']['freq_1']['ampl'];
 }
 
 class MyApp extends StatefulWidget {
@@ -84,11 +95,10 @@ class _MyAppState extends State<MyApp> {
         print(line);
 
         if (isGetJSON == 1) {
+          isGetJSON = 0;
           Map<String, dynamic> dataMap = jsonDecode(line);
           var dataJson = DataJSON.fromJson(dataMap);
-
           _serialData.add(Text('${dataJson.tester}'));
-          isGetJSON = 0;
         } else {
           _serialData.add(Text(line));
           if (_serialData.length > 20) {
