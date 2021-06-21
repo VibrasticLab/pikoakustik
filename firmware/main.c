@@ -137,8 +137,6 @@ int main(void){
     halInit();
     chSysInit();
 
-    srand((unsigned long)chVTGetSystemTime()); //is this really works?
-
     palSetPadMode(GPIOA,LED_RUN,PAL_MODE_OUTPUT_PUSHPULL);
     palClearPad(GPIOA,LED_RUN);
 

@@ -311,7 +311,7 @@ void ht_mmc_Test(void){
 
         f_mount(&FatFs, "", 0);
 
-        err = f_open(Fil, "/TEST.TXT", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+        err = f_open(Fil, "/RESULT.TXT", FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
         if(err==FR_OK){
             f_lseek(Fil, f_size(Fil));
             f_write(Fil, buffer, strlen(buffer), &bw);
@@ -354,7 +354,7 @@ void ht_mmc_catTest(void){
 #endif
 
     strcpy(buffer,"");
-    ht_comm_Buff(fname,sizeof(fname),"/TEST.TXT");
+    ht_comm_Buff(fname,sizeof(fname),"/RESULT.TXT");
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         f_mount(&FatFs, "", 0);
 
@@ -424,7 +424,7 @@ void ht_mmc_lsFiles(void){
 #endif
 
                 if(lastnum < FILE_MAX_NUM){
-                    ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+                    ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
 
                     err = f_open(Fil, fname, FA_READ | FA_OPEN_EXISTING);
                     if(err==FR_OK){
@@ -472,7 +472,7 @@ void ht_mmc_catFiles(uint16_t fnum){
 
     if(mmc_check()!=FR_OK){return;}
 
-    ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",fnum);
+    ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",fnum);
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         f_mount(&FatFs, "", 0);
 
@@ -516,7 +516,7 @@ void ht_mmc_sendFiles(uint16_t fnum){
 
     if(mmc_check()!=FR_OK){return;}
 
-    ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",fnum);
+    ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",fnum);
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         f_mount(&FatFs, "", 0);
 
@@ -575,7 +575,7 @@ void ht_mmcMetri_chkFile(void){
             err = scanFile(buff,&lastnum,0);
 
             if(lastnum < FILE_MAX_NUM){
-                ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+                ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
 
                 err = f_open(Fil_last, fname, FA_READ | FA_OPEN_EXISTING);
                 if(err==FR_OK){
@@ -585,7 +585,7 @@ void ht_mmcMetri_chkFile(void){
 
                     lastnum++;
                     ht_comm_Msg("File name incremented\r\n");
-                    ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+                    ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
 
                     err = f_open(Fil_new, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
                     if(err==FR_OK){
@@ -599,7 +599,7 @@ void ht_mmcMetri_chkFile(void){
                     ht_comm_Msg(strbuff);
 
                     ht_comm_Msg("File name created now\r\n");
-                    ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+                    ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
 
                     err = f_open(Fil_new, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
                     if(err==FR_OK){
@@ -651,7 +651,7 @@ void ht_mmcMetri_jsonChStart(uint8_t lr_ch){
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
 
-            ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+            ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
             err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
             if(err==FR_OK){
                 f_lseek(Fil, f_size(Fil));
@@ -690,7 +690,7 @@ void ht_mmcMetri_jsonChClose(void){
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
 
-            ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+            ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
             err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
             if(err==FR_OK){
                 f_lseek(Fil, f_size(Fil));
@@ -729,7 +729,7 @@ void ht_mmcMetri_jsonComma(void){
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
 
-            ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+            ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
             err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
             if(err==FR_OK){
                 f_lseek(Fil, f_size(Fil));
@@ -768,7 +768,7 @@ void ht_mmcMetri_hearingResult(double freq, uint8_t freqidx, uint8_t ample){
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
 
-            ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+            ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
             err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
             if(err==FR_OK){
                 f_lseek(Fil, f_size(Fil));
@@ -806,7 +806,7 @@ void ht_mmcMetri_endResult(void){
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
 
-            ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+            ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
             err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
             if(err==FR_OK){
                 f_lseek(Fil, f_size(Fil));
