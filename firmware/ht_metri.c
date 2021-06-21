@@ -334,7 +334,10 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 uint8_t ht_metri_RndOpt(void){
     uint8_t rndnum, rndnumask;
 
+    //is this pseudorandom really works?
+    srand((unsigned long)chVTGetSystemTime());
     rndnum = rand() % 36;
+
     while(rndnum==last_rnd){rndnum = rand() % 36;}
     last_rnd = rndnum;
 
