@@ -37,6 +37,7 @@
 #include "ht_mmc.h"
 #include "ht_led.h"
 #include "ht_metri.h"
+#include "ht_audio.h"
 #include "ht_console.h"
 
 /* Blink indicator mode */
@@ -566,7 +567,7 @@ void ht_mmcMetri_chkFile(void){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-        ht_comm_Buff(buffer,sizeof(buffer),"{");
+        ht_comm_Buff(buffer,sizeof(buffer)," ");
 
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
@@ -625,7 +626,7 @@ void ht_mmcMetri_chkFile(void){
     free(Fil_new);
 }
 
-void ht_mmcMetri_lineResult(double freq, uint8_t ample, uint8_t lr_ch, uint8_t result){
+void ht_mmcMetri_jsonChStart(uint8_t lr_ch){
 
     char buffer[STR_BUFF_SIZE];
     char fname[STR_BUFF_SIZE];
@@ -640,11 +641,11 @@ void ht_mmcMetri_lineResult(double freq, uint8_t ample, uint8_t lr_ch, uint8_t r
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-        if(result==1){
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"scale\":%1i,\"val\":true},", lr_ch, freq, ample);
+        if(lr_ch==OUT_LEFT){
+            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch_0\":{");
         }
-        else{
-            ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"scale\":%1i,\"val\":false},", lr_ch, freq, ample);
+        else if(lr_ch==OUT_RIGHT){
+            ht_comm_Buff(buffer,sizeof(buffer),",\"ch_1\":{");
         }
 
         if(lastnum < FILE_MAX_NUM){
@@ -669,7 +670,7 @@ void ht_mmcMetri_lineResult(double freq, uint8_t ample, uint8_t lr_ch, uint8_t r
     free(Fil);
 }
 
-void ht_mmcMetri_hearingResult(double freq, uint8_t ample, uint8_t lr_ch){
+void ht_mmcMetri_jsonChClose(void){
 
     char buffer[STR_BUFF_SIZE];
     char fname[STR_BUFF_SIZE];
@@ -684,7 +685,85 @@ void ht_mmcMetri_hearingResult(double freq, uint8_t ample, uint8_t lr_ch){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-        ht_comm_Buff(buffer,sizeof(buffer),"{\"ch\":%1i,\"freq\":%6.4f,\"last_scale\":%1i},", lr_ch, freq, ample);
+        ht_comm_Buff(buffer,sizeof(buffer),"}");
+
+        if(lastnum < FILE_MAX_NUM){
+            f_mount(&FatFs, "", 0);
+
+            ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+            err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+            if(err==FR_OK){
+                f_lseek(Fil, f_size(Fil));
+                f_write(Fil, buffer, strlen(buffer), &bw);
+                f_close(Fil);
+            }
+
+            f_mount(0, "", 0);
+        }
+        else{
+            mode_status = STT_IDLE;
+            mode_led = LED_READY;
+            ht_comm_Msg("Warning: Maximum save number\r\n");
+        }
+    }
+    free(Fil);
+}
+
+void ht_mmcMetri_jsonComma(void){
+
+    char buffer[STR_BUFF_SIZE];
+    char fname[STR_BUFF_SIZE];
+    FATFS FatFs;
+    FIL *Fil;
+    UINT bw;
+    FRESULT err;
+
+    Fil = (FIL*)malloc(sizeof(FIL));
+
+    if(mmc_check()!=FR_OK){return;}
+
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+
+        ht_comm_Buff(buffer,sizeof(buffer),",");
+
+        if(lastnum < FILE_MAX_NUM){
+            f_mount(&FatFs, "", 0);
+
+            ht_comm_Buff(fname,sizeof(fname),"/TEST_%i.TXT",lastnum);
+            err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+            if(err==FR_OK){
+                f_lseek(Fil, f_size(Fil));
+                f_write(Fil, buffer, strlen(buffer), &bw);
+                f_close(Fil);
+            }
+
+            f_mount(0, "", 0);
+        }
+        else{
+            mode_status = STT_IDLE;
+            mode_led = LED_READY;
+            ht_comm_Msg("Warning: Maximum save number\r\n");
+        }
+    }
+    free(Fil);
+}
+
+void ht_mmcMetri_hearingResult(double freq, uint8_t freqidx, uint8_t ample){
+
+    char buffer[STR_BUFF_SIZE];
+    char fname[STR_BUFF_SIZE];
+    FATFS FatFs;
+    FIL *Fil;
+    UINT bw;
+    FRESULT err;
+
+    Fil = (FIL*)malloc(sizeof(FIL));
+
+    if(mmc_check()!=FR_OK){return;}
+
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+
+        ht_comm_Buff(buffer,sizeof(buffer),"\"freq_%i\":{\"freq\":%6.4f,\"ampl\":%i}", freqidx, freq, ample);
 
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);

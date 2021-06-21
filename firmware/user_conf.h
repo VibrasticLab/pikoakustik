@@ -38,7 +38,6 @@
 
 #define USER_MMC            TRUE   /* Whether use memory card or not */
  #define USER_MMC_DBG       FALSE  /* Whether show MMC debug or not */
- #define USER_MMC_LINE      FALSE  /* Whether save each line of just each frequency */
 
 #define USER_IOT            FALSE   /* Whether use UART for IOT module or not */
 
@@ -49,7 +48,6 @@
 
 #define USER_METRI          TRUE   /* Whether use Audiometri routine or not */
  #define USER_METRI_RECORD  TRUE   /* Whether record Audiometri session */
- #define USER_METRI_2EARS   FALSE   /* Whether Audiometri in Left only or also Right */
  #define USER_METRI_ALLFREQ FALSE   /* Whether Audiometri in all frequency or selection */
  #define USER_METRI_16KHZ   FALSE   /* Whether Audiometri use 16kHz or not */
 

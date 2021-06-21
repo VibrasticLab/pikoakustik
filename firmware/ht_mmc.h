@@ -107,21 +107,28 @@ void ht_mmc_sendFiles(uint16_t fnum);
 void ht_mmcMetri_chkFile(void);
 
 /**
- * @brief Save each line for every result
- * @param[in] double Frequency scaling
- * @param[in] uint8 Amplitude scaling number
- * @param[in] uint8 Channel Left (0) or Right (1)
- * @param[in] double Result True of False
+ * @brief Put JSON open bracket on save files
+ * @param[in] uint8_t Channel number
  */
-void ht_mmcMetri_lineResult(double freq, uint8_t ample, uint8_t lr_ch, uint8_t result);
+void ht_mmcMetri_jsonChStart(uint8_t lr_ch);
+
+/**
+ * @brief Put JSON close bracket on save files
+ */
+void ht_mmcMetri_jsonChClose(void);
+
+/**
+ * @brief Put JSON comma separator on save files
+ */
+void ht_mmcMetri_jsonComma(void);
 
 /**
  * @brief Save last amplification scale for every frequency test
- * @param[in] double Frequency scaling
- * @param[in] uint8 Amplitude scaling number
- * @param[in] uint8 Channel Left (0) or Right (1)
+ * @param[in] double Frequency ratio
+ * @param[in] uint8_t Frequency index number
+ * @param[in] uint8_t Amplitude scaling number
  */
-void ht_mmcMetri_hearingResult(double freq, uint8_t ample, uint8_t lr_ch);
+void ht_mmcMetri_hearingResult(double freq, uint8_t freqidx, uint8_t ample);
 
 /**
  * @brief Save word END on save files

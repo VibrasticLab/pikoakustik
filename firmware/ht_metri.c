@@ -172,6 +172,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
             ht_mmcMetri_chkFile();
+            ht_mmcMetri_jsonChStart(channel_stt);
 #endif
             ht_comm_Msg("Entering Mode: Audiometri\r\n");
             ht_comm_Msg("------------\r\n");
@@ -237,24 +238,12 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     led_resultYES();
                     test_answer = 1;
                     ht_comm_Msg("Answer is True\r\n");
-
-#if defined(USER_METRI_RECORD) && defined(USER_MMC)
- #if USER_MMC_LINE
-                    ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_num,channel_stt,1);
- #endif
-#endif
                 }
                 else{
                     led_result_off();
                     led_resultNO();
                     test_answer = 0;
                     ht_comm_Msg("Answer is False\r\n");
-
-#if defined(USER_METRI_RECORD) && defined(USER_MMC)
- #if USER_MMC_LINE
-                    ht_mmcMetri_lineResult(freq_test[freq_idx],ampl_num,channel_stt,0);
- #endif
-#endif
                 }
 
                 numask = 0;
@@ -300,10 +289,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                     ht_comm_Msg("A Frequency Finish\r\n");
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
-                    ht_mmcMetri_hearingResult(freq_test[freq_idx],ampl_num,channel_stt);
-                    ht_comm_Msg("Saved\r\n");
-#else
-                    ht_comm_Msg("UnSaved\r\n");
+                    ht_mmcMetri_hearingResult(freq_test[freq_idx],freq_idx,ampl_num);
 #endif
                     freq_idx++;
                     ampl_test = FIRSTTEST_DB;
@@ -313,27 +299,30 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
                     if(freq_idx != freq_max){
                         ht_comm_Msg("Continue next Frequency\r\n");
+                        ht_mmcMetri_jsonComma();
                     }
                     else{
-#if USER_METRI_2EARS
                         if(channel_stt!=OUT_RIGHT){
                             channel_stt = OUT_RIGHT;
                             freq_idx = 0;
                             ht_comm_Msg("Continue next Channel\r\n");
+
+#if defined(USER_METRI_RECORD) && defined(USER_MMC)
+                            ht_mmcMetri_jsonChClose();
+                            ht_mmcMetri_jsonChStart(channel_stt);
+#endif
                         }
                         else{
-#endif
-  #if defined(USER_METRI_RECORD) && defined(USER_MMC)
+#if defined(USER_METRI_RECORD) && defined(USER_MMC)
+                            ht_mmcMetri_jsonChClose();
                             ht_mmcMetri_endResult();
-  #endif
+#endif
                             ht_comm_Msg("Testing Finish\r\n");
                             freq_idx = 0;
                             mode_status = STT_IDLE;
                             mode_led = LED_READY;
                             channel_stt = OUT_LEFT;
-#if USER_METRI_2EARS
                         }
-#endif
                     }
                 }
             }
