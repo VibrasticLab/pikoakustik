@@ -66,8 +66,30 @@ class _MyAppState extends State<MyApp> {
   TextEditingController _textViewSaved = TextEditingController();
   var _dataJson;
 
-  List<Point> _dataPlotL = [Point(0, 0)];
-  List<Point> _dataPlotR = [Point(0, 0)];
+  List<Point> _dataPlotL = [Point(0, 85)];
+  List<Point> _dataPlotR = [Point(0, 85)];
+
+  double _scaleToDB(double freq, int scale) {
+    double spl;
+    if (freq == 500) {
+      spl = 34.15 +
+          (0.09 * scale) +
+          (0.93 * pow(scale, 2)) -
+          (0.05 * pow(scale, 3));
+    } else if (freq == 1000) {
+      spl = 36.69 +
+          (1.72 * scale) +
+          (0.69 * pow(scale, 2)) -
+          (0.04 * pow(scale, 3));
+    } else if (freq == 2000) {
+      spl = 37.22 -
+          (1.58 * scale) +
+          (1.15 * pow(scale, 2)) -
+          (0.06 * pow(scale, 3));
+    }
+
+    return double.parse((spl).toStringAsFixed(2)); //2 decimals only
+  }
 
   Future<bool> _connectTo(device) async {
     _serialData.clear();
@@ -124,15 +146,21 @@ class _MyAppState extends State<MyApp> {
 
           _serialData.add(Text('Unit Name: ${_dataJson.tester}'));
 
-          _dataPlotL = [Point(0, 0)];
-          _dataPlotL.add(Point(_dataJson.ch0F0f, _dataJson.ch0F0a));
-          _dataPlotL.add(Point(_dataJson.ch0F1f, _dataJson.ch0F1a));
-          _dataPlotL.add(Point(_dataJson.ch0F2f, _dataJson.ch0F2a));
+          _dataPlotL = [Point(0, 85)];
+          _dataPlotL.add(Point(_dataJson.ch0F0f.round(),
+              _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0a)));
+          _dataPlotL.add(Point(_dataJson.ch0F1f.round(),
+              _scaleToDB(_dataJson.ch0F1f, _dataJson.ch0F1a)));
+          _dataPlotL.add(Point(_dataJson.ch0F2f.round(),
+              _scaleToDB(_dataJson.ch0F2f, _dataJson.ch0F2a)));
 
-          _dataPlotR = [Point(0, 0)];
-          _dataPlotR.add(Point(_dataJson.ch1F0f, _dataJson.ch1F0a));
-          _dataPlotR.add(Point(_dataJson.ch1F1f, _dataJson.ch1F1a));
-          _dataPlotR.add(Point(_dataJson.ch1F2f, _dataJson.ch1F2a));
+          _dataPlotR = [Point(0, 85)];
+          _dataPlotR.add(Point(_dataJson.ch1F0f.round(),
+              _scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0a)));
+          _dataPlotR.add(Point(_dataJson.ch1F1f.round(),
+              _scaleToDB(_dataJson.ch1F1f, _dataJson.ch1F1a)));
+          _dataPlotR.add(Point(_dataJson.ch1F2f.round(),
+              _scaleToDB(_dataJson.ch1F2f, _dataJson.ch1F2a)));
         } else {
           _serialData.add(Text(line));
           if (_serialData.length > 3) {
@@ -237,7 +265,7 @@ class _MyAppState extends State<MyApp> {
                   onPressed: _port == null
                       ? null
                       : () {
-                          _sendText("info");
+                          _sendText("lsnum");
                         },
                 ),
                 title: TextField(
@@ -255,55 +283,52 @@ class _MyAppState extends State<MyApp> {
                         },
                 ),
               ),
-              Text(
-                "Result: ",
-                style: Theme.of(context).textTheme.headline6,
-              ),
+              Text("Result: ", style: TextStyle(fontWeight: FontWeight.bold)),
               ..._serialData,
               Container(
                 child: new Plot(
-                  height: 150,
+                  height: 200,
                   data: _dataPlotL,
-                  gridSize: new Offset(500, 1),
-                  padding: const EdgeInsets.fromLTRB(40, 12, 12, 40),
-                  xTitle: 'X axis',
-                  yTitle: 'Y axis',
+                  gridSize: new Offset(500, 20),
+                  padding: const EdgeInsets.fromLTRB(40, 15, 15, 40),
+                  xTitle: 'Frequency (Hz)',
+                  yTitle: 'Left dB (SPL)',
                   style: new PlotStyle(
                       pointRadius: 3,
                       outlineRadius: 1,
                       primary: Colors.white,
                       secondary: Colors.orange,
                       trace: true,
-                      traceStokeWidth: 3.0,
-                      traceColor: Colors.blueGrey,
-                      traceClose: false,
-                      showCoordinates: false,
-                      textStyle:
-                          new TextStyle(fontSize: 8, color: Colors.blueGrey),
+                      showCoordinates: true,
+                      trailingZeros: false,
+                      textStyle: new TextStyle(
+                          fontSize: 8,
+                          color: Colors.blueGrey,
+                          fontWeight: FontWeight.bold),
                       axis: Colors.blueGrey[600],
                       gridline: Colors.blueGrey[100]),
                 ),
               ),
               Container(
                 child: new Plot(
-                  height: 150,
+                  height: 200,
                   data: _dataPlotR,
-                  gridSize: new Offset(500, 1),
-                  padding: const EdgeInsets.fromLTRB(40, 12, 12, 40),
-                  xTitle: 'X axis',
-                  yTitle: 'Y axis',
+                  gridSize: new Offset(500, 20),
+                  padding: const EdgeInsets.fromLTRB(40, 15, 15, 40),
+                  xTitle: 'Frequency (Hz)',
+                  yTitle: 'Right dB (SPL)',
                   style: new PlotStyle(
                       pointRadius: 3,
                       outlineRadius: 1,
                       primary: Colors.white,
                       secondary: Colors.orange,
                       trace: true,
-                      traceStokeWidth: 3.0,
-                      traceColor: Colors.blueGrey,
-                      traceClose: false,
-                      showCoordinates: false,
-                      textStyle:
-                          new TextStyle(fontSize: 8, color: Colors.blueGrey),
+                      showCoordinates: true,
+                      trailingZeros: false,
+                      textStyle: new TextStyle(
+                          fontSize: 8,
+                          color: Colors.blueGrey,
+                          fontWeight: FontWeight.bold),
                       axis: Colors.blueGrey[600],
                       gridline: Colors.blueGrey[100]),
                 ),
