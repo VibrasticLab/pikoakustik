@@ -13,10 +13,23 @@ void main() {
 
 class DataJSON {
   String tester;
-  double ch0F0f, ch0F1f, ch1F0f, ch1F1f;
-  int ch0F0a, ch0F1a, ch1F0a, ch1F1a;
+  double ch0F0f, ch0F1f, ch0F2f, ch1F0f, ch1F1f, ch1F2f;
+  int ch0F0a, ch0F1a, ch0F2a, ch1F0a, ch1F1a, ch1F2a;
 
-  DataJSON(this.tester, this.ch0F0a);
+  DataJSON(
+      this.tester,
+      this.ch0F0f,
+      this.ch0F1f,
+      this.ch0F2f,
+      this.ch1F0f,
+      this.ch1F1f,
+      this.ch1F2f,
+      this.ch0F0a,
+      this.ch0F1a,
+      this.ch0F2a,
+      this.ch1F0a,
+      this.ch1F1a,
+      this.ch1F2a);
 
   DataJSON.fromJson(Map<String, dynamic> jsonIN)
       : tester = jsonIN['tester'],
@@ -24,10 +37,14 @@ class DataJSON {
         ch0F0a = jsonIN['ch_0']['freq_0']['ampl'],
         ch0F1f = jsonIN['ch_0']['freq_1']['freq'] * 400,
         ch0F1a = jsonIN['ch_0']['freq_1']['ampl'],
+        ch0F2f = jsonIN['ch_0']['freq_2']['freq'] * 400,
+        ch0F2a = jsonIN['ch_0']['freq_2']['ampl'],
         ch1F0f = jsonIN['ch_1']['freq_0']['freq'] * 400,
         ch1F0a = jsonIN['ch_1']['freq_0']['ampl'],
         ch1F1f = jsonIN['ch_1']['freq_1']['freq'] * 400,
-        ch1F1a = jsonIN['ch_1']['freq_1']['ampl'];
+        ch1F1a = jsonIN['ch_1']['freq_1']['ampl'],
+        ch1F2f = jsonIN['ch_1']['freq_2']['freq'] * 400,
+        ch1F2a = jsonIN['ch_1']['freq_2']['ampl'];
 }
 
 class MyApp extends StatefulWidget {
@@ -48,8 +65,10 @@ class _MyAppState extends State<MyApp> {
   int _isGetJSON = 0;
   TextEditingController _textViewSaved = TextEditingController();
   var _dataJson;
+  int graphCh = 0;
 
-  List<Point> _dataPlot = [Point(0, 0)];
+  List<Point> _dataPlotL = [Point(0, 0)];
+  List<Point> _dataPlotR = [Point(0, 0)];
 
   Future<bool> _connectTo(device) async {
     _serialData.clear();
@@ -104,13 +123,20 @@ class _MyAppState extends State<MyApp> {
           Map<String, dynamic> dataMap = jsonDecode(line);
           _dataJson = DataJSON.fromJson(dataMap);
 
-          _serialData.add(Text(
-              '${_dataJson.tester} ${_dataJson.ch0F0a} ${_dataJson.ch0F1a}'));
-          _dataPlot.add(Point(_dataJson.ch0F0f, _dataJson.ch0F0a));
-          _dataPlot.add(Point(_dataJson.ch0F1f, _dataJson.ch0F1a));
+          _serialData.add(Text('Unit Name: ${_dataJson.tester}'));
+
+          _dataPlotL.add(Point(_dataJson.ch0F0f, _dataJson.ch0F0a));
+          _dataPlotL.add(Point(_dataJson.ch0F1f, _dataJson.ch0F1a));
+          _dataPlotL.add(Point(_dataJson.ch0F2f, _dataJson.ch0F2a + graphCh));
+
+          _dataPlotR.add(Point(_dataJson.ch1F0f, _dataJson.ch1F0a));
+          _dataPlotR.add(Point(_dataJson.ch1F1f, _dataJson.ch1F1a));
+          _dataPlotR.add(Point(_dataJson.ch1F2f, _dataJson.ch1F2a + graphCh));
+
+          graphCh = graphCh + 1;
         } else {
           _serialData.add(Text(line));
-          if (_serialData.length > 20) {
+          if (_serialData.length > 3) {
             _serialData.removeAt(0);
           }
         }
@@ -212,7 +238,7 @@ class _MyAppState extends State<MyApp> {
                   onPressed: _port == null
                       ? null
                       : () {
-                          _sendText("lsnum");
+                          _sendText("info");
                         },
                 ),
                 title: TextField(
@@ -237,8 +263,27 @@ class _MyAppState extends State<MyApp> {
               ..._serialData,
               Container(
                 child: new Plot(
-                  height: 300,
-                  data: _dataPlot,
+                  height: 150,
+                  data: _dataPlotL,
+                  gridSize: new Offset(500, 1),
+                  padding: const EdgeInsets.fromLTRB(40, 12, 12, 40),
+                  xTitle: 'X axis',
+                  yTitle: 'Y axis',
+                  style: new PlotStyle(
+                      pointRadius: 3,
+                      outlineRadius: 1,
+                      primary: Colors.white,
+                      secondary: Colors.orange,
+                      textStyle:
+                          new TextStyle(fontSize: 8, color: Colors.blueGrey),
+                      axis: Colors.blueGrey[600],
+                      gridline: Colors.blueGrey[100]),
+                ),
+              ),
+              Container(
+                child: new Plot(
+                  height: 150,
+                  data: _dataPlotR,
                   gridSize: new Offset(500, 1),
                   padding: const EdgeInsets.fromLTRB(40, 12, 12, 40),
                   xTitle: 'X axis',
