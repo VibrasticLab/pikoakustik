@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'dart:convert';
 import 'dart:async';
+import 'dart:math';
 import 'package:usb_serial/usb_serial.dart';
 import 'package:usb_serial/transaction.dart';
+import 'package:flutter_plot/flutter_plot.dart';
 
 void main() {
   runApp(MyApp());
@@ -46,6 +48,8 @@ class _MyAppState extends State<MyApp> {
   int _isGetJSON = 0;
   TextEditingController _textViewSaved = TextEditingController();
   var _dataJson;
+
+  List<Point> _dataPlot = [Point(0, 0)];
 
   Future<bool> _connectTo(device) async {
     _serialData.clear();
@@ -99,8 +103,11 @@ class _MyAppState extends State<MyApp> {
           _isGetJSON = 0;
           Map<String, dynamic> dataMap = jsonDecode(line);
           _dataJson = DataJSON.fromJson(dataMap);
+
           _serialData.add(Text(
               '${_dataJson.tester} ${_dataJson.ch0F0a} ${_dataJson.ch0F1a}'));
+          _dataPlot.add(Point(_dataJson.ch0F0f, _dataJson.ch0F0a));
+          _dataPlot.add(Point(_dataJson.ch0F1f, _dataJson.ch0F1a));
         } else {
           _serialData.add(Text(line));
           if (_serialData.length > 20) {
@@ -227,7 +234,26 @@ class _MyAppState extends State<MyApp> {
                 "Result: ",
                 style: Theme.of(context).textTheme.headline6,
               ),
-              ..._serialData
+              ..._serialData,
+              Container(
+                child: new Plot(
+                  height: 300,
+                  data: _dataPlot,
+                  gridSize: new Offset(500, 1),
+                  padding: const EdgeInsets.fromLTRB(40, 12, 12, 40),
+                  xTitle: 'X axis',
+                  yTitle: 'Y axis',
+                  style: new PlotStyle(
+                      pointRadius: 3,
+                      outlineRadius: 1,
+                      primary: Colors.white,
+                      secondary: Colors.orange,
+                      textStyle:
+                          new TextStyle(fontSize: 8, color: Colors.blueGrey),
+                      axis: Colors.blueGrey[600],
+                      gridline: Colors.blueGrey[100]),
+                ),
+              ),
             ],
           ),
         ),
