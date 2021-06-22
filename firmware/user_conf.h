@@ -39,7 +39,6 @@
  #define USER_SER_SCALE     TRUE   /* Whether use tone test out in scale or not */
 
 #define USER_MMC            TRUE   /* Whether use memory card or not */
- #define USER_MMC_DBG       FALSE  /* Whether show MMC debug or not */
 
 #define USER_IOT            FALSE   /* Whether use UART for IOT module or not */
 
