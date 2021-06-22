@@ -105,7 +105,7 @@ extern "C" {
 #endif
 
 /**
- * @brief For easy remember, chsnprintf() defined as ht_comm_BUff()
+ * @brief For easy remember, chsnprintf() defined as ht_comm_Buff()
  */
 #define ht_comm_Buff chsnprintf
 

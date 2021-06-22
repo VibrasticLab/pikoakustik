@@ -41,12 +41,6 @@
 #define STR_BUFF_SIZE 128
 
 /**
- * @brief Define whether scan directory recursively or files only
- * @details Highly recommended to disable it as still buggy
- */
-#define USE_SCAN_DIR FALSE
-
-/**
  * @brief File Buffer length variable
  */
 #define FILE_BUFF_LEN 4096
@@ -60,6 +54,11 @@
  * @brief rename to match name f_write()
  */
 #define f_readline    f_gets
+
+/**
+ * @brief For easy remember, chsnprintf() also defined as ht_mmc_Buff()
+ */
+#define ht_mmc_Buff chsnprintf
 
 /**
  * @brief Test Write and Read Simple text in Append mode
@@ -92,16 +91,15 @@ void ht_mmc_lsFiles(void);
 void ht_mmc_lsNumFiles(void);
 
 /**
+ * @brief Delete All Files on media
+ */
+void ht_mmc_delAllFiles(void);
+
+/**
  * @brief Read a file on directory and print
  * @param[in] uint16_t Last number of Save file
  */
 void ht_mmc_catFiles(uint16_t fnum);
-
-/**
- * @brief Read a file on directory and send to IoT
- * @param[in] uint16_t Last number of Save file
- */
-void ht_mmc_sendFiles(uint16_t fnum);
 
 /**
  * @brief Check save file existence before audiometri

@@ -484,6 +484,18 @@ static void cmd_mmchk(BaseSequentialStream *chp, int argc, char *argv[]) {
     chprintf(chp,"MMC Checking Finished\r\n\r\n");
 }
 
+/**
+ * @brief MMC Files Clear command callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_mmclr(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+    if(argc != 0){chprintf(chp,"usage: mmchk\r\n");return;}
+
+    chprintf(chp,"MMC files clearing\r\n\r\n");
+    ht_mmc_delAllFiles();
+}
+
 /*******************************************/
 
 /**
@@ -570,6 +582,7 @@ static const ShellCommand commands[] = {
     {"mmcwr",cmd_mmcwrt},
     {"mmcat",cmd_mmcat},
     {"mmchk",cmd_mmchk},
+    {"mmclr",cmd_mmclr},
 #endif
     {"chmem",cmd_chmem},
     {"chthds",cmd_chthds},

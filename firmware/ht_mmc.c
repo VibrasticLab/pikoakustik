@@ -113,16 +113,12 @@ static uint16_t get_fnum(char *strIn){
     return numOut;
 }
 
-static FRESULT scanFile(char *path, uint16_t *lastfnum, uint8_t stt_print){
+static FRESULT scanFiles(char *path, uint16_t *lastfnum){
     char strbuff[IFACE_BUFF_SIZE];
     FRESULT err;
     DIR Dir;
     FILINFO Fno;
     uint16_t fnum;
-
-#if USE_SCAN_DIR
-    UINT num;
-#endif
 
     *lastfnum=0;
     err = f_opendir(&Dir,path);
@@ -131,34 +127,12 @@ static FRESULT scanFile(char *path, uint16_t *lastfnum, uint8_t stt_print){
             err=f_readdir(&Dir,&Fno);
             if(err!=FR_OK || Fno.fname[0]==0)break;
 
-            if(Fno.fattrib & AM_DIR){
-#if USE_SCAN_DIR
-                num = strlen(path);
-                chsnprintf(&path[num],sizeof(&path[num]),"/%s",Fno.fname);
-                err = scanFile(path);
-                if(err!=FR_OK)break;
-                path[num]=0;
-
-            }
-            else{
+            if(!(Fno.fattrib & AM_DIR)){
                 fnum = get_fnum(Fno.fname);
                 if(*lastfnum<=fnum)*lastfnum=fnum;
 
-                if(stt_print==1){
-                    ht_comm_Buff(strbuff,sizeof(strbuff),"%s%s\r\n",path,Fno.fname);
-                    ht_comm_Msg(strbuff);
-                }
-#else
-            }
-            else{
-                fnum = get_fnum(Fno.fname);
-                if(*lastfnum<=fnum)*lastfnum=fnum;
-
-                if(stt_print==1){
-                    ht_comm_Buff(strbuff,sizeof(strbuff),"%s\r\n",Fno.fname);
-                    ht_comm_Msg(strbuff);
-                }
-#endif
+                ht_comm_Buff(strbuff,sizeof(strbuff),"%s\r\n",Fno.fname);
+                ht_comm_Msg(strbuff);
             }
         }
         f_closedir(&Dir);
@@ -166,16 +140,12 @@ static FRESULT scanFile(char *path, uint16_t *lastfnum, uint8_t stt_print){
     return err;
 }
 
-static FRESULT scanFileNum(char *path, uint16_t *lastfnum, uint8_t stt_print){
+static FRESULT scanFilesNum(char *path, uint16_t *lastfnum){
     char strbuff[IFACE_BUFF_SIZE];
     FRESULT err;
     DIR Dir;
     FILINFO Fno;
     uint16_t fnum;
-
-#if USE_SCAN_DIR
-    UINT num;
-#endif
 
     *lastfnum=0;
     err = f_opendir(&Dir,path);
@@ -184,34 +154,12 @@ static FRESULT scanFileNum(char *path, uint16_t *lastfnum, uint8_t stt_print){
             err=f_readdir(&Dir,&Fno);
             if(err!=FR_OK || Fno.fname[0]==0)break;
 
-            if(Fno.fattrib & AM_DIR){
-#if USE_SCAN_DIR
-                num = strlen(path);
-                chsnprintf(&path[num],sizeof(&path[num]),"/%s",Fno.fname);
-                err = scanFile(path);
-                if(err!=FR_OK)break;
-                path[num]=0;
-
-            }
-            else{
+            if(!(Fno.fattrib & AM_DIR)){
                 fnum = get_fnum(Fno.fname);
                 if(*lastfnum<=fnum)*lastfnum=fnum;
 
-                if(stt_print==1){
-                    ht_comm_Buff(strbuff,sizeof(strbuff),"%s%s\r\n",path,Fno.fname);
-                    ht_comm_Msg(strbuff);
-                }
-#else
-            }
-            else{
-                fnum = get_fnum(Fno.fname);
-                if(*lastfnum<=fnum)*lastfnum=fnum;
-
-                if(stt_print==1){
-                    ht_comm_Buff(strbuff,sizeof(strbuff),"%i, ",fnum);
-                    ht_comm_Msg(strbuff);
-                }
-#endif
+                ht_comm_Buff(strbuff,sizeof(strbuff),"%i, ",fnum);
+                ht_comm_Msg(strbuff);
             }
         }
 
@@ -223,6 +171,50 @@ static FRESULT scanFileNum(char *path, uint16_t *lastfnum, uint8_t stt_print){
     return err;
 }
 
+static FRESULT scanFilesQuiet(char *path, uint16_t *lastfnum){
+    FRESULT err;
+    DIR Dir;
+    FILINFO Fno;
+    uint16_t fnum;
+
+    *lastfnum=0;
+    err = f_opendir(&Dir,path);
+    if(err==FR_OK){
+        while(1){
+            err=f_readdir(&Dir,&Fno);
+            if(err!=FR_OK || Fno.fname[0]==0)break;
+
+            if(!(Fno.fattrib & AM_DIR)){
+                fnum = get_fnum(Fno.fname);
+                if(*lastfnum<=fnum)*lastfnum=fnum;
+            }
+        }
+        f_closedir(&Dir);
+    }
+    return err;
+}
+
+static FRESULT deleteFiles(char *path){
+    char fname[IFACE_BUFF_SIZE];
+    FRESULT err;
+    DIR Dir;
+    FILINFO Fno;
+
+    err = f_opendir(&Dir,path);
+    if(err==FR_OK){
+        while(1){
+            err=f_readdir(&Dir,&Fno);
+            if(err!=FR_OK || Fno.fname[0]==0)break;
+
+            if(!(Fno.fattrib & AM_DIR)){
+                ht_mmc_Buff(fname,sizeof(fname),"/%s\r\n",Fno.fname);
+                err = f_unlink(fname);
+            }
+        }
+        f_closedir(&Dir);
+    }
+    return err;
+}
 
 /**
  * @brief Checking readiness FatFS
@@ -362,7 +354,7 @@ void ht_mmc_Test(void){
     }
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        ht_comm_Buff(buffer,sizeof(buffer),"Test\n");
+        ht_mmc_Buff(buffer,sizeof(buffer),"Test\n");
 
         f_mount(&FatFs, "", 0);
 
@@ -404,7 +396,7 @@ void ht_mmc_catTest(void){
     }
 
     strcpy(buffer,"");
-    ht_comm_Buff(fname,sizeof(fname),"/RESULT.TXT");
+    ht_mmc_Buff(fname,sizeof(fname),"/RESULT.TXT");
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         f_mount(&FatFs, "", 0);
 
@@ -449,10 +441,10 @@ void ht_mmc_lsFiles(void){
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
             strcpy(buff,"/");
-            err = scanFile(buff,&lastnum,1);
+            err = scanFiles(buff,&lastnum);
             if(err==FR_OK){
                 if(lastnum < FILE_MAX_NUM){
-                    ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
+                    ht_mmc_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
 
                     err = f_open(Fil, fname, FA_READ | FA_OPEN_EXISTING);
                     if(err==FR_OK){
@@ -485,10 +477,10 @@ void ht_mmc_lsNumFiles(void){
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
             strcpy(buff,"/");
-            err = scanFileNum(buff,&lastnum,1);
+            err = scanFilesNum(buff,&lastnum);
             if(err==FR_OK){
                 if(lastnum < FILE_MAX_NUM){
-                    ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
+                    ht_mmc_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
 
                     err = f_open(Fil, fname, FA_READ | FA_OPEN_EXISTING);
                     if(err==FR_OK){
@@ -498,6 +490,31 @@ void ht_mmc_lsNumFiles(void){
                 else{
                     ht_comm_Msg("Warning: Maximum save number\r\n");
                 }
+            }
+        }
+        f_mount(0, "", 0);
+    }
+    free(Fil);
+}
+
+void ht_mmc_delAllFiles(void){
+    FATFS FatFs;
+    FIL *Fil;
+    FRESULT err;
+    char buff[STR_BUFF_SIZE];
+
+    Fil = (FIL*)malloc(sizeof(FIL));
+
+    if(mmc_check()!=FR_OK){return;}
+
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+
+        err = f_mount(&FatFs,"",0);
+        if(err==FR_OK){
+            strcpy(buff,"/");
+            err = deleteFiles(buff);
+            if(err==FR_OK){
+                ht_comm_Msg("Saving files cleared\r\n");
             }
         }
         f_mount(0, "", 0);
@@ -516,7 +533,7 @@ void ht_mmc_catFiles(uint16_t fnum){
 
     if(mmc_check()!=FR_OK){return;}
 
-    ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",fnum);
+    ht_mmc_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",fnum);
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
         f_mount(&FatFs, "", 0);
 
@@ -532,51 +549,6 @@ void ht_mmc_catFiles(uint16_t fnum){
                 ht_comm_Buff(strbuff,sizeof(strbuff),"%s\r",line);
                 ht_comm_Msg(strbuff);
             }
-            f_close(Fil);
-        }
-        else{
-            ht_comm_Buff(strbuff,sizeof(strbuff),"Open Error:%d\r\n",err);
-            ht_comm_Msg(strbuff);
-        }
-
-        f_mount(0, "", 0);
-    }
-    free(Fil);
-}
-
-void ht_mmc_sendFiles(uint16_t fnum){
-    char filebuff[FILE_BUFF_LEN+10];
-    char strbuff[STR_BUFF_SIZE];
-    char fname[STR_BUFF_SIZE];
-    FATFS FatFs;
-    FIL *Fil;
-    FRESULT err;
-
-    Fil = (FIL*)malloc(sizeof(FIL));
-
-    if(mmc_check()!=FR_OK){return;}
-
-    ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",fnum);
-    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        f_mount(&FatFs, "", 0);
-
-        err=f_open(Fil, fname, FA_OPEN_EXISTING |FA_READ);
-        if(err==FR_OK){
-            ht_comm_Msg("send ");
-            ht_comm_IoT("send ");
-            char line[STR_BUFF_SIZE];
-            TCHAR *eof;
-            while(1){
-                strcpy(line,"");
-                eof=f_readline(line,sizeof(line),Fil);
-                if(eof[0]==0)break;
-
-                chsnprintf(filebuff,sizeof(filebuff),"%s",line);
-                ht_comm_Msg(filebuff);
-                ht_comm_IoT(filebuff);
-            }
-            ht_comm_Msg("\r\n");
-            ht_comm_IoT("\r\n");
             f_close(Fil);
         }
         else{
@@ -608,15 +580,15 @@ void ht_mmcMetri_chkFile(void){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-        ht_comm_Buff(buffer,sizeof(buffer),"{\"tester\":\"%s\",",tester);
+        ht_mmc_Buff(buffer,sizeof(buffer),"{\"tester\":\"%s\",",tester);
 
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
             strcpy(buff,"/");
-            err = scanFile(buff,&lastnum,0);
+            err = scanFilesQuiet(buff,&lastnum);
 
             if(lastnum < FILE_MAX_NUM){
-                ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
+                ht_mmc_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
 
                 err = f_open(Fil_last, fname, FA_READ | FA_OPEN_EXISTING);
                 if(err==FR_OK){
@@ -626,7 +598,7 @@ void ht_mmcMetri_chkFile(void){
 
                     lastnum++;
                     ht_comm_Msg("File name incremented\r\n");
-                    ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
+                    ht_mmc_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
 
                     err = f_open(Fil_new, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
                     if(err==FR_OK){
@@ -640,7 +612,7 @@ void ht_mmcMetri_chkFile(void){
                     ht_comm_Msg(strbuff);
 
                     ht_comm_Msg("File name created now\r\n");
-                    ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
+                    ht_mmc_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
 
                     err = f_open(Fil_new, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
                     if(err==FR_OK){
@@ -683,16 +655,16 @@ void ht_mmcMetri_jsonChStart(uint8_t lr_ch){
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
         if(lr_ch==OUT_LEFT){
-            ht_comm_Buff(buffer,sizeof(buffer)," \"ch_0\":{");
+            ht_mmc_Buff(buffer,sizeof(buffer)," \"ch_0\":{");
         }
         else if(lr_ch==OUT_RIGHT){
-            ht_comm_Buff(buffer,sizeof(buffer),",\"ch_1\":{");
+            ht_mmc_Buff(buffer,sizeof(buffer),",\"ch_1\":{");
         }
 
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
 
-            ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
+            ht_mmc_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
             err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
             if(err==FR_OK){
                 f_lseek(Fil, f_size(Fil));
@@ -726,12 +698,12 @@ void ht_mmcMetri_jsonChClose(void){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-        ht_comm_Buff(buffer,sizeof(buffer),"}");
+        ht_mmc_Buff(buffer,sizeof(buffer),"}");
 
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
 
-            ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
+            ht_mmc_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
             err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
             if(err==FR_OK){
                 f_lseek(Fil, f_size(Fil));
@@ -765,12 +737,12 @@ void ht_mmcMetri_jsonComma(void){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-        ht_comm_Buff(buffer,sizeof(buffer),",");
+        ht_mmc_Buff(buffer,sizeof(buffer),",");
 
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
 
-            ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
+            ht_mmc_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
             err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
             if(err==FR_OK){
                 f_lseek(Fil, f_size(Fil));
@@ -804,12 +776,12 @@ void ht_mmcMetri_hearingResult(double freq, uint8_t freqidx, uint8_t ample){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-        ht_comm_Buff(buffer,sizeof(buffer),"\"freq_%i\":{\"freq\":%6.4f,\"ampl\":%i}", freqidx, freq, ample);
+        ht_mmc_Buff(buffer,sizeof(buffer),"\"freq_%i\":{\"freq\":%6.4f,\"ampl\":%i}", freqidx, freq, ample);
 
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
 
-            ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
+            ht_mmc_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
             err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
             if(err==FR_OK){
                 f_lseek(Fil, f_size(Fil));
@@ -842,12 +814,12 @@ void ht_mmcMetri_endResult(void){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-        ht_comm_Buff(buffer,sizeof(buffer),"}\r\n");
+        ht_mmc_Buff(buffer,sizeof(buffer),"}\r\n");
 
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
 
-            ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
+            ht_mmc_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
             err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
             if(err==FR_OK){
                 f_lseek(Fil, f_size(Fil));
