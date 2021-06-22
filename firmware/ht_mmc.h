@@ -87,6 +87,11 @@ void ht_mmc_Init(void);
 void ht_mmc_lsFiles(void);
 
 /**
+ * @brief List number files on directory
+ */
+void ht_mmc_lsNumFiles(void);
+
+/**
  * @brief Read a file on directory and print
  * @param[in] uint16_t Last number of Save file
  */

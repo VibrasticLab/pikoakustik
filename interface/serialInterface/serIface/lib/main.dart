@@ -18,13 +18,13 @@ class DataJSON {
 
   DataJSON.fromJson(Map<String, dynamic> jsonIN)
       : tester = jsonIN['tester'],
-        ch0F0f = jsonIN['ch_0']['freq_0']['freq'],
+        ch0F0f = jsonIN['ch_0']['freq_0']['freq'] * 400,
         ch0F0a = jsonIN['ch_0']['freq_0']['ampl'],
-        ch0F1f = jsonIN['ch_0']['freq_1']['freq'],
+        ch0F1f = jsonIN['ch_0']['freq_1']['freq'] * 400,
         ch0F1a = jsonIN['ch_0']['freq_1']['ampl'],
-        ch1F0f = jsonIN['ch_1']['freq_0']['freq'],
+        ch1F0f = jsonIN['ch_1']['freq_0']['freq'] * 400,
         ch1F0a = jsonIN['ch_1']['freq_0']['ampl'],
-        ch1F1f = jsonIN['ch_1']['freq_1']['freq'],
+        ch1F1f = jsonIN['ch_1']['freq_1']['freq'] * 400,
         ch1F1a = jsonIN['ch_1']['freq_1']['ampl'];
 }
 
@@ -43,8 +43,9 @@ class _MyAppState extends State<MyApp> {
   int _deviceId;
   TextEditingController _textController = TextEditingController();
 
-  int isGetJSON = 0;
+  int _isGetJSON = 0;
   TextEditingController _textViewSaved = TextEditingController();
+  var _dataJson;
 
   Future<bool> _connectTo(device) async {
     _serialData.clear();
@@ -94,11 +95,12 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         print(line);
 
-        if (isGetJSON == 1) {
-          isGetJSON = 0;
+        if (_isGetJSON == 1) {
+          _isGetJSON = 0;
           Map<String, dynamic> dataMap = jsonDecode(line);
-          var dataJson = DataJSON.fromJson(dataMap);
-          _serialData.add(Text('${dataJson.tester}'));
+          _dataJson = DataJSON.fromJson(dataMap);
+          _serialData.add(Text(
+              '${_dataJson.tester} ${_dataJson.ch0F0a} ${_dataJson.ch0F1a}'));
         } else {
           _serialData.add(Text(line));
           if (_serialData.length > 20) {
@@ -161,7 +163,7 @@ class _MyAppState extends State<MyApp> {
     int numReq = int.parse(strReq);
 
     _serialData.clear();
-    isGetJSON = 1;
+    _isGetJSON = 1;
     String strData = "cat " + numReq.toString() + "\r\n";
     await _port.write(Uint8List.fromList(strData.codeUnits));
 
@@ -190,40 +192,30 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('USB Serial'),
+          title: const Text('Audiometri Data Viewer'),
         ),
         body: Center(
           child: Column(
             children: <Widget>[
-              Text(
-                _ports.length > 0 ? "Serial Available" : "No USB Serial",
-                style: Theme.of(context).textTheme.headline6,
-              ),
               ..._ports,
               Text('Status: $_status\n'),
               ListTile(
-                title: TextField(
-                    controller: _textController,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Text To Send')),
-                trailing: ElevatedButton(
-                  child: Text("Send"),
+                leading: ElevatedButton(
+                  child: Text("List Files"),
                   onPressed: _port == null
                       ? null
                       : () {
-                          _sendText(_textController.text);
+                          _sendText("lsnum");
                         },
                 ),
-              ),
-              ListTile(
                 title: TextField(
-                    controller: _textViewSaved,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Number to View')),
+                  controller: _textViewSaved,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Number to View'),
+                ),
                 trailing: ElevatedButton(
-                  child: Text("GetJSON"),
+                  child: Text("GetData"),
                   onPressed: _port == null
                       ? null
                       : () {
@@ -231,37 +223,11 @@ class _MyAppState extends State<MyApp> {
                         },
                 ),
               ),
-              ListTile(
-                leading: ElevatedButton(
-                  child: Text("Info"),
-                  onPressed: _port == null
-                      ? null
-                      : () {
-                          _sendText("info");
-                        },
-                ),
-                title: ElevatedButton(
-                  child: Text("List Files"),
-                  onPressed: _port == null
-                      ? null
-                      : () {
-                          _sendText("ls");
-                        },
-                ),
-                trailing: ElevatedButton(
-                  child: Text("Test Audio"),
-                  onPressed: _port == null
-                      ? null
-                      : () {
-                          _sendText("test");
-                        },
-                ),
-              ),
               Text(
-                "Result",
+                "Result: ",
                 style: Theme.of(context).textTheme.headline6,
               ),
-              ..._serialData,
+              ..._serialData
             ],
           ),
         ),

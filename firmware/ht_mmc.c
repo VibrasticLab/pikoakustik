@@ -169,6 +169,67 @@ static FRESULT scanFile(char *path, uint16_t *lastfnum, uint8_t stt_print){
     return err;
 }
 
+static FRESULT scanFileNum(char *path, uint16_t *lastfnum, uint8_t stt_print){
+    char strbuff[IFACE_BUFF_SIZE];
+    FRESULT err;
+    DIR Dir;
+    FILINFO Fno;
+    uint16_t fnum;
+
+#if USE_SCAN_DIR
+    UINT num;
+#endif
+
+    *lastfnum=0;
+    err = f_opendir(&Dir,path);
+    if(err==FR_OK){
+#if USER_MMC_DBG
+        ht_comm_Msg("------------\r\n");
+#endif
+        while(1){
+            err=f_readdir(&Dir,&Fno);
+            if(err!=FR_OK || Fno.fname[0]==0)break;
+
+            if(Fno.fattrib & AM_DIR){
+#if USE_SCAN_DIR
+                num = strlen(path);
+                chsnprintf(&path[num],sizeof(&path[num]),"/%s",Fno.fname);
+                err = scanFile(path);
+                if(err!=FR_OK)break;
+                path[num]=0;
+
+            }
+            else{
+                fnum = get_fnum(Fno.fname);
+                if(*lastfnum<=fnum)*lastfnum=fnum;
+
+                if(stt_print==1){
+                    ht_comm_Buff(strbuff,sizeof(strbuff),"%s%s\r\n",path,Fno.fname);
+                    ht_comm_Msg(strbuff);
+                }
+#else
+            }
+            else{
+                fnum = get_fnum(Fno.fname);
+                if(*lastfnum<=fnum)*lastfnum=fnum;
+
+                if(stt_print==1){
+                    ht_comm_Buff(strbuff,sizeof(strbuff),"%i, ",fnum);
+                    ht_comm_Msg(strbuff);
+                }
+#endif
+            }
+        }
+
+        ht_comm_Buff(strbuff,sizeof(strbuff),"\r\n");
+        ht_comm_Msg(strbuff);
+
+        f_closedir(&Dir);
+    }
+    return err;
+}
+
+
 /**
  * @brief Checking readiness FatFS
  * @details Must calling before mounting actual media MMC
@@ -397,7 +458,6 @@ void ht_mmc_lsFiles(void){
     FIL *Fil;
     FRESULT err;
     char buff[STR_BUFF_SIZE];
-    char buffer[STR_BUFF_SIZE];
     char fname[STR_BUFF_SIZE];
 
     Fil = (FIL*)malloc(sizeof(FIL));
@@ -405,7 +465,6 @@ void ht_mmc_lsFiles(void){
     if(mmc_check()!=FR_OK){return;}
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
-        ht_comm_Buff(buffer,sizeof(buffer),"START\n");
 
         err = f_mount(&FatFs,"",0);
         if(err==FR_OK){
@@ -414,6 +473,73 @@ void ht_mmc_lsFiles(void){
 #endif
             strcpy(buff,"/");
             err = scanFile(buff,&lastnum,1);
+            if(err==FR_OK){
+#if USER_MMC_DBG
+                ht_comm_Msg("------------\r\n");
+                ht_comm_Buff(strbuff,sizeof(strbuff),"Last Num: %i\r\n",lastnum);
+                ht_comm_Msg(strbuff);
+                ht_comm_Buff(strbuff,sizeof(strbuff),"Last File: TEST_%i.TXT\r\n",lastnum);
+                ht_comm_Msg(strbuff);
+#endif
+
+                if(lastnum < FILE_MAX_NUM){
+                    ht_comm_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
+
+                    err = f_open(Fil, fname, FA_READ | FA_OPEN_EXISTING);
+                    if(err==FR_OK){
+                        f_close(Fil);
+#if USER_MMC_DBG
+                        ht_comm_Buff(strbuff,sizeof(strbuff),"File %s exist\r\n",fname);
+                        ht_comm_Msg(strbuff);
+                    }
+                    else if(err==FR_NO_FILE){
+                        ht_comm_Buff(strbuff,sizeof(strbuff),"File %s not exist\r\n",fname);
+                        ht_comm_Msg(strbuff);
+                    }
+                    else{
+                        ht_comm_Buff(strbuff,sizeof(strbuff),"File %s error code = %i\r\n",fname,err);
+                        ht_comm_Msg(strbuff);
+#endif
+                    }
+                }
+                else{
+                    ht_comm_Msg("Warning: Maximum save number\r\n");
+                }
+#if USER_MMC_DBG
+                ht_comm_Msg("------------\r\n\r\n");
+#endif
+            }
+        }
+        f_mount(0, "", 0);
+    }
+    free(Fil);
+}
+
+void ht_mmc_lsNumFiles(void){
+
+#if USER_MMC_DBG
+    char strbuff[IFACE_BUFF_SIZE];
+#endif
+
+    FATFS FatFs;
+    FIL *Fil;
+    FRESULT err;
+    char buff[STR_BUFF_SIZE];
+    char fname[STR_BUFF_SIZE];
+
+    Fil = (FIL*)malloc(sizeof(FIL));
+
+    if(mmc_check()!=FR_OK){return;}
+
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+
+        err = f_mount(&FatFs,"",0);
+        if(err==FR_OK){
+#if USER_MMC_DBG
+            ht_comm_Msg("\r\nFiles on MMC\r\n");
+#endif
+            strcpy(buff,"/");
+            err = scanFileNum(buff,&lastnum,1);
             if(err==FR_OK){
 #if USER_MMC_DBG
                 ht_comm_Msg("------------\r\n");

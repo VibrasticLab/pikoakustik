@@ -48,6 +48,21 @@ extern uint8_t lastnum;
 /*******************************************
  * Serial Command Callback
  *******************************************/
+/**
+ * @brief Test command callback
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_coba(BaseSequentialStream *chp, int argc, char *argv[]){
+    (void)argc;
+    (void)argv;
+
+    if (argc > 0) {
+      chprintf(chp, "Usage: coba\r\n");
+      return;
+    }
+    chprintf(chp,"Serial Console at %d & buffer size %d bit\r\n",SERIAL_DEFAULT_BITRATE,SERIAL_BUFFERS_SIZE);
+}
+
 
 /**
  * @brief Test command callback
@@ -56,7 +71,6 @@ extern uint8_t lastnum;
 static void cmd_test(BaseSequentialStream *chp, int argc, char *argv[]) {
     uint8_t lrc;
 
-    chprintf(chp,"Serial Console at %d & buffer size %d bit\r\n",SERIAL_DEFAULT_BITRATE,SERIAL_BUFFERS_SIZE);
     chprintf(chp,"Playing Audio Test\r\n");
 
     if(argc==0){
@@ -411,6 +425,17 @@ static void cmd_lsfile(BaseSequentialStream *chp, int argc, char *argv[]) {
 }
 
 /**
+ * @brief List available number files on MMC and get saves last number
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_lsnumfile(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void) argv;
+    if(argc != 0){chprintf(chp,"usage: ls\r\n");return;}
+
+    ht_mmc_lsNumFiles();
+}
+
+/**
  * @brief CAT content file on given number suffix
  * @details Enumerated and not called directly by any normal thread
  */
@@ -526,6 +551,7 @@ static void cmd_chwho(BaseSequentialStream *chp, int argc, char *argv[]) {
  * @details Extending from internal shell's callback
  */
 static const ShellCommand commands[] = {
+    {"coba",cmd_coba},
     {"test",cmd_test},
 #if USER_AUDIO
     {"zero",cmd_zero},
@@ -537,7 +563,9 @@ static const ShellCommand commands[] = {
     {"sptest",cmd_sptest},
 #endif
 #if USER_MMC
+    {"who",cmd_chwho},
     {"ls",cmd_lsfile},
+    {"lsnum",cmd_lsnumfile},
     {"cat",cmd_catfile},
     {"mmcwr",cmd_mmcwrt},
     {"mmcat",cmd_mmcat},
@@ -545,7 +573,6 @@ static const ShellCommand commands[] = {
 #endif
     {"chmem",cmd_chmem},
     {"chthds",cmd_chthds},
-    {"who",cmd_chwho},
     {NULL, NULL}
 };
 
