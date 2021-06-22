@@ -65,7 +65,6 @@ class _MyAppState extends State<MyApp> {
   int _isGetJSON = 0;
   TextEditingController _textViewSaved = TextEditingController();
   var _dataJson;
-  int graphCh = 0;
 
   List<Point> _dataPlotL = [Point(0, 0)];
   List<Point> _dataPlotR = [Point(0, 0)];
@@ -125,15 +124,15 @@ class _MyAppState extends State<MyApp> {
 
           _serialData.add(Text('Unit Name: ${_dataJson.tester}'));
 
+          _dataPlotL = [Point(0, 0)];
           _dataPlotL.add(Point(_dataJson.ch0F0f, _dataJson.ch0F0a));
           _dataPlotL.add(Point(_dataJson.ch0F1f, _dataJson.ch0F1a));
-          _dataPlotL.add(Point(_dataJson.ch0F2f, _dataJson.ch0F2a + graphCh));
+          _dataPlotL.add(Point(_dataJson.ch0F2f, _dataJson.ch0F2a));
 
+          _dataPlotR = [Point(0, 0)];
           _dataPlotR.add(Point(_dataJson.ch1F0f, _dataJson.ch1F0a));
           _dataPlotR.add(Point(_dataJson.ch1F1f, _dataJson.ch1F1a));
-          _dataPlotR.add(Point(_dataJson.ch1F2f, _dataJson.ch1F2a + graphCh));
-
-          graphCh = graphCh + 1;
+          _dataPlotR.add(Point(_dataJson.ch1F2f, _dataJson.ch1F2a));
         } else {
           _serialData.add(Text(line));
           if (_serialData.length > 3) {
@@ -274,6 +273,11 @@ class _MyAppState extends State<MyApp> {
                       outlineRadius: 1,
                       primary: Colors.white,
                       secondary: Colors.orange,
+                      trace: true,
+                      traceStokeWidth: 3.0,
+                      traceColor: Colors.blueGrey,
+                      traceClose: false,
+                      showCoordinates: false,
                       textStyle:
                           new TextStyle(fontSize: 8, color: Colors.blueGrey),
                       axis: Colors.blueGrey[600],
@@ -293,6 +297,11 @@ class _MyAppState extends State<MyApp> {
                       outlineRadius: 1,
                       primary: Colors.white,
                       secondary: Colors.orange,
+                      trace: true,
+                      traceStokeWidth: 3.0,
+                      traceColor: Colors.blueGrey,
+                      traceClose: false,
+                      showCoordinates: false,
                       textStyle:
                           new TextStyle(fontSize: 8, color: Colors.blueGrey),
                       axis: Colors.blueGrey[600],
