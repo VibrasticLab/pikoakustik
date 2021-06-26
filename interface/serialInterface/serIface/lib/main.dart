@@ -13,38 +13,17 @@ void main() {
 
 class DataJSON {
   String tester;
-  double ch0F0f, ch0F1f, ch0F2f, ch1F0f, ch1F1f, ch1F2f;
-  int ch0F0a, ch0F1a, ch0F2a, ch1F0a, ch1F1a, ch1F2a;
+  double ch0F0f, ch1F0f;
+  List<dynamic> ch0F0r, ch1F0r;
 
-  DataJSON(
-      this.tester,
-      this.ch0F0f,
-      this.ch0F1f,
-      this.ch0F2f,
-      this.ch1F0f,
-      this.ch1F1f,
-      this.ch1F2f,
-      this.ch0F0a,
-      this.ch0F1a,
-      this.ch0F2a,
-      this.ch1F0a,
-      this.ch1F1a,
-      this.ch1F2a);
+  DataJSON(this.tester, this.ch0F0f, this.ch1F0f, this.ch0F0r, this.ch1F0r);
 
   DataJSON.fromJson(Map<String, dynamic> jsonIN)
       : tester = jsonIN['tester'],
         ch0F0f = jsonIN['ch_0']['freq_0']['freq'] * 400,
-        ch0F0a = jsonIN['ch_0']['freq_0']['ampl'],
-        ch0F1f = jsonIN['ch_0']['freq_1']['freq'] * 400,
-        ch0F1a = jsonIN['ch_0']['freq_1']['ampl'],
-        ch0F2f = jsonIN['ch_0']['freq_2']['freq'] * 400,
-        ch0F2a = jsonIN['ch_0']['freq_2']['ampl'],
+        ch0F0r = jsonIN['ch_0']['freq_0']['record'],
         ch1F0f = jsonIN['ch_1']['freq_0']['freq'] * 400,
-        ch1F0a = jsonIN['ch_1']['freq_0']['ampl'],
-        ch1F1f = jsonIN['ch_1']['freq_1']['freq'] * 400,
-        ch1F1a = jsonIN['ch_1']['freq_1']['ampl'],
-        ch1F2f = jsonIN['ch_1']['freq_2']['freq'] * 400,
-        ch1F2a = jsonIN['ch_1']['freq_2']['ampl'];
+        ch1F0r = jsonIN['ch_1']['freq_0']['record'];
 }
 
 class MyApp extends StatefulWidget {
@@ -66,8 +45,8 @@ class _MyAppState extends State<MyApp> {
   TextEditingController _textViewSaved = TextEditingController();
   var _dataJson;
 
-  List<Point> _dataPlotL = [Point(0, 85)];
-  List<Point> _dataPlotR = [Point(0, 85)];
+  List<Point> _dataPlotL = [Point(0, 0)];
+  List<Point> _dataPlotR = [Point(0, 0)];
 
   double _scaleToDB(double freq, int scale) {
     double spl;
@@ -146,21 +125,18 @@ class _MyAppState extends State<MyApp> {
 
           _serialData.add(Text('Unit Name: ${_dataJson.tester}'));
 
-          _dataPlotL = [Point(0, 85)];
-          _dataPlotL.add(Point(_dataJson.ch0F0f.round(),
-              _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0a)));
-          _dataPlotL.add(Point(_dataJson.ch0F1f.round(),
-              _scaleToDB(_dataJson.ch0F1f, _dataJson.ch0F1a)));
-          _dataPlotL.add(Point(_dataJson.ch0F2f.round(),
-              _scaleToDB(_dataJson.ch0F2f, _dataJson.ch0F2a)));
-
-          _dataPlotR = [Point(0, 85)];
-          _dataPlotR.add(Point(_dataJson.ch1F0f.round(),
-              _scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0a)));
-          _dataPlotR.add(Point(_dataJson.ch1F1f.round(),
-              _scaleToDB(_dataJson.ch1F1f, _dataJson.ch1F1a)));
-          _dataPlotR.add(Point(_dataJson.ch1F2f.round(),
-              _scaleToDB(_dataJson.ch1F2f, _dataJson.ch1F2a)));
+          _dataPlotL = [
+            Point(0, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[0]))
+          ];
+          _dataPlotR = [
+            Point(0, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch1F0r[0]))
+          ];
+          for (var i = 1; i < 24; i++) {
+            _dataPlotL.add(
+                Point(i, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[i])));
+            _dataPlotR.add(
+                Point(i, _scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0r[i])));
+          }
         } else {
           _serialData.add(Text(line));
           if (_serialData.length > 3) {
@@ -289,9 +265,9 @@ class _MyAppState extends State<MyApp> {
                 child: new Plot(
                   height: 200,
                   data: _dataPlotL,
-                  gridSize: new Offset(500, 20),
+                  gridSize: new Offset(1, 20),
                   padding: const EdgeInsets.fromLTRB(40, 15, 15, 40),
-                  xTitle: 'Frequency (Hz)',
+                  xTitle: 'Tone Number',
                   yTitle: 'Left dB (SPL)',
                   style: new PlotStyle(
                       pointRadius: 3,
@@ -299,7 +275,7 @@ class _MyAppState extends State<MyApp> {
                       primary: Colors.white,
                       secondary: Colors.orange,
                       trace: true,
-                      showCoordinates: true,
+                      showCoordinates: false,
                       trailingZeros: false,
                       textStyle: new TextStyle(
                           fontSize: 8,
@@ -313,9 +289,9 @@ class _MyAppState extends State<MyApp> {
                 child: new Plot(
                   height: 200,
                   data: _dataPlotR,
-                  gridSize: new Offset(500, 20),
+                  gridSize: new Offset(1, 20),
                   padding: const EdgeInsets.fromLTRB(40, 15, 15, 40),
-                  xTitle: 'Frequency (Hz)',
+                  xTitle: 'Tone Number',
                   yTitle: 'Right dB (SPL)',
                   style: new PlotStyle(
                       pointRadius: 3,
@@ -323,7 +299,7 @@ class _MyAppState extends State<MyApp> {
                       primary: Colors.white,
                       secondary: Colors.orange,
                       trace: true,
-                      showCoordinates: true,
+                      showCoordinates: false,
                       trailingZeros: false,
                       textStyle: new TextStyle(
                           fontSize: 8,
