@@ -49,7 +49,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   UsbPort _port;
-  String _status = "Idle";
   List<Widget> _ports = [];
   List<Widget> _serialData = [];
   StreamSubscription<String> _subscription;
@@ -63,6 +62,9 @@ class _MyAppState extends State<MyApp> {
 
   List<Point> _dataPlotL = [Point(0, 0)];
   List<Point> _dataPlotR = [Point(0, 0)];
+
+  int _freqChoiceL = 500;
+  int _freqChoiceR = 500;
 
   double _scaleToDB(double freq, int scale) {
     double spl;
@@ -86,6 +88,50 @@ class _MyAppState extends State<MyApp> {
     return double.parse((spl).toStringAsFixed(2)); //2 decimals only
   }
 
+  void _choicePlotL(int freq) {
+    if (freq == 500) {
+      _dataPlotL = [
+        Point(0, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[0]))
+      ];
+      for (var i = 1; i < 24; i++) {
+        _dataPlotL
+            .add(Point(i, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[i])));
+      }
+    } else if (freq == 1000) {
+      _dataPlotL = [
+        Point(0, _scaleToDB(_dataJson.ch0F1f, _dataJson.ch0F1r[0]))
+      ];
+      for (var i = 1; i < 24; i++) {
+        _dataPlotL
+            .add(Point(i, _scaleToDB(_dataJson.ch0F1f, _dataJson.ch0F1r[i])));
+      }
+    } else {
+      _dataPlotL = [Point(0, 0)];
+    }
+  }
+
+  void _choicePlotR(int freq) {
+    if (freq == 500) {
+      _dataPlotR = [
+        Point(0, _scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0r[0]))
+      ];
+      for (var i = 1; i < 24; i++) {
+        _dataPlotR
+            .add(Point(i, _scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0r[i])));
+      }
+    } else if (freq == 1000) {
+      _dataPlotR = [
+        Point(0, _scaleToDB(_dataJson.ch1F1f, _dataJson.ch1F1r[0]))
+      ];
+      for (var i = 1; i < 24; i++) {
+        _dataPlotR
+            .add(Point(i, _scaleToDB(_dataJson.ch1F1f, _dataJson.ch1F1r[i])));
+      }
+    } else {
+      _dataPlotR = [Point(0, 0)];
+    }
+  }
+
   Future<bool> _connectTo(device) async {
     _serialData.clear();
 
@@ -106,18 +152,11 @@ class _MyAppState extends State<MyApp> {
 
     if (device == null) {
       _deviceId = null;
-
-      setState(() {
-        _status = "Disconnected";
-      });
       return true;
     }
 
     _port = await device.create();
     if (!await _port.open()) {
-      setState(() {
-        _status = "Open Failed";
-      });
       return false;
     }
 
@@ -140,6 +179,8 @@ class _MyAppState extends State<MyApp> {
           _dataJson = DataJSON.fromJson(dataMap);
 
           _serialData.add(Text('Loaded Unit Name: ${_dataJson.tester}'));
+          _choicePlotL(_freqChoiceL);
+          _choicePlotR(_freqChoiceR);
         } else {
           _serialData.add(Text(line));
           if (_serialData.length > 2) {
@@ -147,10 +188,6 @@ class _MyAppState extends State<MyApp> {
           }
         }
       });
-    });
-
-    setState(() {
-      _status = "Connected";
     });
     return true;
   }
@@ -209,54 +246,6 @@ class _MyAppState extends State<MyApp> {
     _textViewSaved.text = "";
   }
 
-  void _choicePlotL(int freq) {
-    if (freq == 500) {
-      _dataPlotL = [
-        Point(0, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[0]))
-      ];
-      for (var i = 1; i < 24; i++) {
-        _dataPlotL
-            .add(Point(i, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[i])));
-      }
-    }
-
-    if (freq == 1000) {
-      _dataPlotL = [
-        Point(0, _scaleToDB(_dataJson.ch0F1f, _dataJson.ch0F1r[0]))
-      ];
-      for (var i = 1; i < 24; i++) {
-        _dataPlotL
-            .add(Point(i, _scaleToDB(_dataJson.ch0F1f, _dataJson.ch0F1r[i])));
-      }
-    } else {
-      _dataPlotL = [Point(0, 0)];
-    }
-  }
-
-  void _choicePlotR(int freq) {
-    if (freq == 500) {
-      _dataPlotL = [
-        Point(0, _scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0r[0]))
-      ];
-      for (var i = 1; i < 24; i++) {
-        _dataPlotL
-            .add(Point(i, _scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0r[i])));
-      }
-    }
-
-    if (freq == 1000) {
-      _dataPlotL = [
-        Point(0, _scaleToDB(_dataJson.ch1F1f, _dataJson.ch1F1r[0]))
-      ];
-      for (var i = 1; i < 24; i++) {
-        _dataPlotL
-            .add(Point(i, _scaleToDB(_dataJson.ch1F1f, _dataJson.ch1F1r[i])));
-      }
-    } else {
-      _dataPlotL = [Point(0, 0)];
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -285,7 +274,40 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             children: <Widget>[
               ..._ports,
-              //Text('Status: $_status\n'),
+              ListTile(
+                leading: Container(
+                    child: new DropdownButton<String>(
+                        value: _freqChoiceL.toString(),
+                        items: <String>['500', '1000']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            _freqChoiceL = int.parse(newValue);
+                          });
+                        })),
+                title:
+                    Text('L     Freq(Hz)     R', textAlign: TextAlign.center),
+                trailing: Container(
+                    child: new DropdownButton<String>(
+                        value: _freqChoiceR.toString(),
+                        items: <String>['500', '1000']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            _freqChoiceR = int.parse(newValue);
+                          });
+                        })),
+              ),
               ListTile(
                 leading: ElevatedButton(
                   child: Text("List Files"),
@@ -312,44 +334,6 @@ class _MyAppState extends State<MyApp> {
               ),
               Text("Result: ", style: TextStyle(fontWeight: FontWeight.bold)),
               ..._serialData,
-              ListTile(
-                leading: Container(
-                  child: new DropdownButton<String>(
-                    value: '0',
-                    items: <String>['0', '500', '1000']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        _choicePlotL(int.parse(newValue));
-                      });
-                    },
-                  ),
-                ),
-                title:
-                    Text("L     Freq(Hz)     R", textAlign: TextAlign.center),
-                trailing: Container(
-                  child: new DropdownButton<String>(
-                    value: '0',
-                    items: <String>['0', '500', '1000']
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String newValue) {
-                      setState(() {
-                        _choicePlotR(int.parse(newValue));
-                      });
-                    },
-                  ),
-                ),
-              ),
               Container(
                 child: new Plot(
                   height: 200,
