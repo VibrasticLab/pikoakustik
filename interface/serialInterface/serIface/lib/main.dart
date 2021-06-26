@@ -13,33 +13,43 @@ void main() {
 
 class DataJSON {
   String tester;
-  double ch0F0f, ch0F1f, ch1F0f, ch1F1f;
-  List<dynamic> ch0F0r, ch0F1r, ch1F0r, ch1F1r;
+  double ch0F0f, ch0F1f, ch0F2f, ch1F0f, ch1F1f, ch1F2f;
+  List<dynamic> ch0F0r, ch0F1r, ch0F2r, ch1F0r, ch1F1r, ch1F2r;
 
   DataJSON(
     this.tester,
     // Frequency
     this.ch0F0f,
     this.ch0F1f,
+    this.ch0F2f,
     this.ch1F0f,
     this.ch1F1f,
+    this.ch1F2f,
     // Record
     this.ch0F0r,
     this.ch0F1r,
+    this.ch0F2r,
     this.ch1F0r,
     this.ch1F1r,
+    this.ch1F2r,
   );
 
   DataJSON.fromJson(Map<String, dynamic> jsonIN)
       : tester = jsonIN['tester'],
+        //left channel
         ch0F0f = jsonIN['ch_0']['freq_0']['freq'] * 400,
         ch0F0r = jsonIN['ch_0']['freq_0']['record'],
         ch0F1f = jsonIN['ch_0']['freq_1']['freq'] * 400,
         ch0F1r = jsonIN['ch_0']['freq_1']['record'],
+        ch0F2f = jsonIN['ch_0']['freq_2']['freq'] * 400,
+        ch0F2r = jsonIN['ch_0']['freq_2']['record'],
+        //right channel
         ch1F0f = jsonIN['ch_1']['freq_0']['freq'] * 400,
         ch1F0r = jsonIN['ch_1']['freq_0']['record'],
         ch1F1f = jsonIN['ch_1']['freq_1']['freq'] * 400,
-        ch1F1r = jsonIN['ch_1']['freq_1']['record'];
+        ch1F1r = jsonIN['ch_1']['freq_1']['record'],
+        ch1F2f = jsonIN['ch_1']['freq_2']['freq'] * 400,
+        ch1F2r = jsonIN['ch_1']['freq_2']['record'];
 }
 
 class MyApp extends StatefulWidget {
@@ -54,7 +64,6 @@ class _MyAppState extends State<MyApp> {
   StreamSubscription<String> _subscription;
   Transaction<String> _transaction;
   int _deviceId;
-  TextEditingController _textController = TextEditingController();
 
   int _isGetJSON = 0;
   TextEditingController _textViewSaved = TextEditingController();
@@ -105,6 +114,14 @@ class _MyAppState extends State<MyApp> {
         _dataPlotL
             .add(Point(i, _scaleToDB(_dataJson.ch0F1f, _dataJson.ch0F1r[i])));
       }
+    } else if (freq == 2000) {
+      _dataPlotL = [
+        Point(0, _scaleToDB(_dataJson.ch0F2f, _dataJson.ch0F2r[0]))
+      ];
+      for (var i = 1; i < 24; i++) {
+        _dataPlotL
+            .add(Point(i, _scaleToDB(_dataJson.ch0F2f, _dataJson.ch0F2r[i])));
+      }
     } else {
       _dataPlotL = [Point(0, 0)];
     }
@@ -126,6 +143,14 @@ class _MyAppState extends State<MyApp> {
       for (var i = 1; i < 24; i++) {
         _dataPlotR
             .add(Point(i, _scaleToDB(_dataJson.ch1F1f, _dataJson.ch1F1r[i])));
+      }
+    } else if (freq == 2000) {
+      _dataPlotR = [
+        Point(0, _scaleToDB(_dataJson.ch1F2f, _dataJson.ch1F2r[0]))
+      ];
+      for (var i = 1; i < 24; i++) {
+        _dataPlotR
+            .add(Point(i, _scaleToDB(_dataJson.ch1F2f, _dataJson.ch1F2r[i])));
       }
     } else {
       _dataPlotR = [Point(0, 0)];
@@ -228,8 +253,6 @@ class _MyAppState extends State<MyApp> {
     _serialData.clear();
     String strData = strReq + "\r\n";
     await _port.write(Uint8List.fromList(strData.codeUnits));
-
-    _textController.text = "";
   }
 
   void _getJSON(String strReq) async {
@@ -242,8 +265,6 @@ class _MyAppState extends State<MyApp> {
     _isGetJSON = 1;
     String strData = "cat " + numReq.toString() + "\r\n";
     await _port.write(Uint8List.fromList(strData.codeUnits));
-
-    _textViewSaved.text = "";
   }
 
   @override
@@ -278,7 +299,7 @@ class _MyAppState extends State<MyApp> {
                 leading: Container(
                     child: new DropdownButton<String>(
                         value: _freqChoiceL.toString(),
-                        items: <String>['500', '1000']
+                        items: <String>['500', '1000', '2000']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -295,7 +316,7 @@ class _MyAppState extends State<MyApp> {
                 trailing: Container(
                     child: new DropdownButton<String>(
                         value: _freqChoiceR.toString(),
-                        items: <String>['500', '1000']
+                        items: <String>['500', '1000', '2000']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
