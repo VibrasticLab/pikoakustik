@@ -111,7 +111,7 @@ static double freq_test[] = {0.625, 1.25, 2.5, 5, 10, 20, 40};
 static double freq_test[] = {0.625, 1.25, 2.5, 5, 10, 20};
  #endif
 #else
- static double freq_test[] = {1.25, 2.5, 5};
+ static double freq_test[] = {1.25};
 #endif
 
 /**
@@ -128,6 +128,22 @@ static uint8_t ampl_num = 9;
  * @brief Frequency array ID
  */
 static uint8_t freq_idx = 0;
+
+/**
+ * @brief Array to record of result
+ */
+static uint8_t res_arr[TEST_MAX_COUNT];
+
+/**
+ * @brief Resetting Result record
+ */
+static void ht_metri_ResultReset(void){
+    uint8_t i;
+
+    for(i=0;i<TEST_MAX_COUNT;i++){
+        res_arr[i] = 9;
+    }
+}
 
 /**
  * @brief Audio Play function
@@ -170,10 +186,12 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
         else if(mode_status==STT_CFILE){
 
+            ht_metri_ResultReset();
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
             ht_mmcMetri_chkFile();
             ht_mmcMetri_jsonChStart(channel_stt);
 #endif
+
             ht_comm_Msg("Entering Mode: Audiometri\r\n");
             ht_comm_Msg("------------\r\n");
             mode_led=LED_METRI;
@@ -226,8 +244,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 /*************************************/
 
                 mode_step=STEP_WAIT;
-                test_count++;
-                ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %6.4f, %6.4f\r\n",freq_test[freq_idx],ampl_test);
+                ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %6.3f, %i\r\n",freq_test[freq_idx],ampl_num);
                 ht_comm_Msg(strbuff);
 #endif
             }
@@ -255,6 +272,9 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 mode_step=STEP_ASK;
 
                 // TODO: redefined on amplitude scaling method
+                res_arr[test_count] = ampl_num;
+                test_count++;
+
                 if(test_answer==1){
                     if(ampl_num>0){
                         ampl_test = ampl_test / 2;
@@ -290,12 +310,15 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 
 #if defined(USER_METRI_RECORD) && defined(USER_MMC)
                     ht_mmcMetri_hearingResult(freq_test[freq_idx],freq_idx,ampl_num);
+                    ht_mmcMetri_hearingRecord(res_arr,test_count,ampl_num);
 #endif
+
                     freq_idx++;
                     ampl_test = FIRSTTEST_DB;
                     ampl_num = 9;
                     test_count = 0;
                     upAfterDown = 0;
+                    ht_metri_ResultReset();
 
                     if(freq_idx != freq_max){
                         ht_comm_Msg("Continue next Frequency\r\n");

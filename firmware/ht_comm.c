@@ -240,7 +240,7 @@ static void cmd_tone(BaseSequentialStream *chp, int argc, char *argv[]) {
         chprintf(chp,"Warning: Amplitude bellow smallest set\r\n");
     }
 
-    chprintf(chp,"Tone: Freq:%6.4f Ampl:%6.4f\r\n",vfreq,vampl);
+    chprintf(chp,"Tone: Freq:%6.3f Ampl:%6.3f\r\n",vfreq,vampl);
     ht_audio_Tone(vfreq,vampl);
     ht_audio_Play(sing_durr);
     chprintf(chp,"Finished\r\n");
@@ -332,7 +332,7 @@ static void cmd_toneout(BaseSequentialStream *chp, int argc, char *argv[]) {
         case 1: vampl=0.0039;break;
     }
     ht_audio_Tone(vfreq,vampl);
-    chprintf(chp,"Tone: Freq:%6.4f Ampl:%6.4f\r\n",vfreq,vampl);
+    chprintf(chp,"Tone: Freq:%6.3f Ampl:%6.3f\r\n",vfreq,vampl);
 #endif
 
     ht_audio_Play(sing_durr);
@@ -379,7 +379,7 @@ static void cmd_sing(BaseSequentialStream *chp, int argc, char *argv[]) {
     }
 
     while(1){
-        chprintf(chp,"Sing: Freq:%6.4f Ampl:%6.4f\r\n",vfreq,vampl);
+        chprintf(chp,"Sing: Freq:%6.3f Ampl:%6.3f\r\n",vfreq,vampl);
         ht_audio_Tone(vfreq,vampl);
         ht_audio_Play(sing_durr);
         chThdSleepMilliseconds(500);

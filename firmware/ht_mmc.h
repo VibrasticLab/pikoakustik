@@ -134,6 +134,14 @@ void ht_mmcMetri_jsonComma(void);
 void ht_mmcMetri_hearingResult(double freq, uint8_t freqidx, uint8_t ample);
 
 /**
+ * @brief Save array of result record
+ * @param[in] uint8_t Result array
+ * @param[in] uint8_t Last index to fill in
+ * @param[in] uint8_t Last Amplitude scale
+ */
+void ht_mmcMetri_hearingRecord(uint8_t *resArray, uint8_t lastIdx, uint8_t lastAmpl);
+
+/**
  * @brief Save word END on save files
  */
 void ht_mmcMetri_endResult(void);

@@ -776,7 +776,7 @@ void ht_mmcMetri_hearingResult(double freq, uint8_t freqidx, uint8_t ample){
 
     if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
 
-        ht_mmc_Buff(buffer,sizeof(buffer),"\"freq_%i\":{\"freq\":%6.4f,\"ampl\":%i}", freqidx, freq, ample);
+        ht_mmc_Buff(buffer,sizeof(buffer),"\"freq_%i\":{\"freq\":%6.3f,\"ampl\":%i,", freqidx, freq, ample);
 
         if(lastnum < FILE_MAX_NUM){
             f_mount(&FatFs, "", 0);
@@ -798,6 +798,56 @@ void ht_mmcMetri_hearingResult(double freq, uint8_t freqidx, uint8_t ample){
         }
     }
     free(Fil);
+}
+
+void ht_mmcMetri_hearingRecord(uint8_t *resArray, uint8_t lastIdx, uint8_t lastAmpl){
+
+    char buffer[STR_BUFF_SIZE];
+    char fname[STR_BUFF_SIZE];
+    FATFS FatFs;
+    FIL *Fil;
+    UINT bw;
+    FRESULT err;
+
+    uint8_t i;
+
+    Fil = (FIL*)malloc(sizeof(FIL));
+
+    if(mmc_check()!=FR_OK){return;}
+
+    if( (filesystem_ready==true) && (mmc_spi_status_flag==MMC_SPI_OK) ){
+
+        for(i=lastIdx;i<TEST_MAX_COUNT;i++){
+            resArray[i] = lastAmpl;
+        }
+
+        ht_mmc_Buff(buffer,sizeof(buffer),"\"record\":[%i",resArray[0]);
+        for(i=1;i<TEST_MAX_COUNT;i++){
+            ht_mmc_Buff(buffer,sizeof(buffer),"%s,%i",buffer,resArray[i]);
+        }
+        ht_mmc_Buff(buffer,sizeof(buffer),"%s]}",buffer);
+
+        if(lastnum < FILE_MAX_NUM){
+            f_mount(&FatFs, "", 0);
+
+            ht_mmc_Buff(fname,sizeof(fname),"/RESULT_%i.TXT",lastnum);
+            err = f_open(Fil, fname, FA_WRITE | FA_READ | FA_OPEN_ALWAYS);
+            if(err==FR_OK){
+                f_lseek(Fil, f_size(Fil));
+                f_write(Fil, buffer, strlen(buffer), &bw);
+                f_close(Fil);
+            }
+
+            f_mount(0, "", 0);
+        }
+        else{
+            mode_status = STT_IDLE;
+            mode_led = LED_READY;
+            ht_comm_Msg("Warning: Maximum save number\r\n");
+        }
+    }
+    free(Fil);
+
 }
 
 void ht_mmcMetri_endResult(void){
