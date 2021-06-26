@@ -13,17 +13,33 @@ void main() {
 
 class DataJSON {
   String tester;
-  double ch0F0f, ch1F0f;
-  List<dynamic> ch0F0r, ch1F0r;
+  double ch0F0f, ch0F1f, ch1F0f, ch1F1f;
+  List<dynamic> ch0F0r, ch0F1r, ch1F0r, ch1F1r;
 
-  DataJSON(this.tester, this.ch0F0f, this.ch1F0f, this.ch0F0r, this.ch1F0r);
+  DataJSON(
+    this.tester,
+    // Frequency
+    this.ch0F0f,
+    this.ch0F1f,
+    this.ch1F0f,
+    this.ch1F1f,
+    // Record
+    this.ch0F0r,
+    this.ch0F1r,
+    this.ch1F0r,
+    this.ch1F1r,
+  );
 
   DataJSON.fromJson(Map<String, dynamic> jsonIN)
       : tester = jsonIN['tester'],
         ch0F0f = jsonIN['ch_0']['freq_0']['freq'] * 400,
         ch0F0r = jsonIN['ch_0']['freq_0']['record'],
+        ch0F1f = jsonIN['ch_0']['freq_1']['freq'] * 400,
+        ch0F1r = jsonIN['ch_0']['freq_1']['record'],
         ch1F0f = jsonIN['ch_1']['freq_0']['freq'] * 400,
-        ch1F0r = jsonIN['ch_1']['freq_0']['record'];
+        ch1F0r = jsonIN['ch_1']['freq_0']['record'],
+        ch1F1f = jsonIN['ch_1']['freq_1']['freq'] * 400,
+        ch1F1r = jsonIN['ch_1']['freq_1']['record'];
 }
 
 class MyApp extends StatefulWidget {
@@ -123,23 +139,10 @@ class _MyAppState extends State<MyApp> {
           Map<String, dynamic> dataMap = jsonDecode(line);
           _dataJson = DataJSON.fromJson(dataMap);
 
-          _serialData.add(Text('Unit Name: ${_dataJson.tester}'));
-
-          _dataPlotL = [
-            Point(0, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[0]))
-          ];
-          _dataPlotR = [
-            Point(0, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch1F0r[0]))
-          ];
-          for (var i = 1; i < 24; i++) {
-            _dataPlotL.add(
-                Point(i, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[i])));
-            _dataPlotR.add(
-                Point(i, _scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0r[i])));
-          }
+          _serialData.add(Text('Loaded Unit Name: ${_dataJson.tester}'));
         } else {
           _serialData.add(Text(line));
-          if (_serialData.length > 3) {
+          if (_serialData.length > 2) {
             _serialData.removeAt(0);
           }
         }
@@ -206,6 +209,54 @@ class _MyAppState extends State<MyApp> {
     _textViewSaved.text = "";
   }
 
+  void _choicePlotL(int freq) {
+    if (freq == 500) {
+      _dataPlotL = [
+        Point(0, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[0]))
+      ];
+      for (var i = 1; i < 24; i++) {
+        _dataPlotL
+            .add(Point(i, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[i])));
+      }
+    }
+
+    if (freq == 1000) {
+      _dataPlotL = [
+        Point(0, _scaleToDB(_dataJson.ch0F1f, _dataJson.ch0F1r[0]))
+      ];
+      for (var i = 1; i < 24; i++) {
+        _dataPlotL
+            .add(Point(i, _scaleToDB(_dataJson.ch0F1f, _dataJson.ch0F1r[i])));
+      }
+    } else {
+      _dataPlotL = [Point(0, 0)];
+    }
+  }
+
+  void _choicePlotR(int freq) {
+    if (freq == 500) {
+      _dataPlotL = [
+        Point(0, _scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0r[0]))
+      ];
+      for (var i = 1; i < 24; i++) {
+        _dataPlotL
+            .add(Point(i, _scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0r[i])));
+      }
+    }
+
+    if (freq == 1000) {
+      _dataPlotL = [
+        Point(0, _scaleToDB(_dataJson.ch1F1f, _dataJson.ch1F1r[0]))
+      ];
+      for (var i = 1; i < 24; i++) {
+        _dataPlotL
+            .add(Point(i, _scaleToDB(_dataJson.ch1F1f, _dataJson.ch1F1r[i])));
+      }
+    } else {
+      _dataPlotL = [Point(0, 0)];
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -234,7 +285,7 @@ class _MyAppState extends State<MyApp> {
           child: Column(
             children: <Widget>[
               ..._ports,
-              Text('Status: $_status\n'),
+              //Text('Status: $_status\n'),
               ListTile(
                 leading: ElevatedButton(
                   child: Text("List Files"),
@@ -261,6 +312,44 @@ class _MyAppState extends State<MyApp> {
               ),
               Text("Result: ", style: TextStyle(fontWeight: FontWeight.bold)),
               ..._serialData,
+              ListTile(
+                leading: Container(
+                  child: new DropdownButton<String>(
+                    value: '0',
+                    items: <String>['0', '500', '1000']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        _choicePlotL(int.parse(newValue));
+                      });
+                    },
+                  ),
+                ),
+                title:
+                    Text("L     Freq(Hz)     R", textAlign: TextAlign.center),
+                trailing: Container(
+                  child: new DropdownButton<String>(
+                    value: '0',
+                    items: <String>['0', '500', '1000']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        _choicePlotR(int.parse(newValue));
+                      });
+                    },
+                  ),
+                ),
+              ),
               Container(
                 child: new Plot(
                   height: 200,
