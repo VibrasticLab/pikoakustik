@@ -3,9 +3,12 @@ import 'dart:typed_data';
 import 'dart:convert';
 import 'dart:async';
 import 'dart:math';
+import 'dart:io';
 import 'package:usb_serial/usb_serial.dart';
 import 'package:usb_serial/transaction.dart';
 import 'package:flutter_plot/flutter_plot.dart';
+import 'package:downloads_path_provider/downloads_path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(MyApp());
@@ -69,8 +72,10 @@ class _MyAppState extends State<MyApp> {
   int _isGetFList = 1;
   int _isGetJSON = 2;
 
+  int _lenRecord = 24;
   DataJSON _dataJson;
 
+  bool _permissionGranted = true;
   int _fileSelectNum = 0;
   List<String> _fileFnum = ["0"];
 
@@ -107,7 +112,7 @@ class _MyAppState extends State<MyApp> {
       _dataPlotL = [
         Point(0, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[0]))
       ];
-      for (var i = 1; i < 24; i++) {
+      for (var i = 1; i < _lenRecord; i++) {
         _dataPlotL
             .add(Point(i, _scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[i])));
       }
@@ -115,7 +120,7 @@ class _MyAppState extends State<MyApp> {
       _dataPlotL = [
         Point(0, _scaleToDB(_dataJson.ch0F1f, _dataJson.ch0F1r[0]))
       ];
-      for (var i = 1; i < 24; i++) {
+      for (var i = 1; i < _lenRecord; i++) {
         _dataPlotL
             .add(Point(i, _scaleToDB(_dataJson.ch0F1f, _dataJson.ch0F1r[i])));
       }
@@ -123,7 +128,7 @@ class _MyAppState extends State<MyApp> {
       _dataPlotL = [
         Point(0, _scaleToDB(_dataJson.ch0F2f, _dataJson.ch0F2r[0]))
       ];
-      for (var i = 1; i < 24; i++) {
+      for (var i = 1; i < _lenRecord; i++) {
         _dataPlotL
             .add(Point(i, _scaleToDB(_dataJson.ch0F2f, _dataJson.ch0F2r[i])));
       }
@@ -137,7 +142,7 @@ class _MyAppState extends State<MyApp> {
       _dataPlotR = [
         Point(0, _scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0r[0]))
       ];
-      for (var i = 1; i < 24; i++) {
+      for (var i = 1; i < _lenRecord; i++) {
         _dataPlotR
             .add(Point(i, _scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0r[i])));
       }
@@ -145,7 +150,7 @@ class _MyAppState extends State<MyApp> {
       _dataPlotR = [
         Point(0, _scaleToDB(_dataJson.ch1F1f, _dataJson.ch1F1r[0]))
       ];
-      for (var i = 1; i < 24; i++) {
+      for (var i = 1; i < _lenRecord; i++) {
         _dataPlotR
             .add(Point(i, _scaleToDB(_dataJson.ch1F1f, _dataJson.ch1F1r[i])));
       }
@@ -153,7 +158,7 @@ class _MyAppState extends State<MyApp> {
       _dataPlotR = [
         Point(0, _scaleToDB(_dataJson.ch1F2f, _dataJson.ch1F2r[0]))
       ];
-      for (var i = 1; i < 24; i++) {
+      for (var i = 1; i < _lenRecord; i++) {
         _dataPlotR
             .add(Point(i, _scaleToDB(_dataJson.ch1F2f, _dataJson.ch1F2r[i])));
       }
@@ -177,6 +182,84 @@ class _MyAppState extends State<MyApp> {
       _fileFnum.add(_fnum[i].toString());
     }
     _fileSelectNum = _fnum.last;
+  }
+
+  Future _getStoragePermission() async {
+    if (await Permission.storage.request().isGranted) {
+      setState(() {
+        _permissionGranted = true;
+      });
+    } else if (await Permission.storage.request().isPermanentlyDenied) {
+      await openAppSettings();
+    } else if (await Permission.storage.request().isDenied) {
+      setState(() {
+        _permissionGranted = false;
+      });
+    }
+  }
+
+  void _saveResult(int numFile) async {
+    String txtResult = '';
+    txtResult += 'tester: ${_dataJson.tester}\n\n';
+
+    // Channel Kiri
+    txtResult += 'Channel: Kiri\n\n';
+
+    txtResult += 'Freq: ${_dataJson.ch0F0f.toString()}\n';
+    for (var i = 0; i < _lenRecord; i++) {
+      txtResult +=
+          '${_scaleToDB(_dataJson.ch0F0f, _dataJson.ch0F0r[i]).toString()} ';
+    }
+    txtResult += '\n\n';
+
+    txtResult += 'Freq: ${_dataJson.ch0F1f.toString()}\n';
+    for (var i = 0; i < _lenRecord; i++) {
+      txtResult +=
+          '${_scaleToDB(_dataJson.ch0F1f, _dataJson.ch0F1r[i]).toString()} ';
+    }
+    txtResult += '\n\n';
+
+    txtResult += 'Freq: ${_dataJson.ch0F2f.toString()}\n';
+    for (var i = 0; i < _lenRecord; i++) {
+      txtResult +=
+          '${_scaleToDB(_dataJson.ch0F2f, _dataJson.ch0F2r[i]).toString()} ';
+    }
+    txtResult += '\n\n';
+
+    // Channel kanan
+    txtResult += 'Channel: Kanan\n\n';
+
+    txtResult += 'Freq: ${_dataJson.ch1F0f.toString()}\n';
+    for (var i = 0; i < _lenRecord; i++) {
+      txtResult +=
+          '${_scaleToDB(_dataJson.ch1F0f, _dataJson.ch1F0r[i]).toString()} ';
+    }
+    txtResult += '\n\n';
+
+    txtResult += 'Freq: ${_dataJson.ch1F1f.toString()}\n';
+    for (var i = 0; i < _lenRecord; i++) {
+      txtResult +=
+          '${_scaleToDB(_dataJson.ch1F1f, _dataJson.ch1F1r[i]).toString()} ';
+    }
+    txtResult += '\n\n';
+
+    txtResult += 'Freq: ${_dataJson.ch1F2f.toString()}\n';
+    for (var i = 0; i < _lenRecord; i++) {
+      txtResult +=
+          '${_scaleToDB(_dataJson.ch1F2f, _dataJson.ch1F2r[i]).toString()} ';
+    }
+    txtResult += '\n\n';
+
+    // saving result string
+    _getStoragePermission();
+
+    if (_permissionGranted) {
+      Directory directory = await DownloadsPathProvider.downloadsDirectory;
+      File file =
+          File('${directory.path}/audioMetri/result_${numFile.toString()}.txt');
+      await file.create(recursive: true);
+      await file.writeAsString(txtResult, flush: true, encoding: utf8);
+    }
   }
 
   Future<bool> _connectTo(device) async {
@@ -227,6 +310,7 @@ class _MyAppState extends State<MyApp> {
           _serialData.add(Text('Loaded Unit Name: ${_dataJson.tester}'));
           _choicePlotL(_freqChoiceL);
           _choicePlotR(_freqChoiceR);
+          _saveResult(_fileSelectNum);
         } else if (_isGetStatus == _isGetFList) {
           _updateFileList(line);
         } else {

@@ -30,6 +30,8 @@ dependencies:
   cupertino_icons: ^1.0.0
   usb_serial: ^0.2.991
   flutter_plot: ^0.1.0
+  downloads_path_provider: ^0.1.0
+  permission_handler: ^8.1.1
 
 dev_dependencies:
   flutter_test:
