@@ -7,8 +7,12 @@ import 'dart:io';
 import 'package:usb_serial/usb_serial.dart';
 import 'package:usb_serial/transaction.dart';
 import 'package:flutter_plot/flutter_plot.dart';
-import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+// outdated causing build issue like https://github.com/adee42/flutter_keyboard_visibility/issues/42
+// modify /opt/flutter/.pub-cache/hosted/pub.dartlang.org/downloads_path_provider-0.1.0/android/build.gradle
+// change 'compileSdkVersion 27' to 'compileSdkVersion 28'
+import 'package:downloads_path_provider/downloads_path_provider.dart';
 
 void main() {
   runApp(MyApp());
