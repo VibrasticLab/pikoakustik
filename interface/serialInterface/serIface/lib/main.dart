@@ -65,9 +65,13 @@ class _MyAppState extends State<MyApp> {
   Transaction<String> _transaction;
   int _deviceId;
 
-  int _isGetJSON = 0;
+  int _isGetStatus = 0;
+  int _isGetFList = 1;
+  int _isGetJSON = 2;
+
   TextEditingController _textViewSaved = TextEditingController();
   var _dataJson;
+  List<int> _fnum = [];
 
   List<Point> _dataPlotL = [Point(0, 0)];
   List<Point> _dataPlotR = [Point(0, 0)];
@@ -198,20 +202,33 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         print(line);
 
-        if (_isGetJSON == 1) {
-          _isGetJSON = 0;
+        if (_isGetStatus == _isGetJSON) {
           Map<String, dynamic> dataMap = jsonDecode(line);
           _dataJson = DataJSON.fromJson(dataMap);
 
           _serialData.add(Text('Loaded Unit Name: ${_dataJson.tester}'));
           _choicePlotL(_freqChoiceL);
           _choicePlotR(_freqChoiceR);
+        } else if (_isGetStatus == _isGetFList) {
+          List<String> _arrLine = line.split(',');
+          int _lenLine = _arrLine.length - 1;
+
+          for (var i = 0; i < _lenLine; i++) {
+            _fnum.add(int.parse(_arrLine[i]));
+          }
+          _fnum.sort();
+
+          for (var i = 0; i < _lenLine; i++) {
+            _serialData.add(Text(_fnum[i].toString()));
+          }
         } else {
           _serialData.add(Text(line));
           if (_serialData.length > 2) {
             _serialData.removeAt(0);
           }
         }
+
+        _isGetStatus = 0;
       });
     });
     return true;
@@ -245,13 +262,15 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _sendText(String strReq) async {
+  void _getFList() async {
     if (_port == null) {
       return;
     }
 
     _serialData.clear();
-    String strData = strReq + "\r\n";
+    _isGetStatus = _isGetFList;
+    _fnum.clear();
+    String strData = "lsnum\r\n";
     await _port.write(Uint8List.fromList(strData.codeUnits));
   }
 
@@ -262,7 +281,7 @@ class _MyAppState extends State<MyApp> {
     int numReq = int.parse(strReq);
 
     _serialData.clear();
-    _isGetJSON = 1;
+    _isGetStatus = _isGetJSON;
     String strData = "cat " + numReq.toString() + "\r\n";
     await _port.write(Uint8List.fromList(strData.codeUnits));
   }
@@ -335,7 +354,7 @@ class _MyAppState extends State<MyApp> {
                   onPressed: _port == null
                       ? null
                       : () {
-                          _sendText("lsnum");
+                          _getFList();
                         },
                 ),
                 title: TextField(
