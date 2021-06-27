@@ -69,8 +69,7 @@ class _MyAppState extends State<MyApp> {
   int _isGetFList = 1;
   int _isGetJSON = 2;
 
-  TextEditingController _textViewSaved = TextEditingController();
-  var _dataJson;
+  DataJSON _dataJson;
 
   int _fileSelectNum = 0;
   List<String> _fileFnum = ["0"];
@@ -232,7 +231,9 @@ class _MyAppState extends State<MyApp> {
           _updateFileList(line);
         } else {
           _serialData.add(Text(line));
-          if (_serialData.length > 2) {
+
+          //One Line info is enough
+          if (_serialData.length > 1) {
             _serialData.removeAt(0);
           }
         }
@@ -355,45 +356,37 @@ class _MyAppState extends State<MyApp> {
                         })),
               ),
               ListTile(
-                leading: ElevatedButton(
-                  child: Text("List Files"),
-                  onPressed: _port == null
-                      ? null
-                      : () {
-                          _getFList();
-                        },
-                ),
-                // title: TextField(
-                //   controller: _textViewSaved,
-                //   decoration: InputDecoration(
-                //       border: OutlineInputBorder(),
-                //       labelText: 'Number to View'),
-                // ),
-                title: Container(
-                    child: new DropdownButton<String>(
-                        value: _fileSelectNum.toString(),
-                        items: _fileFnum
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String newValue) {
-                          setState(() {
-                            _fileSelectNum = int.parse(newValue);
-                          });
-                        })),
-                trailing: ElevatedButton(
-                  child: Text("GetData"),
-                  onPressed: _port == null
-                      ? null
-                      : () {
-                          _getData(_fileSelectNum);
-                        },
-                ),
-              ),
-              Text("Result: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                  leading: ElevatedButton(
+                    child: Text("List Files"),
+                    onPressed: _port == null
+                        ? null
+                        : () {
+                            _getFList();
+                          },
+                  ),
+                  title: ListTile(
+                      leading: Text("Nomor file:"),
+                      title: new DropdownButton<String>(
+                          value: _fileSelectNum.toString(),
+                          items: _fileFnum
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              _fileSelectNum = int.parse(newValue);
+                            });
+                          })),
+                  trailing: ElevatedButton(
+                      child: Text("Get Data"),
+                      onPressed: _port == null
+                          ? null
+                          : () {
+                              _getData(_fileSelectNum);
+                            })),
               ..._serialData,
               Container(
                 child: new Plot(
