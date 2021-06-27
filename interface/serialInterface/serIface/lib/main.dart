@@ -71,7 +71,9 @@ class _MyAppState extends State<MyApp> {
 
   TextEditingController _textViewSaved = TextEditingController();
   var _dataJson;
-  List<int> _fnum = [];
+
+  int _fileSelectNum = 0;
+  List<String> _fileFnum = ["0"];
 
   List<Point> _dataPlotL = [Point(0, 0)];
   List<Point> _dataPlotR = [Point(0, 0)];
@@ -161,6 +163,23 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  void _updateFileList(String strSerial) {
+    List<String> _arrLine = strSerial.split(',');
+    int _lenFnum = _arrLine.length - 1;
+
+    List<int> _fnum = [];
+    for (var i = 0; i < _lenFnum; i++) {
+      _fnum.add(int.parse(_arrLine[i]));
+    }
+    _fnum.sort();
+
+    _fileFnum.clear();
+    for (var i = 0; i < _lenFnum; i++) {
+      _fileFnum.add(_fnum[i].toString());
+    }
+    _fileSelectNum = _fnum.last;
+  }
+
   Future<bool> _connectTo(device) async {
     _serialData.clear();
 
@@ -210,17 +229,7 @@ class _MyAppState extends State<MyApp> {
           _choicePlotL(_freqChoiceL);
           _choicePlotR(_freqChoiceR);
         } else if (_isGetStatus == _isGetFList) {
-          List<String> _arrLine = line.split(',');
-          int _lenLine = _arrLine.length - 1;
-
-          for (var i = 0; i < _lenLine; i++) {
-            _fnum.add(int.parse(_arrLine[i]));
-          }
-          _fnum.sort();
-
-          for (var i = 0; i < _lenLine; i++) {
-            _serialData.add(Text(_fnum[i].toString()));
-          }
+          _updateFileList(line);
         } else {
           _serialData.add(Text(line));
           if (_serialData.length > 2) {
@@ -269,20 +278,17 @@ class _MyAppState extends State<MyApp> {
 
     _serialData.clear();
     _isGetStatus = _isGetFList;
-    _fnum.clear();
     String strData = "lsnum\r\n";
     await _port.write(Uint8List.fromList(strData.codeUnits));
   }
 
-  void _getJSON(String strReq) async {
+  void _getData(int numFile) async {
     if (_port == null) {
       return;
     }
-    int numReq = int.parse(strReq);
-
     _serialData.clear();
     _isGetStatus = _isGetJSON;
-    String strData = "cat " + numReq.toString() + "\r\n";
+    String strData = "cat " + numFile.toString() + "\r\n";
     await _port.write(Uint8List.fromList(strData.codeUnits));
   }
 
@@ -357,18 +363,33 @@ class _MyAppState extends State<MyApp> {
                           _getFList();
                         },
                 ),
-                title: TextField(
-                  controller: _textViewSaved,
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Number to View'),
-                ),
+                // title: TextField(
+                //   controller: _textViewSaved,
+                //   decoration: InputDecoration(
+                //       border: OutlineInputBorder(),
+                //       labelText: 'Number to View'),
+                // ),
+                title: Container(
+                    child: new DropdownButton<String>(
+                        value: _fileSelectNum.toString(),
+                        items: _fileFnum
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String newValue) {
+                          setState(() {
+                            _fileSelectNum = int.parse(newValue);
+                          });
+                        })),
                 trailing: ElevatedButton(
                   child: Text("GetData"),
                   onPressed: _port == null
                       ? null
                       : () {
-                          _getJSON(_textViewSaved.text);
+                          _getData(_fileSelectNum);
                         },
                 ),
               ),
