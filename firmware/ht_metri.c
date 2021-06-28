@@ -75,11 +75,6 @@ uint8_t test_count = 0;
 uint8_t test_answer;
 
 /**
- * @brief Last recorded random number
- */
-static uint8_t last_rnd;
-
-/**
  * @brief Channel status variable
  */
 static uint8_t channel_stt=OUT_LEFT;
@@ -201,11 +196,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
         else if(mode_status==STT_METRI){
             if(mode_step==STEP_ASK){
                 rndask = ht_metri_RndOpt();
-#if USER_TEST_RNG
-                ht_comm_Buff(strbuff,sizeof(strbuff),"rng: %4i\r\n", rndask);
-                ht_comm_Msg(strbuff);
-                chThdSleepMilliseconds(1000);
-#else
+
                 chThdSleepMilliseconds(2*TEST_SPEED_DELAY);
                 led_answer_off();
 
@@ -246,7 +237,6 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 mode_step=STEP_WAIT;
                 ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %6.3f, %i\r\n",freq_test[freq_idx],ampl_num);
                 ht_comm_Msg(strbuff);
-#endif
             }
 
             else if(mode_step==STEP_CHK){
@@ -355,33 +345,42 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
 }
 
 uint8_t ht_metri_RndOpt(void){
+    char strbuff[IFACE_BUFF_SIZE];
     uint8_t rndnum=0, rndnumask=0;
 
     //is this pseudorandom really works?
     srand((unsigned long)chVTGetSystemTime());
-    rndnum = rand() % 36;
 
+#if USER_METRI_LONGRNG
+    uint8_t last_rnd;
+
+    rndnum = rand() % 36;
     while(rndnum==last_rnd){rndnum = rand() % 36;}
     last_rnd = rndnum;
 
-    if(rndnum==0||rndnum==3||rndnum==6||rndnum==9||rndnum==12||rndnum==15||rndnum==18||rndnum==21||rndnum==24||rndnum==27||rndnum==30||rndnum==33){
+    if(rndnum==0||rndnum==5||rndnum==7||rndnum==11||rndnum==13||rndnum==17||rndnum==20||rndnum==21||rndnum==25||rndnum==29||rndnum==31||rndnum==35){
         rndnumask = OPT_ASK_A;
-        ht_comm_Msg("Option A\r\n");
+        ht_comm_Msg("Option A ");
     }
-    else if(rndnum==1||rndnum==4||rndnum==7||rndnum==10||rndnum==13||rndnum==16||rndnum==19||rndnum==22||rndnum==25||rndnum==28||rndnum==31||rndnum==34){
+    else if(rndnum==1||rndnum==3||rndnum==8||rndnum==9||rndnum==14||rndnum==15||rndnum==18||rndnum==22||rndnum==26||rndnum==27||rndnum==32||rndnum==33){
         rndnumask = OPT_ASK_B;
-        ht_comm_Msg("Option B\r\n");
+        ht_comm_Msg("Option B ");
     }
-    else if(rndnum==2||rndnum==5||rndnum==8||rndnum==11||rndnum==14||rndnum==17||rndnum==20||rndnum==23||rndnum==26||rndnum==29||rndnum==32||rndnum==35){
+    else if(rndnum==2||rndnum==4||rndnum==6||rndnum==10||rndnum==12||rndnum==16||rndnum==19||rndnum==23||rndnum==24||rndnum==28||rndnum==30||rndnum==34){
         rndnumask = OPT_ASK_C;
-        ht_comm_Msg("Option C\r\n");
+        ht_comm_Msg("Option C ");
     }
-
-#if USER_TEST_RNG
-    return rndnum;
 #else
-    return rndnumask;
+    rndnum = rand() % 3;
+    if(rndnum==0){rndnumask = OPT_ASK_A;ht_comm_Msg("Option A ");}
+    if(rndnum==1){rndnumask = OPT_ASK_B;ht_comm_Msg("Option B ");}
+    if(rndnum==2){rndnumask = OPT_ASK_C;ht_comm_Msg("Option C ");}
 #endif
+
+    ht_comm_Buff(strbuff,sizeof(strbuff),"(%1i)\r\n", rndnum);
+    ht_comm_Msg(strbuff);
+
+    return rndnumask;
 }
 
 void ht_metri_Init(void){

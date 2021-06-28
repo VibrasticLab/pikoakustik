@@ -31,7 +31,6 @@
 #define USER_BAUD           9600    /* Default Baudrate */
 
 #define USER_TEST_STATE     FALSE   /* Whether run as test or metri mode */
- #define USER_TEST_RNG      FALSE   /* Whether run test for RNG */
 
 #define USER_SERIAL         TRUE   /* Whether enable serial interface or not */
  #define USER_SERCONSOLE    FALSE   /* Whether user serial echo and prompt */
@@ -48,6 +47,7 @@
 #define USER_LED_BUTTON     TRUE   /* Whether use LED and Button modules */
 
 #define USER_METRI          TRUE   /* Whether use Audiometri routine or not */
+ #define USER_METRI_LONGRNG FALSE  /* Whether use long rng method or simple */
  #define USER_METRI_RECORD  TRUE   /* Whether record Audiometri session */
  #define USER_METRI_ALLFREQ FALSE   /* Whether Audiometri in all frequency or selection */
  #define USER_METRI_16KHZ   FALSE   /* Whether Audiometri use 16kHz or not */
