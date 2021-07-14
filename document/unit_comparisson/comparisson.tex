@@ -122,8 +122,79 @@
 				\end{itemize}
 				\\ \midrule
 				
+				Sumber Daya &
+				\raisebox{-\totalheight}{\includegraphics[width=0.25\textwidth]{images/photos/pwr_brin}} &
+				\begin{itemize}[topsep=0pt]
+					\item 5v-USB Adaptor (min. 1.5A) 
+					\item Tidak ada battery
+					\item \textit{Core chip} Raspberry dan layar sentuh membutuhkan daya besar
+				\end{itemize} &
+				\raisebox{-\totalheight}{\includegraphics[width=0.25\textwidth]{images/photos/pwr_lpdp}} &
+				\begin{itemize}[topsep=0pt]
+					\item Battery LiPO single-cell (3.7v) 
+					\item Dilengkapi \textit{charging-manager} TC4056
+					\item Konsumsi daya signifikan hanya chip utama STM32F4
+				\end{itemize}
+				\\
+				
 				\bottomrule
 			\end{tabular}
 			\end{center}
+	\end{table}
+
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\newpage
+	\begin{table}[h!]
+		\begin{center}
+			\begin{tabular}{|p{3cm}|c|p{4cm}|c|p{4cm}|}
+				\toprule
+				Topik & BRIN & Keterangan & RISPRO & Keterangan \\ 
+				\midrule
+				
+				\textit{Operating System} &
+				\raisebox{-\totalheight}{\includegraphics[width=0.25\textwidth]{images/photos/os_brin}} &
+				\begin{itemize}[topsep=0pt]
+					\item Mengunakan Linux armhf
+					\item \textit{Booting time} berkisar 2-5 menit
+					\item Tidak ada \textit{checking routine}
+				\end{itemize} &
+				\raisebox{-\totalheight}{\includegraphics[width=0.25\textwidth]{images/photos/os_lpdp}} &
+				\begin{itemize}[topsep=0pt]
+					\item Mengunakan ChibiOS/RT (Real-Time OS)
+					\item Tidak ada \textit{booting-time}
+					\item \textit{Checking routine} hanya 5 detik
+				\end{itemize}
+				\\ \midrule
+				
+				\textit{Default Usage} &
+				\raisebox{-\totalheight}{\includegraphics[width=0.25\textwidth]{images/photos/use_brin}} &
+				\begin{itemize}[topsep=0pt]
+					\item Membutuhkan pengaturan sebelum digunakan
+					\item Tidak ada default saat program \textit{fresh-install}
+				\end{itemize} &
+				\raisebox{-\totalheight}{\includegraphics[width=0.25\textwidth]{images/photos/use_lpdp}} &
+				\begin{itemize}[topsep=0pt]
+					\item Pengaturan sudah disiapkan internal
+					\item Dapat langsung digunakan secara default
+				\end{itemize}
+				\\ \midrule
+				
+				\textit{Blueprint} &
+				\raisebox{-\totalheight}{\includegraphics[width=0.25\textwidth]{images/photos/tech_brin}} &
+				\begin{itemize}[topsep=0pt]
+					\item Komponen modular buatan vendor lain
+					\item Blueprint modul kembali kepada vendor RaspberryPi dan Waveshare
+				\end{itemize} &
+				\raisebox{-\totalheight}{\includegraphics[width=0.25\textwidth]{images/photos/tech_lpdp}} &
+				\begin{itemize}[topsep=0pt]
+					\item Standar file Gerber dan BoM siap dikirim ke fabrikasi elektronik
+					\item Blueprint dapat direview di \href{https://github.com/VibrasticLab/pikoakustik/tree/stm32f401re_3pin/circuit/test_3rev1/fabricate_PCB}{tautan ini}.
+				\end{itemize}
+				\\ \midrule
+				
+				\bottomrule
+			\end{tabular}
+		\end{center}
 	\end{table}
 \end{document}
