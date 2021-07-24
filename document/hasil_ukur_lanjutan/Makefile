@@ -1,6 +1,9 @@
+TEXCC=pdflatex
+TEXFLAGS=-shell-escape -synctex=1 -interaction=nonstopmode
+
+
 all:
-	pdflatex -shell-escape -synctex=1 -interaction=nonstopmode *.tex
-	ls *.pdf
+	for texfiles in `ls -1 *.tex`;do $(TEXCC) $(TEXFLAGS) $$texfiles;done
 
 clean:
 	rm -f *.log *.toc *.synctex.gz *.aux
