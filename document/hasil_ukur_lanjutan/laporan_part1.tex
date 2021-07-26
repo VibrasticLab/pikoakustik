@@ -54,7 +54,7 @@
 }
 
 \title{\LARGE \bf
-	Laporan Pengujian Unit Prototype Portable/Handheld Audiometri\\
+	Laporan Pengujian Unit Prototype Handheld Audiometri (Tahap 1)\\
 }
 
 \author{Achmadi ST MT}
@@ -245,14 +245,11 @@ out 500 6
 
 		\item Hasil yang diinginkan adalah tabel dengan spesifikasi berikut:
 		\begin{itemize}
-			\item tabel background noise terhadap waktu dengan KEMAR tanpa headphone (1 tabel).
-			\item tabel background noise terhadap waktu dengan KEMAR menggunakan kedua headphone, yaitu BOSE dan Miniso (2 tabel).
-			\item tabel loudness output di setiap frekuensi untuk setiap kenaikan skala amplitudo, untuk 2 prototype dengan 2 headphone, masing 3 tabel per hari.
-			\item tabel loudness output di setiap frekuensi untuk setiap penurunan skala amplitudo, untuk 2 prototype dengan 2 headphone, masing 3 tabel per hari.
-			\item pengukuran loudness output dilakukan di 3 hari berbeda.
+			\item tabel loudness output di setiap frekuensi untuk setiap skala amplitudo, untuk 2 prototype dengan 2 headphone
+			\item tabel loudness output di setiap frekuensi untuk setiap skala amplitudo, untuk 2 prototype dengan 2 headphone
 		\end{itemize}
 
-		sehingga diharapkan total 75 tabel hasil pengukuran.
+		sehingga diharapkan total 4 tabel hasil pengukuran.
 	\end{itemize}
 
 	\newpage
@@ -263,284 +260,69 @@ out 500 6
 	Tabel hasil pengujian cukuk banyak yang akan memakan tempat disini sehingga disediakan tempat di repository pemrograman Lab Vibrastic pada tautan berikut:\\
 	\url{https://github.com/VibrasticLab/pikoakustik/tree/stm32f401re_3pin/document/hasil_ukur_lanjutan/tabel_hasil_ukur}.\\
 
-	Untuk kemudahan dalam pengolahan, tersedia pula tabel data tersebut dalam format Python Numpy array yang dapat diakses di tautan:\\
-	\url{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/document/hasil_ukur_lanjutan/python/itb_data_pool.py}\\
-
 	Kemudian untuk memudahkan proses pengolahan data, digunakan pula perangkat lunak Jupyter Note yang berkasnya dapat diakses di tautan:\\
-	\url{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/document/hasil_ukur_lanjutan/python/itb_data_pool.py}\\
+	\url{https://github.com/VibrasticLab/pikoakustik/blob/stm32f401re_3pin/document/hasil_ukur_lanjutan/python/hasil_itb.ipynb}\\
 
 	\subsection{Pengolahan Data}
 
-	Pengolahan data hasil pengujian dikelompokkan pada 3 topik, yaitu loudness, efek histeresis, dan efek perbedaan hari.
+	Pengolahan data hasil pengujian digunakan untuk mendapatkan model loudness.
 
-	\subsubsection{Loudness}
-
-	Untuk pengolahan data terkait loudness, terbagi dalam dua topik, yaitu loudness terendah dan model matematis skala loudness
-
-	\begin{itemize}
-		\item \textbf{Loudness Terendah.}\\
-
-		Berikut adalah grafik \textit{surface} pengukuran bising lingkungan:
-
-		\begin{figure}[!ht]
-			\centering
-			\begin{subfigure}[b]{0.3\textwidth}
-				\includegraphics[width=\textwidth]{images/graph/nounitnohp}
-				\caption{Tanpa Headphone}
-			\end{subfigure}
-			\begin{subfigure}[b]{0.3\textwidth}
-				\includegraphics[width=\textwidth]{images/graph/nounitminiso}
-				\caption{Headphone Miniso}
-			\end{subfigure}
-			\begin{subfigure}[b]{0.3\textwidth}
-				\includegraphics[width=\textwidth]{images/graph/nounitbose}
-				\caption{Headphone BOSE}
-			\end{subfigure}
-			\caption{Bising Lingkungan}
-		\end{figure}
-
-		Dengan melihat skala \textit{colormap} grafik di atas terlihat bahwa headphone BOSE memiliki taraf bising paling rendah.
-		Hal ini dikarenakan selain memiliki peredam bising pasif dengan struktur headphone yang melingkupi telinga secara penuh,
-		juga tersedia fitur peredam bising aktif yang membatalkan bising lingkungan masuk ke mikrofon.
-
-		\newpage
-		Selanjutnya berikut adalah grafik nada terendah di setiap frekuensi dibandingkan bising lingkungan 3 detik pertama pada setiap frekuensi:
-
-		\begin{figure}[!ht]
-			\centering
-			\begin{subfigure}[b]{0.5\textwidth}
-				\includegraphics[width=\textwidth]{images/graph/boselowest_unit1}
-				\caption{Prototype A}
-			\end{subfigure}
-			\begin{subfigure}[b]{0.5\textwidth}
-				\includegraphics[width=\textwidth]{images/graph/boselowest_unit1}
-				\caption{Prototype B}
-			\end{subfigure}
-			\caption{Nada terendah BOSE terhadap bising lingkungan}
-		\end{figure}
-
-		\begin{figure}[!ht]
-			\centering
-			\begin{subfigure}[b]{0.5\textwidth}
-				\includegraphics[width=\textwidth]{images/graph/minisolowest_unit1}
-				\caption{Prototype A}
-			\end{subfigure}
-			\begin{subfigure}[b]{0.5\textwidth}
-				\includegraphics[width=\textwidth]{images/graph/minisolowest_unit1}
-				\caption{Prototype B}
-			\end{subfigure}
-			\caption{Nada terendah Miniso terhadap bising lingkungan}
-		\end{figure}
-
-		\begin{figure}[!ht]
-			\centering
-			\includegraphics[width=300pt]{images/graph/lowestbosevsminiso}
-			\caption{Nada terendah BOSE vs Miniso}
-		\end{figure}
-
-		\newpage
-		Berdasarkan grafik di atas, dapat disimpulkan bahwa penggunaan headphone BOSE dianggap lebih baik
-		dibandingkan Miniso dengan pertimbangan:
-		\begin{enumerate}
-			\item Loudness terendah BOSE cenderung lebih rendah dibandinhkan Miniso.
-			\item Loudness terendah Miniso cenderung tenggelam pada bising lingkungan.
-		\end{enumerate}
-
-		Untuk selanjutnya, pengolahan data hanya difokuskan pada BOSE Headphone yang direncanakan akan
-		digunakan sebagai default headphone.
-
-		\item \textbf{Model skala loudness.}
-
-		Dengan merata-rata seluruh matrix tabel didapat matrix untuk prototype Unit A sebagai berikut:
+		Dengan merata-rata matrix tabel didapat matrix untuk headphone Bose sebagai berikut:
 
 		\[\left[
 		\begin{matrix}
-			34.9 & 36.4 & 40. &  44.6 & 52. &  56.1 & 62.1 & 68.2 & 74.2\\
-			35.3 & 37.4 & 41.4 & 46.6 & 52.2 & 58.2 & 64.2 & 70.3 & 76.4\\
-			39.2 & 42.4 & 47. & 52.5 & 58.3 & 64.3 & 70.3 & 76.4 & 82.4\\
-			36.8 & 38.2 & 41.2 & 45.8 & 51.2 & 57.2 & 63.2 & 69.3 & 75.3\\
-			41.4 & 44. &  48.2 & 53.4 & 59.2 & 65.1 & 71.2 & 77.2 & 83.2\\
-			42. &  43.1 & 45.9 & 50.2 & 55.7 & 61.5 & 67.5 & 73.5 & 79.6\\
+			34.4 & 36.5 & 40.7 & 45.7 & 51.4 & 57.4 & 63.4 & 69.5 & 75.6 \\
+			32.6 & 35.8 & 40.2 & 44.9 & 50.2 & 56.6 & 62.7 & 68.8 & 74.8 \\
+			37.7 & 41   & 45.5 & 51   & 56.8 & 62.9 & 69   & 75   & 81   \\
+			36.3 & 38.6 & 42.4 & 47.7 & 53.2 & 59.2 & 65.4 & 71.4 & 77.4 \\
+			41.1 & 43.8 & 48   & 53.2 & 59   & 64.9 & 71.1 & 77.1 & 83.1 \\
+			41.8 & 42.6 & 44.9 & 49   & 54.4 & 60.2 & 66.2 & 72.2 & 78.2 \\
 		\end{matrix}
 		\right]\]
-
-		Kemudian dengan memperhatikan pola grafik tiap frekuensi (baris) pada matrix unit A:
-		\begin{figure}[!ht]
-			\centering
-			\includegraphics[width=400pt]{images/graph/boseprotoA}
-			\caption{Grafik loudness setiap frekuensi}
-		\end{figure}
 
 		Pendekatan model matematis untuk loudness terhadap skala input menggunakan polynomial:\\
 		\[f(x) = ax^3 + bx^2 + cx + d\]
 
 		Estimasi model menggunakan perangkat lunak Numpy Polyfit yang tersedia di Python.
-		Hasil estimasi untuk prototype A pada setiap frekuensi.
+		Hasil estimasi untuk headphone Bose pada setiap frekuensi.
 
-		\[f_{250}(x) = -0.05x^3 + 1.03bx^2 - 0.59cx + 34.21\]
-		\[f_{500}(x) = -0.05x^3 + 0.93bx^2 + 0.09cx + 34.15\]
-		\[f_{1000}(x) = -0.04x^3 + 0.69bx^2 + 1.72cx + 36.69\]
-		\[f_{2000}(x) = -0.06x^3 + 1.15bx^2 - 1.58cx + 37.22\]
-		\[f_{4000}(x) = -0.04x^3 + 0.85bx^2 + 0.68cx + 39.78\]
-		\[f_{8000}(x) = -0.06x^3 + 1.2bx^2 - 1.99cx + 42.79\]
+		\[f_{250}(x) = 0.05x^3 - 0.46x^2 - 4.7x + 80.5\]
+		\[f_{500}(x) = 0.03x^3 - 0.28x^2 - 5.4x + 80.48\]
+		\[f_{1000}(x) = 0.04x^3 - 0.4x^2 - 4.8x + 86.06\]
+		\[f_{2000}(x) = 0.05x^3 - 0.49x^2 - 4.59x + 82.33\]
+		\[f_{4000}(x) = 0.04x^3 - 0.44x^2 - 4.72x + 88.12\]
+		\[f_{8000}(x) = 0.06x^3 - 0.59x^2 - 4.37x + 83\]
 
 		Model matematis ini yang akan di implementasikan ke prototype.
 
-		\newpage
-		Selanjutnya untuk prototype B, dilakukan metode perhitungan yang sama.
+		Selanjutnya untuk headphone Miniso, dilakukan metode perhitungan yang sama.
 
 		Berikut matrix rata-rata loudness pengukuran:
 
 		\[\left[
 		\begin{matrix}
-			34.8&36.&39.8&44.6&49.9&55.8&61.9&68.&74.&\\
-
-			35.2&37.2&41.2&46.4&52.&58.&64.1&70.2&76.2\\
-
-			38.9&42.1&46.8&52.2&58.&64.&70.1&76.1&82.1\\
-
-			36.7&38.&41.&45.5&51.&56.9&63.&69.&75.1\\
-
-			41.3&43.8&47.9&53.2&59.&64.9&70.9&77.&83.&\\
-
-			41.8&43.&45.6&49.8&55.2&61.&67.&73.&79.&\\
+			36   & 39.5 & 44.2 & 49.7 & 55.6 & 61.4 & 67.4 & 73.4 & 79.4 \\
+			36.7 & 40.5 & 45.4 & 50.8 & 56.7 & 62.6 & 68.6 & 74.6 & 80.6 \\
+			39.9 & 43.6 & 48.6 & 54.2 & 60   & 65.9 & 71.8 & 77.8 & 83.8 \\
+			33   & 35.4 & 39.6 & 44.7 & 50.4 & 56.4 & 62.4 & 68.3 & 74.4 \\
+			32.7 & 33.4 & 35.3 & 39.2 & 44.3 & 50   & 56   & 62   & 68   \\
+			35.6 & 36.2 & 38.3 & 41.8 & 47   & 52.6 & 58.6 & 64.6 & 70.5 \\
 		\end{matrix}
 		\right]\]
 
-		Hasil estimasi untuk prototype B pada setiap frekuensi.
+		Hasil estimasi untuk Headphone Miniso pada setiap frekuensi.
 
-		\[f_{250}(x) = -0.05x^3 + 1.08bx^2 - 1cx + 34.56\]
-		\[f_{500}(x) = -0.05x^3 + 0.98bx^2 - 0.12cx + 34.21\]
-		\[f_{1000}(x) = -0.04x^3 + 0.69bx^2 + 1.74cx + 36.38\]
-		\[f_{2000}(x) = -0.06x^3 + 1.17bx^2 - 1.69cx + 37.21\]
-		\[f_{4000}(x) = -0.04x^3 + 0.87bx^2 + 0.55cx + 39.77\]
-		\[f_{8000}(x) = -0.06x^3 - 2.06bx^2 - 1.99cx + 42.73\]
-
-		Terakhir, jika diselisih matrix koefisien didapat matrix bernilai kecil:
-
-		\[\left[
-		\begin{matrix}
-			0.  & -0.05 &  0.41 & -0.35\\
-			0.  & -0.05 &  0.21 & -0.06\\
-			0.  &  0.   & -0.02 &  0.31\\
-			0.  & -0.02 &  0.11 &  0.01\\
-			0.  & -0.02 &  0.13 &  0.01\\
-			0.  &  0.01 &  0.07 &  0.06\\
-		\end{matrix}
-		\right]\]
-
-		dimana ini menunjukkan bahwa kedua prototype yang diuji saling identik dan saling representatif.
-	\end{itemize}
-
-	\subsubsection{Efek Histeresis}
-
-	Selanjutnya, dengan menghitung standar deviasi di setiap elemen matrix hasil (setiap loudness dan frekuensi) sebagai array,
-	didapat matriks standar deviasi di setiap unit prototype di setiap hari untuk headphone BOSE sebagai berikut:
-
-	\begin{enumerate}
-		\item Unit A. Diurut dari kiri atas, hari-1, hari-2, dan hari-3
-		\[ \left( \begin{matrix}
-			0.2&0.3&0.2&0.2&11.8&0.1&0.1&0.&0.1\\
-
-			0.2&0.&0.2&0.1&0.&0.&0.&0.1&0.&\\
-
-			0.1&0.1&0.&0.&0.&0.&0.&0.&0.&\\
-
-			0.&0.&0.1&0.1&0.1&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.&0.&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
-		\end{matrix} \right)
-		%
-		\left( \begin{matrix}
-			0.1&0.1&0.2&0.1&0.1&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.1&0.1&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.&0.&0.&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.&0.&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
-		\end{matrix} \right)
-		\]
-
-		\[\left[
-		\begin{matrix}
-			0.1&0.2&0.2&0.1&0.2&0.&0.&0.&0.&\\
-
-			0.2&0.1&0.1&0.1&0.1&0.1&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.&0.&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
-
-			0.2&0.1&0.1&0.&0.&0.&0.&0.&0.&\\
-
-			0.1&0.&0.1&0.&0.1&0.&0.&0.&0.&\\
-		\end{matrix}
-		\right]\]
-
-		\newpage
-		\item Unit B, Diurut dari kiri atas, hari-1, hari-2, dan hari-3
-
-		\[ \left( \begin{matrix}
-			0.3&0.1&0.2&0.1&0.1&0.1&0.&0.&0.&\\
-
-			0.2&0.1&0.1&0.1&0.1&0.&0.&0.1&0.&\\
-
-			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.&0.1&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.&0.&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
-		\end{matrix} \right)
-		%
-		\left( \begin{matrix}
-			0.1&0.2&0.2&0.2&0.1&0.1&0.&0.1&0.1\\
-
-			0.2&0.1&0.1&0.1&0.1&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.1&0.1&0.&1.1&0.&0.&\\
-
-			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.1&0.&0.&0.&0.&0.&\\
-		\end{matrix} \right)
-		\]
-
-		\[\left[
-		\begin{matrix}
-			0.1&0.2&0.1&0.1&0.1&0.1&0.1&0.&0.&\\
-
-			0.&0.4&0.2&0.2&0.&0.&0.&0.&0.&\\
-
-			0.2&0.1&0.&0.&0.1&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.&0.1&0.&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.1&0.&0.&0.&0.&0.&0.&\\
-
-			0.1&0.1&0.&0.&0.&0.&0.&0.&0.&\\
-		\end{matrix}
-		\right]\]
-
-	\end{enumerate}
-
-	Dengan memperhatikan matrix standar deviasi di atas, dapat terlihat bahwa output loudness cenderung konsisten
-	baik terkait efek histeresis maupun perbedaan hari pengukuran.
+		\[f_{250}(x) = 0.03x^3 - 0.32x^2 - 4.99x + 84.58\]
+		\[f_{500}(x) = 0.03x^3 - 0.28x^2 - 5.16x + 85.93\]
+		\[f_{1000}(x) = 0.03x^3 - 0.28x^2 - 5.09x + 36.38\]
+		\[f_{2000}(x) = 0.04x^3 - 0.46x^2 - 4.63x + 37.21\]
+		\[f_{4000}(x) = 0.06x^3 - 0.53x^2 - 4.64x + 39.77\]
+		\[f_{8000}(x) = 0.06x^3 - 0.51x^2 - 4.67x + 42.73\]
 
 	\newpage
 	\section{Lampiran}
 
 	\subsection{Notebook Olah Data}
-	\includepdf[pages=-]{python/ITBDataProcess.pdf}
+	\includepdf[pages=-]{python/hasil_itb.pdf}
 
 \end{document}
