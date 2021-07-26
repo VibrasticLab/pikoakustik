@@ -12,3 +12,4 @@
 *-checkpoint.ipynb
 *.creator.user*
 *compile_commands.json
+/circuit/test_3rev1/fabricate_PCB
