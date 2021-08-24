@@ -92,8 +92,6 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 	
 #### Short Description:
 
----
-
 - [x] Fungsional
 
 Mengukur Ambang Pendengaran secara mandiri tanpa perlu bantuan dokter spesialis dan tanpa datang ke klinik.
