@@ -89,3 +89,31 @@ Main chip are STM32F401RE and Audio-DAC MAX98357A.
 		- [ ] Seeed Studio
 		- [ ] DigiKey
 	- [ ] Packaging
+	
+#### Short Description:
+
+---
+
+- [x] Fungsional
+
+Mengukur Ambang Pendengaran secara mandiri tanpa perlu bantuan dokter spesialis dan tanpa datang ke klinik.
+
+- [x] Portabel
+
+Dapat digunakan dimana saja dan kapan saja. Baterai mudah diisi ulang.
+
+- [x] Terstandar
+
+Telah terkalibrasi standar Audiometri dan teruji pada ruang *un-echoic*.
+
+- [x] Ramah Pengguna
+
+Antar Muka hanya berupa Tombol dan Lampu LED tanpa pengaturan tambahan dan bisa langsung digunakan.
+
+- [x] Terintergrasi
+
+Terhubung dengan penyimpanan *dedicated server* sehingga dapat diakses dokter spesialis secara jarak jauh jika diperlukan.
+
+
+
+
