@@ -63,7 +63,7 @@ Terhubung dengan penyimpanan *dedicated server* sehingga dapat diakses dokter sp
 - [ ] Box Design
 	- [x] Print 3D
 	- [ ] Plastic Molding
-	- [ ] Brosur Promo with Good Packaging
+	- [x] Brosur Promo with Good Packaging
 - [ ] Battery
 	- [x] Regulator TP4056
 	- [x] ~~LiPo Battery~~
