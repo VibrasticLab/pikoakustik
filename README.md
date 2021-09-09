@@ -137,6 +137,17 @@ Terhubung dengan penyimpanan *dedicated server* sehingga dapat diakses dokter sp
 		- [ ] ~~Maxtron~~
 	- [ ] Packaging
 
+---
+
+### Future Development:
+
+- [ ] Migrate to ESP32
+	- [ ] Advantage: Bluetooth Audio A2DP Sources
+	- [ ] Advantage: Dual Core CPU as fast as ARM  
+	- [ ] Advantage: Touch Sensor (replace button)
+	- [ ] Disadvantage: Re-working all current design
+	- [ ] Disadvantage: Re-calibrate and re-test everything
+
 
 
 
