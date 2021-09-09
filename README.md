@@ -1,6 +1,8 @@
 This is audiometri tool project (still in heavy development).
 Main chip are STM32F401RE and Audio-DAC MAX98357A.
 
+---
+
 ### Short Description:
 
 - [x] Fungsional
@@ -23,13 +25,17 @@ Antar Muka hanya berupa Tombol dan Lampu LED tanpa pengaturan tambahan dan bisa 
 
 Terhubung dengan penyimpanan *dedicated server* sehingga dapat diakses dokter spesialis secara jarak jauh jika diperlukan.
 
-### Implemented Features:
+---
 
-#### Marking Rules:
+### Marking Rules:
 - [ ] Unfinished
 - [x] Finished but Open to Improve
 - [x] ~~Finished~~
 - [ ] ~~Unused but Noted~~
+
+---
+
+### Implemented Features:
 
 #### User Interaction:
 
@@ -46,7 +52,10 @@ Terhubung dengan penyimpanan *dedicated server* sehingga dapat diakses dokter sp
 	- [x] ~~3 Choice Answer Placement~~
 - [x] ~~Button Reset~~
 - [x] ~~User-Friendlyness Interface Test~~
-- [ ] Build New PCB as Latest Revision
+- [ ] LCD Non-Input Interface
+	- [ ] LCD SPI ILI9xxx series
+
+---
 
 #### Packaging
 
@@ -62,6 +71,8 @@ Terhubung dengan penyimpanan *dedicated server* sehingga dapat diakses dokter sp
 	- [ ] Charge/Discharge Test
 	- [ ] Battery Manager
 	- [x] No Cap except Run Elco
+
+---
 
 #### Data Communication:
 
@@ -86,6 +97,8 @@ Terhubung dengan penyimpanan *dedicated server* sehingga dapat diakses dokter sp
 	- [ ] Wifi/AP switch command
 	- [ ] HTTP Data exchange
 	- [ ] HTTP Data JSON/Format
+
+---
 
 #### Audiometri:
 
