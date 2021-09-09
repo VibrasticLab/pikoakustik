@@ -143,8 +143,9 @@ Terhubung dengan penyimpanan *dedicated server* sehingga dapat diakses dokter sp
 
 - [ ] Migrate to ESP32
 	- [ ] Advantage: Bluetooth Audio A2DP Sources
-	- [ ] Advantage: Dual Core CPU as fast as ARM  
+	- [ ] Advantage: Dual Core CPU as fast as ARM
 	- [ ] Advantage: Touch Sensor (replace button)
+	- [ ] Disadvantage: Less GPIO pin available
 	- [ ] Disadvantage: Re-working all current design
 	- [ ] Disadvantage: Re-calibrate and re-test everything
 
