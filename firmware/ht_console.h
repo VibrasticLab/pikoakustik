@@ -111,13 +111,13 @@ extern "C" {
 
 /**
  * @brief Start Shell and UART peripheral
- * @details Serial Interface using UART0 (SD1)
+ * @details Serial Interface using UART1 (SD1)
  */
 void ht_commUART_Init(void);
 
 /**
  * @brief Start Shell and USB peripheral
- * @details Serial Interface using USB0 (SDU1)
+ * @details Serial Interface using USB1 (SDU1)
  */
 void ht_commUSB_Init(void);
 

@@ -605,7 +605,7 @@ static thread_t *shelltp_usb = NULL;
 
 /**
  * @brief Shell Driver Config
- * @details Serial Interface using UART0 (SD1)
+ * @details Serial Interface using UART1 (SD1)
  */
 static const ShellConfig shell_uart_cfg = {
   (BaseSequentialStream *)&SD1,
