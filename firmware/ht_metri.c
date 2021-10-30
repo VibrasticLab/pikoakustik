@@ -77,7 +77,7 @@ uint8_t test_answer;
 /**
  * @brief Channel status variable
  */
-static uint8_t channel_stt=OUT_LEFT;
+uint8_t channel_stt=OUT_LEFT;
 
 /**
  * @brief Variable indicate amplitude scale going down

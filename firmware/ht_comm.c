@@ -48,6 +48,7 @@ extern uint8_t lastnum;
 
 /* Mode related */
 extern uint8_t mode_status;
+extern uint8_t channel_stt;
 
 /*******************************************
  * Serial Command Callback
@@ -575,6 +576,10 @@ static void cmd_virt(BaseSequentialStream *chp, int argc, char *argv[]) {
 
     chprintf(chp, "Run Virtual Test Start\r\n");
     chprintf(chp, "DONT PUSH ANY BUTTON\r\n");
+
+    ht_mmcMetri_chkFile();
+    ht_mmcMetri_jsonChStart(channel_stt);
+
     mode_status = STT_VIRT;
 }
 
