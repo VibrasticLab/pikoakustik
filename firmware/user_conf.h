@@ -26,7 +26,7 @@
 #ifndef USER_CONF_H
 #define USER_CONF_H
 
-#define USER_TESTER         "Fiqhiyah"
+#define USER_TESTER         "VibrasticLab"
 
 #define USER_BAUD           9600    /* Default Baudrate */
 
@@ -49,8 +49,9 @@
 #define USER_METRI          TRUE   /* Whether use Audiometri routine or not */
  #define USER_METRI_LONGRNG FALSE  /* Whether use long rng method or simple */
  #define USER_METRI_RECORD  TRUE   /* Whether record Audiometri session */
- #define USER_METRI_ALLFREQ FALSE   /* Whether Audiometri in all frequency or selection */
- #define USER_METRI_16KHZ   FALSE   /* Whether Audiometri use 16kHz or not */
+ #define USER_METRI_ALLFREQ FALSE  /* Whether Audiometri in all frequency or selection */
+ #define USER_METRI_ONEFREQ TRUE   /* Whether Audiometri in single frequency only */
+#define USER_METRI_16KHZ    FALSE  /* Whether Audiometri use 16kHz or not */
 
 #endif // USER_CONF_H
 /** @} */

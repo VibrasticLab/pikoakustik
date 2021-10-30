@@ -35,6 +35,7 @@
 #include "user_conf.h"
 #include "ht_console.h"
 #include "ht_audio.h"
+#include "ht_metri.h"
 #include "ht_mmc.h"
 
 /* USB-CDC pointer object */
@@ -42,8 +43,11 @@ extern SerialUSBDriver SDU1;
 extern const USBConfig usbcfg;
 extern const SerialUSBConfig serusbcfg;
 
-/* File related*/
+/* File related */
 extern uint8_t lastnum;
+
+/* Mode related */
+extern uint8_t mode_status;
 
 /*******************************************
  * Serial Command Callback
@@ -540,11 +544,13 @@ static void cmd_chthds(BaseSequentialStream *chp, int argc, char *argv[]) {
   } while (tp != NULL);
 }
 
+/*******************************************/
+
 /**
  * @brief Tester name check function
  * @details Enumerated and not called directly by any normal thread
  */
-static void cmd_chwho(BaseSequentialStream *chp, int argc, char *argv[]) {
+static void cmd_who(BaseSequentialStream *chp, int argc, char *argv[]) {
 
   (void)argv;
   if (argc > 0) {
@@ -556,6 +562,22 @@ static void cmd_chwho(BaseSequentialStream *chp, int argc, char *argv[]) {
   chprintf(chp, "tester name: \"%s\"\r\n",tester);
 }
 
+/**
+ * @brief Run Virtual Test
+ * @details Enumerated and not called directly by any normal thread
+ */
+static void cmd_virt(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)argv;
+    if (argc > 0) {
+      chprintf(chp, "Usage: virt\r\n");
+      return;
+    }
+
+    chprintf(chp, "Run Virtual Test Start\r\n");
+    chprintf(chp, "DONT PUSH ANY BUTTON\r\n");
+    mode_status = STT_VIRT;
+}
+
 /*******************************************/
 
 /**
@@ -565,6 +587,8 @@ static void cmd_chwho(BaseSequentialStream *chp, int argc, char *argv[]) {
 static const ShellCommand commands[] = {
     {"coba",cmd_coba},
     {"test",cmd_test},
+    {"virt",cmd_virt},
+    {"who",cmd_who},
 #if USER_AUDIO
     {"zero",cmd_zero},
     {"sing",cmd_sing},
@@ -575,7 +599,6 @@ static const ShellCommand commands[] = {
     {"sptest",cmd_sptest},
 #endif
 #if USER_MMC
-    {"who",cmd_chwho},
     {"ls",cmd_lsfile},
     {"lsnum",cmd_lsnumfile},
     {"cat",cmd_catfile},

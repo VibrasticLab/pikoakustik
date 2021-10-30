@@ -33,6 +33,7 @@
 #define STT_STDBY   3
 #define STT_CFILE   4
 #define STT_METRI   5
+#define STT_VIRT    6
 
 #define STEP_ASK    0
 #define STEP_WAIT   1

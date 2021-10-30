@@ -106,7 +106,11 @@ static double freq_test[] = {0.625, 1.25, 2.5, 5, 10, 20, 40};
 static double freq_test[] = {0.625, 1.25, 2.5, 5, 10, 20};
  #endif
 #else
- static double freq_test[] = {1.25, 2.5, 5};
+ #if USER_METRI_ONEFREQ
+static double freq_test[] = {2.5};
+ #else
+static double freq_test[] = {1.25, 2.5, 5};
+ #endif
 #endif
 
 /**
@@ -193,7 +197,7 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
             mode_status=STT_METRI;
         }
 
-        else if(mode_status==STT_METRI){
+        else if(mode_status==STT_METRI || mode_status==STT_VIRT){
             if(mode_step==STEP_ASK){
                 rndask = ht_metri_RndOpt();
 
@@ -234,7 +238,14 @@ static ThdFunc_RunMetri(thdRunMetri, arg) {
                 led_answer_off();
                 /*************************************/
 
-                mode_step=STEP_WAIT;
+                if(mode_status==STT_VIRT){
+                    numresp = numask;
+                    mode_step=STEP_CHK;
+                }
+                else{
+                    mode_step=STEP_WAIT;
+                }
+
                 ht_comm_Buff(strbuff,sizeof(strbuff),"freq,ampl: %6.3f, %i\r\n",freq_test[freq_idx],ampl_num);
                 ht_comm_Msg(strbuff);
             }
