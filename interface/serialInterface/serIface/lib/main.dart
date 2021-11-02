@@ -3,16 +3,9 @@ import 'dart:typed_data';
 import 'dart:convert';
 import 'dart:async';
 import 'dart:math';
-import 'dart:io';
 import 'package:usb_serial/usb_serial.dart';
 import 'package:usb_serial/transaction.dart';
 import 'package:flutter_plot/flutter_plot.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-// outdated causing build issue like https://github.com/adee42/flutter_keyboard_visibility/issues/42
-// modify /opt/flutter/.pub-cache/hosted/pub.dartlang.org/downloads_path_provider-0.1.0/android/build.gradle
-// change 'compileSdkVersion 27' to 'compileSdkVersion 28'
-import 'package:downloads_path_provider/downloads_path_provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -79,7 +72,7 @@ class _MyAppState extends State<MyApp> {
   int _lenRecord = 24;
   DataJSON _dataJson;
 
-  bool _permissionGranted = true;
+  String txtResult = '';
   int _fileSelectNum = 0;
   List<String> _fileFnum = ["0"];
 
@@ -188,22 +181,7 @@ class _MyAppState extends State<MyApp> {
     _fileSelectNum = _fnum.last;
   }
 
-  Future _getStoragePermission() async {
-    if (await Permission.storage.request().isGranted) {
-      setState(() {
-        _permissionGranted = true;
-      });
-    } else if (await Permission.storage.request().isPermanentlyDenied) {
-      await openAppSettings();
-    } else if (await Permission.storage.request().isDenied) {
-      setState(() {
-        _permissionGranted = false;
-      });
-    }
-  }
-
   void _saveResult(int numFile) async {
-    String txtResult = '';
     txtResult += 'tester: ${_dataJson.tester}\n\n';
 
     // Channel Kiri
@@ -253,17 +231,6 @@ class _MyAppState extends State<MyApp> {
           '${_scaleToDB(_dataJson.ch1F2f, _dataJson.ch1F2r[i]).toString()} ';
     }
     txtResult += '\n\n';
-
-    // saving result string
-    _getStoragePermission();
-
-    if (_permissionGranted) {
-      Directory directory = await DownloadsPathProvider.downloadsDirectory;
-      File file =
-          File('${directory.path}/audioMetri/result_${numFile.toString()}.txt');
-      await file.create(recursive: true);
-      await file.writeAsString(txtResult, flush: true, encoding: utf8);
-    }
   }
 
   Future<bool> _connectTo(device) async {

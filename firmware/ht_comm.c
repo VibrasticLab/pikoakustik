@@ -37,6 +37,7 @@
 #include "ht_audio.h"
 #include "ht_metri.h"
 #include "ht_mmc.h"
+#include "ht_led.h"
 
 /* USB-CDC pointer object */
 extern SerialUSBDriver SDU1;
@@ -49,6 +50,7 @@ extern uint8_t lastnum;
 /* Mode related */
 extern uint8_t mode_status;
 extern uint8_t channel_stt;
+extern uint8_t mode_led;
 
 /*******************************************
  * Serial Command Callback
@@ -580,6 +582,7 @@ static void cmd_virt(BaseSequentialStream *chp, int argc, char *argv[]) {
     ht_mmcMetri_chkFile();
     ht_mmcMetri_jsonChStart(channel_stt);
 
+    mode_led = LED_VIRT;
     mode_status = STT_VIRT;
 }
 
