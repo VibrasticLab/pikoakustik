@@ -124,10 +124,6 @@ static ThdFunc_RunLED(thdRunLed, arg) {
         palTogglePad(GPIOA, LED_RUN);
         chThdSleepMilliseconds(50);
     }
-    else if(mode_led==LED_VIRT){
-        palTogglePad(GPIOA, LED_RUN);
-        chThdSleepMilliseconds(50);
-    }
 #endif
 
   }

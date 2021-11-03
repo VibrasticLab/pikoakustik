@@ -47,11 +47,6 @@
  */
 #define LED_METRI   3
 
-/**
- * @brief LED Mode when Virtual test
- */
-#define LED_VIRT    4
-
 /* LED MACRO */
 #define LED_RUN     1 //PA.1
 #define LED_TRUE    2 //PA.2

@@ -582,7 +582,7 @@ static void cmd_virt(BaseSequentialStream *chp, int argc, char *argv[]) {
     ht_mmcMetri_chkFile();
     ht_mmcMetri_jsonChStart(channel_stt);
 
-    mode_led = LED_VIRT;
+    mode_led = LED_METRI;
     mode_status = STT_VIRT;
 }
 
