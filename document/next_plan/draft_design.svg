@@ -27,12 +27,12 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="0.71811812"
-     inkscape:cx="434.46891"
-     inkscape:cy="499.91776"
-     inkscape:window-width="1440"
-     inkscape:window-height="882"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:cx="364.84249"
+     inkscape:cy="295.21606"
+     inkscape:window-width="1366"
+     inkscape:window-height="724"
+     inkscape:window-x="1440"
+     inkscape:window-y="75"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
@@ -253,6 +253,27 @@
          style="font-size:5.64444px;stroke-width:0.264583"
          x="150.37387"
          y="42.520714">LCD-GUI</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.64444px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="163.24338"
+       y="70.547531"
+       id="text2375-6-3-8-0-6"><tspan
+         sodipodi:role="line"
+         style="font-size:5.64444px;stroke-width:0.264583"
+         x="163.24338"
+         y="70.547531"
+         id="tspan2934">Button</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:5.64444px;stroke-width:0.264583"
+         x="163.24338"
+         y="77.603081"
+         id="tspan2938">4-Arrows</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:5.64444px;stroke-width:0.264583"
+         x="163.24338"
+         y="84.65863"
+         id="tspan2940">Yes-Cancel</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:5.64444px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -613,12 +634,12 @@
          x="87.286263"
          y="229.86285" /></text>
     <rect
-       style="fill:none;stroke:#000000;stroke-width:1.06666;stroke-miterlimit:4;stroke-dasharray:none"
+       style="fill:none;stroke:#000000;stroke-width:1.12122;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect83635"
-       width="171.93903"
-       height="87.406876"
-       x="11.992088"
-       y="8.0578365" />
+       width="190.09795"
+       height="87.35231"
+       x="12.01937"
+       y="8.0851183" />
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect90617"
@@ -657,6 +678,13 @@
        x="145.55493"
        y="35.593929" />
     <rect
+       style="fill:none;stroke:#000000;stroke-width:0.866805;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect106499-3"
+       width="32.531162"
+       height="22.443272"
+       x="160.58554"
+       y="65.04541" />
+    <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect117476"
        width="27.14959"
@@ -685,14 +713,14 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:5.64444px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="121.40353"
-       y="76.367943"
+       x="94.201553"
+       y="86.585907"
        id="text2375-6-3-37-2"><tspan
          sodipodi:role="line"
          id="tspan2373-2-75-45-5"
          style="font-size:5.64444px;stroke-width:0.264583"
-         x="121.40353"
-         y="76.367943">UART0</tspan></text>
+         x="94.201553"
+         y="86.585907">UART0</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:5.64444px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -726,5 +754,20 @@
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;marker-start:url(#Arrow1Mstart);marker-end:url(#marker95301)"
        d="M 72.912377,81.788057 95.383407,64.135023"
        id="path135818" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;marker-start:url(#marker52470)"
+       d="m 128.44615,54.044365 28.34213,21.452747"
+       id="path7732" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:5.64444px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="132.0573"
+       y="75.791206"
+       id="text2375-6-0-2-0-3-5"><tspan
+         sodipodi:role="line"
+         id="tspan2373-2-9-61-2-6-3"
+         style="font-size:5.64444px;stroke-width:0.264583"
+         x="132.0573"
+         y="75.791206">GP I/O</tspan></text>
   </g>
 </svg>
