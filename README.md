@@ -1,6 +1,13 @@
 This is audiometri tool project (still in heavy development).
 Main chip are STM32F401RE and Audio-DAC MAX98357A.
 
+### Update:
+
+After a year or so development struggle, now we move to some higher level development stage.
+Therefor this repository will be archived and exist only for documentation.
+
+Next development will be moved into new repository: [Pikoakustik2](https://github.com/VibrasticLab/pikoakustik2)
+
 ---
 
 ### Short Description:
